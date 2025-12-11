@@ -1,0 +1,466 @@
+{
+  "updatedAt": "2025-12-03T19:58:17.000Z",
+  "createdAt": "2025-10-09T22:51:08.417Z",
+  "id": "e4cClVgo9Tcry5LZ",
+  "name": "Load Books and Send to Ingest",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Injest Book w/ vector embedding (nomic-embed-text)",
+        "height": 576,
+        "width": 1280,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        -512
+      ],
+      "id": "bf781689-9f85-41bf-ad88-4a94563a24cd",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "command": "ls /files/books/"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -96
+      ],
+      "id": "306a4bd3-d2d2-4da2-b4e9-30270ac938a1",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json[\"stdout\"] || \"\";\nreturn output\n  .split(\"\\n\")\n  .map(line => line.trim())\n  .filter(line => line.length > 0)\n  .map(filename => ({ json: { filename } }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -96
+      ],
+      "id": "b1175f60-6c41-4c77-bd60-1a0e401f1215",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -96
+      ],
+      "id": "7fb822d5-8f2f-422d-b834-bebb2b435034",
+      "name": "Limit",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b4d29bf6-7716-48ce-a3d9-16dd6920bd4e",
+              "leftValue": "={{ $json.filename }}",
+              "rightValue": "epub",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -416,
+        -96
+      ],
+      "id": "c4c4a491-3fd6-4aa1-98a8-4c14fd1fea4f",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "JWGYGW2xxbrjdi13",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/JWGYGW2xxbrjdi13",
+          "cachedResultName": "Enrich and Save Book"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "filename": "={{ $json.fileName }}"
+          },
+          "matchingColumns": [
+            "filename"
+          ],
+          "schema": [
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -96
+      ],
+      "name": "Enrich Book",
+      "id": "7438c8ec-4adf-4449-8176-c6b62fea23f0",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Pug5aBaVAObe9dkO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Pug5aBaVAObe9dkO",
+          "cachedResultName": "Ingest Ebook v3 EPUB without Enrichment"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "book_id": "={{ $json.id }}",
+            "filename": "={{ $('Code in JavaScript').item.json.filename }}",
+            "mime_type": "={{ $('Read/Write Files from Disk').item.json.mimeType }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "book_id",
+              "displayName": "book_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "mime_type",
+              "displayName": "mime_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        -96
+      ],
+      "id": "95a57c55-42b8-4d95-b3c7-8d621e93955c",
+      "name": "Call 'Ingest Ebook v3 EPUB without Enrichment'"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $json.filename }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -96
+      ],
+      "id": "857c1729-0394-4d21-a560-bef25c08421d",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        -96
+      ],
+      "id": "f616e254-c996-4107-9fac-289d702e39da",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e59d2d4-0528-45e0-b288-60f787802384",
+              "name": "book_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -96
+      ],
+      "id": "2d1c7513-9c49-47b4-85fe-2222d8a8d7d9",
+      "name": "Set Book ID"
+    }
+  ],
+  "connections": {
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich Book": {
+      "main": [
+        [
+          {
+            "node": "Set Book ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Enrich Book",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Book ID": {
+      "main": [
+        [
+          {
+            "node": "Call 'Ingest Ebook v3 EPUB without Enrichment'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Set Book ID": [
+      {
+        "json": {
+          "book_id": "ecbc7f84-6a40-474e-8ef7-93c5f0aca074"
+        }
+      },
+      {
+        "json": {
+          "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22"
+        }
+      },
+      {
+        "json": {
+          "book_id": "3e452242-6d27-4ed9-9859-3ddd8e71c613"
+        }
+      },
+      {
+        "json": {
+          "book_id": "d4519afe-7074-49aa-a237-8a218b251d09"
+        }
+      },
+      {
+        "json": {
+          "book_id": "87f34709-c173-4b9c-98f1-91129b0b51a2"
+        }
+      },
+      {
+        "json": {
+          "book_id": "879a10a2-b287-41f2-a8a6-07893851b45c"
+        }
+      },
+      {
+        "json": {
+          "book_id": "bfcd170d-d096-445c-9df7-bf7ebfdde742"
+        }
+      },
+      {
+        "json": {
+          "book_id": "25dc65d1-88b3-4a7a-89f5-4d034ae4a6f6"
+        }
+      },
+      {
+        "json": {
+          "book_id": "a144ae66-07d8-471a-8b25-f006db2510ba"
+        }
+      },
+      {
+        "json": {
+          "book_id": "ab8547be-886b-43d8-b5ea-1618fbe53c76"
+        }
+      },
+      {
+        "json": {
+          "book_id": "4473368d-32a2-4030-8cde-5a7f22cb19f9"
+        }
+      },
+      {
+        "json": {
+          "book_id": "4fdf4aae-6b4f-4427-9ab1-b37c81283ae1"
+        }
+      },
+      {
+        "json": {
+          "book_id": "c156dbd9-b6af-4ac5-be32-d04027ebe67f"
+        }
+      },
+      {
+        "json": {
+          "book_id": "de115211-cd84-4c69-a3ec-02a1076c6209"
+        }
+      },
+      {
+        "json": {
+          "book_id": "99df2b50-7fa0-4aa8-827c-886c8b710d14"
+        }
+      },
+      {
+        "json": {
+          "book_id": "87ff6b9c-a9c0-491c-a689-51113b09d385"
+        }
+      },
+      {
+        "json": {
+          "book_id": "c98ec62c-f293-4991-8857-9d13590eae62"
+        }
+      },
+      {
+        "json": {
+          "book_id": "0a01dc38-77c4-4c80-89d4-693fd107c8fb"
+        }
+      }
+    ]
+  },
+  "versionId": "489ed8dd-3e24-4852-86ff-1980f87b08e3",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-10-09T22:51:08.452Z",
+      "createdAt": "2025-10-09T22:51:08.452Z",
+      "role": "workflow:owner",
+      "workflowId": "e4cClVgo9Tcry5LZ",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
