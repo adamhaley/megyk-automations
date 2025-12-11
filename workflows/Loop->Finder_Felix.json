@@ -1,0 +1,240 @@
+{
+  "updatedAt": "2025-10-16T23:18:38.000Z",
+  "createdAt": "2025-08-27T16:48:18.608Z",
+  "id": "pSBBuCRUwkrpiRKr",
+  "name": "Loop->Finder Felix",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "qgMo7FWNCJAPUVzM",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/qgMo7FWNCJAPUVzM",
+          "cachedResultName": "Finder Felix (Google Maps)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userMessage": "=Dentists in Post code {{ $json.PLZ }} {{ $json[\"Land name\"] }} {{ $json[\"Kreis name\"] }}",
+            "postal_code": "={{ $json.PLZ }}",
+            "industry": "Dentists",
+            "district": "={{ $json['Land name'] }} {{ $json['Kreis name'] }}"
+          },
+          "matchingColumns": [
+            "userMessage"
+          ],
+          "schema": [
+            {
+              "id": "userMessage",
+              "displayName": "userMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "postal_code",
+              "displayName": "postal_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "district",
+              "displayName": "district",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        96
+      ],
+      "id": "1a069066-8a3d-4221-917e-f9b71749d5bc",
+      "name": "Call Finder Felix",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "content": "## Call Finder Felix for Each Postal Code in Germany",
+        "height": 688,
+        "width": 592,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -352
+      ],
+      "id": "6fb26f89-cfaa-43c1-bf74-33a9bab6b1dc",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        -176
+      ],
+      "id": "e2671465-a95f-49b3-9e21-9dcbf9c72431",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "incr",
+        "key": "megyk_felix_incrementor"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        48,
+        16
+      ],
+      "id": "a23c91b3-35d7-4580-8a4f-0c9c7c333836",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "YhGZ2V2NRW4flPo5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "german_zip_codes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.megyk_felix_incrementor }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        256,
+        16
+      ],
+      "id": "10329ae9-071f-40f6-9ed4-ecb1d529391a",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Call Finder Felix": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Call Finder Felix",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "WbISMAIlclQfzorG",
+    "saveExecutionProgress": true
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ce52984c-f4ee-4a74-8ea1-6edeb0c141e4",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-08-27T16:48:18.616Z",
+      "createdAt": "2025-08-27T16:48:18.616Z",
+      "role": "workflow:owner",
+      "workflowId": "pSBBuCRUwkrpiRKr",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
