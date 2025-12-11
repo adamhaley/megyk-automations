@@ -1,0 +1,30 @@
+{
+  "updatedAt": "2025-09-24T17:31:08.000Z",
+  "createdAt": "2025-09-10T19:12:40.344Z",
+  "id": "8IUGYFWT2XsEQqn7",
+  "name": "Email Warmup",
+  "active": false,
+  "isArchived": true,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "00219e86-d4c3-4ab1-b956-76a959aa3a91",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-10T19:12:40.385Z",
+      "createdAt": "2025-09-10T19:12:40.385Z",
+      "role": "workflow:owner",
+      "workflowId": "8IUGYFWT2XsEQqn7",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
