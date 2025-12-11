@@ -1,0 +1,219 @@
+{
+  "updatedAt": "2025-08-29T22:27:48.000Z",
+  "createdAt": "2025-08-29T19:52:39.672Z",
+  "id": "ogwxthIAc7B0BdKc",
+  "name": "Loop FInder Felix Google Maps/Outscraper",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -176
+      ],
+      "id": "1201d48e-5cb5-4f9c-99ac-cc5fa1d86bae",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        432,
+        0
+      ],
+      "id": "0b1366fa-eb08-498a-be7f-686a84c01b6f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        -160
+      ],
+      "id": "6e1466af-be47-47c8-a584-122e442a0866",
+      "name": "Wait",
+      "webhookId": "dfdc1a26-254e-4ec7-917f-3382f583dd5c"
+    },
+    {
+      "parameters": {
+        "content": "## Call Finder Felix Google Maps/Outscraper",
+        "height": 688,
+        "width": 592,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -352
+      ],
+      "id": "7d6d6410-3f50-40f3-9ec1-f49a6317a602",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1VUP3-3Y_asqUL3f5bLEVs_5RmK6dBAgrV9MR_-aQbso",
+          "mode": "list",
+          "cachedResultName": "Germany Dentsts Scrape Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VUP3-3Y_asqUL3f5bLEVs_5RmK6dBAgrV9MR_-aQbso/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 822147893,
+          "mode": "list",
+          "cachedResultName": "germany_plz_test_sample",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VUP3-3Y_asqUL3f5bLEVs_5RmK6dBAgrV9MR_-aQbso/edit#gid=822147893"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -144,
+        -176
+      ],
+      "id": "994fec76-7955-498d-9df0-08e6b049d80f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "qgMo7FWNCJAPUVzM",
+          "mode": "list",
+          "cachedResultName": "Finder Felix (Google Maps)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userMessage": "=please find all Dentists in Post code  {{ $json.PLZ }} in {{ $json[\"City/District\"] }}"
+          },
+          "matchingColumns": [
+            "userMessage"
+          ],
+          "schema": [
+            {
+              "id": "userMessage",
+              "displayName": "userMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        96
+      ],
+      "id": "4e250d5c-4090-4ddb-b533-ff91f41d3299",
+      "name": "Call Finder Felix GOOGLE"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Call Finder Felix GOOGLE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Finder Felix GOOGLE": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "c262cf2b-479c-4b5f-b7fc-8064fdf92afe",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-08-29T19:52:39.702Z",
+      "createdAt": "2025-08-29T19:52:39.702Z",
+      "role": "workflow:owner",
+      "workflowId": "ogwxthIAc7B0BdKc",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
