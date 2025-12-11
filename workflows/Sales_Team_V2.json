@@ -1,0 +1,1003 @@
+{
+  "updatedAt": "2025-08-21T23:16:27.000Z",
+  "createdAt": "2025-08-21T23:07:13.563Z",
+  "id": "vc2pwhXz9yzy42As",
+  "name": "Sales Team V2",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtMinute": {}
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4ff2227b-b399-45f3-82bb-8d8b37462fa8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "87c44287-a343-4f8c-84e3-2b1e554547b2",
+              "name": "city",
+              "value": "Bayern",
+              "type": "string"
+            },
+            {
+              "id": "25b7e9ff-d2f2-41e7-969c-316a9e965d2c",
+              "name": "industry",
+              "value": "heilpraktiker",
+              "type": "string"
+            },
+            {
+              "id": "1787fd71-e07d-4818-96df-372fbedfc39c",
+              "name": "offer",
+              "value": "KI-Automatisierung für Unternehmen – Effizienz steigern und Kosten senke. Wir bieten maßgeschneiderte Automatisierungsdienstleistungen mit Künstlicher Intelligenz, die speziell darauf ausgerichtet sind, Ihre Geschäftsprozesse effizienter zu gestalten und Ihre Kosten zu senken. Unser Fokus liegt auf der Entwicklung von KI-Agenten, die für eine Vielzahl von Anwendungen optimiert sind, einschließlich Datenanalyse und KI-Telefonagenten.  Mit unserer Expertise können wir ganze Prozessketten automatisieren und so nicht nur Zeit, sondern auch Ressourcen für Ihr Unternehmen sparen. Wir arbeiten eng mit Unternehmen zusammen, um intelligente Automatisierungslösungen zu entwickeln, die einen echten Mehrwert bieten und die Leistung Ihrer Geschäftsprozesse steigern.  Unsere Community aus KI-Automatisierungsexperten ist ein wertvolles Netzwerk, in dem Fachwissen geteilt und neue Lösungen entwickelt werden. Darüber hinaus bieten wir auf unserem großen YouTube-Kanal wertvolle Inhalte zu KI-Automatisierung und deren Einsatzmöglichkeiten. Hier teilen wir unser Wissen und unterstützen Unternehmen dabei, in der Welt der KI-Automatisierung durchzustarten.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9510b83b-d589-41db-8c7c-490a9b0e3801",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "german_districts",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "state",
+              "condition": "eq",
+              "keyValue": "={{ $json.city }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "4da62142-a133-4248-b43e-4bf17b88b239",
+      "name": "Get Districts",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data;\n\n// Regex: Suche href=\"https://www.gelbeseiten.de/gsbiz/UUID\"\nconst regex = /href=\"(https:\\/\\/www\\.gelbeseiten\\.de\\/gsbiz\\/[a-f0-9-]{36})\"/gi;\n\nconst results = [];\nlet match;\n\nwhile ((match = regex.exec(html)) !== null) {\n  const fullUrl = match[1];\n  const id = fullUrl.split('/').pop(); // UUID extrahieren\n  results.push({\n    url: fullUrl\n  });\n}\n\nreturn results.map(entry => ({ json: entry }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        144
+      ],
+      "id": "cfffdd48-67a4-46bf-874b-46155eb6895a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2352,
+        400
+      ],
+      "id": "9058b474-f216-4853-a8d7-d6b28fd3cae5",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2080,
+        240
+      ],
+      "id": "7117fdc6-6a27-4b83-ba73-afbf610c4f74",
+      "name": "Loop Over Company"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        640,
+        0
+      ],
+      "id": "30921843-1ac3-49f6-9fa1-033d0b429581",
+      "name": "Loop Over District"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.gelbeseiten.de/suche/{{ $('Edit Fields').item.json.industry }}/{{ $('Edit Fields').item.json.city }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        912,
+        144
+      ],
+      "id": "f99c47bc-26ce-41e4-aa1b-75e2c2ce05aa",
+      "name": "Get Company URL's"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "website",
+              "cssSelector": ".mod-Kontaktdaten__list-item.contains-icon-big-homepage a",
+              "returnValue": "attribute",
+              "attribute": "href"
+            },
+            {
+              "key": "phone",
+              "cssSelector": ".mod-Kontaktdaten__list-item.contains-icon-big-tel a",
+              "returnValue": "attribute",
+              "attribute": "href"
+            },
+            {
+              "key": "name",
+              "cssSelector": "h1"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        2512,
+        400
+      ],
+      "id": "7767832f-8d4f-46b5-a309-fbd3d4746940",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45da8785-9103-41ff-8967-f5574337903d",
+              "name": "phone",
+              "value": "={{ $json.phone.split(\":\")[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "2abeedcd-3855-4c43-af08-64f37c630556",
+              "name": "website",
+              "value": "={{ $json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "93a14855-9e77-4fda-9069-f5616c11af62",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1a666e9e-4aa1-43bd-9128-58da38589e35",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2688,
+        400
+      ],
+      "id": "09fc857a-5929-4f2c-823b-7f4a093ae205",
+      "name": "Edit Fields1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "tableId": "german_companies",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "company",
+              "fieldValue": "={{ $json.name }}"
+            },
+            {
+              "fieldId": "industry",
+              "fieldValue": "={{ $('Edit Fields').item.json.industry }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $json.phone }}"
+            },
+            {
+              "fieldId": "district",
+              "fieldValue": "={{ $('Loop Over District').item.json.district }}"
+            },
+            {
+              "fieldId": "city",
+              "fieldValue": "={{ $('Loop Over District').item.json.city }}"
+            },
+            {
+              "fieldId": "state",
+              "fieldValue": "={{ $('Loop Over District').item.json.state }}"
+            },
+            {
+              "fieldId": "website",
+              "fieldValue": "={{ $json.website }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3088,
+        400
+      ],
+      "id": "3a29e7cd-ccee-4c06-aa6f-de30d22a6101",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "value": "={{ $json.url.toJsonString() }}"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        144
+      ],
+      "id": "63c927d9-91e2-4c88-a97d-486d2394a012",
+      "name": "Crypto"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "url"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        144
+      ],
+      "id": "684a111f-d368-4c43-a577-1075e747eb00",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "tableId": "hash",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "value",
+              "fieldValue": "={{ $json.data }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        144
+      ],
+      "id": "476ca718-4170-402a-899e-ec99dc9195b8",
+      "name": "Supabase1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "={{ $('Aggregate').item.json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        144
+      ],
+      "id": "a8eb55de-5202-44c2-aee9-c8823367022f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/extract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"urls\": {{ $('OpenAI').item.json.message.content.urls.toJsonString() }},\n  \"prompt\": \"Finde heraus, ob die Praxis Blutbilder macht und auswertet\",\n  \"schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"bloodPicture\": {\n        \"type\": \"boolean\"\n      }\n    },\n    \"required\": [\n      \"bloodPicture\"\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3872,
+        400
+      ],
+      "id": "0e665f49-ad31-4c41-b4cd-b7c293511456",
+      "name": "Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "iye8Q4wTT5P3zqAN",
+          "name": "Digistore Header Auth"
+        },
+        "httpBearerAuth": {
+          "id": "SxECNeK5aZvVbEGa",
+          "name": "FireCrawl Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.firecrawl.dev/v1/extract/{{ $('Request').item.json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4064,
+        400
+      ],
+      "id": "ecc5b233-26fd-470c-952e-bbbf25a50ca3",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "iye8Q4wTT5P3zqAN",
+          "name": "Digistore Header Auth"
+        },
+        "httpBearerAuth": {
+          "id": "SxECNeK5aZvVbEGa",
+          "name": "FireCrawl Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "83597bb0-7db1-4248-92cd-4b6665b7b0ba",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4272,
+        400
+      ],
+      "id": "91b8a400-44a9-4c73-b314-1f70139ee7d2",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4464,
+        544
+      ],
+      "id": "90a7c849-a894-4819-b8c7-38ad73bc0190",
+      "name": "Wait",
+      "webhookId": "9bf6deff-d3a0-4d38-a088-8695bad6e862"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "company",
+              "condition": "eq",
+              "keyValue": "={{ $('Edit Fields1').item.json.name }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ceo_name",
+              "fieldValue": "={{ $json.data.ceo_name }}"
+            },
+            {
+              "fieldId": "analysis",
+              "fieldValue": "={{ $json.data.company_mission }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        4464,
+        288
+      ],
+      "id": "ca88e10a-d4af-4e9b-8822-5562250d6477",
+      "name": "Supabase2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/map",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer fc-2341cefb96a04c6a83b1eaae4605c50b"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.website }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3328,
+        400
+      ],
+      "id": "89a23828-4bee-4e9f-adda-5ea7131c5ca4",
+      "name": "Get Sitemap"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.links.toJsonString() }}"
+            },
+            {
+              "content": "=Gebe mir alle URL's zurück, die relevant sein könnten um Ansprechpartner zu finden und mehr über die company mission herauszufinden.\n\nGebe ausschließlich die urls als array im feld \"urls\" zurück",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        3552,
+        400
+      ],
+      "id": "3658d3a0-4795-46f9-8229-c19dd291cd0b",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "RMCgUrxutvJgFiK9",
+          "name": "Adams Test OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Potenzieller Kunde:\n{{ $json.company }}\n{{ $json.industry }}\n{{ $json.ceo_name }}\n{{ $json.analysis }}\n\nUnser Angebot für den Kunden:\n{{ $('Edit Fields').item.json.offer }}"
+            },
+            {
+              "content": "=Du bist ein erfahrener Copywriter und Vertriebsexperte. Du schreibst überzeugende, aber natürliche E-Mails für Geschäftskunden. \n\nErstelle eine professionelle und persönliche Verkaufs-E-Mail basierend auf den folgenden Informationen:\n- Name und Rolle des Ansprechpartners (falls vorhanden)\n- Beschreibung der Firma (Company Mission oder was sie tun)\n- Unser Angebot (Produkt oder Dienstleistung)\n\nZiel der E-Mail:\n- Interesse wecken\n- Relevanz unseres Angebots für das Unternehmen zeigen\n- Vertrauen aufbauen\n- Am Ende zu einer Antwort oder einem Gespräch einladen (kein harter Sales-Pitch)\n\nSprache:\n- Du schreibst in **du-Form**, wenn ein Ansprechpartner mit Vorname genannt ist, sonst in **Sie-Form**\n- Die E-Mail soll **authentisch, klar und sympathisch** klingen\n- Keine übertriebenen Superlative, sondern **nüchterner Mehrwert mit persönlichem Ton**\n\nStruktur:\n1. Persönliche Anrede (sofern möglich)\n2. Bezug zur Firma oder zum Ansprechpartner (was sie tun, was auffällt)\n3. Vorstellung unseres Angebots und warum es passt\n4. Einladung zu einem kurzen Gespräch oder Rückfrage\n5. Freundlicher Abschluss mit Namen\n\nGib die E-Mail ohne Einleitung, ohne Code-Formatierung und ohne Erklärtext zurück – nur den reinen E-Mail-Text.\n\n\nBeispiel einer perfekten Verkaufs-E-Mail im HTML-Format:\n\n\n```html\n<!DOCTYPE html>\n<html lang=\"de\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Antwort auf Ihre Anfrage</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; color: #333333; background-color: #f9f9f9; padding: 20px;\">\n    <div style=\"max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">\n        <p>Sehr geehrter Herr Mustermann,</p>\n        \n        <p>vielen Dank für Ihre Anfrage bezüglich unserer <strong>Softwarelösung zur Automatisierung Ihrer internen Prozesse</strong>. Wir freuen uns, Ihnen mitteilen zu können, dass unsere Lösung genau die Anforderungen erfüllt, die Sie an eine moderne, einfach zu implementierende und benutzerfreundliche Software stellen.</p>\n\n        <p><strong>Warum unsere Lösung perfekt für Ihr Unternehmen ist:</strong></p>\n        <ul>\n            <li>Nahtlose Integration in Ihre bestehenden Systeme – keine Umstellung nötig.</li>\n            <li>Automatisiert Ihre Prozesse effizient, was Ihre internen Abläufe enorm beschleunigt und Kosten spart.</li>\n            <li>Benutzerfreundlich und einfach in der Bedienung, ohne dass Ihre Mitarbeiter zusätzliche Schulungen benötigen.</li>\n            <li>Skalierbar, sodass Sie mit uns wachsen können, ganz nach Ihren Bedürfnissen.</li>\n        </ul>\n\n        <p>Unser Team hat umfassende Erfahrung mit Unternehmen Ihrer Branche und hat bereits zahlreiche erfolgreiche Implementierungen abgeschlossen. Wir sind überzeugt, dass auch Ihre Prozesse von unserer Lösung enorm profitieren werden.</p>\n\n        <p>Gerne möchten wir Ihnen die Software in einer persönlichen Demo vorstellen und gemeinsam besprechen, wie wir Ihre Automatisierungsziele umsetzen können. Wie wäre es mit einem unverbindlichen Termin? Wir sind flexibel und richten uns nach Ihrem Zeitplan.</p>\n\n        <p>Ich freue mich auf Ihre Rückmeldung und darauf, Sie bald persönlich kennenzulernen.</p>\n\n        <p>Mit freundlichen Grüßen,<br>\n        Sebastian Claes<br><br>\n        Claes & Herrmann KI-Agenten GmbH<br>\n        Brückenstraße 4, 14913 Jüterbog<br>\n        +49 176 614 759 65<br>\n        🌐 https://www.ki-business-agenten.de<br>\n        🎬 https://youtube.com/@claes-work</p>\n</body>\n</html>\n```\n\n# Output JSON\n\n{\n  \"subject\": \"...\",\n  \"emailText\": \"...\"\n}",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        4672,
+        400
+      ],
+      "id": "19595b0c-b6df-4dbb-8a8e-060fa8651215",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "RMCgUrxutvJgFiK9",
+          "name": "Adams Test OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5cf5bffe-d120-4c65-a2b2-f8bb717364a0",
+              "leftValue": "={{ $json.website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        2912,
+        400
+      ],
+      "id": "b7d6f4ed-a492-4ec3-8b38-7480882e5354",
+      "name": "Filter",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.message.content.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.message.content.emailText }}",
+        "options": {
+          "sendTo": ""
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        5024,
+        400
+      ],
+      "id": "56a21ef5-81ee-47e2-9c8e-a9c81127dd0a",
+      "name": "Create a draft",
+      "webhookId": "6d2eb476-335e-4c2f-8fa4-6a84754429c9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sVqb0m2UfqzXbdvL",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get Districts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Districts": {
+      "main": [
+        [
+          {
+            "node": "Loop Over District",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Company": {
+      "main": [
+        [
+          {
+            "node": "Loop Over District",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over District": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Company URL's",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Company URL's": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Get Sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Crypto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crypto": {
+      "main": [
+        [
+          {
+            "node": "Supabase1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Supabase2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sitemap": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Create a draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a draft": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "3ebf448e-f86a-458d-a26e-0a67a1b2dd5d",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-08-21T23:07:13.579Z",
+      "createdAt": "2025-08-21T23:07:13.579Z",
+      "role": "workflow:owner",
+      "workflowId": "vc2pwhXz9yzy42As",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
