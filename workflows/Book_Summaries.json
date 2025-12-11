@@ -1,0 +1,32 @@
+{
+  "updatedAt": "2025-10-11T22:41:33.000Z",
+  "createdAt": "2025-10-11T22:32:01.215Z",
+  "id": "WCVeOf0uUtYEO4nU",
+  "name": "Book Summaries",
+  "active": false,
+  "isArchived": true,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5399bb35-f568-4c82-9450-3c073aced22e",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-10-11T22:32:01.233Z",
+      "createdAt": "2025-10-11T22:32:01.233Z",
+      "role": "workflow:owner",
+      "workflowId": "WCVeOf0uUtYEO4nU",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
