@@ -1,0 +1,1314 @@
+{
+  "updatedAt": "2025-12-03T05:02:06.000Z",
+  "createdAt": "2025-11-29T09:02:23.121Z",
+  "id": "4K3AAcmwY7GyuGAd",
+  "name": "Ingest Ebook v3 EPUB",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "/**\n * GENERAL-PURPOSE EPUB HTML CLEANER\n * No assumptions about structure\n * Works on all Calibre outputs\n */\n\nconst chapters = $input.all().map(item => item.json);\n\n// Fully general HTML stripping\nfunction stripHtml(html) {\n  if (!html) return \"\";\n\n  let text = String(html)\n\n    // Remove script/style/noscript\n    .replace(/<(script|style|noscript)[^>]*>[\\s\\S]*?<\\/\\1>/gi, \"\")\n\n    // Remove comments\n    .replace(/<!--[\\s\\S]*?-->/g, \"\")\n\n    // Remove all tags\n    .replace(/<[^>]+>/g, \" \")\n\n    // Decode HTML entities\n    .replace(/&nbsp;/gi, \" \")\n    .replace(/&amp;/gi, \"&\")\n    .replace(/&lt;/gi, \"<\")\n    .replace(/&gt;/gi, \">\")\n    .replace(/&quot;/gi, '\"')\n    .replace(/&#39;/gi, \"'\")\n    .replace(/&#x2019;/gi, \"'\")\n    .replace(/&#x2014;/gi, \"—\")\n    .replace(/&#x2013;/gi, \"–\")\n\n    // Normalize whitespace\n    .replace(/\\s+/g, \" \");\n\n  return text.trim();\n}\n\nconst cleaned = chapters.map(ch => ({\n  chapter_index: ch.index ?? ch.chapter_index ?? null,\n  title: ch.title ?? \"\",\n  content: stripHtml(ch.html),\n}));\n\nreturn cleaned.map(c => ({ json: c }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        32
+      ],
+      "id": "cd89b73f-69e4-42d8-ad0e-5151e38f95a3",
+      "name": "Clean Chapters"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ollama.megyk.com/api/embeddings",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nomic-embed-text\",\n  \"prompt\": \"{{ $json.summary }}\"\n}\n",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 10
+            }
+          },
+          "timeout": 900000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2416,
+        32
+      ],
+      "id": "5a1b4cb1-915a-4b2a-82d5-5ddbcacc061d",
+      "name": "Generate Embeddings",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Call Enrich and Save Book').item.json.mimeType }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "dae5a7d7-4c1d-475a-a730-d05a534dea0f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9a55ed5a-ca44-412c-9543-f3fd83332384",
+                    "leftValue": "={{ $('Call Enrich and Save Book').item.json.mimeType }}",
+                    "rightValue": "application/epub+zip",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "epub"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fecb5e9f-2a6f-45b3-89dd-686663afd69c",
+                    "leftValue": "={{ $('Call Enrich and Save Book').item.json.mimeType }}",
+                    "rightValue": "text/plain",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "txt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1c7fa4f9-22bc-4ce7-b263-0f232fe8e922",
+                    "leftValue": "={{ $('Call Enrich and Save Book').item.json.mimeType }}",
+                    "rightValue": "application/x-mobipocket-ebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mobi"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -528,
+        0
+      ],
+      "id": "ce8d4492-fd73-4476-815d-f183952edb65",
+      "name": "Detect Filetype"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "filename"
+            }
+          ]
+        }
+      },
+      "id": "2e2ee193-2aad-4264-be7c-1b12a64f1513",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -976,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Ingest Ebook\n\nFormats Supported: \n- PDF\n- txt\n- Mobi\n- Epub",
+        "height": 608,
+        "width": 1408,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        -320
+      ],
+      "id": "72c1bc7e-c9fd-4574-bbd5-ab887310dea5",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "chapters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "chunk_embedding_complete"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3088,
+        32
+      ],
+      "id": "0f942c36-3b4c-4084-a6c1-f8db95ada59f",
+      "name": "Update Chapter Status",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Embed Chapters",
+        "height": 608,
+        "width": 1888,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        -416
+      ],
+      "id": "a8a9d95a-7301-4e03-b6ae-46e2fe1da754",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  ebook-convert \"/data/{{ $('Call Enrich and Save Book').item.json.fileName }}\" \"/data/{{ $('Call Enrich and Save Book').item.json.fileName_replace('.mobi', '.epub') }}\"\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        144,
+        56
+      ],
+      "id": "b60007bf-7912-4d1a-8969-d8907a5c152b",
+      "name": "Convert MOBI to EPUB",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const EPub = require(\"epub\");\nconst fs = require(\"fs\");\n\nconst binary = $input.first().binary.data;\nconst filePath = $('Call Enrich and Save Book').first().json.baseName_firstItem + '.epub';\n\nfs.writeFileSync(filePath, Buffer.from(binary.data, \"base64\"));\n\nconst epub = new EPub(filePath);\n\nawait new Promise((resolve, reject) => {\n  epub.on(\"error\", reject);\n  epub.on(\"end\", resolve);\n  epub.parse();\n});\n\nconst chapters = [];\n\nfor (const item of epub.flow) {\n  const chapterText = await new Promise((resolve, reject) => {\n    epub.getChapter(item.id, (err, text) => {\n      if (err) reject(err);\n      else resolve(text || \"\");\n    });\n  });\n\n  chapters.push({\n    id: item.id,\n    title: item.title || item.id,\n    order: item.order,\n    html: chapterText\n  });\n}\n\nreturn chapters.map(ch => ({ json: ch }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        32
+      ],
+      "id": "f7112d57-9bc2-4cd2-b644-0b8e921df4a2",
+      "name": "Extract from EPUB"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $('Call Enrich and Save Book').first().json.baseName_firstItem + '.epub'; }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        368,
+        128
+      ],
+      "id": "92ff52a9-2a5a-416a-8920-f56671796f60",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $('Call Enrich and Save Book').first().json.baseName_firstItem + '.epub'; }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -112
+      ],
+      "id": "324ea48b-1fa5-4949-b694-c7ae27c534d8",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://supabase.megyk.com/rest/v1/chapters",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "on_conflict",
+              "value": "book_id,chapter_index"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates, return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "summary_md",
+              "value": "={{ $json.summary }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "chapter_index",
+              "value": "={{ $json.chapter_index }}"
+            },
+            {
+              "name": "book_id",
+              "value": "={{ $('Call Enrich and Save Book').item.json.id }}"
+            },
+            {
+              "name": "embedding",
+              "value": "={{ \n  (\n    $items(\"Generate Embeddings\").map(i => i.json.embedding).find(e => Array.isArray(e))\n  ) \n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2864,
+        32
+      ],
+      "id": "2ff60499-1eb2-4ae6-baa4-27da3f16fecf",
+      "name": "Upsert Chapter",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -904,
+        680
+      ],
+      "id": "a42bd168-7f81-4447-8d51-15cd885cce7b",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here is the chapter metadata and content extracted from an EPUB:\n\nTitle:\n{{ $json.title }}\n\nContent:\n{{ $json.content }}\n\nAnalyze this chapter using the rules provided in the system prompt and return the JSON result.\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a content normalization and classification module inside a book-ingestion pipeline.\n\nYou will receive two fields:\n- \"title\": the chapter title extracted from the EPUB metadata\n- \"content\": the cleaned plaintext of the chapter\n\nYour tasks are:\n\n1. CLASSIFY WHETHER THIS IS A REAL CHAPTER\nDetermine if this entry is an actual chapter containing meaningful book content.\nMark \"is_real_chapter\" as:\n- true  → if it is a real chapter or section of the book’s main content\n- false → if it is any of the following:\n    - Table of Contents (TOC)\n    - Copyright page\n    - Publisher info\n    - Title page\n    - Dedication\n    - Foreword / Preface / Introduction that is clearly meta-info\n    - Index, Glossary\n    - Blank / noise / junk / navigation text\n    - Chapter list\n    - Cover page text\n    - Blog spam, analytics URLs, or Calibre artifacts\n\n2. CLEAN THE CHAPTER TITLE\nReturn a normalized chapter title by:\n- Removing chapter numbers (e.g., “1.”, “01”, “Chapter 1”, “CHAPTER ONE”, “Ch. 3”)\n- Removing symbols or numbering (“1 – ”, “2: ”, “3) ”)\n- Removing repeated uppercase artifacts\n- Removing EPUB filenames or formatting\n- Returning ONLY the descriptive title (e.g., “Introduction”, “Risk Models”, “Scoring Models”)\nIf no reasonable title exists, return an empty string.\n\n3. OUTPUT STRICT JSON ONLY\nRespond ONLY with a JSON object in this format:\n\n{\n  \"is_real_chapter\": true or false,\n  \"clean_title\": \"<cleaned title>\",\n  \"reason\": \"<brief explanation>\"\n}\n\nDo not include any commentary outside the JSON.\n"
+            }
+          ]
+        },
+        "batching": {
+          "delayBetweenBatches": 250
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -976,
+        456
+      ],
+      "id": "a66fd228-1a8d-44bb-8e89-3c54b51ab751",
+      "name": "Is Chapter?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "12fa5f68-8216-43cd-bdb1-1eafe39c9578",
+              "leftValue": "={{ $json.is_real_chapter }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        456
+      ],
+      "id": "24839314-e596-4f05-aac5-92090dbbab16",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let raw = $json.text ?? \"\";\n\n// 1. Trim whitespace\nraw = raw.trim();\n\n// 2. Remove Markdown fences\nraw = raw.replace(/```json/gi, \"\").replace(/```/g, \"\");\n\n// 3. If JSON is wrapped in a string literal → unwrap\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    // ignore and continue\n  }\n}\n\n// 4. Find the FIRST opening brace and LAST closing brace\n//    (handles LLMs that add commentary above/below)\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"No JSON object found in LLM output\");\n}\n\nraw = raw.slice(start, end + 1);\n\n// 5. Attempt final parse\ntry {\n  return JSON.parse(raw);\n} catch (err) {\n  console.log(\"Parse error. Raw value:\", raw);\n  throw new Error(\"Could not parse JSON output\");\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        456
+      ],
+      "id": "56ba914a-8b71-452a-b957-d24307de9d1c",
+      "name": "Parse Output"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -104,
+        680
+      ],
+      "id": "5d07420b-2933-4c86-8ab3-a74035559bda",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Summarize the following chapter according to the system prompt.\n\nTitle:\n{{ $json.clean_title }}\n\nContent:\n{{$('Clean Chapters').item.json.content  }}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a chapter summarization engine in a book-ingestion pipeline.\n\nYour task is to create a high-fidelity, non-verbatim summary of each chapter.\n\nRequirements:\n\n1. Summarize the chapter in your own words. Do NOT reproduce copyrighted text verbatim or copy long phrases.\n2. Preserve all major ideas, arguments, explanations, themes, and insights.\n3. Your summary should be no longer than **1000 words**. This is a strict maximum. Shorter is acceptable when appropriate.\n4. Aim for clarity, completeness, and natural flow. Avoid shallow summaries or over-compression.\n5. Do not add any information that is not in the chapter. No speculation or guesses.\n6. Keep the summary in plain text paragraphs. Do not use headings, bullet points, lists, or formatting.\n7. Output STRICT JSON in the following format:\n\n{\n  \"summary\": \"<your summary here>\"\n}\n\nNo commentary, no additional text outside the JSON.\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -176,
+        456
+      ],
+      "id": "af525f99-56d3-4eb8-a7c9-478091ab235f",
+      "name": "Summarize Chapter"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let raw = $json.text ?? \"\";\n\n// 1. Trim whitespace\nraw = raw.trim();\n\n// 2. Remove Markdown fences\nraw = raw.replace(/```json/gi, \"\").replace(/```/g, \"\");\n\n// 3. If JSON is wrapped in a string literal → unwrap\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    // ignore and continue\n  }\n}\n\n// 4. Find the FIRST opening brace and LAST closing brace\n//    (handles LLMs that add commentary above/below)\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"No JSON object found in LLM output\");\n}\n\nraw = raw.slice(start, end + 1);\n\n// 5. Attempt final parse\ntry {\n  return JSON.parse(raw);\n} catch (err) {\n  console.log(\"Parse error. Raw value:\", raw);\n  throw new Error(\"Could not parse JSON output\");\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        456
+      ],
+      "id": "c71ea581-a95f-49c2-8bdc-c1771641a9ea",
+      "name": "Parse Output1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e6b5bad-311f-4ae6-8334-8a67d35eba36",
+              "name": "title",
+              "value": "={{ $('Filter1').item.json.clean_title }}",
+              "type": "string"
+            },
+            {
+              "id": "67ebbcf2-aeb7-44ad-bdb1-c82703a224f8",
+              "name": "summary",
+              "value": "={{ $('Parse Output1').item.json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "036f8908-51fc-44d1-9ab5-1fcbaade6b6d",
+              "name": "chapter_index",
+              "value": "= {{ $itemIndex }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2640,
+        32
+      ],
+      "id": "a9f8561d-1601-4551-b312-2e99419a52c2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "books",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Call Enrich and Save Book').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "ingestion_complete"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3312,
+        32
+      ],
+      "id": "0c379777-0ed9-43bd-805f-571485d6e108",
+      "name": "Update a row",
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $('Call Enrich and Save Book').first().json.baseName_firstItem + '.epub'; }}",
+        "options": {
+          "fileName": ""
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        128
+      ],
+      "id": "fadef9bd-215f-4efe-933c-ebb31716c3e4",
+      "name": "Read/Write Files from Disk2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "42ee3c5d-5662-4d17-b8fe-e5aad3dc021d",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        128
+      ],
+      "id": "533a31d2-eb06-4faf-9338-9d119dd28f79",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "JWGYGW2xxbrjdi13",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -752,
+        32
+      ],
+      "name": "Call Enrich and Save Book",
+      "id": "5789ebd1-6e2a-451d-a8fd-8704ab0b688b"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Analyze the following chapter and determine if it is a real chapter.\n\nTITLE:\n{{ $json.title }}\n\nCONTENT:\n{{ $json.content }}\n\nReturn ONLY JSON, with NO explanation.\n"
+            },
+            {
+              "role": "system",
+              "content": "You must output ONLY valid JSON.\n\nOutput must NOT be inside quotes.\nOutput must NOT have code fences.\nOutput must NOT have markdown.\n\nOutput MUST be a raw JSON object matching exactly:\n\n{\n  \"is_real_chapter\": boolean,\n  \"clean_title\": string,\n  \"reason\": string\n}\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_object"
+            }
+          },
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        32
+      ],
+      "id": "7f15551a-cade-44d5-96a2-829cb8dbb7ce",
+      "name": "Is Real Chapter?",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Summarize the following chapter according to the system prompt.\n\nTitle:\n{{ $json.clean_title }}\n\nContent:\n{{$('Clean Chapters').item.json.content  }}"
+            },
+            {
+              "role": "system",
+              "content": "You are an expert literary summarizer.\n\nYour job is to produce a clear, concise, and accurate summary of a chapter of a book.\n\nRules:\n- Write in clean natural language.\n- Maintain all core ideas, key points, themes, and arguments.\n- Preserve the chapter's structure and meaning.\n- Avoid flowery language, opinions, or embellishments.\n- No introductions like “Here is your summary.”\n- No commentary or analysis beyond the text.\n- Output only the summary.\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        32
+      ],
+      "id": "fd9f7f0e-9280-4d7e-a5b2-c3477e2dc312",
+      "name": "Summarize Chapter1",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "12fa5f68-8216-43cd-bdb1-1eafe39c9578",
+              "leftValue": "={{ $json.is_real_chapter }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        32
+      ],
+      "id": "f3e97e58-69aa-4bdf-9471-c793ce19c5af",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Safely pluck the JSON from the new OpenAI message format\n\nconst msg = $json.output?.[0]?.content?.[0]?.text;\n\nif (!msg) {\n  throw new Error(\"Could not find structured JSON output in OpenAI response.\");\n}\n\n// msg is already a parsed JS object in JSON mode\nreturn msg;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        32
+      ],
+      "id": "6b12080f-2064-472f-8a83-c21f34f34c4c",
+      "name": "Parse Output2"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Extract the summary text from the new OpenAI output format\n\nconst summary = $json.output?.[0]?.content?.[0]?.text;\n\nif (!summary) {\n  console.log(\"Raw OpenAI payload:\", $json);\n  throw new Error(\"Could not extract summary text from OpenAI response\");\n}\n\n// Return the summary text\nreturn { summary };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2192,
+        32
+      ],
+      "id": "29c26eb6-77e7-451b-89d3-24422f22977d",
+      "name": "Parse Output3"
+    }
+  ],
+  "connections": {
+    "Clean Chapters": {
+      "main": [
+        [
+          {
+            "node": "Is Real Chapter?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embeddings": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Filetype": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Call Enrich and Save Book",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert MOBI to EPUB": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from EPUB": {
+      "main": [
+        [
+          {
+            "node": "Clean Chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from EPUB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Extract from EPUB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Chapter": {
+      "main": [
+        [
+          {
+            "node": "Update Chapter Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Is Chapter?",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Chapter?": {
+      "main": [
+        [
+          {
+            "node": "Parse Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Summarize Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarize Chapter",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Chapter": {
+      "main": [
+        [
+          {
+            "node": "Parse Output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output1": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Upsert Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Chapter Status": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Convert MOBI to EPUB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Enrich and Save Book": {
+      "main": [
+        [
+          {
+            "node": "Detect Filetype",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Real Chapter?": {
+      "main": [
+        [
+          {
+            "node": "Parse Output2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Chapter1": {
+      "main": [
+        [
+          {
+            "node": "Parse Output3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Summarize Chapter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output2": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output3": {
+      "main": [
+        [
+          {
+            "node": "Generate Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Start": [
+      {
+        "json": {
+          "filename": "Robert Ringer - The Triple-Bypass Legaldectomy.pdf"
+        }
+      }
+    ],
+    "Parse Output2": [
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "coverpage-wrapper",
+          "reason": "The title 'coverpage-wrapper' suggests a structural or styling element rather than a real chapter title."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "pg-header",
+          "reason": "The content is a header or introductory text from Project Gutenberg, not an actual chapter of 'The Republic'."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "item4",
+          "reason": "The content is an extensive analysis and introduction to Plato's Republic, not an actual chapter from the work. It reads like a scholarly commentary or summary rather than original chapter text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book II and III of Plato's Republic",
+          "reason": "The content is a detailed philosophical discussion consistent with Plato's Republic, particularly Books II, III, and IV, covering education, censorship of poetry, the nature of the gods, the structure of the ideal state, virtues, and justice. The style, references, and themes align with classical philosophical texts and known interpretations of Plato's work."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book VI",
+          "reason": "The content is a detailed philosophical analysis and commentary on Plato's Republic, specifically covering themes and discussions found in Books V, VI, and VII. The style, references, and content align with classical philosophical scholarship on Plato's works, indicating it is a real chapter or excerpt from a scholarly text on Plato's Republic. The title 'item6' appears to be a placeholder or mislabeling, but the content corresponds to Book VI of the Republic."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Item 7",
+          "reason": "The content is a detailed and coherent philosophical discourse consistent with Plato's style and themes, particularly resembling passages from Plato's Republic discussing education, the philosopher-king, and the allegory of the cave. The depth, references, and philosophical terminology strongly indicate it is a real chapter or excerpt from a classical philosophical text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Item 8",
+          "reason": "The content is a detailed and coherent philosophical discourse consistent with the style and themes of Plato's Republic, specifically Books IX and X. It discusses concepts such as the nature of the soul, justice, tyranny, poetry, and immortality, which are central to Plato's works. The references to specific numbers, philosophical arguments, and the story of Er align with known authentic texts. Despite the title 'item8' being non-standard, the content itself is genuine and corresponds to real chapters from classical philosophy."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "item9",
+          "reason": "The title 'item9' is not a typical chapter title and appears generic or placeholder-like. The content is an extensive, detailed philosophical and historical analysis resembling an academic essay or commentary rather than a discrete chapter from a known book. The length and style do not match typical chapter formats, and the content covers a wide range of topics without clear chapter structuring. Therefore, it is unlikely to be a real chapter from a published book."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "Item 10",
+          "reason": "The title 'item10' is generic and not indicative of a real chapter title. The content is an extensive, detailed essay on Plato's philosophy and related historical and philosophical topics, resembling a scholarly article or a compilation rather than a single coherent chapter from a known book. The length and style suggest it is not a typical chapter but rather a large excerpt or a collection of notes."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "Item 11",
+          "reason": "The title 'item11' is not a standard chapter title for 'The Republic'. The content describes the persons of the dialogue and setting of Plato's 'Republic', but this is typically found in the introduction or preface, not as a standalone chapter titled 'item11'."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "item12",
+          "reason": "The content is a direct excerpt from Plato's Republic, Book I, which is a well-known classical philosophical text. The text discusses justice through a dialogue involving Socrates and others, matching the style and content of the original work."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book II",
+          "reason": "The content is a well-known passage from Plato's Republic, specifically Book II, where Glaucon and Adeimantus challenge Socrates to defend justice. The style, characters, and philosophical arguments match the original text, confirming it as a real chapter from a classical work."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book III",
+          "reason": "The content is a genuine excerpt from Book III of Plato's Republic, discussing the education and moral upbringing of guardians, including censorship of poetry and music, and the qualities required for rulers and soldiers. The style, themes, and references align with this classical philosophical work."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "item15",
+          "reason": "The content is a genuine excerpt from Plato's Republic, specifically from Book IV, discussing justice, the structure of the state, and the virtues. The style, themes, and characters such as Socrates and Adeimantus align with the original text, indicating it is a real chapter."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "item16",
+          "reason": "The content is a passage from Plato's Republic, specifically Book V, discussing the community of women and children among the guardians, the role of philosophers as rulers, and the nature of justice and knowledge. This is a well-known and authentic philosophical text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book VI",
+          "reason": "The content is a genuine excerpt from Plato's Republic, specifically Book VI, discussing the nature of philosophers and their role in the state. The style, themes, and characters such as Socrates, Glaucon, and Adeimantus confirm its authenticity as a real chapter from a classical philosophical text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "The Allegory of the Cave and the Education of the Philosopher-Kings",
+          "reason": "The content is a well-known passage from Plato's Republic, specifically the Allegory of the Cave and the subsequent discussion on education and the philosopher-kings. Although the title 'item18' is not descriptive, the text itself is authentic and corresponds to a real chapter in classical philosophy literature."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Item 19",
+          "reason": "The content is a genuine excerpt from Book VIII of Plato's Republic, discussing the decline of political regimes and the corresponding character types, which is a well-known classical philosophical text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book IX",
+          "reason": "The content is a genuine excerpt from Plato's Republic, specifically Book IX, discussing the nature of the tyrannical man and the soul. The title 'item20' is not appropriate, but the content matches a real chapter from a classical philosophical text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": true,
+          "clean_title": "Book X",
+          "reason": "The content is a well-known passage from Plato's Republic, specifically Book X, which discusses the nature of poetry, imitation, and the immortality of the soul. The title 'item21' is not the original title, but the content matches a real and classical philosophical text."
+        }
+      },
+      {
+        "json": {
+          "is_real_chapter": false,
+          "clean_title": "item22",
+          "reason": "The content is the Project Gutenberg license and legal information, not an actual chapter of a book."
+        }
+      }
+    ]
+  },
+  "versionId": "8e38caa6-75c9-4404-bced-7b02b7469c61",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-29T09:02:23.140Z",
+      "createdAt": "2025-11-29T09:02:23.140Z",
+      "role": "workflow:owner",
+      "workflowId": "4K3AAcmwY7GyuGAd",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
