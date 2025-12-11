@@ -1,0 +1,428 @@
+{
+  "updatedAt": "2025-12-09T21:54:12.000Z",
+  "createdAt": "2025-09-18T17:29:33.176Z",
+  "id": "ahBeMwvfEZPyFPKM",
+  "name": "Verified OK Emails to Instantly",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.instantly.ai/api/v2/leads",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "campaign",
+              "value": "=f2c607f6-0651-49ac-952f-0bea68c68134"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.emails[0] }}"
+            },
+            {
+              "name": "website",
+              "value": "={{ $json.website }}"
+            },
+            {
+              "name": "company_name",
+              "value": "={{ $json.company }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "name": "skip_if_in_campaign",
+              "value": "true"
+            },
+            {
+              "name": "verify_leads_on_import",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1232,
+        -112
+      ],
+      "id": "ff1c8703-be1b-4bdb-b9d9-c53d9ff42a49",
+      "name": "Add Lead",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "8asfQkaSEq29AdUZ",
+          "name": "Instantly Bearer Auth"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        704,
+        -352
+      ],
+      "id": "a154e28c-66be-4c95-8b7c-fb5c859fbfc1",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1776,
+        64
+      ],
+      "id": "dbef8b13-251a-41e3-9f67-0d0c34093f9a",
+      "name": "Wait",
+      "webhookId": "0df31e8f-918d-4bd0-a221-dd7aa480808c"
+    },
+    {
+      "parameters": {
+        "maxItems": 500
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -352
+      ],
+      "id": "4c965132-266b-44fc-a690-0e9fe10432ce",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const data = item.json;\n\n  // Split and clean\n  const emails = (data.email || \"\")\n    .split(\",\")\n    .map(e => e.trim())\n    .filter(e => e.length > 0);\n\n  return {\n    json: {\n      ...data,\n      emails  // now an array of valid emails\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        -256
+      ],
+      "id": "1056bd7f-6129-4855-ae2c-7d069ba887cf",
+      "name": "split emails"
+    },
+    {
+      "parameters": {
+        "content": "## Load Leads from Supabase",
+        "height": 672,
+        "width": 1024,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -624
+      ],
+      "id": "fa8b5099-ec0c-4717-ae57-311f1e617e14",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Chunk Leads and Send to Instantly",
+        "height": 768,
+        "width": 736,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -464
+      ],
+      "id": "d5823086-9174-45b7-a1bf-ca3597d50873",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $json.body.website }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "exported_to_instantly",
+              "fieldValue": "=true"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        -112
+      ],
+      "id": "65125ca3-4c7d-4c85-b02c-004e736b95bd",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4e57996-1f3d-4090-8fe1-f6cb47274002",
+              "leftValue": "={{ $json.exported_to_instantly }}",
+              "rightValue": "=false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        112,
+        -352
+      ],
+      "id": "19797907-682a-454f-a320-30be0176411a",
+      "name": "Filter Not Exported Already"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://supabase.megyk.com/rest/v1/rpc/get_valid_leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -224,
+        -352
+      ],
+      "id": "4bc249e2-54f9-4997-9f65-b0a453daa1a8",
+      "name": "Get Validated Leads from Supabase",
+      "notesInFlow": true,
+      "notes": "points to \"get_valid_leads\" user function in Supabase which is:\n\n  select *\n  from german_companies\n  where email_status in (\n    'ok:email_ok',\n    'risky:is_role',\n    'risky:accept_all'\n  );"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        -352
+      ],
+      "id": "06bb856e-29d3-4c8f-bd02-391de126068c",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "split emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Lead": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "split emails": {
+      "main": [
+        [
+          {
+            "node": "Add Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Not Exported Already": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Validated Leads from Supabase": {
+      "main": [
+        [
+          {
+            "node": "Filter Not Exported Already",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Validated Leads from Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "WbISMAIlclQfzorG"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-11-14T00:00:14.020+01:00",
+          "Readable date": "November 14th 2025, 12:00:14 am",
+          "Readable time": "12:00:14 am",
+          "Day of week": "Friday",
+          "Year": "2025",
+          "Month": "November",
+          "Day of month": "14",
+          "Hour": "00",
+          "Minute": "00",
+          "Second": "14",
+          "Timezone": "Europe/Berlin (UTC+01:00)"
+        }
+      }
+    ]
+  },
+  "versionId": "9ebcdb5a-48fa-4d00-8f19-e20b386124eb",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-09-18T17:29:33.186Z",
+      "createdAt": "2025-09-18T17:29:33.186Z",
+      "role": "workflow:owner",
+      "workflowId": "ahBeMwvfEZPyFPKM",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
