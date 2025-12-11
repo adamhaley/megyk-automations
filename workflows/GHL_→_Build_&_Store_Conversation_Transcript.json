@@ -1,0 +1,306 @@
+{
+  "updatedAt": "2025-10-02T13:27:57.000Z",
+  "createdAt": "2025-10-01T05:02:03.556Z",
+  "id": "kl5TjTFKwkbOMtoS",
+  "name": "GHL → Build & Store Conversation Transcript",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5b9eb611-304c-4fa7-9726-e8f9c957a5c4",
+              "leftValue": "={{ $json.body.contact_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ef193587-0f8c-4b22-b167-97f5b6ad6efc",
+      "name": "Has conversationId?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://rest.gohighlevel.com/v1/conversations/{{ $('Webhook GHL').item.json.body.customData.conversationId }}/messages\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Ik1JWVBQOFVMMUhKUUhHRW10em1tIiwidmVyc2lvbiI6MSwiaWF0IjoxNzU4MTgyNDQyMjQ2LCJzdWIiOiJCOHJqUjBQWTQ4NkxkUVFrdXllUSJ9.YvHkI6vOdMHORJmoYAEwGjYt9kK5LRNPCfXmDvnvnww"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "a3c9a1af-06ae-4e7d-925f-df72653b0c1a",
+      "name": "Get Messages (by conversationId)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{\"https://rest-eu.gohighlevel.com/v1/conversations/search?contactId=\" + $json[\"contactId\"] + \"&limit=1&sort=dateAdded:desc\"}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Ik1JWVBQOFVMMUhKUUhHRW10em1tIiwidmVyc2lvbiI6MSwiaWF0IjoxNzU4MTgyNDQyMjQ2LCJzdWIiOiJCOHJqUjBQWTQ4NkxkUVFrdXllUSJ9.YvHkI6vOdMHORJmoYAEwGjYt9kK5LRNPCfXmDvnvnww"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "77d0b069-264f-495b-90e2-9a84ee2d8a5b",
+      "name": "Find Latest Conversation (by contactId)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{\"https://rest-eu.gohighlevel.com/v1/conversations/\" + $json[\"id\"] + \"/messages\"}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Ik1JWVBQOFVMMUhKUUhHRW10em1tIiwidmVyc2lvbiI6MSwiaWF0IjoxNzU4MTgyNDQyMjQ2LCJzdWIiOiJCOHJqUjBQWTQ4NkxkUVFrdXllUSJ9.YvHkI6vOdMHORJmoYAEwGjYt9kK5LRNPCfXmDvnvnww"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "da92176c-dd5f-4c37-94c7-45aec6cb463e",
+      "name": "Get Messages (fallback by latest)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{\"https://rest-eu.gohighlevel.com/v1/contacts/\" + $json[\"contactId\"]}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Ik1JWVBQOFVMMUhKUUhHRW10em1tIiwidmVyc2lvbiI6MSwiaWF0IjoxNzU4MTgyNDQyMjQ2LCJzdWIiOiJCOHJqUjBQWTQ4NkxkUVFrdXllUSJ9.YvHkI6vOdMHORJmoYAEwGjYt9kK5LRNPCfXmDvnvnww"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"customField\": {\n    \"message_history\": \"{{$json.transcript}}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "5d4eacf9-cfd0-49e3-bbde-e17e0dc32965",
+      "name": "Update Contact (store transcript)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ghl/conversation-transcript",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -448,
+        128
+      ],
+      "id": "ba38a6d3-82fb-4232-bdd3-10459ee3651c",
+      "name": "Webhook GHL",
+      "webhookId": "5e0a9850-1f54-4026-be17-8262177341fc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Erwartet Input vom Node \"Find Latest Conversation (by contactId)\"\n// Holt die erste Conversation und normalisiert die ID\n\n// Liste der Conversations ermitteln (API liefert meist conversations[], teils data[])\nconst list = ($json.conversations ?? $json.data ?? []);\nconst first = list[0] ?? {};\n\n// ID normalisieren (manchmal id, manchmal conversationId)\nconst id = first.id ?? first.conversationId ?? null;\n\n// Falls nichts gefunden wurde, leeres Objekt zurückgeben\nreturn [{\n  json: { ...first, id }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        240
+      ],
+      "id": "6ec2141c-c96e-4d05-a4d9-b1bf47d4ea97",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pad = n => String(n).padStart(2,'0');\nfunction ts(dt){\n  const d = new Date(dt);\n  const y = d.getFullYear();\n  const m = pad(d.getMonth()+1);\n  const day = pad(d.getDate());\n  const hh = pad(d.getHours());\n  const mm = pad(d.getMinutes());\n  return `${y}-${m}-${day} ${hh}:${mm}`;\n}\n\n// Input von einem der Get-Messages-Nodes\nconst input = items[0].json;\nconst messages = (input.messages || []).slice()\n  .sort((a,b)=> new Date(a.dateAdded) - new Date(b.dateAdded));\n\nfunction who(m){\n  if (m.direction === 'inbound') return 'Lead';\n  if (m.direction === 'outbound') return 'Agent';\n  return 'Unknown';\n}\n\nconst lines = messages.map(m => {\n  const body = (m.body || '').replace(/\\r?\\n/g, ' ').trim();\n  return `${ts(m.dateAdded)} - ${who(m)}: ${body}`;\n});\n\nlet transcript = lines.join('\\n');\n\nconst MAX = 10000; // bei Bedarf kleiner stellen\nif (transcript.length > MAX){\n  transcript = '...[truncated]\\n' + transcript.slice(transcript.length - MAX);\n}\n\nreturn [{ json: { transcript } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "f17f2f61-fee4-4519-9b18-a3b0a6feca68",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { contactId: $items(\"GHL Webhook\")[0].json.contactId } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "7b8bd484-336a-4ddc-bd70-0f8e4006ef3b",
+      "name": "Code in JavaScript2"
+    }
+  ],
+  "connections": {
+    "Has conversationId?": {
+      "main": [
+        [
+          {
+            "node": "Get Messages (by conversationId)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Find Latest Conversation (by contactId)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Latest Conversation (by contactId)": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook GHL": {
+      "main": [
+        [
+          {
+            "node": "Has conversationId?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get Messages (fallback by latest)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Messages (by conversationId)": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Update Contact (store transcript)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "2e53a199-5e2e-4641-b955-1f5db6067ca1",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-10-01T05:02:03.568Z",
+      "createdAt": "2025-10-01T05:02:03.568Z",
+      "role": "workflow:owner",
+      "workflowId": "kl5TjTFKwkbOMtoS",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
