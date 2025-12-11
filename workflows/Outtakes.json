@@ -1,0 +1,90 @@
+{
+  "updatedAt": "2025-09-13T18:06:51.000Z",
+  "createdAt": "2025-09-13T18:06:48.565Z",
+  "id": "EWbKz7ABRXOzGWD6",
+  "name": "Outtakes",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const emb = $json.data[0].embedding\nreturn {\n  json: {\n    query_embedding: emb,\n    match_count: 5\n  }\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        16
+      ],
+      "id": "8e8883e4-74ae-4b67-8759-90ab3e9bb3db",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "faqs",
+        "limit": 150
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -128
+      ],
+      "id": "f7ae491e-efb3-4dc7-8d17-acda2f40bd93",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: \n// - One item with query_embedding from your \"Generate Embeddings\" node\n// - Many items from Supabase (faqs table) each with fields: id, question, answer, embedding\n\n// Grab query embedding from the first input\nconst queryEmbedding = $json.query_embedding;\n\n// Grab all FAQ rows from Supabase (previous node in workflow)\nconst faqs = $(\"Get many rows\").all().map(item => item.json);\n\n// Cosine similarity function\nfunction cosineSim(a, b) {\n  let dot = 0.0, normA = 0.0, normB = 0.0;\n  for (let i = 0; i < a.length; i++) {\n    dot += a[i] * b[i];\n    normA += a[i] * a[i];\n    normB += b[i] * b[i];\n  }\n  return dot / (Math.sqrt(normA) * Math.sqrt(normB));\n}\n\n// Score each FAQ\nconst scored = faqs.map(faq => ({\n  id: faq.id,\n  question: faq.question,\n  answer: faq.answer,\n  similarity: cosineSim(queryEmbedding, JSON.parse (faq.embedding))\n}));\n\n// Sort by similarity (highest first)\nscored.sort((a, b) => b.similarity - a.similarity);\n\n// Return top 5\nreturn scored.slice(0, 1).map(s => ({ json: s }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "1aead59a-9985-46d2-97ad-00fb5e22ebfb",
+      "name": "Result Ranking - Cosine Similarity"
+    }
+  ],
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Result Ranking - Cosine Similarity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f2c362e2-27bf-4580-aad1-270021bbf10b",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-13T18:06:48.574Z",
+      "createdAt": "2025-09-13T18:06:48.574Z",
+      "role": "workflow:owner",
+      "workflowId": "EWbKz7ABRXOzGWD6",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
