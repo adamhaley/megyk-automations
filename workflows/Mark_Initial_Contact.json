@@ -1,0 +1,130 @@
+{
+  "updatedAt": "2025-09-27T00:50:58.000Z",
+  "createdAt": "2025-09-27T00:44:32.901Z",
+  "id": "D4DOxxg5A5xVu0N4",
+  "name": "Mark Initial Contact",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "622e43f4-a133-4682-86d4-6dcad8f90b17",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eb37e9e2-2ad7-4259-8427-5e49d1549f7a",
+      "name": "Webhook",
+      "webhookId": "622e43f4-a133-4682-86d4-6dcad8f90b17",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "UZeeVBX74WcFziKE",
+          "name": "Webhook Auth for Instantly"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "email",
+              "condition": "like",
+              "keyValue": "=*={{ $json.email }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "first_contact_sent",
+              "fieldValue": "true"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c02fd008-b690-4d63-bdad-fa9de8bbbf42",
+      "name": "Update First Contact Sent",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "2b0c661f-610e-46b9-bb4e-36faf0563199",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Update First Contact Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update First Contact Sent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "fb688d39-7da7-4444-96f1-5795541c0c9e",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-27T00:44:32.999Z",
+      "createdAt": "2025-09-27T00:44:32.999Z",
+      "role": "workflow:owner",
+      "workflowId": "D4DOxxg5A5xVu0N4",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
