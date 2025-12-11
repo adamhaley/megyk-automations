@@ -1,0 +1,217 @@
+{
+  "updatedAt": "2025-08-29T22:26:30.000Z",
+  "createdAt": "2025-08-29T22:21:40.307Z",
+  "id": "86DXgGHbWlV8fkna",
+  "name": "Loop Finder Felix GelbeSeiten.de",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        368,
+        288
+      ],
+      "id": "d3cdcf0b-676d-4d73-9811-7f8298d233f8",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        128
+      ],
+      "id": "3e1d21bd-0a55-47be-9d48-b1e833f2362e",
+      "name": "Wait1",
+      "webhookId": "dfdc1a26-254e-4ec7-917f-3382f583dd5c"
+    },
+    {
+      "parameters": {
+        "content": "## Call Finder Felix GelbeSeiten.de",
+        "height": 688,
+        "width": 592,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -80
+      ],
+      "id": "11318441-7827-4d2d-a0ae-233e64432851",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1VUP3-3Y_asqUL3f5bLEVs_5RmK6dBAgrV9MR_-aQbso",
+          "mode": "list",
+          "cachedResultName": "Germany Dentsts Scrape Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VUP3-3Y_asqUL3f5bLEVs_5RmK6dBAgrV9MR_-aQbso/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 822147893,
+          "mode": "list",
+          "cachedResultName": "germany_plz_test_sample",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VUP3-3Y_asqUL3f5bLEVs_5RmK6dBAgrV9MR_-aQbso/edit#gid=822147893"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -224,
+        112
+      ],
+      "id": "0e86ee45-2f3d-44e2-83b3-50b3db77188f",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "EYEbcs1sZO2Sm7l2",
+          "mode": "list",
+          "cachedResultName": "Finder Felix / Sub-Workflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "userMessage": "=please find all Dentists in Post code  {{$json.PLZ }} in  }}{{ $json[\"City/District\"] }}"
+          },
+          "matchingColumns": [
+            "userMessage"
+          ],
+          "schema": [
+            {
+              "id": "userMessage",
+              "displayName": "userMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        384
+      ],
+      "id": "4124a8d6-f59e-4404-96a1-87b5fc42a102",
+      "name": "Call Finder Felix GelbeSeiten.de"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        112
+      ],
+      "id": "e3714342-431a-4804-8ff3-938ac6f5ed99",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Call Finder Felix GelbeSeiten.de",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Finder Felix GelbeSeiten.de": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "22729a82-5023-44eb-b96e-2151343e3a40",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-08-29T22:21:40.315Z",
+      "createdAt": "2025-08-29T22:21:40.315Z",
+      "role": "workflow:owner",
+      "workflowId": "86DXgGHbWlV8fkna",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
