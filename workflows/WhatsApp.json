@@ -1,0 +1,106 @@
+{
+  "updatedAt": "2025-12-04T02:08:59.000Z",
+  "createdAt": "2025-12-04T01:34:06.846Z",
+  "id": "E6r3VLO9wFzp8Hnq",
+  "name": "WhatsApp",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "907100239150372",
+        "recipientPhoneNumber": "13233843493",
+        "message": "Testing WhatsApp from n8n. Is this good?",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -112,
+        -128
+      ],
+      "id": "61c0b9f7-1b52-4686-8cc9-54bac31d14a3",
+      "name": "Send message and wait for response",
+      "webhookId": "c9440568-bad7-4fad-b632-147a8b84e1b0",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "HyFYT1AUJhs7dQLG",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "907100239150372",
+        "recipientPhoneNumber": "13233843493",
+        "textBody": "hello, this is Adam testing from n8n",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        0
+      ],
+      "id": "e6bdce20-d264-4fa5-a34f-93c4f084e752",
+      "name": "Send message",
+      "webhookId": "8caa7870-f00d-4b36-a12a-7dac15d6dc5c",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "HyFYT1AUJhs7dQLG",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        48
+      ],
+      "id": "ec682acd-39cf-4cfc-9e05-7bae557be218",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ed7feb8b-86d5-4541-addc-da7b9d73d828",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-04T01:34:06.855Z",
+      "createdAt": "2025-12-04T01:34:06.855Z",
+      "role": "workflow:owner",
+      "workflowId": "E6r3VLO9wFzp8Hnq",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
