@@ -1,0 +1,89 @@
+{
+  "updatedAt": "2025-11-18T19:49:08.000Z",
+  "createdAt": "2025-10-06T09:21:40.088Z",
+  "id": "V3maXiqrFwgxREP7",
+  "name": "Phone Call Follow Up ->Google Sheet",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "11a1f603-a23b-4750-9f1a-01ac6a345b2f",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f59343d5-6a9b-4673-abd3-8358923592b6",
+      "name": "Webhook",
+      "webhookId": "11a1f603-a23b-4750-9f1a-01ac6a345b2f"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2dfa6c31-1e55-4279-bfa3-914d7a172a0d",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "48abdc20-7431-4e17-8e0f-4f4b2d113fac",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-10-06T09:21:40.098Z",
+      "createdAt": "2025-10-06T09:21:40.098Z",
+      "role": "workflow:owner",
+      "workflowId": "V3maXiqrFwgxREP7",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
