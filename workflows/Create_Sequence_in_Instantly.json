@@ -1,0 +1,91 @@
+{
+  "updatedAt": "2025-09-24T17:54:46.000Z",
+  "createdAt": "2025-09-24T17:48:24.550Z",
+  "id": "dOnuEK2yLqhTspKR",
+  "name": "Create Sequence in Instantly",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fb71b4dc-f028-4288-ad58-dd6aa0949d33",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Outputs subject + body in German as array of objects.\n\nconst emails = [\n  {\n    id: 1,\n    subject: \"Kurze Ressource für Ihre Zahnarztpraxis\",\n    body: \"Hallo,\\nich habe eine kurze Ressource für Zahnarztpraxen vorbereitet (Thema: finanzielle Praxisrücklagen). Könnten Sie diese bitte an die Inhaber:in weiterleiten, wenn ich sie Ihnen schicke?\"\n  },\n  {\n    id: 2,\n    subject: \"Beste Ansprechperson für Praxisrücklagen?\",\n    body: \"Hallo,\\nwer ist bei Ihnen die richtige Ansprechperson für finanzielle Praxisrücklagen? An wen darf ich es adressieren?\"\n  },\n  {\n    id: 3,\n    subject: \"An wen soll ich die Info schicken?\",\n    body: \"Hallo,\\nich habe eine kompakte Info speziell für Zahnarztpraxen und finanzielle Praxisrücklagen. An wen adressiere ich das bei Ihnen am besten?\"\n  },\n  {\n    id: 4,\n    subject: \"Kontakt der Inhaber:in für Praxisrücklagen?\",\n    body: \"Hallo,\\nes geht um eine pragmatische Lösung für finanzielle Praxisreserven. Könnten Sie mir den Kontakt der Inhaber:in nennen?\"\n  },\n  {\n    id: 5,\n    subject: \"Einseitige Info für {Praxisname}\",\n    body: \"Hallo,\\nbezieht sich auf {Praxisname} in {Ort}: Darf ich eine einseitige Info für die Inhaber:in bzgl. finanzieller Praxisrücklagen schicken?\"\n  },\n  {\n    id: 6,\n    subject: \"Wer verantwortet Rücklagen & Liquidität?\",\n    body: \"Hallo,\\ndamit ich nichts Falsches sende: Wer verantwortet bei Ihnen das Thema Rücklagen und Liquidität der Zahnarztpraxis?\"\n  }\n];\n\n// Return as n8n items\nreturn emails.map(e => ({ json: e }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e6e48fd5-f8d0-4070-b3e5-6be8f5b33d59",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "170d0288-fefd-4429-b121-eec0db87abe9",
+      "name": "HTTP Request"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f88cc8f7-a6b2-4e59-9845-c8447aacda69",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-24T17:48:24.564Z",
+      "createdAt": "2025-09-24T17:48:24.564Z",
+      "role": "workflow:owner",
+      "workflowId": "dOnuEK2yLqhTspKR",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
