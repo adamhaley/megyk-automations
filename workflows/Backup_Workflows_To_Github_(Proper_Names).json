@@ -1,0 +1,701 @@
+{
+  "updatedAt": "2025-12-11T01:23:40.992Z",
+  "createdAt": "2025-12-11T00:55:14.379Z",
+  "id": "Mu7fMoOkpLXeZKCU",
+  "name": "Backup Workflows To Github (Proper Names)",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1235fed-ae2f-4520-9158-2cf406bb2586",
+              "leftValue": "={{ $('List Workflow Files on Github').all().map(item => item.json.name) }}",
+              "rightValue": "={{ $json.name }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -880,
+        208
+      ],
+      "id": "8d0edd38-7250-47ea-9fa2-636a8ec411fd",
+      "name": "If File Exists"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        112
+      ],
+      "id": "9cb3dd8f-b506-402b-a9ad-2882fec0a56c",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1760,
+        208
+      ],
+      "id": "efc5c5d3-170c-436d-a3af-70a6f546e80b",
+      "name": "Run Daily"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "adamhaley",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "megyk-automations",
+          "mode": "list",
+          "cachedResultName": "megyk-automations",
+          "cachedResultUrl": "https://github.com/adamhaley/megyk-automations"
+        },
+        "filePath": "workflows"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        -1552,
+        208
+      ],
+      "id": "7d905908-8178-4b7e-8b01-7f658f217b73",
+      "name": "List Workflow Files on Github",
+      "executeOnce": true,
+      "webhookId": "ef7828ec-cf4d-42a9-b12f-5c088cf829ec",
+      "credentials": {
+        "githubApi": {
+          "id": "2omAzGRnpCrb3ZGb",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet name =  $json.name.replace(/ /g,'_');\nname = name.replace('/','') + '.json';\nreturn { name: name }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        208
+      ],
+      "id": "d1361a36-8b99-4a17-bb5e-a1ec0a5da4a6",
+      "name": "Proper filename from Workflow",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "adamhaley",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://github.com/adamhaley/n8n"
+        },
+        "filePath": "=workflows/{{ $json.name }}",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        112
+      ],
+      "id": "56a6ffee-3232-4313-b134-714b68f03f20",
+      "name": "Get The File",
+      "executeOnce": false,
+      "webhookId": "c6bcc826-6787-45c1-a756-6aedb5fd81b7",
+      "credentials": {
+        "githubApi": {
+          "id": "2omAzGRnpCrb3ZGb",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "returnAll": false,
+        "limit": 250,
+        "filters": {
+          "activeWorkflows": false,
+          "tags": ""
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        208
+      ],
+      "id": "7c7d2d3d-879a-4819-abca-77aa5cd2db5e",
+      "name": "n8n Get Active Workflows",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c9576a13-befb-4a51-85e2-7ee04cb3664f",
+              "leftValue": "={{ JSON.stringify( $('Extract from File').item.json.data, null, 2 ) }}",
+              "rightValue": "={{ JSON.stringify( $('n8n Get Active Workflows').item.json, null, 2 ) }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        112
+      ],
+      "id": "0ab5212b-fe76-4b91-9ab8-2c78f0322673",
+      "name": "if n8n Workflow has Updates"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "adamhaley",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://github.com/adamhaley/n8n"
+        },
+        "filePath": "=workflows/{{$json.name  }}",
+        "fileContent": "={{ JSON.stringify( $('n8n Get Active Workflows').item.json, null, 2 ) }}",
+        "commitMessage": "=creating backup file for workflow \"{{ $('n8n Get Active Workflows').item.json.name }}\"\"",
+        "additionalParameters": {
+          "branch": {
+            "branch": "main"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        320
+      ],
+      "id": "8186f6a2-e2aa-49fd-96d5-3419986f2697",
+      "name": "Create File on Github",
+      "webhookId": "23889cba-d3e7-4dd0-ab91-4b262d0112f1",
+      "credentials": {
+        "githubApi": {
+          "id": "2omAzGRnpCrb3ZGb",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "adamhaley",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://github.com/adamhaley/n8n"
+        },
+        "filePath": "=workflows/{{ $('Get The File').item.json.name }}",
+        "fileContent": "={{ JSON.stringify( $('n8n Get Active Workflows').item.json, null, 2 ) }}",
+        "commitMessage": "=Updating n8n workflow \"{{ $('n8n Get Active Workflows').item.json.name }}\""
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e763d77c-5297-42cc-a652-f11059c5c405",
+      "name": "Update File on GIthub",
+      "webhookId": "f6489b4e-6185-449d-b876-e17fd2afbbd1",
+      "credentials": {
+        "githubApi": {
+          "id": "2omAzGRnpCrb3ZGb",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        0,
+        208
+      ],
+      "id": "de2d2481-13f1-47a7-a93a-24ba14949e91",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11oXYJaKNuz-phQzMrorTl6-NKmspRoYfp3bAJFk3zrQ",
+          "mode": "list",
+          "cachedResultName": "n8n Errors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11oXYJaKNuz-phQzMrorTl6-NKmspRoYfp3bAJFk3zrQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11oXYJaKNuz-phQzMrorTl6-NKmspRoYfp3bAJFk3zrQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $now.format('y-MM-dd') }}",
+            "time": "={{ $now.format('HH:mm a') }}",
+            "workflow name": "={{ $json.data.name }}",
+            "workflow id": "={{ $json.data.id }}",
+            "message": "={{ $json.error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow name",
+              "displayName": "workflow name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow id",
+              "displayName": "workflow id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution",
+              "displayName": "execution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stacktrace",
+              "displayName": "stacktrace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "node",
+              "displayName": "node",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        224,
+        112
+      ],
+      "id": "51eb4fb9-b349-40bf-bc49-038155b22fbb",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11oXYJaKNuz-phQzMrorTl6-NKmspRoYfp3bAJFk3zrQ",
+          "mode": "list",
+          "cachedResultName": "n8n Errors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11oXYJaKNuz-phQzMrorTl6-NKmspRoYfp3bAJFk3zrQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11oXYJaKNuz-phQzMrorTl6-NKmspRoYfp3bAJFk3zrQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "workflow name": "={{ $workflow.name }}",
+            "workflow id": "={{ $workflow.id }}",
+            "date": "={{ $now.format('D') }}",
+            "time": "={{ $now.format('HH:mm a') }} }}",
+            "message": "={{ $json.error }} (Processing {{$('If File Exists').item.json.name }})",
+            "execution": "={{ $execution.id }}",
+            "node": "={{ $prevNode.name }}",
+            "stacktrace": "="
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow name",
+              "displayName": "workflow name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow id",
+              "displayName": "workflow id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution",
+              "displayName": "execution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stacktrace",
+              "displayName": "stacktrace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "node",
+              "displayName": "node",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -448,
+        320
+      ],
+      "id": "9971c38c-9cb6-4894-9594-7310235f0df9",
+      "name": "Append row in sheet1"
+    }
+  ],
+  "connections": {
+    "If File Exists": {
+      "main": [
+        [
+          {
+            "node": "Get The File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create File on Github",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "if n8n Workflow has Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Daily": {
+      "main": [
+        [
+          {
+            "node": "List Workflow Files on Github",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Workflow Files on Github": {
+      "main": [
+        [
+          {
+            "node": "n8n Get Active Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Proper filename from Workflow": {
+      "main": [
+        [
+          {
+            "node": "If File Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get The File": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Get Active Workflows": {
+      "main": [
+        [
+          {
+            "node": "Proper filename from Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if n8n Workflow has Updates": {
+      "main": [
+        [
+          {
+            "node": "Update File on GIthub",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update File on GIthub": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create File on Github": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Run Daily": [
+      {
+        "json": {
+          "timestamp": "2025-08-16T00:00:58.007-07:00",
+          "Readable date": "August 16th 2025, 12:00:58 am",
+          "Readable time": "12:00:58 am",
+          "Day of week": "Saturday",
+          "Year": "2025",
+          "Month": "August",
+          "Day of month": "16",
+          "Hour": "00",
+          "Minute": "00",
+          "Second": "58",
+          "Timezone": "America/Los_Angeles (UTC-07:00)"
+        }
+      }
+    ]
+  },
+  "versionId": "260364fc-1eb5-4adc-8ca2-28aa9210418a",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-11T00:55:14.388Z",
+      "createdAt": "2025-12-11T00:55:14.388Z",
+      "role": "workflow:owner",
+      "workflowId": "Mu7fMoOkpLXeZKCU",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
