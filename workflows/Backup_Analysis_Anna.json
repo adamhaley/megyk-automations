@@ -1,0 +1,1624 @@
+{
+  "updatedAt": "2025-09-10T16:50:26.000Z",
+  "createdAt": "2025-08-20T18:39:51.868Z",
+  "id": "Oz1klRdsrlykSSSb",
+  "name": "Backup Analysis Anna",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://api.firecrawl.dev/v1/extract/{{ $(\"Request\").item.json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1632,
+        608
+      ],
+      "id": "65ca2aed-4e7c-45db-90dd-234044954195",
+      "name": "Get Data",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "iye8Q4wTT5P3zqAN",
+          "name": "Digistore Header Auth"
+        },
+        "httpBearerAuth": {
+          "id": "SxECNeK5aZvVbEGa",
+          "name": "FireCrawl Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.data;\n\nconst hasData = Array.isArray(data)\n  ? data.length > 0\n  : typeof data === 'object' && data !== null && Object.keys(data).length > 0;\n\nreturn { status: hasData };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        608
+      ],
+      "id": "2b8267c0-ac7b-48e9-beb2-63c6777e34a1",
+      "name": "Check Status"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ec7e1f39-a030-411f-9ca5-ef8632663c49",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        608
+      ],
+      "id": "64108982-af4e-4d61-a788-0900cac294b0",
+      "name": "If Successful"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/extract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.prompt }} {{ $json.urls[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        608
+      ],
+      "id": "a3b84a22-541a-4e88-a60b-c3f17050ab18",
+      "name": "Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "iye8Q4wTT5P3zqAN",
+          "name": "Digistore Header Auth"
+        },
+        "httpBearerAuth": {
+          "id": "SxECNeK5aZvVbEGa",
+          "name": "FireCrawl Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        32,
+        256
+      ],
+      "id": "484d6833-4ede-4729-9c41-db4745af9bd8",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "kRKxZkSBiWUL3Xr4",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Message Anna').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2208,
+        144
+      ],
+      "id": "91e423e1-7597-490c-9354-06f853fc7f0c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Message Anna').item.json.message.chat.id }}",
+        "text": "={{ $json.output.analyseAnnaAnswer }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        -16
+      ],
+      "id": "534dddde-f783-4ce4-9429-ba196e371ff5",
+      "name": "Answer User",
+      "webhookId": "06135021-087d-4558-be06-94de90f2f053",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZg2Mdzi4Olbxbrr",
+          "name": "Analysis Anna Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"userMessage\": \"Analysiere alle Solartechnik-Firmen in Brandenburg auf Wärmepumpen-Angebote.\",\n  \"analyseAnnaAnswer\": \"Analyse der Solartechnik-Firmen in Brandenburg wird vorbereitet. Fokus: Wärmepumpen-Angebote auf den Webseiten.\",\n  \"website\": [\n    \"https://www.solarexperte-brb.de\",\n    \"https://www.sonnenkraft-technik.de\",\n    \"https://www.solarteam-ost.de\"\n  ],\n  \"userGoal\": \"Wärmepumpen-Angebote finden\",\n  \"startResearch\": true,\n  \"isSingleCompany\": false\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        256
+      ],
+      "id": "5e1c079a-5820-477a-be3a-d3394308bb18",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -16
+      ],
+      "id": "02ad7413-2f57-4841-b441-ab3b99400dbf",
+      "name": "Message Anna",
+      "webhookId": "d7f347dd-476e-414b-a30c-357b366ce6d0",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZg2Mdzi4Olbxbrr",
+          "name": "Analysis Anna Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "51746dd0-2087-430b-aef5-76424ac07607",
+              "name": "supabaseProjectID",
+              "value": "nythxjdfrrtdvlhxndjg",
+              "type": "string"
+            },
+            {
+              "id": "6775cd0c-e308-4cc2-8230-db33a6c7a190",
+              "name": "bearerToken",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "3b9fa25c-cf5d-496c-b99f-448d13611079",
+      "name": "ENV"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "german_companies",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "state",
+              "condition": "ilike",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        144,
+        352
+      ],
+      "id": "e4450935-61d3-4a98-b2b1-a88519fc15af",
+      "name": "Get_Companies_By_State",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "german_companies",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "city",
+              "condition": "ilike",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        352,
+        352
+      ],
+      "id": "88f06e14-b9a3-43a0-a677-008f785d837a",
+      "name": "Get_Companies_By_City",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "german_companies",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "district",
+              "condition": "ilike",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        544,
+        352
+      ],
+      "id": "88c49d5a-b4cd-4fc9-9baa-b0b7c9433f44",
+      "name": "Get_Companies_By_District",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "german_companies",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "industry",
+              "condition": "ilike",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        448,
+        192
+      ],
+      "id": "c833c2bd-2ce6-4260-ba27-384eb586f682",
+      "name": "Get_Companies_By_Industry",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "german_companies",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "company",
+              "condition": "ilike",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        240,
+        192
+      ],
+      "id": "c683f1af-3c00-4da9-a59d-2ed17f152aa2",
+      "name": "Get_Companies_By_Name",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "userMessage"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -176
+      ],
+      "id": "1ce28331-85d6-4975-8506-b8bf5c432c99",
+      "name": "Team Leader"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=\nDu bist ein API-Request-Generator für FireCrawl.\n\nDeine Aufgabe: Erstelle ein JSON-Objekt, das als Request-Body für eine FireCrawl-Abfrage dient – basierend auf dem strukturierten Input einer vorangegangenen Analyse.\n\n## Input\n\nDas folgende JSON-Objekt sollst du verarbeiten:\n\n{{ $('Analyse Anna').all().toJsonString() }}\n\n## Deine Aufgabe\n\nErstelle daraus ein JSON im FireCrawl-Format:\n\n{\n  \"urls\": [...],\n  \"prompt\": \"...\",\n  \"schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      ...\n    },\n    \"required\": [...]\n  }\n}\n\n### Regeln für das Format:\n\n1. **urls**: direkt aus `website` übernehmen (Das Array sollte immer nur eine url haben, fals doch mehree drin sind nehme die erste)\n2. **prompt**: formuliere einen präzisen englischen Extraktionsbefehl, z. B.  \n   - „Extract the CEO name“  \n   - „Find the job page URL“  \n   - „Search for career opportunities on the site“  \n3. **schema**: Erzeuge passende Properties im JSON-Schema-Stil, je nachdem, was der Nutzer wissen will.  \n   - z. B. `{ \"ceo_name\": { \"type\": \"string\" } }`  \n   - oder `{ \"job_page_url\": { \"type\": \"string\" } }`  \n   - Falls mehrere Infos gewünscht sind: mehrere Properties  \n4. **required**: Alle Keys aus `properties` müssen hier gelistet werden  \n5. Kein Text außerhalb des JSON – gib ausschließlich das finale JSON-Objekt zurück.\n\n## Beispiele\n\n### Beispiel 1 (nur CEO)\n\nInput:\n{\n  \"userGoal\": \"Finde den Geschäftsführer\",\n  \"website\": [\"https://firma-a.de\"]\n}\n\nOutput:\n{\n  \"urls\": [\"https://firma-a.de\"],\n  \"prompt\": \"Extract the CEO name\",\n  \"schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"ceo_name\": {\n        \"type\": \"string\"\n      }\n    },\n    \"required\": [\"ceo_name\"]\n  }\n}\n\n### Beispiel 2 (mehrere Infos)\n\nInput:\n{\n  \"userGoal\": \"Finde den Geschäftsführer, seine E-Mail und Telefonnummer\",\n  \"website\": [\"https://firma-b.de\"]\n}\n\nOutput:\n{\n  \"urls\": [\"https://firma-b.de\"],\n  \"prompt\": \"Extract the CEO name, the CEO email and the CEO phone number\",\n  \"schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"ceo_name\": {\n        \"type\": \"string\"\n      },\n      \"ceo_email\": {\n        \"type\": \"string\"\n      },\n      \"ceo_phone\": {\n        \"type\": \"string\"\n      }\n    },\n    \"required\": [\"ceo_name\", \"ceo_email\", \"ceo_phone\"]\n  }\n}\n\n## Besondere Hinweise\n\n- Nutze ausschließlich englische Begriffe im `prompt` und in den `schema`-Feldern  \n- Keine allgemeinen Texte oder Kommentare – nur das finale JSON  \n- Wenn das Ziel unklar ist, nimm eine sinnvolle, möglichst spezifische englische Beschreibung als `prompt` (z. B. „Try to find out what services the company offers“)\n",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        448,
+        608
+      ],
+      "id": "a2228688-4a69-488d-abfa-50cc0945f9c5",
+      "name": "Build Request",
+      "credentials": {
+        "openAiApi": {
+          "id": "RMCgUrxutvJgFiK9",
+          "name": "Adams Test OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d17cc19-9718-4ca8-8a95-71655e348f07",
+              "leftValue": "={{ $('Analyse Anna').item.json.output.website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "fc028b7e-c3fe-4730-93e7-46a4f7030dfa",
+              "leftValue": "={{ $('Analyse Anna').item.json.output.userGoal }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "664fa3e0-b57a-4f48-abe2-abed4edb9fdf",
+              "leftValue": "={{ $('Analyse Anna').item.json.output.startResearch }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        368
+      ],
+      "id": "e443bcc2-6d1c-47ca-98aa-31f718e76a45",
+      "name": "Start Analysing"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        256,
+        752
+      ],
+      "id": "753b3eef-2c3d-4464-ab69-7e75ca139381",
+      "name": "Loop Over Companies"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Rolle\n\nDu bist AnalyseAnna – eine digitale Recherche- und Analyse-Expertin. Präzise, professionell und lösungsorientiert. Dein Job: aus Anweisungen wie „Analysiere ...“ eine fundierte Recherche starten – auf Basis einer firmenspezifischen Datenbank.\n\n# Was du brauchst\n\n- Einen **Firmennamen**, eine **Branche**, einen **Ortsteil**, eine **Stadt** oder ein **Bundesland**  \n- Ein konkretes **Analyse-Ziel**: Was soll genau herausgefunden werden?  \n  (z. B. „Analysiere alle Webseiten auf Wärmepumpen-Angebote“ oder „Schau, ob die Firmen Stellenangebote auf ihrer Seite haben“)\n\n📌 Die Eingabe ist meistens eine direkte Anweisung, z. B.:\n> „Analysiere Solartechnik-Firmen in Brandenburg auf Wärmepumpen“\n> „Analysiere diese Firma: XYZ GmbH auf Karriere-Seite und Dienstleistungen“\n\nFalls etwas unklar ist: sachlich und konkret nachfragen.\n\n# Wichtiger Hinweis\n\nWenn keine konkrete Firma angegeben ist, sondern z. B. eine Branche oder ein Ort:\n- Hole **alle passenden Firmen aus der Datenbank**\n- Und analysiere **jede dieser Firmen einzeln**\n\nKeine pauschale Branchenrecherche – du arbeitest immer **firmenspezifisch**.\n\n# Tools\n\n- **Get_Companies_By_Name** – für einzelne Firmen  \n- **Get_Companies_By_Industry** – für Branchen  \n- **Get_Companies_By_State** – für Bundesländer  \n- **Get_Companies_By_City** – für Städte  \n- **Get_Companies_By_District** – für Stadtteile  \n\nImmer das Tool nutzen, das zur Nutzereingabe passt. Wenn nicht eindeutig: Rückfrage stellen.\n\n# Webseiten-Info\n\nDie Analyse erfolgt **auf Basis der Unternehmenswebseiten**.  \nDiese werden aus dem Feld `website` in der Datenbank extrahiert.  \nAlle Tools liefern Daten im gleichen Format, inklusive des Felds `website`.\n\nDu erstellst ein **Array aus URLs**, auf denen dann gescraped wird.\n\n# Flag für Einzelfirma\n\nSetze das Feld `isSingleCompany`:\n\n- `true`, wenn **nur eine Website vorhanden** ist **oder** wenn die Nutzereingabe klar auf **eine bestimmte Firma** zielt (z. B. „Analysiere die XYZ GmbH ...“)  \n- `false`, wenn mehrere Webseiten vorhanden sind **und** keine eindeutige Einzelfirma genannt ist\n\n# Antwortstil\n\n- Professionell, klar, sachlich  \n- Keine Umgangssprache oder Floskeln  \n- Beispiel: „Analyse der Solartechnik-Firmen in Brandenburg wird vorbereitet. Fokus: Wärmepumpen.“\n\n# Ziel\n\n- Eingabe auswerten und verstehen: Firma, Branche oder Region?  \n- Analyse-Ziel erkennen  \n- Passendes Tool aufrufen  \n- Webseiten-Array vorbereiten  \n- Erst wenn alles vollständig ist: `startResearch = true`\n\n# Sonderfall: Smalltalk oder irrelevante Nachricht\n\nWenn die Nachricht **nicht analyserelevant** ist (z. B. „Wie geht’s dir?“), antworte locker, aber mit Stil:\n\n**Beispiel:**\n\n> Guten Morgen, Chef! Mir geht’s bestens – bereit für den nächsten Auftrag.  \n> Soll ich direkt wieder mit der Analyse von Firmen starten?\n\n# Beispiel Output\n\n{\n  \"userMessage\": \"Analysiere alle Solartechnik-Firmen in Brandenburg auf Wärmepumpen-Angebote.\",\n  \"analyseAnnaAnswer\": \"Analyse der Solartechnik-Firmen in Brandenburg wird vorbereitet. Fokus: Wärmepumpen-Angebote auf den Webseiten.\",\n  \"website\": [\n    \"https://www.solarexperte-brb.de\",\n    \"https://www.sonnenkraft-technik.de\",\n    \"https://www.solarteam-ost.de\"\n  ],\n  \"userGoal\": \"Wärmepumpen-Angebote finden\",\n  \"startResearch\": true,\n  \"isSingleCompany\": false\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "7256e2ea-2e60-48c6-b7e2-d3c1ddfd20e4",
+      "name": "Analyse Anna"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e8ddfac-5c09-42c8-b176-9a0a7da41ad7",
+              "leftValue": "={{ $('Analyse Anna').item.json.output.isSingleCompany }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        608
+      ],
+      "id": "85df995f-79d5-4646-bfbd-cefa81614833",
+      "name": "Analyse A Single Company"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6e8ddfac-5c09-42c8-b176-9a0a7da41ad7",
+              "leftValue": "={{ $('Analyse Anna').item.json.output.isSingleCompany }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2432,
+        496
+      ],
+      "id": "e1f331ae-81ce-4d9a-b5ae-61b7b5541cc7",
+      "name": "Analyse A Single Company1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Du bist \"Analyse Anna\", eine freundliche, professionelle KI-Assistentin, die Ergebnisse von Webseitenanalysen zusammenfasst und als Textnachricht zurückgibt. Dein Stil ist sachlich, aber freundlich.\n\n## Ziel\n\nFormuliere eine passende Antwort auf Basis folgender Informationen:\n\n1. **Initialer Analyse-Wunsch des Nutzers** (siehe \"initialRequest\")\n2. **Ergebnisse der FireCrawl-Analyse** (siehe \"result\")\n\nDu gibst **nur** ein JSON-Objekt mit folgendem Format zurück:\n\n```json\n{\n  \"analyseAnnaSuccessAnswer\": \"...\"\n}\n```\n\n## Regeln\n\n- Antworte auf Deutsch.\n- Starte nicht mit einer Begrüßung – du antwortest mitten in einer laufenden Konversation.\n- Gehe freundlich, aber kurz auf das Ziel des Nutzers ein.\n- Formuliere klar, was du herausgefunden hast.\n- Nenne dabei die gefundenen Informationen direkt (z. B. Name, Position, Link etc.)\n- Verwende keine Platzhalter.\n- Schreibe so, als würde \"Anna\" in einem Telegram-Chat antworten – direkt, aber professionell.\n- Kein Text außerhalb des JSON!\n\n### Input:\n\ninitialRequest:\n\n{{ $('Analyse Anna').all().toJsonString() }}\n\nresult:\n\n{{ $('Get Data').item.json.data.toJsonString() }}",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2640,
+        464
+      ],
+      "id": "f1d82ad8-f509-4086-939b-a26905812a82",
+      "name": "Build Answer",
+      "credentials": {
+        "openAiApi": {
+          "id": "RMCgUrxutvJgFiK9",
+          "name": "Adams Test OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Message Anna').item.json.message.chat.id }}",
+        "text": "={{ $json.message.content.analyseAnnaSuccessAnswer }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2960,
+        464
+      ],
+      "id": "c95e7be8-9c1c-4e94-89a3-1d401d932d17",
+      "name": "Inform User",
+      "webhookId": "fafb6dfa-641a-48a4-9e23-67f152c225e0",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZg2Mdzi4Olbxbrr",
+          "name": "Analysis Anna Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3072,
+        656
+      ],
+      "id": "8c68dcaf-d682-4b97-ae30-ea4b67bc98fd",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "kRKxZkSBiWUL3Xr4",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "german_companies",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "website",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        3232,
+        656
+      ],
+      "id": "0fc66767-1291-4e75-98fb-9cd77f38e214",
+      "name": "Get_Company",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist AnalyseAnna – eine digitale Recherche- und Analyse-Expertin. Präzise, professionell und lösungsorientiert. Dein Job: Unternehmensdaten in einer Datenbank zu aktualisieren.\n\n# Tools\n\n1. **Get_Company** - Liefert gespeicherte Unternehmensdaten aus der Datenbank zur angegebenen Webseite.\n2. **Update_CEO** - Aktualisiert das column `ceo_name`\n3. **Update_Email** - Aktualisiert das column `email`\n2. **Save_Analysis** - Speichert sonstige in der Analyse herausgefundene informationen als string im column `analysis`\n\n## Ziel\n\nBasierend auf der vorhandenen Webseite und den Ergebnissen einer FireCrawl-Analyse sollst du die gespeicherten Unternehmensdaten aktualisieren.\n\n## Regeln\n\n- Die Webseite ist bereits bekannt (du musst `Get_Company` **nur nutzen, wenn du bestehende Daten vergleichen möchtest**).\n- Wenn neue Informationen aus FireCrawl vorliegen (z. B. ceo_name), aktualisiere diese über `Update_CEO`.\n- Wenn neue Informationen aus FireCrawl vorliegen (z. B. email), aktualisiere diese über `Update_Email`.\n- Wenn neue zusätzliche Informationen aus FireCrawl vorliegen, speicher eine diese mit `Save_Analysis` \n- Verwende keine Platzhalter.\n- Gib am Ende deiner Aktionen eine kurze Erklärung ab was du gemacht hast.\n\n## Input\n\nfirecrawlResult:\n\n{{ $('Get Data').item.json.data.toJsonString() }}\n\ncompanyWebsite:\n\n{{ $('Analyse Anna').first().json.output.website[0] }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        3120,
+        464
+      ],
+      "id": "21fd9617-981f-4093-afdc-d5ef9a701a80",
+      "name": "Update Agent"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('Build Request').item.json.message.content.urls[0] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ceo_name",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        3392,
+        656
+      ],
+      "id": "ee045e78-4384-447a-81f1-abd64c3a3032",
+      "name": "Update_CEO",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('Build Request').item.json.message.content.urls[0] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        3152,
+        784
+      ],
+      "id": "847d7b26-14f3-4ef0-a9e9-68abd707fe7c",
+      "name": "Update_Email",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('Build Request').item.json.message.content.urls[0] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "analysis",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        3312,
+        784
+      ],
+      "id": "5fd3ec08-9bb7-460b-b2cb-5871538a84de",
+      "name": "Save_Analysis",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Message Anna').item.json.message.chat.id }}",
+        "text": "Ich habe Ihnen die analysierten Informationen in der Datenbank aktualisiert.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3472,
+        464
+      ],
+      "id": "3cde1ee0-23ca-4044-8861-de74d2ab575f",
+      "name": "Inform User1",
+      "webhookId": "fafb6dfa-641a-48a4-9e23-67f152c225e0",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZg2Mdzi4Olbxbrr",
+          "name": "Analysis Anna Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2592,
+        1008
+      ],
+      "id": "ff279539-1cbe-4dcb-bd9b-aecb671440c2",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "kRKxZkSBiWUL3Xr4",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "german_companies",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "website",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        1008
+      ],
+      "id": "aad9a925-deec-4290-a770-7e1848c77cc4",
+      "name": "Get_Company1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist AnalyseAnna – eine digitale Recherche- und Analyse-Expertin. Präzise, professionell und lösungsorientiert. Dein Job: Unternehmensdaten in einer Datenbank zu aktualisieren.\n\n# Tools\n\n1. **Get_Company** - Liefert gespeicherte Unternehmensdaten aus der Datenbank zur angegebenen Webseite.\n2. **Update_CEO** - Aktualisiert das column `ceo_name`\n3. **Update_Email** - Aktualisiert das column `email`\n2. **Save_Analysis** - Speichert sonstige in der Analyse herausgefundene informationen als string im column `analysis`\n\n## Ziel\n\nBasierend auf der vorhandenen Webseite und den Ergebnissen einer FireCrawl-Analyse sollst du die gespeicherten Unternehmensdaten aktualisieren.\n\n## Regeln\n\n- Die Webseite ist bereits bekannt (du musst `Get_Company` **nur nutzen, wenn du bestehende Daten vergleichen möchtest**).\n- Wenn neue Informationen aus FireCrawl vorliegen (z. B. ceo_name), aktualisiere diese über `Update_CEO`.\n- Wenn neue Informationen aus FireCrawl vorliegen (z. B. email), aktualisiere diese über `Update_Email`.\n- Wenn neue zusätzliche Informationen aus FireCrawl vorliegen, speicher eine diese mit `Save_Analysis` \n- Verwende keine Platzhalter.\n- Gib am Ende deiner Aktionen eine kurze Erklärung ab was du gemacht hast.\n\n## Input\n\nfirecrawlResult:\n\n{{ $('Get Data').item.json.data.toJsonString() }}\n\ncompanyWebsite:\n\n{{ $('Analyse Anna').first().json.output.website[0] }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        2640,
+        784
+      ],
+      "id": "866bc480-9e2d-4235-a15b-c1c471319b78",
+      "name": "Update Agent1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('Build Request').item.json.message.content.urls[0] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ceo_name",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        2912,
+        1008
+      ],
+      "id": "d99092f5-7076-4623-b1a2-55de7c258c25",
+      "name": "Update_CEO1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('Build Request').item.json.message.content.urls[0] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        2672,
+        1152
+      ],
+      "id": "e64d5872-e238-413e-a74d-58e7fe79fa67",
+      "name": "Update_Email1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('Build Request').item.json.message.content.urls[0] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        2832,
+        1152
+      ],
+      "id": "6f1fdb2c-1a0a-40ee-b171-e7b6d5c4279f",
+      "name": "Save_Analysis1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Message Anna').item.json.message.chat.id }}",
+        "text": "Ich habe Ihnen die analysierten Informationen in der Datenbank aktualisiert.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        816
+      ],
+      "id": "0cfaa217-47e0-4cd4-9863-be820809e818",
+      "name": "Finished Task",
+      "webhookId": "fafb6dfa-641a-48a4-9e23-67f152c225e0",
+      "credentials": {
+        "telegramApi": {
+          "id": "nZg2Mdzi4Olbxbrr",
+          "name": "Analysis Anna Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return $input.item.json.message.content;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        608
+      ],
+      "id": "d1322bb4-161d-40f4-97ae-6fd9881f7c40",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.website",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        912,
+        128
+      ],
+      "id": "11bdad08-b428-4a17-a220-7b08abc3b6df",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  return { json: { url: item.json[\"output.website\"] } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        128
+      ],
+      "id": "af6efccf-f896-4704-b83f-bc5b9e2f0029",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        704
+      ],
+      "id": "20661de5-68c4-475b-b9c5-f37faab1babe",
+      "name": "Wait",
+      "webhookId": "9b6b43d3-95dd-42d0-aafe-e979cfbf9645"
+    }
+  ],
+  "connections": {
+    "Get Data": {
+      "main": [
+        [
+          {
+            "node": "Check Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Status": {
+      "main": [
+        [
+          {
+            "node": "If Successful",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Successful": {
+      "main": [
+        [
+          {
+            "node": "Analyse A Single Company1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request": {
+      "main": [
+        [
+          {
+            "node": "Get Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Update Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Anna": {
+      "main": [
+        [
+          {
+            "node": "ENV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENV": {
+      "main": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Companies_By_State": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Companies_By_City": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Companies_By_District": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Companies_By_Industry": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Companies_By_Name": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse Anna",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer User": {
+      "main": [
+        []
+      ]
+    },
+    "Team Leader": {
+      "main": [
+        [
+          {
+            "node": "ENV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Analysing": {
+      "main": [
+        [
+          {
+            "node": "Analyse A Single Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Companies": {
+      "main": [
+        [
+          {
+            "node": "Finished Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse Anna": {
+      "main": [
+        [
+          {
+            "node": "Answer User",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse A Single Company": {
+      "main": [
+        [
+          {
+            "node": "Build Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse A Single Company1": {
+      "main": [
+        [
+          {
+            "node": "Build Answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Answer": {
+      "main": [
+        [
+          {
+            "node": "Inform User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inform User": {
+      "main": [
+        [
+          {
+            "node": "Update Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Update Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Company": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_CEO": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save_Analysis": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Agent": {
+      "main": [
+        [
+          {
+            "node": "Inform User1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Update Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Company1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Agent1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_CEO1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_Email1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save_Analysis1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Update Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Start Analysing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Message Anna": [
+      {
+        "json": {
+          "update_id": 534172739,
+          "message": {
+            "message_id": 2,
+            "from": {
+              "id": 6627695515,
+              "is_bot": false,
+              "first_name": "Adam",
+              "last_name": "Haley",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6627695515,
+              "first_name": "Adam",
+              "last_name": "Haley",
+              "type": "private"
+            },
+            "date": 1755809011,
+            "text": "Can you analyze all dentists in Berlin for email addresses on website?"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "5d8df63f-3eab-4de5-ad04-1f99ee0e1503",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-08-20T18:39:51.877Z",
+      "createdAt": "2025-08-20T18:39:51.877Z",
+      "role": "workflow:owner",
+      "workflowId": "Oz1klRdsrlykSSSb",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
