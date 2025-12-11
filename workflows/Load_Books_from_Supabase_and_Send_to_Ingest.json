@@ -1,0 +1,174 @@
+{
+  "updatedAt": "2025-12-03T02:12:34.000Z",
+  "createdAt": "2025-12-03T02:09:17.091Z",
+  "id": "7u9P7Tmey6dZubsv",
+  "name": "Load Books from Supabase and Send to Ingest",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Injest Book w/ vector embedding (nomic-embed-text)",
+        "height": 576,
+        "width": 1280,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        -512
+      ],
+      "id": "bc1ce092-9dc3-4820-b3f0-004af153ce59",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Pug5aBaVAObe9dkO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Pug5aBaVAObe9dkO",
+          "cachedResultName": "Ingest Ebook v3 EPUB without Enrichment"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "filename": "="
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "book_id",
+              "displayName": "book_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "mime_type",
+              "displayName": "mime_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        -96
+      ],
+      "name": "Call Ingest Ebook",
+      "id": "25e1f7f8-05ef-47be-88d6-76cf57ef0597",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -96
+      ],
+      "id": "2dfb86a6-77a7-4543-8958-977c9ecf976b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "books"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -96
+      ],
+      "id": "05832db5-412a-47a2-a2d5-609ea4ad26c1",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Call Ingest Ebook": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Call Ingest Ebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "999bf729-4fee-4a34-892f-fdde2edc1773",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-03T02:09:17.101Z",
+      "createdAt": "2025-12-03T02:09:17.101Z",
+      "role": "workflow:owner",
+      "workflowId": "7u9P7Tmey6dZubsv",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
