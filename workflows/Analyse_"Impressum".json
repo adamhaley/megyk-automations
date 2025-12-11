@@ -1,0 +1,1012 @@
+{
+  "updatedAt": "2025-12-01T00:05:36.000Z",
+  "createdAt": "2025-09-02T01:27:31.934Z",
+  "id": "E9DIeC5qr9BvwdK8",
+  "name": "Analyse \"Impressum\"",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "row_id",
+              "type": "number"
+            },
+            {
+              "name": "company_name"
+            },
+            {
+              "name": "location_link"
+            },
+            {
+              "name": "company_website"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "684fa3d6-0ee4-4f95-99c0-d3eb762f1777",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ca3049e4-b2db-4064-a678-b99c2302f0d5",
+              "leftValue": "={{ $json.company_website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "fdb0a77c-f95d-43ef-8dd8-be6da7e7f494",
+      "name": "If Website"
+    },
+    {
+      "parameters": {
+        "content": "## Analyse and Enrich using one of two URLS, depending on whats available\n\n- If website is available - follow \"Impressum\" link\n- if no website available search google maps location_link for contact data\n",
+        "height": 816,
+        "width": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -352
+      ],
+      "id": "b65970df-70c4-429e-a4ce-738df66b8daa",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// n8n Code node (Run Once for Each Item)\n// Extract and normalize Impressum/Imprint link to absolute URL\n// Return a single object { ... } per input item\n\nconst html = String($json.data || '');\nconst pageUrl = String($('Normalize Website URL').item.json.company_website);\n\n// --- helpers ---\nfunction ensureHttps(u) {\n  let s = String(u).trim();\n  if (!/^https?:\\/\\//i.test(s)) s = 'https://' + s;\n  return s.replace(/^http:\\/\\//i, 'https://');\n}\nfunction stripQF(u) { return String(u).split(/[?#]/)[0]; }\nfunction getOrigin(u) {\n  const s = ensureHttps(u);\n  const m = s.match(/^(https?:\\/\\/)([^\\/?#]+)(?=\\/|$)/i);\n  return m ? m[1] + m[2] : null;\n}\nfunction getBaseDir(u) {\n  const origin = getOrigin(u);\n  if (!origin) return '/';\n  const path = stripQF(ensureHttps(u)).slice(origin.length);\n  if (!path || path === '/') return '/';\n  const i = path.lastIndexOf('/');\n  return i >= 0 ? path.slice(0, i + 1) : '/';\n}\nfunction normalizePath(path) {\n  const segs = String(path).split('/');\n  const out = [];\n  for (const s of segs) {\n    if (s === '' && out.length === 0) { out.push(''); continue; }\n    if (s === '' || s === '.') continue;\n    if (s === '..') { if (out.length > 1) out.pop(); continue; }\n    out.push(s);\n  }\n  return out.join('/') || '/';\n}\nfunction resolveHref(href, base) {\n  if (!href) return null;\n  href = href.trim();\n\n  if (/^https?:\\/\\//i.test(href)) return stripQF(href.replace(/^http:\\/\\//i, 'https://'));\n  if (/^\\/\\//.test(href))       return 'https:' + stripQF(href);\n\n  const origin = getOrigin(base);\n  if (!origin) return null;\n\n  if (href.startsWith('/')) return origin + stripQF(href);\n\n  const baseDir = getBaseDir(base);\n  const combined = normalizePath(baseDir + href);\n  return origin + combined;\n}\n\n// --- 1) href contains impressum/imprint ---\nlet target = null;\nconst anchorMatches = html.match(/<a[^>]+href=[\"']?([^\"' >]+)[\"']?[^>]*>/gi);\nif (anchorMatches) {\n  for (const a of anchorMatches) {\n    const hrefMatch = a.match(/href=[\"']?([^\"' >]+)[\"']?/i);\n    if (!hrefMatch) continue;\n    const href = hrefMatch[1];\n    if (/(impressum|imprint)/i.test(href)) { target = href; break; }\n  }\n}\n\n// --- 2) fallback: inner text contains Impressum/Imprint ---\nif (!target) {\n  const aTag = html.match(\n    /<a[^>]+href=[\"']?([^\"' >]+)[\"']?[^>]*>(?=[\\s\\S]*?(Impressum|Imprint))[\\s\\S]*?<\\/a>/i\n  );\n  if (aTag) target = aTag[1];\n}\n\n// --- 3) resolve to absolute ---\nlet impressumUrl = null;\nif (target) impressumUrl = resolveHref(target, pageUrl);\n\n// return as a single object (not array) in Run Once for Each Item\nreturn {\n  impressumUrl\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        -96
+      ],
+      "id": "00c420f8-2364-480e-ae62-4541ab460dea",
+      "name": "Find Impressum Link",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.company_website }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": " text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Upgrade-Insecure-Requests",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "76789d8e-8b46-4b27-b233-39ec7fac77ba",
+      "name": "Fetch Website"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.impressumUrl }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "b9ad5b90-b82a-4314-8577-e06a926d8025"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "impressum"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a0b55d3b-4c9d-4f8a-9838-3da1d19ea365",
+                    "leftValue": "={{ $json.impressumUrl }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "no_impressum"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1328,
+        -96
+      ],
+      "id": "f74c5b7f-5a5f-4666-8b65-1268a8fc0e96",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = $json.data; // cleaned text from Impressum page\n\n// --- 1. Normalize common obfuscations in visible text ---\ntext = text\n  .replace(/\\(at\\)/gi, '@')\n  .replace(/\\[at\\]/gi, '@')\n  .replace(/\\s+at\\s+/gi, '@')\n  .replace(/\\(dot\\)/gi, '.')\n  .replace(/\\[dot\\]/gi, '.')\n  .replace(/\\s+dot\\s+/gi, '.');\n\n// --- 2. Decode TYPO3-style linkTo_UnCryptMailto obfuscations ---\nconst typo3Matches = [...text.matchAll(/linkTo_UnCryptMailto\\('([^']+)'\\)/gi)];\nlet typo3Decoded = [];\nfor (const m of typo3Matches) {\n  const encoded = m[1];\n  let decoded = '';\n  for (let i = 0; i < encoded.length; i++) {\n    decoded += String.fromCharCode(encoded.charCodeAt(i) - 1);\n  }\n  decoded = decoded.replace(/^mailto:/i, '');\n  typo3Decoded.push(decoded);\n}\n\n// --- 3. Regex for plain emails ---\nconst plainEmails = [...text.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/gi)]\n  .map(m => m[0]);\n\n// --- 4. Merge and dedupe ---\nconst allEmails = Array.from(new Set([...plainEmails, ...typo3Decoded]));\n\n// --- 5. Remove .png/.jpg/.jpeg/etc. false positives ---\nconst imageExtPattern = /\\.(png|jpg|jpeg|gif|webp)$/i;\nconst cleanedEmails = allEmails.filter(e => !imageExtPattern.test(e));\n\n// --- 6. Other fields ---\nconst phones = [...text.matchAll(/(?:\\+49|0)\\s?[1-9][0-9\\s\\/\\-\\(\\)]{3,}/g)]\n  .map(m => m[0]);\n\nconst vatIds = [...text.matchAll(/DE[0-9]{9}/g)]\n  .map(m => m[0]);\n\nconst plzCities = [...text.matchAll(/\\d{5}\\s+[A-ZÄÖÜ][a-zäöüß]+(?:[-\\s][A-ZÄÖÜa-zäöüß]+)*/g)]\n  .map(m => m[0]);\n\nreturn [{\n  json: {\n    emails: cleanedEmails,\n    phones,\n    vatIds,\n    plzCities\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        -96
+      ],
+      "id": "02a7092d-7ccb-4f54-9d0f-1ab959b39da9",
+      "name": "Get Contact Info"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json;\n\nfunction normalizeEmail(e) {\n  return e.trim().toLowerCase();\n}\n\nfunction normalizePhone(p) {\n  return p\n    .replace(/[^\\d+\\/\\-\\s]/g, \"\") // keep only digits, +, /, - and spaces\n    .replace(/\\s+/g, \" \")         // collapse multiple spaces\n    .trim();\n}\n\n// simple dedupe helper\nfunction dedupe(arr) {\n  return [...new Set(arr.filter(v => v && v.length > 3))];\n}\n\nreturn [{\n  json: {\n    emails: dedupe(data.emails.map(normalizeEmail)),\n    phones: dedupe(data.phones.map(normalizePhone)),\n    vatIds: dedupe(data.vatIds.map(v => v.trim())),\n    plzCities: dedupe(data.plzCities.map(v => v.trim())),\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2224,
+        -96
+      ],
+      "id": "a8b0726c-471f-4bcd-b284-5d9ff7da5c6f",
+      "name": "De-dupe"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals",
+          "mode": "list",
+          "cachedResultName": "Companies - AI Sales Team",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 233130169,
+          "mode": "list",
+          "cachedResultName": "Google Test Results",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit#gid=233130169"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('When Executed by Another Workflow').item.json.row_id }}",
+            "email": "={{ $json.emails[0][0] }}",
+            "analysis": "={{ $json.analysis[0] || ''}}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "district",
+              "displayName": "district",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ceo_name",
+              "displayName": "ceo_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "analysis",
+              "displayName": "analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location_link",
+              "displayName": "location_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2944,
+        112
+      ],
+      "id": "c232ac4a-bee4-4035-8ddd-a102d05d1b66",
+      "name": "Update row in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "website",
+              "condition": "eq",
+              "keyValue": "={{ $('If Website').item.json.company_website }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.emails.join() }}"
+            },
+            {
+              "fieldId": "analysis",
+              "fieldValue": "={{ $json.analysis[0] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2944,
+        -96
+      ],
+      "id": "882d7fc5-7d46-4517-88f0-bcf6f3c7382d",
+      "name": "Update Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8f0165cf-08e0-4798-9130-f28d85c2d9a7",
+              "name": "impressumUrl",
+              "value": "={{ $('Normalize Website URL').item.json.company_website }}impressum",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1552,
+        0
+      ],
+      "id": "fe0e932d-608c-407f-a950-38252da1408e",
+      "name": "Guess Impressum URL"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "/// n8n Code node (Run Once for Each Item)\n// Normalize company_website to homepage without using URL()\n// - Force https\n// - Strip ?query and #hash\n// - Collapse any path/file to origin/\n\nconst original = $json.company_website || '';\n\nfunction ensureHttps(u) {\n  let s = String(u).trim();\n  if (!/^https?:\\/\\//i.test(s)) s = 'https://' + s;\n  s = s.replace(/^http:\\/\\//i, 'https://');\n  return s;\n}\n\nfunction normalizeToHomepage(raw) {\n  if (!raw) return raw;\n\n  // 1) scheme + upgrade\n  //let s = ensureHttps(raw);\n\n  // 2) drop query/fragment early\n  s = raw.split(/[?#]/)[0];\n\n  // 3) extract origin (scheme + host[:port])\n  const m = s.match(/^(https?:\\/\\/)([^\\/?#]+)(?=\\/|$)/i);\n  if (!m) return s; // fallback\n\n  return `${m[1]}${m[2]}/`;\n}\n\nconst normalized = normalizeToHomepage(original);\n\nreturn {\n    json: {\n      ...$json,\n      original_company_website: original,\n      company_website: normalized,\n      _debug: { before: original, after: normalized }\n    }\n  }\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "d194c244-e7fc-4ecf-8017-aed948a81806",
+      "name": "Normalize Website URL"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        896,
+        464
+      ],
+      "id": "4c7c1881-dcd2-4989-b70f-f85e278df5fa",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "## Alternative Analysis \n- follow google location link and attempt \n- investigate contact extraction via APify, Outscraper",
+        "height": 352,
+        "width": 368,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        768,
+        320
+      ],
+      "id": "f18ae72c-25da-4056-8971-8b7116ac6b6f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Use \"Impressum\" standard to sniff out contact details from Website",
+        "height": 464,
+        "width": 864,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        -240
+      ],
+      "id": "2f5b8aa6-5523-430e-87ab-038fcdf39bf2",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist AnalyseAnna – eine digitale Recherche- und Analyse-Expertin. Präzise, professionell und lösungsorientiert.\nDeine Aufgabe: Analysiere den eingehenden HTML-Quellcode einer Unternehmenswebsite und erstelle eine kurze, prägnante Zusammenfassung im Stil eines Executive Summary für Marketing-Fachleute.\n\nZiel\n\nBeschreibe in wenigen Sätzen, was das Unternehmen anbietet (Leistungen, Produkte, Zielgruppe).\n\nListe die wichtigsten besonderen Stärken oder Alleinstellungsmerkmale stichpunktartig auf (max. 3–5 Bullet Points).\n\nErgänze einen kurzen Eindruck der Website (Tonfall, Präsentation, Marketing-Ansätze).\n\nRegeln\n\nVerwende ausschließlich Informationen aus dem HTML-Quellcode. Keine Mutmaßungen oder externe Quellen.\n\nFormuliere kurz, klar und in professionellem Ton.\n\nFokussiere dich auf Marketing-relevante Aspekte.\n\nHalte die Gesamtlänge kompakt (ca. 1–2 Absätze + Bullet Points).\nInput:\n {{ $json.data }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1168,
+        -624
+      ],
+      "id": "8ca6e47b-caea-4b93-8aaf-5cac05ac955a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1104,
+        -432
+      ],
+      "id": "232d271f-7e72-4e3b-83b2-f897017d6a33",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## AI Analysis\n- Based only on the provided HTML source of the company’s website:\n- Extract what this business does.\n- Identify any unique or standout features.\n- Summarize the overall impression and insights useful for digital marketing professionals.\n\n",
+        "height": 544,
+        "width": 624,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        -816
+      ],
+      "id": "3280d846-ce83-4efb-8151-07dc814fc350",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2512,
+        -96
+      ],
+      "id": "698252a1-1bad-4efa-bd3f-16a7110ae3a2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "output",
+              "renameField": true,
+              "outputFieldName": "analysis"
+            },
+            {
+              "fieldToAggregate": "emails"
+            },
+            {
+              "fieldToAggregate": "phones"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        -96
+      ],
+      "id": "67d8944e-2657-4bf7-a4b2-ca48d18a1934",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.impressumUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": " text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Upgrade-Insecure-Requests",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1776,
+        -176
+      ],
+      "id": "25664bf7-678c-4e5f-ae97-155447c494fe",
+      "name": "Fetch Website1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.impressumUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": " text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Upgrade-Insecure-Requests",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1776,
+        0
+      ],
+      "id": "0b43a7c9-8c50-49d8-af42-f3d3c7f7f9f1",
+      "name": "Fetch Website2",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        96
+      ],
+      "id": "de8e7139-adc1-4d38-88ed-9d8f8eb5ce2a",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -288
+      ],
+      "id": "e1729e6e-f458-41fd-ac9f-1997241bf5b5",
+      "name": "No Operation, do nothing2"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Website": {
+      "main": [
+        [
+          {
+            "node": "Normalize Website URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Website": {
+      "main": [
+        [
+          {
+            "node": "Find Impressum Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Impressum Link": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Fetch Website1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guess Impressum URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Contact Info": {
+      "main": [
+        [
+          {
+            "node": "De-dupe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "De-dupe": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Guess Impressum URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Website2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Website URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Website1": {
+      "main": [
+        [
+          {
+            "node": "Get Contact Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Website2": {
+      "main": [
+        [
+          {
+            "node": "Get Contact Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "row_id": 42813,
+          "company_name": "Zahnarztpraxis Krefeld - Dr. Z Zahnmedizinisches Versorgungszentrum Krefeld",
+          "location_link": "https://www.google.com/maps/place/Zahnarztpraxis+Krefeld+-+Dr.+Z+Zahnmedizinisches+Versorgungszentrum+Krefeld/@51.331756899999995,6.565063899999999,14z/data=!4m8!1m2!2m1!1sZahnarztpraxis+Krefeld+-+Dr.+Z+Zahnmedizinisches+Versorgungszentrum+Krefeld!3m4!1s0x47b8baaab0a60e87:0x4a56429c14105176!8m2!3d51.331756899999995!4d6.565063899999999",
+          "company_website": "https://www.doktor-z.net/praxen-standorte/unsere-praxis-krefeld/"
+        }
+      }
+    ]
+  },
+  "versionId": "8e4681e9-be14-4422-9f95-9480470ccfc1",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-09-02T01:27:31.943Z",
+      "createdAt": "2025-09-02T01:27:31.943Z",
+      "role": "workflow:owner",
+      "workflowId": "E9DIeC5qr9BvwdK8",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
