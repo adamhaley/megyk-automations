@@ -1,0 +1,1768 @@
+{
+  "updatedAt": "2025-12-03T05:02:16.000Z",
+  "createdAt": "2025-11-29T00:15:28.375Z",
+  "id": "axrCYk80eH1vcZvp",
+  "name": "Ingest Ebook v2",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -96
+      ],
+      "id": "57efaccf-dc80-4b4f-98e4-1ae6760828cd",
+      "name": "Extract Text"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $('Extract Title/Author from Filename').item.json.originalFilename }}",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        -96
+      ],
+      "id": "b41490cb-d900-4438-85b4-c3f60f546a97",
+      "name": "Read Book from Disk",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "dae5a7d7-4c1d-475a-a730-d05a534dea0f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9a55ed5a-ca44-412c-9543-f3fd83332384",
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "application/epub+zip",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "epub"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fecb5e9f-2a6f-45b3-89dd-686663afd69c",
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "text/plain",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "txt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1c7fa4f9-22bc-4ce7-b263-0f232fe8e922",
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "application/x-mobipocket-ebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mobi"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -704,
+        -128
+      ],
+      "id": "f9eb4ca5-f456-4084-a393-c0d9cbf485b4",
+      "name": "Detect Filetype"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "6f0620d3-1342-4637-9d3e-e00e9e6749cc",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -2176,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  ebook-convert \"/data/{{ $json.fileName }}\" \"/data/{{ $json.fileName.replace('.mobi', '.txt') }}\"\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        144
+      ],
+      "id": "6aed7048-1dc7-4862-b63f-b637dacd7f9e",
+      "name": "Convert MOBI to TXT"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.fileName.replace('.mobi', '.txt') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        144
+      ],
+      "id": "6b0d9c3a-d679-48dc-bc4a-d8bc1590325e",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        144
+      ],
+      "id": "c86cf2e9-f4a5-4fac-a60e-8aa1163e608b",
+      "name": "Extract Text1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "44e588ef-ab9b-460c-909c-84ea218957f2",
+              "leftValue": "={{ $json.filename }}",
+              "rightValue": "mobi",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1952,
+        -96
+      ],
+      "id": "b5207682-2e8a-422a-9943-a090bb0321d3",
+      "name": "Filter",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      filename: \"80 Fundamental Models for Busin - Alberto Scappini.txt\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1728,
+        -96
+      ],
+      "id": "fcd67dc6-3660-4da3-9414-80d32f0a83e7",
+      "name": "Code in JavaScript",
+      "executeOnce": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  bash -c 'ebook-convert \"/data/{{ $json.fileName }}\" \"/data/{{ $json.fileName.replace(\".epub\", \".txt\") }}\" && cat \"/data/{{ $json.fileName.replace(\".epub\", \".txt\") }}\"'\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -176
+      ],
+      "id": "513c1768-bdf5-4dd9-bc0b-b85c9102b327",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.fileName.replace('.epub', '.txt') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -176
+      ],
+      "id": "2ca1ddc7-87be-4bd7-a713-27a1647a549f",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get filename from input\nconst fileName = $('Start').first().json.filename || \"\";\n\n// Remove extension\nconst ext = fileName.includes(\".\")\n  ? fileName.split(\".\").pop().trim()\n  : null;\n\nconst nameWithoutExt = fileName.replace(/\\.[^.]+$/, \"\").trim();\n\n// Pattern: \"Title - Author\"\nlet title = null;\nlet author = null;\n\nconst match = nameWithoutExt.match(/^(.*?)\\s*-\\s*(.*)$/);\n\nif (match) {\n  title = match[1].trim() || null;\n  author = match[2].trim() || null;\n} else {\n  // Fallback if no \" - \" separator\n  title = nameWithoutExt.trim();\n  author = null;\n}\n\nreturn [\n  {\n    json: {\n      title,\n      author,\n      baseName: nameWithoutExt,\n      ext,\n      originalFilename: fileName,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1504,
+        -96
+      ],
+      "id": "31f4418b-cc83-4ae0-80de-afbc3ad44f76",
+      "name": "Extract Title/Author from Filename"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "responsesApiEnabled": false,
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1408,
+        128
+      ],
+      "id": "15f9fb76-6b8d-450c-a28a-e8be3a70e793",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"title\": \"Lorem Ipsum Dolor Samet\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1152,
+        128
+      ],
+      "id": "0e8b213f-1494-4b2f-bf47-02dd2a782396",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -432
+      ],
+      "id": "3b473640-a228-462a-a833-fd2da02e35b7",
+      "name": "PDF to Text"
+    },
+    {
+      "parameters": {
+        "jsCode": "// AvionAI / Megyk — LLM-Friendly Normalization Pass\n\nlet text = '';\n\ntry { text = $('PDF to Text').first().json.text || ''; } catch (e) {}\nif (!text) try { text = $('Extract Text').first().json.data || ''; } catch (e) {}\nif (!text) try { text = $('Extract Text1').first().json.data || ''; } catch (e) {}\nif (!text && $json.text) text = $json.text;\nif (!text && $json.data) text = $json.data;\nif (!text) throw new Error('No text found.');\n\n// 1. Normalize whitespace and invisible characters\nlet cleaned = text\n  .replace(/\\r/g, '')\n  .replace(/\\t+/g, ' ')\n  .replace(/\\u00A0/g, ' ')\n  .replace(/ {2,}/g, ' ')\n  .trim();\n\n// 2. Remove repeated headers/footers\nconst lines = cleaned.split('\\n');\nconst freq = {};\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (trimmed.length > 0 && trimmed.length < 80) {\n    freq[trimmed] = (freq[trimmed] || 0) + 1;\n  }\n}\nconst repeats = new Set(Object.keys(freq).filter(k => freq[k] > 3));\ncleaned = lines.filter(line => !repeats.has(line.trim())).join('\\n');\n\n// 3. Remove standalone page numbers\ncleaned = cleaned.replace(/^\\s*\\d{1,4}\\s*$/gm, '');\n\n// 4. Merge hyphenated words (safe)\ncleaned = cleaned.replace(/([a-zA-Z])-?\\n([a-zA-Z])/g, '$1$2');\n\n// 5. Normalize paragraph spacing BUT preserve line structure\ncleaned = cleaned\n  .replace(/\\n{3,}/g, '\\n\\n') // collapse 3+ newlines → 2\n  .trim();\n\n// DO NOT MERGE SINGLE NEWLINES HERE — preserves headings, chapters, TOC\n\nreturn { text: cleaned };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        -96
+      ],
+      "id": "93edb6b3-95a6-45c8-85cc-6ed5ee16d078",
+      "name": "Normalize for LLM"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1872,
+        624
+      ],
+      "id": "9631f52b-bd94-45c4-9c94-d7ce84579c54",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n  \"chunk\": \"{{ $json.chunk }}\",\n  \"global_start_index\": {{ $json.global_start_index }}\n}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a chapter-boundary detector for long books. You will receive:  - \"chunk\": a slice of the book text - \"global_start_index\": the starting character index of the slice in the full book  Your job: Identify any chapter start headings in this chunk.  Output format: Return one single JSON object with the field \"chapter_starts\": an array of objects.  Each item in \"chapter_starts\" must include: - global_index (global_start_index + local_index) - local_index (offset inside chunk) - raw_heading - normalized_title - confidence (0–1)  If no chapter starts are found, return: { \"chapter_starts\": [] }  Never return multiple top-level objects. Never return bare arrays.  Never return text outside the JSON."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1952,
+        400
+      ],
+      "id": "5d249646-a525-40ac-bff5-d65727ef1acf",
+      "name": "Detect Chapters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.text || $json.data || \"\";\nif (!text) throw new Error(\"No book text found\");\n\nconst CHUNK_SIZE = 6000;      // chars\nconst OVERLAP    = 800;       // chars\n\nlet chunks = [];\nlet i = 0;\nconst total = text.length;\n\nwhile (i < total) {\n  const start = i;\n  const end   = Math.min(i + CHUNK_SIZE, total);\n\n  const chunk = text.slice(start, end);\n\n  chunks.push({\n    chunk,\n    global_start_index: start,\n  });\n\n  // advance with overlap\n  if (end === total) break;\n  i = end - OVERLAP;\n}\n\nreturn chunks.map(c => ({ json: c }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2176,
+        400
+      ],
+      "id": "b20f2606-e8e0-44a7-9364-bf4227758a06",
+      "name": "Chunk"
+    },
+    {
+      "parameters": {
+        "jsCode": "//\n// FUZZY MERGE CHAPTER BOUNDARIES (NO CHAPTER NUMBERS REQUIRED)\n//\n\nconst items = $input.all();\nlet all = [];\n\n// ---------------------------------------------\n// Phase 1: Parse each LLM output JSON\n// ---------------------------------------------\nfor (const item of items) {\n  let data = item.json;\n\n  if (typeof data.text === 'string') {\n    let raw = data.text.replace(/```json|```/g, '').trim();\n    try { data = JSON.parse(raw); } catch { continue; }\n  }\n\n  if (!Array.isArray(data.chapter_starts)) continue;\n\n  for (const s of data.chapter_starts) {\n    if (typeof s.global_index !== 'number') continue;\n\n    all.push({\n      global_index: s.global_index,\n      raw_heading: (s.raw_heading || \"\").trim(),\n      normalized_title: (s.normalized_title || \"\").trim(),\n      confidence: s.confidence || 0,\n    });\n  }\n}\n\n// ---------------------------------------------\n// If nothing found, return empty array (safe)\n// ---------------------------------------------\nif (all.length === 0) {\n  return [{ json: { chapter_boundaries: [] }}];\n}\n\n// ---------------------------------------------\n// Phase 2: Sort by position\n// ---------------------------------------------\nall.sort((a, b) => a.global_index - b.global_index);\n\n// ---------------------------------------------\n// Phase 3: Basic Filters\n// ---------------------------------------------\n\nfunction looksLikeChapter(h) {\n  if (!h) return false;\n\n  const lower = h.toLowerCase();\n\n  // MOST important: if it literally contains chapter\n  if (lower.includes(\"chapter\")) return true;\n\n  // Skip obvious garbage\n  if ([\"preface\",\"foreword\",\"index\",\"appendix\",\"introduction\",\"acknowledg\", \"contents\"].some(w => lower.includes(w)))\n    return false;\n\n  // Title with 2+ capitalized words usually means section heading\n  const capWords = h.split(/\\s+/).filter(w => /^[A-Z][A-Za-z]/.test(w)).length;\n  if (capWords >= 2) return true;\n\n  // Last resort: headings of at least 15 chars AND confidence ≥ 0.85\n  if (h.length >= 15) return true;\n\n  return false;\n}\n\n// Filter out junk\nlet filtered = all.filter(s =>\n  s.confidence >= 0.75 &&\n  (looksLikeChapter(s.raw_heading) || looksLikeChapter(s.normalized_title))\n);\n\n// If filtering killed everything, fall back to the raw list\nif (filtered.length === 0) filtered = all;\n\n// ---------------------------------------------\n// Phase 4: Deduplicate headings\n// ---------------------------------------------\nfunction normalizeForDedup(s) {\n  return s.normalized_title.toLowerCase().replace(/[^a-z0-9]/g, \"\").trim();\n}\n\nconst seen = new Set();\nlet deduped = [];\n\nfor (const s of filtered) {\n  const key = normalizeForDedup(s);\n  if (!key) continue;\n\n  if (!seen.has(key)) {\n    seen.add(key);\n    deduped.push(s);\n  }\n}\n\n// ---------------------------------------------\n// Phase 5: Sort by global index again\n// ---------------------------------------------\ndeduped.sort((a, b) => a.global_index - b.global_index);\n\n// ---------------------------------------------\n// DONE\n// ---------------------------------------------\nreturn [\n  { json: { chapter_boundaries: deduped } }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        400
+      ],
+      "id": "17f4e8d2-7026-4e06-8aa2-577f32b21f12",
+      "name": "Merge",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "//\n// CHAPTER SLICER WITH SMART BOUNDARY SNAPPING\n// Run Once For All Items\n//\n\n// 1. Full book text (from your Normalize node)\nconst fullText = $('Normalize for LLM').first().json.text || \"\";\n\n// 2. Chapter boundaries (from Merge)\nconst mergeNode = $('Merge').first();\nlet boundaries = mergeNode.json.chapter_boundaries || [];\n\nif (!fullText || !boundaries.length) {\n  throw new Error(\"Missing fullText or chapter_boundaries\");\n}\n\n// --------------------------------------------------------------\n// Helper: get candidate anchor strings for a boundary\n// (raw heading, normalized heading, and versions without numbers)\n// --------------------------------------------------------------\nfunction getAnchorCandidates(boundary) {\n  const raw = String(boundary.raw_heading || \"\").trim();\n  const norm = String(boundary.normalized_title || \"\").trim();\n\n  const stripNum = (s) => s.replace(/^\\d+[\\.\\s:\\-\\u2013\\u2014]*/, \"\").trim();\n\n  const candidates = [];\n  if (norm) candidates.push(norm);\n  if (raw) candidates.push(raw);\n\n  const normNoNum = stripNum(norm);\n  const rawNoNum = stripNum(raw);\n\n  if (normNoNum && normNoNum !== norm) candidates.push(normNoNum);\n  if (rawNoNum && rawNoNum !== raw) candidates.push(rawNoNum);\n\n  // Deduplicate while preserving order\n  const seen = new Set();\n  return candidates.filter(c => {\n    const key = c.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n}\n\n// --------------------------------------------------------------\n// Helper: find best index of any anchor candidate near originalStart\n// --------------------------------------------------------------\nfunction findAnchorIndex(originalStart, boundary) {\n  const SEARCH_RADIUS = 4000; // how far back to look\n  const candidates = getAnchorCandidates(boundary);\n  if (!candidates.length) return -1;\n\n  const searchStart = Math.max(0, originalStart - SEARCH_RADIUS);\n  const searchEnd = originalStart + SEARCH_RADIUS;\n\n  let bestIdx = -1;\n  let bestDistance = Infinity;\n\n  for (const cand of candidates) {\n    if (!cand) continue;\n\n    let idx = fullText.indexOf(cand, searchStart);\n    while (idx !== -1 && idx <= searchEnd) {\n      const dist = Math.abs(idx - originalStart);\n      if (dist < bestDistance) {\n        bestDistance = dist;\n        bestIdx = idx;\n      }\n      // look for next occurrence\n      idx = fullText.indexOf(cand, idx + 1);\n    }\n  }\n\n  return bestIdx;\n}\n\n// --------------------------------------------------------------\n// Helper: snap a start position to a clean boundary\n// --------------------------------------------------------------\nfunction snapStart(originalStart, boundary) {\n  const PARAGRAPH_BACKTRACK = 600;\n\n  // 1) Try to snap to where the anchor (title) actually appears\n  const anchorIdx = findAnchorIndex(originalStart, boundary);\n  if (anchorIdx !== -1) {\n    // Try to snap back to paragraph boundary before the anchor\n    let paraStart = fullText.lastIndexOf(\"\\n\\n\", anchorIdx);\n    if (paraStart !== -1 && anchorIdx - paraStart < PARAGRAPH_BACKTRACK) {\n      return paraStart;\n    }\n    return anchorIdx;\n  }\n\n  // 2) Fallback: snap to nearest paragraph boundary before originalStart\n  let paraStart = fullText.lastIndexOf(\"\\n\\n\", originalStart);\n  if (paraStart !== -1 && originalStart - paraStart < PARAGRAPH_BACKTRACK) {\n    return paraStart;\n  }\n\n  // 3) Last resort: leave it as-is\n  return originalStart;\n}\n\n// --------------------------------------------------------------\n// Precompute snapped starts for all chapters\n// --------------------------------------------------------------\nconst snappedStarts = boundaries.map((b) =>\n  snapStart(b.global_index, b)\n);\n\n// --------------------------------------------------------------\n// Build chapter slices\n// --------------------------------------------------------------\nlet chapters = [];\n\nfor (let i = 0; i < boundaries.length; i++) {\n  const boundary = boundaries[i];\n\n  const start = snappedStarts[i];\n  const end = (i < boundaries.length - 1)\n    ? snappedStarts[i + 1]\n    : fullText.length;\n\n  const content = fullText.slice(start, end).trim();\n\n  chapters.push({\n    chapter_index: i + 1,\n    chapter_num: i + 1, // sequential only; you can ignore downstream\n    chapter_title:\n      boundary.normalized_title ||\n      boundary.raw_heading ||\n      `Section ${i + 1}`,\n    start,\n    end,\n    raw_heading: boundary.raw_heading,\n    normalized_title: boundary.normalized_title,\n    word_count: content ? content.split(/\\s+/).length : 0,\n    content,\n  });\n}\n\n// --------------------------------------------------------------\n// Output as individual items\n// --------------------------------------------------------------\nreturn chapters.map(ch => ({ json: ch }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1376,
+        400
+      ],
+      "id": "49f0bb9b-4043-4a62-91ac-306eef5d411c",
+      "name": "Slice Chapters"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Partial Title: \"{{ $json.title }}\"\nAuthor: \"{{ $json.author }}\"\n\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH.   When needed, you MUST call the WEB SEARCH tool using the query: \"{{ $json.title }} {{ $json.author }} complete book title\"  After receiving the WEB SEARCH results, you MUST:  1. Read and interpret the search results. 2. Extract or infer the MOST WIDELY KNOWN, MOST LIKELY, or MOST PUBLISHED full title. 3. Output ONLY the corrected full book title, nothing else.  If the tool output includes multiple possibilities, choose the majority or top-ranked title.  If the tool output is empty, fall back to a reasonable inference but still output ONLY the title.  You MUST NOT output the tool call or the search transcript — only the final corrected book title."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1280,
+        -96
+      ],
+      "id": "63744b33-482b-4378-8f89-97ae8ab17a42",
+      "name": "Complete Book Title"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1248,
+        608
+      ],
+      "id": "49cfceee-4909-4172-8184-4792fadda58f",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Clean and improve this chapter title:\n\n\"{{ $json.raw_heading || $json.normalized_title || $json.chapter_title }}\"\n\nReturn ONLY the new title. No numbers. No \"Chapter\". No explanations.\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a title cleaner and enhancer for a book summarization system.  TASK: Given a raw chapter heading, generate a clean, modern, semantically equivalent title.  RULES: - REMOVE all numbers (e.g., “1.”, “Chapter 3”, “27 –”, \"51.\", etc.) - REMOVE all numeric ordinals (“First”, “Second”, “Fifth”, etc. ONLY if they refer to ordering, not concepts) - DO NOT add new numbers. - DO NOT reintroduce “Chapter”, “Section”, “Part”, etc. - Title must be semantic, meaningful, human-readable. - Keep it short (3–8 words). - Preserve the intent of the original heading. - Improve clarity if the title is low-quality or all-caps.  OUTPUT FORMAT: Return ONLY the cleaned title as plain text. No quotes, no markdown, no explanations.  EXAMPLES: \"1. INTRODUCTION\" → Introduction   \"Chapter 12: Porter’s Five Forces\" → Porter's Five Forces   \"5. COMPETITIVE MAP\" → Competitive Map   \"51. MANN–WHITNEY U TEST\" → Mann–Whitney U Test   \"7. IMPORTANCE–PERFORMANCE MATRIX\" → Importance–Performance Matrix   \"Chapter 3 - Introduction to Regressions\" → Introduction to Regressions  INPUT: {{ $json.raw_heading || $json.normalized_title || $json.chapter_title }}  OUTPUT:"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1168,
+        400
+      ],
+      "id": "8437f7d1-86fd-4fd1-9cb1-ebc502a51838",
+      "name": "Clean Titles"
+    }
+  ],
+  "connections": {
+    "Read Book from Disk": {
+      "main": [
+        [
+          {
+            "node": "Detect Filetype",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Filetype": {
+      "main": [
+        [
+          {
+            "node": "PDF to Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convert MOBI to TXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert MOBI to TXT": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract Text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Extract Title/Author from Filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Extract Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Title/Author from Filename": {
+      "main": [
+        [
+          {
+            "node": "Complete Book Title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Complete Book Title",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Complete Book Title",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text": {
+      "main": [
+        [
+          {
+            "node": "Normalize for LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text1": {
+      "main": [
+        [
+          {
+            "node": "Normalize for LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF to Text": {
+      "main": [
+        [
+          {
+            "node": "Normalize for LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize for LLM": {
+      "main": [
+        [
+          {
+            "node": "Chunk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Detect Chapters",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chunk": {
+      "main": [
+        [
+          {
+            "node": "Detect Chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Chapters": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Slice Chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice Chapters": {
+      "main": [
+        [
+          {
+            "node": "Clean Titles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complete Book Title": {
+      "main": [
+        [
+          {
+            "node": "Read Book from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clean Titles",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Start": [
+      {
+        "json": {
+          "filename": "Business of Venture Capital - Ramsinghani, Mahendra;.mobi"
+        }
+      }
+    ],
+    "Merge": [
+      {
+        "json": {
+          "chapter_boundaries": [
+            {
+              "global_index": 2499,
+              "raw_heading": "CHAPTER 1\nRaise the Venture Fund",
+              "normalized_title": "Raise the Venture Fund",
+              "confidence": 1
+            },
+            {
+              "global_index": 2670,
+              "raw_heading": "CHAPTER 2\nEntry-Level Positions: Analysts and Associates",
+              "normalized_title": "Entry-Level Positions: Analysts and Associates",
+              "confidence": 1
+            },
+            {
+              "global_index": 2929,
+              "raw_heading": "CHAPTER 3\nIntellectual Stimulation and Financial Returns",
+              "normalized_title": "Intellectual Stimulation and Financial Returns",
+              "confidence": 1
+            },
+            {
+              "global_index": 3069,
+              "raw_heading": "CHAPTER 4\nAn Overview of Alternative Assets",
+              "normalized_title": "An Overview of Alternative Assets",
+              "confidence": 1
+            },
+            {
+              "global_index": 3287,
+              "raw_heading": "CHAPTER 5\nHow Limited Partners Conduct Fund Due Diligence",
+              "normalized_title": "How Limited Partners Conduct Fund Due Diligence",
+              "confidence": 1
+            },
+            {
+              "global_index": 3457,
+              "raw_heading": "CHAPTER 6\nSector-Based Strategy",
+              "normalized_title": "Sector-Based Strategy",
+              "confidence": 1
+            },
+            {
+              "global_index": 3582,
+              "raw_heading": "CHAPTER 7\nHow Institutional Investors Evaluate Fund Managers",
+              "normalized_title": "How Institutional Investors Evaluate Fund Managers",
+              "confidence": 1
+            },
+            {
+              "global_index": 3820,
+              "raw_heading": "CHAPTER 8\nFund Size and Portfolio Construction",
+              "normalized_title": "Fund Size and Portfolio Construction",
+              "confidence": 1
+            },
+            {
+              "global_index": 4079,
+              "raw_heading": "CHAPTER 9\nIndividual Performance and Attribution",
+              "normalized_title": "Individual Performance and Attribution",
+              "confidence": 1
+            },
+            {
+              "global_index": 4259,
+              "raw_heading": "CHAPTER 10\nWhy LPs Seek Emerging Managers",
+              "normalized_title": "Why LPs Seek Emerging Managers",
+              "confidence": 1
+            },
+            {
+              "global_index": 4510,
+              "raw_heading": "CHAPTER 11\nThe DNA of a Firm",
+              "normalized_title": "The DNA of a Firm",
+              "confidence": 1
+            },
+            {
+              "global_index": 4697,
+              "raw_heading": "CHAPTER 12\nBuild Your Target List of Investors",
+              "normalized_title": "Build Your Target List of Investors",
+              "confidence": 1
+            },
+            {
+              "global_index": 6008,
+              "raw_heading": "CHAPTER 13\n\nTerms of Investment: The Limited Partnership Agreement",
+              "normalized_title": "Terms of Investment: The Limited Partnership Agreement",
+              "confidence": 1
+            },
+            {
+              "global_index": 6181,
+              "raw_heading": "CHAPTER 14\n\nAgents Bring Market Intelligence and Relationships",
+              "normalized_title": "Agents Bring Market Intelligence and Relationships",
+              "confidence": 1
+            },
+            {
+              "global_index": 6345,
+              "raw_heading": "CHAPTER 15\n\nSourcing Investment Opportunities",
+              "normalized_title": "Sourcing Investment Opportunities",
+              "confidence": 1
+            },
+            {
+              "global_index": 6517,
+              "raw_heading": "CHAPTER 16\n\nThe Due Diligence Checklist",
+              "normalized_title": "The Due Diligence Checklist",
+              "confidence": 1
+            },
+            {
+              "global_index": 6676,
+              "raw_heading": "CHAPTER 17\n\nAssessing Intangibles",
+              "normalized_title": "Assessing Intangibles",
+              "confidence": 1
+            },
+            {
+              "global_index": 6827,
+              "raw_heading": "CHAPTER 18\n\nAssessing the Market",
+              "normalized_title": "Assessing the Market",
+              "confidence": 1
+            },
+            {
+              "global_index": 6972,
+              "raw_heading": "CHAPTER 19\n\nThe Spirit of the Term Sheet",
+              "normalized_title": "The Spirit of the Term Sheet",
+              "confidence": 1
+            },
+            {
+              "global_index": 7152,
+              "raw_heading": "CHAPTER 20\n\nSelf-Education: Preparing for Your Board Role",
+              "normalized_title": "Self-Education: Preparing for Your Board Role",
+              "confidence": 1
+            },
+            {
+              "global_index": 7286,
+              "raw_heading": "CHAPTER 21\n\nToward a Better Board Culture",
+              "normalized_title": "Toward a Better Board Culture",
+              "confidence": 1
+            },
+            {
+              "global_index": 7414,
+              "raw_heading": "CHAPTER 22\n\nGood Governance as the First Step toward Value Creation",
+              "normalized_title": "Good Governance as the First Step toward Value Creation",
+              "confidence": 1
+            },
+            {
+              "global_index": 7554,
+              "raw_heading": "CHAPTER 23\n\nChallenges among Shareholders",
+              "normalized_title": "Challenges among Shareholders",
+              "confidence": 1
+            },
+            {
+              "global_index": 7665,
+              "raw_heading": "CHAPTER 24\n\nPreconditions for an Exit",
+              "normalized_title": "Preconditions for an Exit",
+              "confidence": 1
+            },
+            {
+              "global_index": 7754,
+              "raw_heading": "CHAPTER 25\n\nThe Sell Process",
+              "normalized_title": "The Sell Process",
+              "confidence": 1
+            },
+            {
+              "global_index": 7893,
+              "raw_heading": "CHAPTER 26\n\nThe IPO Process: The Long and Winding Road",
+              "normalized_title": "The IPO Process: The Long and Winding Road",
+              "confidence": 1
+            },
+            {
+              "global_index": 8053,
+              "raw_heading": "CHAPTER 27\n\nHuman Psychology",
+              "normalized_title": "Human Psychology",
+              "confidence": 1
+            },
+            {
+              "global_index": 21014,
+              "raw_heading": "One\nRaising the Venture Fund",
+              "normalized_title": "Chapter 1: Raising the Venture Fund",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 21415,
+              "raw_heading": "CHAPTER 1",
+              "normalized_title": "Chapter 1",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 41952,
+              "raw_heading": "CHAPTER 2",
+              "normalized_title": "Chapter 2",
+              "confidence": 1
+            },
+            {
+              "global_index": 52741,
+              "raw_heading": "INTERNSHIPS AND CAMPUS RECRUITMENT",
+              "normalized_title": "Internships and Campus Recruitment",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 57369,
+              "raw_heading": "MIDLEVEL POSITIONS: PRINCIPALS AND MDS",
+              "normalized_title": "Midlevel Positions: Principals and MDs",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 58117,
+              "raw_heading": "INTERVIEWING FOR YOUR VC POSITION",
+              "normalized_title": "Interviewing for Your VC Position",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 67688,
+              "raw_heading": "From Entrepreneur to VC",
+              "normalized_title": "From Entrepreneur to VC",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 73909,
+              "raw_heading": "CHAPTER 3\n\nBuilding Your Career as a\n\nVenture Capitalist",
+              "normalized_title": "Chapter 3: Building Your Career as a Venture Capitalist",
+              "confidence": 1
+            },
+            {
+              "global_index": 78877,
+              "raw_heading": "BUILDING YOUR CAREER AS A VENTURE CAPITALIST",
+              "normalized_title": "Building Your Career as a Venture Capitalist",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 89195,
+              "raw_heading": "A 20-YEAR-OLD VC",
+              "normalized_title": "A 20-Year-Old VC",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 100320,
+              "raw_heading": "WHAT MAKES A GOOD VC? BRAINS, ENERGY, PERSONALITY . . .",
+              "normalized_title": "What Makes a Good VC? Brains, Energy, Personality",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 104967,
+              "raw_heading": "THE CHALLENGES OF A VC CAREER",
+              "normalized_title": "The Challenges of a VC Career",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 105774,
+              "raw_heading": "BEING REASONABLY NICE CAN BE A COMPETITIVE ADVANTAGE.",
+              "normalized_title": "Being Reasonably Nice Can Be a Competitive Advantage",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 106410,
+              "raw_heading": "THE BUSINESS OF HOME RUNS",
+              "normalized_title": "The Business of Home Runs",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 115765,
+              "raw_heading": "CHAPTER 4",
+              "normalized_title": "Chapter 4",
+              "confidence": 1
+            },
+            {
+              "global_index": 130849,
+              "raw_heading": "Endowments and Foundations",
+              "normalized_title": "Endowments and Foundations",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 145672,
+              "raw_heading": "Corporate Operating Funds",
+              "normalized_title": "Corporate Operating Funds",
+              "confidence": 1
+            },
+            {
+              "global_index": 145923,
+              "raw_heading": "FUND OF FUNDS",
+              "normalized_title": "Fund of Funds",
+              "confidence": 1
+            },
+            {
+              "global_index": 151990,
+              "raw_heading": "FOF MODELS: VARIATION OF A THEME",
+              "normalized_title": "FoF Models: Variation of a Theme",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 166885,
+              "raw_heading": "CHAPTER 5\n\nHow Limited Partners Conduct\n\nFund Due Diligence",
+              "normalized_title": "Chapter 5: How Limited Partners Conduct Fund Due Diligence",
+              "confidence": 1
+            },
+            {
+              "global_index": 172642,
+              "raw_heading": "EVALUATING THE VENTURE FIRMS",
+              "normalized_title": "Evaluating the Venture Firms",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 178052,
+              "raw_heading": "CHAPTER 6\n\nDefi ning Your Fund’s\n\nInvestment Strategy",
+              "normalized_title": "Defining Your Fund’s Investment Strategy",
+              "confidence": 1
+            },
+            {
+              "global_index": 193665,
+              "raw_heading": "ROAD MAP INVESTING",
+              "normalized_title": "Road Map Investing",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 198959,
+              "raw_heading": "CHAPTER 7\n\nHow Institutional Investors\n\nEvaluate Fund Managers",
+              "normalized_title": "Chapter 7: How Institutional Investors Evaluate Fund Managers",
+              "confidence": 1
+            },
+            {
+              "global_index": 218495,
+              "raw_heading": "I STILL HAVEN’T FOUND WHAT I’M LOOKING FOR",
+              "normalized_title": "I Still Haven't Found What I'm Looking For",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 223998,
+              "raw_heading": "CHAPTER 8\n\nFund Size and Portfolio\n\nConstruction",
+              "normalized_title": "Chapter 8: Fund Size and Portfolio Construction",
+              "confidence": 1
+            },
+            {
+              "global_index": 239466,
+              "raw_heading": "MARKET TIMING",
+              "normalized_title": "Market Timing",
+              "confidence": 1
+            },
+            {
+              "global_index": 239907,
+              "raw_heading": "WHY LPS TERMINATE EXISTING RELATIONSHIPS",
+              "normalized_title": "Why LPs Terminate Existing Relationships",
+              "confidence": 1
+            },
+            {
+              "global_index": 244869,
+              "raw_heading": "CHAPTER 9\n\n“This is the excellent foppery of the world, that,",
+              "normalized_title": "Chapter 9",
+              "confidence": 1
+            },
+            {
+              "global_index": 265859,
+              "raw_heading": "ALL THE MANAGERS ARE ABOVE AVERAGE",
+              "normalized_title": "All the Managers Are Above Average",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 271987,
+              "raw_heading": "CHAPTER 10\n\nEmerging Managers: A\n\nPromise of the Future",
+              "normalized_title": "Chapter 10: Emerging Managers: A Promise of the Future",
+              "confidence": 1
+            },
+            {
+              "global_index": 276847,
+              "raw_heading": "Emerging Managers: A Promise of the Future",
+              "normalized_title": "Emerging Managers: A Promise of the Future",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 281518,
+              "raw_heading": "FORTY-SEVEN EXITS AND $4.3 BILLION OF VALUE, ALL IN SEVEN YEARS",
+              "normalized_title": "Forty-Seven Exits and $4.3 Billion of Value, All in Seven Years",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 282476,
+              "raw_heading": "HOW INVESTORS RANK EMERGING MANAGERS",
+              "normalized_title": "How Investors Rank Emerging Managers",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 286565,
+              "raw_heading": "INSTITUTIONAL ALLOCATIONS FOR EMERGING MANAGERS",
+              "normalized_title": "Institutional Allocations for Emerging Managers",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 288621,
+              "raw_heading": "A TALE OF TWO EMERGING MANAGERS",
+              "normalized_title": "A Tale of Two Emerging Managers",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 291679,
+              "raw_heading": "THE GLOBAL EMERGING MANAGER: 500 STARTUPS",
+              "normalized_title": "The Global Emerging Manager: 500 Startups",
+              "confidence": 1
+            },
+            {
+              "global_index": 296855,
+              "raw_heading": "CHAPTER 11\n\nThe Venture Capital Firm,\nOperations, and Culture",
+              "normalized_title": "Chapter 11: The Venture Capital Firm, Operations, and Culture",
+              "confidence": 1
+            },
+            {
+              "global_index": 301858,
+              "raw_heading": "WHO IS MY CUSTOMER?",
+              "normalized_title": "Who is My Customer?",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 312892,
+              "raw_heading": "FROM SAND HILL ROAD TO SECOND LIFE, BESSEMER GAINS AN ADVANTAGE IN VIRTUAL LAND",
+              "normalized_title": "From Sand Hill Road to Second Life, Bessemer Gains an Advantage in Virtual Land",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 313451,
+              "raw_heading": "Administration and Operations: The Back Offi ce",
+              "normalized_title": "Administration and Operations: The Back Office",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 318676,
+              "raw_heading": "CHAPTER 12",
+              "normalized_title": "Chapter 12",
+              "confidence": 1
+            },
+            {
+              "global_index": 327972,
+              "raw_heading": "The Fund-Raising Process",
+              "normalized_title": "The Fund-Raising Process",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 338376,
+              "raw_heading": "SNAGGING THAT LEAD INVESTOR: LESSONS FROM RICHARD KRAMLICH, FOUNDER OF NEW ENTERPRISE ASSOCIATES (NEA), A LEADING VENTURE FIRM",
+              "normalized_title": "Snagging That Lead Investor: Lessons from Richard Kramlich, Founder of New Enterprise Associates (NEA), A Leading Venture Firm",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 339468,
+              "raw_heading": "COMMUNICATE, CREATE, AND MAINTAIN MOMENTUM",
+              "normalized_title": "Communicate, Create, and Maintain Momentum",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 340707,
+              "raw_heading": "MAYBE YOU ARE JUST NOT READY FOR VENTURE CAPITAL",
+              "normalized_title": "Maybe You Are Just Not Ready for Venture Capital",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 341293,
+              "raw_heading": "ANNOUNCING THE CLOSE",
+              "normalized_title": "Announcing the Close",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 344682,
+              "raw_heading": "CHAPTER 13\n\nTerms of Investment: The Limited",
+              "normalized_title": "Chapter 13: Terms of Investment: The Limited",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 358949,
+              "raw_heading": "FUND GOVERNANCE TERMS",
+              "normalized_title": "Fund Governance Terms",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 364826,
+              "raw_heading": "WHAT INSTITUTIONAL LPS SEEK",
+              "normalized_title": "What Institutional LPs Seek",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 374633,
+              "raw_heading": "CHAPTER 14\n\nThe Role of Placement Agents\n\nin Fund-Raising",
+              "normalized_title": "Chapter 14: The Role of Placement Agents in Fund-Raising",
+              "confidence": 1
+            },
+            {
+              "global_index": 390972,
+              "raw_heading": "Making Investments",
+              "normalized_title": "Making Investments",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 396791,
+              "raw_heading": "CHAPTER 15\n\nSourcing Investment",
+              "normalized_title": "Sourcing Investment",
+              "confidence": 1
+            },
+            {
+              "global_index": 401448,
+              "raw_heading": "DORM ROOM FUND: GET A KID AND LET HIM DO HIS THING",
+              "normalized_title": "Dorm Room Fund: Get a Kid and Let Him Do His Thing",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 411606,
+              "raw_heading": "SOURCING ADVANTAGE: TREAT EVERY ENTREPRENEUR WITH RESPECT",
+              "normalized_title": "Sourcing Advantage: Treat Every Entrepreneur with Respect",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 412527,
+              "raw_heading": "ACCELERATORS AND DEMO-DAYS",
+              "normalized_title": "Accelerators and Demo-Days",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 413172,
+              "raw_heading": "THE VC E-MARKETPLACE: ANGELLIST, KICKSTARTER,\nAND FUNDERSCLUB",
+              "normalized_title": "The VC E-Marketplace: AngelList, Kickstarter, and FundersClub",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 416473,
+              "raw_heading": "THE FOUNTAINHEADS OF ACADEMIA AND RESEARCH",
+              "normalized_title": "The Fountainheads of Academia and Research",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 421587,
+              "raw_heading": "CORPORATE RESEARCH",
+              "normalized_title": "Corporate Research",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 432284,
+              "raw_heading": "COMPETITIONS: FROM $40 MILLION MOONSHOT TO $10K",
+              "normalized_title": "Competitions: From $40 Million Moonshot to $10K",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 434490,
+              "raw_heading": "COLD CALLING",
+              "normalized_title": "Cold Calling",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 452957,
+              "raw_heading": "CHAPTER 16\n\nThe Art of Conducting\n\nDue Diligence",
+              "normalized_title": "Chapter 16: The Art of Conducting Due Diligence",
+              "confidence": 1
+            },
+            {
+              "global_index": 468569,
+              "raw_heading": "THE BIG DATA APPROACH TO VC INVESTMENTS",
+              "normalized_title": "The Big Data Approach to VC Investments",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 469304,
+              "raw_heading": "WHO INVESTS IN RAP MUSIC AND SHAVING BLADES?",
+              "normalized_title": "Who Invests in Rap Music and Shaving Blades?",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 473456,
+              "raw_heading": "Blue Bottle Coffee",
+              "normalized_title": "Blue Bottle Coffee",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 474038,
+              "raw_heading": "Dollar Shave Club",
+              "normalized_title": "Dollar Shave Club",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 479658,
+              "raw_heading": "CHAPTER 17",
+              "normalized_title": "Chapter 17",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 489066,
+              "raw_heading": "HOW TO ASSESS THE JOCKEY",
+              "normalized_title": "How to Assess the Jockey",
+              "confidence": 1
+            },
+            {
+              "global_index": 499531,
+              "raw_heading": "ANDREESSEN HOROWITZ ON THE ART OF CEO SELECTION",
+              "normalized_title": "Andreessen Horowitz on the Art of CEO Selection",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 505314,
+              "raw_heading": "PICKING MANAGEMENT VERSUS MARKETS",
+              "normalized_title": "Picking Management Versus Markets",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 505667,
+              "raw_heading": "FAST ELECTRIC CARS, ROCKET SHIPS, AND MARS COLONIZATION—WOULD YOU INVEST IN THIS ENTREPRENEUR?",
+              "normalized_title": "Fast Electric Cars, Rocket Ships, and Mars Colonization—Would You Invest in This Entrepreneur?",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 509761,
+              "raw_heading": "SERIAL ENTREPRENEURS VERSUS FIRST-TIME\n\nENTREPRENEURS",
+              "normalized_title": "Serial Entrepreneurs Versus First-Time Entrepreneurs",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 510383,
+              "raw_heading": "WHAT ABOUT CHARISMA?",
+              "normalized_title": "What About Charisma?",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 511778,
+              "raw_heading": "THE IMPORTANCE OF CONDUCTING BACKGROUND\n\nINVESTIGATIONS",
+              "normalized_title": "The Importance of Conducting Background Investigations",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 520839,
+              "raw_heading": "CHAPTER 18",
+              "normalized_title": "Chapter 18",
+              "confidence": 1
+            },
+            {
+              "global_index": 525520,
+              "raw_heading": "WHEN BEING TOO FAST IS A BARRIER TO ENTRY: GOOGLE",
+              "normalized_title": "When Being Too Fast Is a Barrier to Entry: Google",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 525909,
+              "raw_heading": "EVALUATING THE IDEA OR PRODUCT",
+              "normalized_title": "Evaluating the Idea or Product",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 526635,
+              "raw_heading": "BLOGGING IN 140 CHARACTERS: WHO WANTS THIS?",
+              "normalized_title": "Blogging in 140 Characters: Who Wants This?",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 530962,
+              "raw_heading": "THE BUSINESS MODEL",
+              "normalized_title": "The Business Model",
+              "confidence": 1
+            },
+            {
+              "global_index": 535757,
+              "raw_heading": "JUST A BUNCH OF KIDS FARTING AROUND",
+              "normalized_title": "Just a Bunch of Kids Farting Around",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 536579,
+              "raw_heading": "FINANCIAL PROJECTIONS",
+              "normalized_title": "Financial Projections",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 537093,
+              "raw_heading": "DO BUSINESS PLANS MATTER?",
+              "normalized_title": "Do Business Plans Matter?",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 541375,
+              "raw_heading": "CHAPTER 19\n\nStructuring Investment Transactions",
+              "normalized_title": "Chapter 19: Structuring Investment Transactions",
+              "confidence": 1
+            },
+            {
+              "global_index": 551817,
+              "raw_heading": "VALUATION METHODS AND OTHER VOODOO ARTS",
+              "normalized_title": "Valuation Methods and Other Voodoo Arts",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 552978,
+              "raw_heading": "HOW TO VALUE INTEL: LESSONS FROM ARTHUR ROCK",
+              "normalized_title": "How to Value Intel: Lessons from Arthur Rock",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 567986,
+              "raw_heading": "CONVERTIBLE LOAN",
+              "normalized_title": "Convertible Loan",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 624923,
+              "raw_heading": "CHAPTER 20",
+              "normalized_title": "Chapter 20",
+              "confidence": 1
+            },
+            {
+              "global_index": 640427,
+              "raw_heading": "CHAPTER 21\n\nBoard Culture, Composition,\n\nand Orientation",
+              "normalized_title": "Chapter 21: Board Culture, Composition, and Orientation",
+              "confidence": 1
+            },
+            {
+              "global_index": 641473,
+              "raw_heading": "BOARD ORIENTATION: ON-BOARDING A NEW MEMBER",
+              "normalized_title": "Board Orientation: On-boarding a New Member",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 657108,
+              "raw_heading": "CHAPTER 22\n\nBoard Value Creation\nand Evaluation",
+              "normalized_title": "Chapter 22: Board Value Creation and Evaluation",
+              "confidence": 1
+            },
+            {
+              "global_index": 676601,
+              "raw_heading": "CHAPTER 23",
+              "normalized_title": "Chapter 23",
+              "confidence": 1
+            },
+            {
+              "global_index": 681586,
+              "raw_heading": "A TRUSTING BOARD AND FRAUDULENT CEO: A $50 MILLION LESSON",
+              "normalized_title": "A Trusting Board and Fraudulent CEO: A $50 Million Lesson",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 686865,
+              "raw_heading": "CEO Transitions",
+              "normalized_title": "CEO Transitions",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 687280,
+              "raw_heading": "MANAGING CEO TRANSITION",
+              "normalized_title": "Managing CEO Transition",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 697849,
+              "raw_heading": "CHAPTER 24",
+              "normalized_title": "Chapter 24",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 718677,
+              "raw_heading": "CHAPTER 25\n\nAcquisitions: The Primary\n\nPath to an Exit",
+              "normalized_title": "Chapter 25: Acquisitions: The Primary Path to an Exit",
+              "confidence": 1
+            },
+            {
+              "global_index": 738541,
+              "raw_heading": "WHEN AN ACQUIRER COMES KNOCKING",
+              "normalized_title": "When an Acquirer Comes Knocking",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 738884,
+              "raw_heading": "THE BUY-SIDE ACQUISITION PROCESS",
+              "normalized_title": "The Buy-Side Acquisition Process",
+              "confidence": 0.95
+            },
+            {
+              "global_index": 750697,
+              "raw_heading": "CHAPTER 26",
+              "normalized_title": "Chapter 26",
+              "confidence": 1
+            },
+            {
+              "global_index": 759440,
+              "raw_heading": "STEPS TO AN IPO",
+              "normalized_title": "Steps to an IPO",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 764965,
+              "raw_heading": "NOT AN ENDGAME, BUT A FINANCING EVENT",
+              "normalized_title": "Not an Endgame, But a Financing Event",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 765870,
+              "raw_heading": "TIMING THE MARKET",
+              "normalized_title": "Timing the Market",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 766516,
+              "raw_heading": "IPO UNDERPRICING AND DUTCH AUCTIONS",
+              "normalized_title": "IPO Underpricing and Dutch Auctions",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 775084,
+              "raw_heading": "THE DUTCH AUCTION: ELIMINATE THE POP AND\nTHOSE MIDDLEMEN",
+              "normalized_title": "The Dutch Auction: Eliminate the Pop and Those Middlemen",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 775960,
+              "raw_heading": "POST IPO: SHOULD VCs STAY ENGAGED?",
+              "normalized_title": "Post IPO: Should VCs Stay Engaged?",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 780871,
+              "raw_heading": "CHAPTER 27\n\nHuman Psychology",
+              "normalized_title": "Chapter 27 - Human Psychology",
+              "confidence": 1
+            },
+            {
+              "global_index": 785461,
+              "raw_heading": "RECIPROCATION, OBLIGATIONS, AND INDEBTEDNESS",
+              "normalized_title": "Reciprocation, Obligations, and Indebtedness",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 786276,
+              "raw_heading": "A VC WITH EGO: WHY SHOULD I EAT YOUR LEFTOVERS?",
+              "normalized_title": "A VC with Ego: Why Should I Eat Your Leftovers?",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 787313,
+              "raw_heading": "CONFORMITY (OR GROUPTHINK)",
+              "normalized_title": "Conformity (or Groupthink)",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 788297,
+              "raw_heading": "ROCK STARS IN THE BUSINESS",
+              "normalized_title": "Rock Stars in the Business",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 797248,
+              "raw_heading": "About the Author",
+              "normalized_title": "About the Author",
+              "confidence": 0.9
+            },
+            {
+              "global_index": 843100,
+              "raw_heading": "CHAPTER 9 Performance Analysis",
+              "normalized_title": "Performance Analysis",
+              "confidence": 1
+            },
+            {
+              "global_index": 843556,
+              "raw_heading": "CHAPTER 11 The Venture Capital Firm, Operations, and Culture",
+              "normalized_title": "The Venture Capital Firm, Operations, and Culture",
+              "confidence": 1
+            },
+            {
+              "global_index": 844416,
+              "raw_heading": "CHAPTER 14 The Role of Placement Agents in Fund-Raising",
+              "normalized_title": "The Role of Placement Agents in Fund-Raising",
+              "confidence": 1
+            },
+            {
+              "global_index": 844946,
+              "raw_heading": "CHAPTER 16 The Art of Conducting Due Diligence",
+              "normalized_title": "The Art of Conducting Due Diligence",
+              "confidence": 1
+            },
+            {
+              "global_index": 845179,
+              "raw_heading": "CHAPTER 17 Management Team Diligence",
+              "normalized_title": "Management Team Diligence",
+              "confidence": 1
+            },
+            {
+              "global_index": 845407,
+              "raw_heading": "CHAPTER 18 Diligence beyond Management",
+              "normalized_title": "Diligence beyond Management",
+              "confidence": 1
+            },
+            {
+              "global_index": 845608,
+              "raw_heading": "CHAPTER 19 Structuring Investment Transactions",
+              "normalized_title": "Structuring Investment Transactions",
+              "confidence": 1
+            },
+            {
+              "global_index": 846026,
+              "raw_heading": "CHAPTER 20 Serving on the Board",
+              "normalized_title": "Serving on the Board",
+              "confidence": 1
+            },
+            {
+              "global_index": 846278,
+              "raw_heading": "CHAPTER 21 Board Culture, Composition, and Orientation",
+              "normalized_title": "Board Culture, Composition, and Orientation",
+              "confidence": 1
+            },
+            {
+              "global_index": 846518,
+              "raw_heading": "CHAPTER 22 Board Value Creation and Evaluation",
+              "normalized_title": "Board Value Creation and Evaluation",
+              "confidence": 1
+            },
+            {
+              "global_index": 846758,
+              "raw_heading": "CHAPTER 23 Challenges in the Boardroom",
+              "normalized_title": "Challenges in the Boardroom",
+              "confidence": 1
+            },
+            {
+              "global_index": 846963,
+              "raw_heading": "CHAPTER 24 Exit Strategies",
+              "normalized_title": "Exit Strategies",
+              "confidence": 1
+            },
+            {
+              "global_index": 847114,
+              "raw_heading": "CHAPTER 25 Acquisitions: The Primary Path to an Exit",
+              "normalized_title": "Acquisitions: The Primary Path to an Exit",
+              "confidence": 1
+            },
+            {
+              "global_index": 848281,
+              "raw_heading": "CHAPTER 26 Initial Public Offering",
+              "normalized_title": "Initial Public Offering",
+              "confidence": 1
+            },
+            {
+              "global_index": 848929,
+              "raw_heading": "CHAPTER 1 The Basics",
+              "normalized_title": "The Basics",
+              "confidence": 1
+            },
+            {
+              "global_index": 849009,
+              "raw_heading": "CHAPTER 2 Getting In",
+              "normalized_title": "Getting In",
+              "confidence": 1
+            },
+            {
+              "global_index": 849402,
+              "raw_heading": "CHAPTER 4 The Universe of Limited Partners",
+              "normalized_title": "The Universe of Limited Partners",
+              "confidence": 1
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "versionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-29T00:15:28.391Z",
+      "createdAt": "2025-11-29T00:15:28.391Z",
+      "role": "workflow:owner",
+      "workflowId": "axrCYk80eH1vcZvp",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
