@@ -1,0 +1,32 @@
+{
+  "updatedAt": "2025-09-10T16:52:27.000Z",
+  "createdAt": "2025-08-27T00:42:54.135Z",
+  "id": "9HmCnfvNL3HQFuH5",
+  "name": "Supabase -> Google Sheets",
+  "active": false,
+  "isArchived": true,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "af2a5057-ea93-48e2-9038-ec7e7f9650b4",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-08-27T00:42:54.142Z",
+      "createdAt": "2025-08-27T00:42:54.142Z",
+      "role": "workflow:owner",
+      "workflowId": "9HmCnfvNL3HQFuH5",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
