@@ -1,0 +1,46 @@
+{
+  "updatedAt": "2025-12-12T13:00:29.799Z",
+  "createdAt": "2025-12-12T12:46:19.443Z",
+  "id": "GKvGy6YWv0VBWXP0",
+  "name": "Terminly Conversationdatabase",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "66ca56e3-8dd7-44e1-b93c-ee80debbf038",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1e56ccfe-defc-4772-9708-d216353e4bb8",
+      "name": "Webhook",
+      "webhookId": "66ca56e3-8dd7-44e1-b93c-ee80debbf038"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "69ca30f4-9e91-44c6-95e2-b1484a78ca24",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-12T12:46:19.458Z",
+      "createdAt": "2025-12-12T12:46:19.458Z",
+      "role": "workflow:owner",
+      "workflowId": "GKvGy6YWv0VBWXP0",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
