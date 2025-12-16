@@ -1,100 +1,11 @@
 {
-  "updatedAt": "2025-12-14T18:56:50.122Z",
+  "updatedAt": "2025-12-16T21:35:52.096Z",
   "createdAt": "2025-12-13T01:35:08.272Z",
   "id": "icF28UmruuHgkDgd",
   "name": "Get Summary PDF v3",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "narrative",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "narrative"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "bullet_points",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "bullet_points"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "workbook",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "workbook"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        -208,
-        752
-      ],
-      "id": "8167b3a6-9544-410b-a225-0143d7bc2ac2",
-      "name": "Switch"
-    },
     {
       "parameters": {
         "jsCode": "/* UPDATED NARRATIVE LAYOUT GENERATOR — WORKS WITH NEW INPUT FORMAT */\n\nconst book = items[0].json;\n\n// --- New format fields ---\nconst title = book.title || \"\";\nconst author = book.author || \"\";\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst summary = book.complete_book_summary || \"\";\n\n// -----------------------------\n// Helpers\n// -----------------------------\nfunction escapeHTML(str = \"\") {\n  return String(str)\n    .replace(/&/g, \"&amp;\")\n    .replace(/</g, \"&lt;\")\n    .replace(/>/g, \"&gt;\");\n}\n\nfunction cleanTitle(ch, withNumber = false) {\n  let t = ch.title || \"\";\n  t = t.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n  return withNumber ? `Chapter ${ch.chapter_index + 1}: ${t}` : t;\n}\n\nconst accent = \"#000000\";\n\n// -----------------------------\n// HTML Layout\n// -----------------------------\nlet html = `\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>${escapeHTML(title)}</title>\n  <style>\n/* -------------------------------------------------------\n   ELEGANT LITERARY STYLE LAYOUT — Megyk Books Edition\n   Designed for WeasyPrint PDF engine\n---------------------------------------------------------*/\n\n/**\n@font-face {\n  font-family: \"Libre Baskerville\";\n  src: url(\"file:///usr/share/fonts/truetype/custom/LibreBaskerville-Regular.ttf\");\n  font-weight: normal;\n  font-style: normal;\n}\n\n@font-face {\n  font-family: \"Libre Baskerville\";\n  src: url(\"file:///usr/share/fonts/truetype/custom/LibreBaskerville-Italic.ttf\");\n  font-weight: normal;\n  font-style: italic;\n}\n\n@font-face {\n  font-family: \"Libre Baskerville\";\n  src: url(\"file:///usr/share/fonts/truetype/custom/LibreBaskerville-Bold.ttf\");\n  font-weight: bold;\n  font-style: normal;\n}\n\nbody {\n  font-family: \"Libre Baskerville\", serif;\n}\n**/\n\n\n\n/* ---------- Page Margins + Running Headers + Footer ---------- */\n\n@page {\n  size: A4;\n  margin: 0.85in 0.9in;\n\n  /* Running header — keep whatever you currently have */\n\n  @top-right {\n    content: string(chaptertitle);\n    font-size: 9pt;\n    font-style: italic;\n    color: #666;\n  }\n\n  /* NEW: Running footer disclaimer on every page */\n  @bottom-center {\n    content: \"AI-generated summary. Not affiliated with or endorsed by the original author or publisher.\";\n    font-size: 8.5pt;\n    font-style: italic;\n    color: #777;\n  }\n}\n\n/* First page (cover) — no headers or footers */\n@page:first {\n  @top-left { content: normal; }\n  @top-right { content: normal; }\n  @bottom-center { content: normal; }\n}\n\n/* -------------------------------------------------------\n   Global Typography\n---------------------------------------------------------*/\n\nbody {\n  font-family: \"Georgia\", \"Libre Baskerville\", serif;\n  font-size: 11.5pt;\n  line-height: 1.55;\n  color: #111;\n  text-align: justify;\n\n  /* center column for book-like reading experience */\n  max-width: 65ch;\n  margin: 0 auto;\n}\n\n/* -------------------------------------------------------\n   Headings\n---------------------------------------------------------*/\n\nh1, h2, h3 {\n  text-align: center;\n  color: #000;\n  font-weight: normal;\n  line-height: 1.2;\n  page-break-after: avoid;\n  page-break-inside: avoid;\n}\n\n/* Cover Title */\nh1 {\n  font-size: 2.4em;\n  margin-top: 2.5em;\n  margin-bottom: 0.3em;\n}\n\n/* Section headers */\nh2 {\n  font-size: 1.45em;\n  margin-top: 3em;\n  margin-bottom: 0.75em;\n  letter-spacing: 0.4px;\n}\n\n/* Chapter titles */\nh3 {\n  font-size: 1.25em;\n  margin-top: 2.8em;\n  margin-bottom: 0.55em;\n  letter-spacing: 0.2px;\n}\n\n/* -------------------------------------------------------\n   Paragraphs\n---------------------------------------------------------*/\n\np {\n  margin: 0.75em 0;\n  text-indent: 1.1em;\n}\n\nh2 + p,\nh3 + p,\n#overview p,\n#toc p {\n  text-indent: 0; /* Never indent immediately after a heading */\n}\n\n/* -------------------------------------------------------\n   Overview section — literary introduction style\n---------------------------------------------------------*/\n\n#overview {\n  page-break-before: always;\n}\n\n#overview p {\n  max-width: 60ch;\n  margin: 0 auto;\n  font-size: 11pt;\n  line-height: 1.6;\n  color: #222;\n}\n\n/* -------------------------------------------------------\n   Table of Contents\n---------------------------------------------------------*/\n\n#toc {\n  page-break-before: always;\n  border: 1px solid #000;\n  padding: 1.25em 2em;\n  width: 90%;\n  margin: 2.5em auto;\n  background: #fff;\n  page-break-inside: avoid;\n}\n\n#toc ol {\n  list-style-position: outside;\n  padding-left: 1.2em;\n  line-height: 1.45;\n}\n\n#toc li {\n  margin: 0.25em 0;\n  font-size: 10.8pt;\n}\n\n/* -------------------------------------------------------\n   Chapters Section + Per-Chapter Behavior\n---------------------------------------------------------*/\n\n#chapters {\n  page-break-before: always;\n}\n\narticle {\n  page-break-inside: avoid;\n  padding-top: 2em;\n  border-top: 1px solid #000;\n  margin-top: 3.5em;\n}\n\n/* Capture chapter title for running header */\nh3.chapter-title {\n  string-set: chaptertitle content();\n}\n\n/* -------------------------------------------------------\n   Footer Block (end of book)\n---------------------------------------------------------*/\n\nfooter {\n  text-align: center;\n  font-size: 9pt;\n  margin-top: 6em;\n  padding-top: 1.2em;\n  color: #666;\n  border-top: 1px solid #ccc;\n  page-break-before: always;\n}\n\n/* Capture book title for header on subsequent pages */\n#cover h1 {\n  string-set: booktitle content();\n}\n\n/* Make cover page uniquely styled */\n#cover {\n  text-align: center;\n  page-break-after: always;\n}\n\n#cover em {\n  display: block;\n  margin-top: 1em;\n  font-size: 10pt;\n  color: #666;\n}\n\n\n</style>\n\n</head>\n<body>\n\n  <section id=\"cover\">\n    <h1>${escapeHTML(title)}</h1>\n    <h3>${escapeHTML(author)}</h3>\n    <h3>Megyk Books Summary — Narrative Style</h3><br />\n    <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </section>\n\n  <section id=\"overview\">\n    <h2>Overview</h2>\n    <p>${escapeHTML(summary)}</p>\n  </section>\n\n  <section id=\"toc\">\n    <h2>Table of Contents</h2>\n    <ol>\n      ${chapters.map(ch => `<li>${escapeHTML(cleanTitle(ch, false))}</li>`).join(\"\")}\n    </ol>\n  </section>\n\n  <section id=\"chapters\">\n    <h2>Chapters</h2>\n`;\n\nfor (const ch of chapters) {\n  html += `\n    <article>\n      <h3>${escapeHTML(cleanTitle(ch, false))}</h3>\n      <p>${escapeHTML(ch.summary)}</p>\n    </article>\n  `;\n}\n\nhtml += `\n  </section>\n\n  <footer>\n    Generated by <strong>Megyk Books</strong> — ${new Date().toLocaleDateString()}\n    <br />\n          <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
@@ -323,11 +234,11 @@
         "responses": {
           "values": [
             {
-              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform that full summary into a one-page executive\nsummary using the exact JSON schema below.\n\n=== INPUT ===\n\nTITLE:\n{{ $json.title }}\n\nAUTHOR:\n{{ $json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.complete_book_summary }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Exact book title\",\n  \"AUTHOR\": \"Author full name\",\n  \"CORE_IDEA\": \"One concise paragraph capturing the central idea of the book\",\n  \"PROBLEM_SOLVED\": \"What core problem, tension, or challenge the book addresses\",\n  \"WHY_IT_MATTERS\": \"Why this problem is important or consequential in the real world\",\n  \"MAIN_THESIS\": \"The author's primary argument or point of view\",\n  \"INSIGHTS_LI\": [\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\"\n  ],\n  \"STEPS_LI\": [\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence that captures the book's essence\"\n}\n\nReturn JSON only. No additional text.\n"
+              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform that full summary into a one-page executive\nsummary using the exact JSON schema below. If the title is longer than 3 or 4 words, generate a shortened title\n\n=== INPUT ===\n\nTITLE:\n{{ $json.title }}\n\nAUTHOR:\n{{ $json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.complete_book_summary }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"book title or abbreviated book title\",\n  \"AUTHOR\": \"Author full name\",\n  \"CORE_IDEA\": \"One concise paragraph capturing the central idea of the book\",\n  \"PROBLEM_SOLVED\": \"What core problem, tension, or challenge the book addresses\",\n  \"WHY_IT_MATTERS\": \"Why this problem is important or consequential in the real world\",\n  \"MAIN_THESIS\": \"The author's primary argument or point of view\",\n  \"INSIGHTS_LI\": [\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\"\n  ],\n  \"STEPS_LI\": [\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence that captures the book's essence\"\n}\n\nReturn JSON only. No additional text.\n"
             },
             {
               "role": "system",
-              "content": "You are an expert editorial summarizer creating executive one-page book briefs.\n\nYour task is NOT to summarize the book from scratch.\nYour task IS to reframe an existing full book summary into a concise,\nhigh-signal, one-page executive summary.\n\nYou must:\n- Extract, distill, and re-articulate ideas already present\n- Avoid introducing new claims, examples, or metaphors\n- Write clearly, confidently, and concretely\n- Favor clarity over cleverness\n\nOutput rules (critical):\n- Return VALID JSON ONLY\n- Use EXACTLY the keys specified\n- Do not include markdown, commentary, or explanations\n- Do not include quotation marks unless part of natural prose\n- Bullet lists must be arrays of strings, not paragraphs\n\nTone:\n- Executive\n- Insight-focused\n- Practical\n- Neutral (no hype, no marketing language)\n\nIf information is missing, infer conservatively from the provided summary.\nNever invent facts not implied by the source.\n"
+              "content": "You are an expert editorial summarizer creating executive one-page book briefs.\n\nYour task is NOT to summarize the book from scratch.\nYour task IS to reframe an existing full book summary into a concise,\nhigh-signal, one-page executive summary.\n\nYou must:\n- Extract, distill, and re-articulate ideas already present\n- Avoid introducing new claims, examples, or metaphors\n- Write clearly, confidently, and concretely\n- Favor clarity over cleverness\n\nOutput rules (critical):\n- Return VALID JSON ONLY\n- Use EXACTLY the keys specified\n- Do not include markdown, commentary, or explanations\n- Do not include quotation marks unless part of natural prose\n- Bullet lists must be arrays of strings, not paragraphs\n\nTone:\n- Executive\n- Insight-focused\n- Practical\n\nIf information is missing, infer conservatively from the provided summary.\nNever invent facts not implied by the source.\n"
             }
           ]
         },
@@ -470,95 +381,6 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "narrative",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "narrative"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "bullet_points",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "bullet_points"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "workbook",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "workbook"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        -208,
-        176
-      ],
-      "id": "55fa997f-fb94-4ba3-931f-9a80cbff01e1",
-      "name": "Switch2"
-    },
-    {
-      "parameters": {
         "jsCode": "// WORKBOOK LAYOUT GENERATOR — expects chapters with questions[] + answers[]\n\nconst book = items[0].json;\n\n// -----------------------------\n// Expected input structure\n// -----------------------------\n// {\n//   title: \"...\",\n//   author: \"...\",\n//   complete_book_summary: \"...\",\n//   summary: [\n//      {\n//         chapter_index: 0,\n//         title: \"...\",\n//         summary: \"...\",\n//         questions: [\"Q1\", \"Q2\", ...],\n//         answers: [\"A1\", \"A2\", ...]\n//      },\n//      ...\n//   ]\n// }\n\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst bookSummary = book.complete_book_summary || \"\";\nconst title = book.title || \"Study Workbook\";\nconst author = book.author || \"\";\nconst accent = \"#264653\";\n\n// Helper: remove numbering from chapter titles\nfunction cleanTitle(title = \"\") {\n  return title.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n}\n\n// Build Table of Contents\nconst toc = chapters\n  .map(ch => `<li>${cleanTitle(ch.title)}</li>`)\n  .join(\"\");\n\n// Will be used for the workbook index (global Q&A)\nconst indexEntries = [];\n\nlet html = `\n<html>\n<head>\n  <style>\n    :root { --accent: ${accent}; }\n\n    body {\n      font-family: \"Helvetica Neue\", Arial, sans-serif;\n      padding: 40px;\n      background: #FFFFFF;\n      color: #000000;\n      line-height: 1.6;\n    }\n\n    h1, h2, h3 { color: var(--accent); }\n\n    h1 {\n      text-align: center;\n      border-bottom: 3px solid var(--accent);\n      padding-bottom: 10px;\n      margin-bottom: 30px;\n    }\n\n    h2 {\n      border-bottom: 1px solid #000000;\n      padding-bottom: 4px;\n      margin-top: 40px;\n      color: #000000;\n    }\n\n    h3 {\n      margin-top: 25px;\n      color: #000000;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      margin-top: 15px;\n      font-size: 0.95em;\n      background: #FFFFFF;\n    }\n\n    td, th {\n      border: 1px solid #000000;\n      padding: 8px;\n      vertical-align: top;\n    }\n\n    th {\n      font-weight: bold;\n    }\n\n    .chapter {\n      page-break-before: always;\n      margin-top: 60px;\n    }\n\n    .summary {\n      margin-top: 10px;\n      margin-bottom: 20px;\n    }\n\n    .cover {\n      text-align: center;\n      page-break-after: always;\n      margin-top: 200px;\n    }\n\n    ol { margin-left: 25px; }\n\n    .answer-space {\n      border-bottom: 1px solid #000000;\n      height: 25px;\n      margin: 5px 0 15px;\n    }\n\n    footer {\n      margin-top: 50px;\n      text-align: center;\n      font-size: 0.8em;\n      border-top: 1px solid #000000;\n      padding-top: 10px;\n    }\n  </style>\n</head>\n\n<body>\n\n  <!-- Cover Page -->\n  <div class=\"cover\">\n    <h1>${title}</h1>\n    <h2>${author}</h2>\n    <p>Workbook Summary</p>\n    <p><em>Generated by Megyk Books</em>\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n    </p>\n  </div>\n\n  <!-- Table of Contents -->\n  <h2>Table of Contents</h2>\n  <ol>${toc}</ol>\n`;\n\n// -----------------------------\n// LOOP THROUGH CHAPTERS\n// -----------------------------\nfor (const ch of chapters) {\n  const chapterTitle = cleanTitle(ch.title);\n  const questions = Array.isArray(ch.questions) ? ch.questions : [];\n  const answers = Array.isArray(ch.answers) ? ch.answers : [];\n\n  // Add to global index\n  questions.forEach((q, i) => {\n    indexEntries.push({\n      chapter_index: ch.chapter_index,\n      chapter_title: chapterTitle,\n      question: q,\n      answer: answers[i] || \"\"\n    });\n  });\n\n  html += `\n  <div class=\"chapter\">\n    <h2>Chapter ${ch.chapter_index + 1}: ${chapterTitle}</h2>\n\n    ${ch.summary ? `<div class=\"summary\"><p>${ch.summary}</p></div>` : \"\"}\n\n    ${\n      questions.length\n        ? `\n      <h3>Questions for Reflection</h3>\n      <ol>\n        ${questions\n          .map(\n            (q, i) => `\n          <li>\n            <strong>${q}</strong><br/>\n            <div class=\"answer-space\"></div>\n            <div class=\"answer-space\"></div>\n          </li>\n        `\n          )\n          .join(\"\")}\n      </ol>`\n        : \"\"\n    }\n  </div>`;\n}\n\n// -----------------------------\n// COMPLETE BOOK SUMMARY\n// -----------------------------\nhtml += `\n  <div class=\"chapter\">\n    <h2>Complete Book Summary</h2>\n    <p>${bookSummary}</p>\n  </div>\n`;\n\n// -----------------------------\n// GLOBAL INDEX — All Q&A\n// -----------------------------\nif (indexEntries.length) {\n  html += `\n  <div class=\"chapter\">\n    <h2>Workbook Index — All Questions & Answers</h2>\n\n    <table>\n      <tr><th>Chapter</th><th>Question</th><th>Answer</th></tr>\n  `;\n\n  let lastChapter = \"\";\n\n  for (const entry of indexEntries) {\n    const chapterLabel =\n      entry.chapter_title !== lastChapter\n        ? `Chapter ${entry.chapter_index + 1}: ${entry.chapter_title}`\n        : \"\";\n\n    html += `\n      <tr>\n        <td>${chapterLabel}</td>\n        <td>${entry.question}</td>\n        <td>${entry.answer}</td>\n      </tr>\n    `;\n\n    lastChapter = entry.chapter_title;\n  }\n\n  html += `\n    </table>\n  </div>\n  `;\n}\n\n// -----------------------------\n// FOOTER\n// -----------------------------\nhtml += `\n  <footer>\n    Generated on ${new Date().toLocaleDateString()} by Megyk Books\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
       },
       "type": "n8n-nodes-base.code",
@@ -572,102 +394,13 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "narrative",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "narrative"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "bullet_points",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "bullet_points"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
-                    "leftValue": "={{ $('Config').item.json.style }}",
-                    "rightValue": "workbook",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "workbook"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.3,
-      "position": [
-        -208,
-        -400
-      ],
-      "id": "82c4deea-3a9a-4e1d-a8ee-015964c52bea",
-      "name": "Switch3"
-    },
-    {
-      "parameters": {
         "jsCode": "// WORKBOOK LAYOUT GENERATOR — expects chapters with questions[] + answers[]\n\nconst book = items[0].json;\n\n// -----------------------------\n// Expected input structure\n// -----------------------------\n// {\n//   title: \"...\",\n//   author: \"...\",\n//   complete_book_summary: \"...\",\n//   summary: [\n//      {\n//         chapter_index: 0,\n//         title: \"...\",\n//         summary: \"...\",\n//         questions: [\"Q1\", \"Q2\", ...],\n//         answers: [\"A1\", \"A2\", ...]\n//      },\n//      ...\n//   ]\n// }\n\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst bookSummary = book.complete_book_summary || \"\";\nconst title = book.title || \"Study Workbook\";\nconst author = book.author || \"\";\nconst accent = \"#264653\";\n\n// Helper: remove numbering from chapter titles\nfunction cleanTitle(title = \"\") {\n  return title.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n}\n\n// Build Table of Contents\nconst toc = chapters\n  .map(ch => `<li>${cleanTitle(ch.title)}</li>`)\n  .join(\"\");\n\n// Will be used for the workbook index (global Q&A)\nconst indexEntries = [];\n\nlet html = `\n<html>\n<head>\n  <style>\n    :root { --accent: ${accent}; }\n\n    body {\n      font-family: \"Helvetica Neue\", Arial, sans-serif;\n      padding: 40px;\n      background: #FFFFFF;\n      color: #000000;\n      line-height: 1.6;\n    }\n\n    h1, h2, h3 { color: var(--accent); }\n\n    h1 {\n      text-align: center;\n      border-bottom: 3px solid var(--accent);\n      padding-bottom: 10px;\n      margin-bottom: 30px;\n    }\n\n    h2 {\n      border-bottom: 1px solid #000000;\n      padding-bottom: 4px;\n      margin-top: 40px;\n      color: #000000;\n    }\n\n    h3 {\n      margin-top: 25px;\n      color: #000000;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      margin-top: 15px;\n      font-size: 0.95em;\n      background: #FFFFFF;\n    }\n\n    td, th {\n      border: 1px solid #000000;\n      padding: 8px;\n      vertical-align: top;\n    }\n\n    th {\n      font-weight: bold;\n    }\n\n    .chapter {\n      page-break-before: always;\n      margin-top: 60px;\n    }\n\n    .summary {\n      margin-top: 10px;\n      margin-bottom: 20px;\n    }\n\n    .cover {\n      text-align: center;\n      page-break-after: always;\n      margin-top: 200px;\n    }\n\n    ol { margin-left: 25px; }\n\n    .answer-space {\n      border-bottom: 1px solid #000000;\n      height: 25px;\n      margin: 5px 0 15px;\n    }\n\n    footer {\n      margin-top: 50px;\n      text-align: center;\n      font-size: 0.8em;\n      border-top: 1px solid #000000;\n      padding-top: 10px;\n    }\n  </style>\n</head>\n\n<body>\n\n  <!-- Cover Page -->\n  <div class=\"cover\">\n    <h1>${title}</h1>\n    <h2>${author}</h2>\n    <p>Workbook Summary</p>\n    <p><em>Generated by Megyk Books</em>\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n    </p>\n  </div>\n\n  <!-- Table of Contents -->\n  <h2>Table of Contents</h2>\n  <ol>${toc}</ol>\n`;\n\n// -----------------------------\n// LOOP THROUGH CHAPTERS\n// -----------------------------\nfor (const ch of chapters) {\n  const chapterTitle = cleanTitle(ch.title);\n  const questions = Array.isArray(ch.questions) ? ch.questions : [];\n  const answers = Array.isArray(ch.answers) ? ch.answers : [];\n\n  // Add to global index\n  questions.forEach((q, i) => {\n    indexEntries.push({\n      chapter_index: ch.chapter_index,\n      chapter_title: chapterTitle,\n      question: q,\n      answer: answers[i] || \"\"\n    });\n  });\n\n  html += `\n  <div class=\"chapter\">\n    <h2>Chapter ${ch.chapter_index + 1}: ${chapterTitle}</h2>\n\n    ${ch.summary ? `<div class=\"summary\"><p>${ch.summary}</p></div>` : \"\"}\n\n    ${\n      questions.length\n        ? `\n      <h3>Questions for Reflection</h3>\n      <ol>\n        ${questions\n          .map(\n            (q, i) => `\n          <li>\n            <strong>${q}</strong><br/>\n            <div class=\"answer-space\"></div>\n            <div class=\"answer-space\"></div>\n          </li>\n        `\n          )\n          .join(\"\")}\n      </ol>`\n        : \"\"\n    }\n  </div>`;\n}\n\n// -----------------------------\n// COMPLETE BOOK SUMMARY\n// -----------------------------\nhtml += `\n  <div class=\"chapter\">\n    <h2>Complete Book Summary</h2>\n    <p>${bookSummary}</p>\n  </div>\n`;\n\n// -----------------------------\n// GLOBAL INDEX — All Q&A\n// -----------------------------\nif (indexEntries.length) {\n  html += `\n  <div class=\"chapter\">\n    <h2>Workbook Index — All Questions & Answers</h2>\n\n    <table>\n      <tr><th>Chapter</th><th>Question</th><th>Answer</th></tr>\n  `;\n\n  let lastChapter = \"\";\n\n  for (const entry of indexEntries) {\n    const chapterLabel =\n      entry.chapter_title !== lastChapter\n        ? `Chapter ${entry.chapter_index + 1}: ${entry.chapter_title}`\n        : \"\";\n\n    html += `\n      <tr>\n        <td>${chapterLabel}</td>\n        <td>${entry.question}</td>\n        <td>${entry.answer}</td>\n      </tr>\n    `;\n\n    lastChapter = entry.chapter_title;\n  }\n\n  html += `\n    </table>\n  </div>\n  `;\n}\n\n// -----------------------------\n// FOOTER\n// -----------------------------\nhtml += `\n  <footer>\n    Generated on ${new Date().toLocaleDateString()} by Megyk Books\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
-        -192
+        768,
+        -176
       ],
       "id": "e9fd796b-b264-4597-a621-21c41e6ebfcc",
       "name": "Generate Workbook Layout2"
@@ -683,11 +416,11 @@
         "responses": {
           "values": [
             {
-              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform that full summary into a one-page executive\nsummary using the exact JSON schema below.\n\n=== INPUT ===\n\nTITLE:\n{{ $json.title }}\n\nAUTHOR:\n{{ $json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.complete_book_summary }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Exact book title\",\n  \"AUTHOR\": \"Author full name\",\n  \"CORE_IDEA\": \"One concise paragraph capturing the central idea of the book\",\n  \"PROBLEM_SOLVED\": \"What core problem, tension, or challenge the book addresses\",\n  \"WHY_IT_MATTERS\": \"Why this problem is important or consequential in the real world\",\n  \"MAIN_THESIS\": \"The author's primary argument or point of view\",\n  \"INSIGHTS_LI\": [\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\"\n  ],\n  \"STEPS_LI\": [\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence that captures the book's essence\"\n}\n\nReturn JSON only. No additional text.\n"
+              "content": "=Create a business-oriented workbook based on the following book content.\n\nUser preferences:\n- Length: short \n\nCanonical chapters:\n{{canonical_chapters}}\n\nBook context:\n- Audience: Business owners, founders, operators\n- Goal: Apply the ideas from this book to real business and life decisions\n\nWorkbook requirements:\n\n\n   - Identify 5–7 core principles from the book\n   - For each principle:\n     - Give it a clear, business-relevant name\n     - Explain it briefly in practical terms\n     - Describe what kind of business or personal problem it helps address\n     - Identify who would benefit most from applying it\n\n   For EACH core principle, generate reflective application questions:\n\n   Length rules:\n    1 question per principle\n\n\n   Question guidelines:\n   - Open-ended\n   - No right or wrong answers\n   - Focus on implementation, not recall\n   - Encourage the reader to reflect on their own business, team, systems, or personal leadership\n\n   Example question styles:\n   - How does this principle show up (or fail to show up) in your business today?\n   - Where are you currently making decisions that contradict this principle?\n   - What would change if you fully adopted this idea?\n   - What systems, processes, or habits would need to change?\n   - What resistance might you face when applying this principle?\n\n\nFormatting:\n- Clear section headers\n- Plenty of whitespace\n- Designed to be written in, not just read\n"
             },
             {
               "role": "system",
-              "content": "You are an expert editorial summarizer creating executive one-page book briefs.\n\nYour task is NOT to summarize the book from scratch.\nYour task IS to reframe an existing full book summary into a concise,\nhigh-signal, one-page executive summary.\n\nYou must:\n- Extract, distill, and re-articulate ideas already present\n- Avoid introducing new claims, examples, or metaphors\n- Write clearly, confidently, and concretely\n- Favor clarity over cleverness\n\nOutput rules (critical):\n- Return VALID JSON ONLY\n- Use EXACTLY the keys specified\n- Do not include markdown, commentary, or explanations\n- Do not include quotation marks unless part of natural prose\n- Bullet lists must be arrays of strings, not paragraphs\n\nTone:\n- Executive\n- Insight-focused\n- Practical\n- Neutral (no hype, no marketing language)\n\nIf information is missing, infer conservatively from the provided summary.\nNever invent facts not implied by the source.\n"
+              "content": "You are an executive coach and business strategist.\n\nYour task is to generate a reflective, application-oriented workbook based on the provided book content.\n\nThis workbook is designed for business owners, founders, and senior operators.\n\nImportant constraints:\n- Do NOT include correct or incorrect answers\n- Do NOT test memorization or factual recall\n- Do NOT include quizzes or textbook-style questions\n- Do NOT include an \"answers\" section\n\nInstead:\n- Focus on practical application\n- Emphasize reflection, decision-making, and implementation\n- Frame questions so they help the reader apply the book’s principles to their own business and life\n- Assume the reader’s context, industry, and company size may vary\n\nThe tone should feel:\n- Strategic\n- Thoughtful\n- Practical\n- Results-oriented\n- Like a guided executive working session\n\nThe output should feel like a workbook the reader can write in.\n"
             }
           ]
         },
@@ -720,11 +453,11 @@
         "responses": {
           "values": [
             {
-              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform that full summary into a one-page executive\nsummary using the exact JSON schema below.\n\n=== INPUT ===\n\nTITLE:\n{{ $json.title }}\n\nAUTHOR:\n{{ $json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.complete_book_summary }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Exact book title\",\n  \"AUTHOR\": \"Author full name\",\n  \"CORE_IDEA\": \"One concise paragraph capturing the central idea of the book\",\n  \"PROBLEM_SOLVED\": \"What core problem, tension, or challenge the book addresses\",\n  \"WHY_IT_MATTERS\": \"Why this problem is important or consequential in the real world\",\n  \"MAIN_THESIS\": \"The author's primary argument or point of view\",\n  \"INSIGHTS_LI\": [\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\"\n  ],\n  \"STEPS_LI\": [\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence that captures the book's essence\"\n}\n\nReturn JSON only. No additional text.\n"
+              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform that full summary into a one-page executive\nsummary using the exact JSON schema below. If the title is longer than 3 or 4 words, generate a shortened title\n\n=== INPUT ===\n\nTITLE:\n{{ $json.title }}\n\nAUTHOR:\n{{ $json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.complete_book_summary }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"book title or abbreviated book title\",\n  \"AUTHOR\": \"Author full name\",\n  \"CORE_IDEA\": \"One concise paragraph capturing the central idea of the book\",\n  \"PROBLEM_SOLVED\": \"What core problem, tension, or challenge the book addresses\",\n  \"WHY_IT_MATTERS\": \"Why this problem is important or consequential in the real world\",\n  \"MAIN_THESIS\": \"The author's primary argument or point of view\",\n  \"INSIGHTS_LI\": [\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\",\n    \"Short, concrete insight or principle\"\n  ],\n  \"STEPS_LI\": [\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\",\n    \"Actionable step or recommendation implied by the book\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence that captures the book's essence\"\n}\n\nReturn JSON only. No additional text.\n"
             },
             {
               "role": "system",
-              "content": "You are an expert editorial summarizer creating executive one-page book briefs.\n\nYour task is NOT to summarize the book from scratch.\nYour task IS to reframe an existing full book summary into a concise,\nhigh-signal, one-page executive summary.\n\nYou must:\n- Extract, distill, and re-articulate ideas already present\n- Avoid introducing new claims, examples, or metaphors\n- Write clearly, confidently, and concretely\n- Favor clarity over cleverness\n\nOutput rules (critical):\n- Return VALID JSON ONLY\n- Use EXACTLY the keys specified\n- Do not include markdown, commentary, or explanations\n- Do not include quotation marks unless part of natural prose\n- Bullet lists must be arrays of strings, not paragraphs\n\nTone:\n- Executive\n- Insight-focused\n- Practical\n- Neutral (no hype, no marketing language)\n\nIf information is missing, infer conservatively from the provided summary.\nNever invent facts not implied by the source.\n"
+              "content": "You are an expert editorial summarizer creating executive one-page book briefs.\n\nYour task is NOT to summarize the book from scratch.\nYour task IS to reframe an existing full book summary into a concise,\nhigh-signal, one-page executive summary.\n\nYou must:\n- Extract, distill, and re-articulate ideas already present\n- Avoid introducing new claims, examples, or metaphors\n- Write clearly, confidently, and concretely\n- Favor clarity over cleverness\n\nOutput rules (critical):\n- Return VALID JSON ONLY\n- Use EXACTLY the keys specified\n- Do not include markdown, commentary, or explanations\n- Do not include quotation marks unless part of natural prose\n- Bullet lists must be arrays of strings, not paragraphs\n\nTone:\n- Executive\n- Insight-focused\n- Practical\n\nIf information is missing, infer conservatively from the provided summary.\nNever invent facts not implied by the source.\n"
             }
           ]
         },
@@ -937,34 +670,292 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "narrative",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "narrative"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "bullet_points",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "bullet_points"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "workbook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "workbook"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -208,
+        -400
+      ],
+      "id": "82c4deea-3a9a-4e1d-a8ee-015964c52bea",
+      "name": "SHORT SWITCH"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "narrative",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "narrative"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "bullet_points",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "bullet_points"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "workbook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "workbook"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -208,
+        176
+      ],
+      "id": "55fa997f-fb94-4ba3-931f-9a80cbff01e1",
+      "name": "MEDIUM SWITCH"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "narrative",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "narrative"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "bullet_points",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "bullet_points"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "workbook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "workbook"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -208,
+        752
+      ],
+      "id": "8167b3a6-9544-410b-a225-0143d7bc2ac2",
+      "name": "LONG SWITCH"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/files/templates/one-page-template.html",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -192
+      ],
+      "id": "611178d2-a673-4363-8b75-6a87c00d5267",
+      "name": "Read One-page Template2"
     }
   ],
   "connections": {
-    "Switch": {
-      "main": [
-        [
-          {
-            "node": "Generate Narrative Layout",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Generate Bullet Points Layout",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Generate Medium Workbook1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Webhook": {
       "main": [
         [
@@ -1101,71 +1092,21 @@
       "main": [
         [
           {
-            "node": "Switch3",
+            "node": "SHORT SWITCH",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Switch2",
+            "node": "MEDIUM SWITCH",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch2": {
-      "main": [
-        [
-          {
-            "node": "Generate Medium Summary",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Generate Medium Bullet-points Summary1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Generate Medium Workbook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch3": {
-      "main": [
-        [
-          {
-            "node": "Generate One-page Summary",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Generate One-page Bullet Point Summary",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Generate Short Workbook",
+            "node": "LONG SWITCH",
             "type": "main",
             "index": 0
           }
@@ -1176,7 +1117,7 @@
       "main": [
         [
           {
-            "node": "Generate Workbook Layout2",
+            "node": "Read One-page Template2",
             "type": "main",
             "index": 0
           }
@@ -1264,6 +1205,86 @@
           }
         ]
       ]
+    },
+    "SHORT SWITCH": {
+      "main": [
+        [
+          {
+            "node": "Generate One-page Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate One-page Bullet Point Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Short Workbook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MEDIUM SWITCH": {
+      "main": [
+        [
+          {
+            "node": "Generate Medium Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Medium Bullet-points Summary1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Medium Workbook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LONG SWITCH": {
+      "main": [
+        [
+          {
+            "node": "Generate Narrative Layout",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Bullet Points Layout",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Medium Workbook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read One-page Template2": {
+      "main": [
+        []
+      ]
     }
   },
   "settings": {
@@ -1296,7 +1317,7 @@
           "body": {
             "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
             "preferences": {
-              "style": "narrative",
+              "style": "workbook",
               "length": "short"
             },
             "user_id": "bfb1e2f2-353c-4cf7-807e-4be63ed7cfff",
@@ -1304,53 +1325,6 @@
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/get_summary_v2",
           "executionMode": "production"
-        }
-      }
-    ],
-    "Generate One-page Summary": [
-      {
-        "json": {
-          "output": [
-            {
-              "id": "msg_0af883a6f767f9a700693ce2a16fa8819dac6961ad2cbab4e9",
-              "type": "message",
-              "status": "completed",
-              "content": [
-                {
-                  "type": "output_text",
-                  "annotations": [],
-                  "logprobs": [],
-                  "text": "{\n  \"TITLE\": \"$100M Offers: How To Make Offers So Good People Feel Stupid Saying No\",\n  \"AUTHOR\": \"Alex Hormozi\",\n  \"CORE_IDEA\": \"The book explains how to build Grand Slam Offers that stand out from commoditized competition by combining exceptional value, clear market targeting, smart pricing, and proven psychological levers (scarcity, urgency, bonuses, guarantees). By deeply understanding customer needs and executing precisely, entrepreneurs can charge what their solutions are worth, attract ideal buyers, and grow sustainably through offers designed to be easy to say yes to.\",\n  \"PROBLEM_SOLVED\": \"Entrepreneurs struggle to sell consistently and profitably when their products or services feel interchangeable, forcing them into price competition and weak demand.\",\n  \"WHY_IT_MATTERS\": \"When offers are unclear or undifferentiated, businesses face lower margins, inconsistent cash flow, and difficulty attracting the right customers; stronger offers directly improve conversion, pricing power, and long-term viability.\",\n  \"MAIN_THESIS\": \"Business growth becomes more predictable when you focus on constructing and communicating an offer with overwhelming perceived value—tailored to a specific market and reinforced with risk-reduction and decision-making triggers—so customers can clearly see the payoff and feel confident buying.\",\n  \"INSIGHTS_LI\": [\n    \"A Grand Slam Offer is built by increasing perceived value, not by competing on price.\",\n    \"Deep customer insight enables creative problem-solving that makes the offer more compelling and specific.\",\n    \"Scarcity, urgency, bonuses, and guarantees increase commitment by clarifying timing, amplifying value, and reducing risk.\"\n  ],\n  \"STEPS_LI\": [\n    \"Define the specific target market and desired outcome your offer delivers, then align all elements around that outcome.\",\n    \"Improve the offer by adding value and lowering perceived risk (e.g., bonuses and guarantees) before adjusting price.\",\n    \"Name and market the offer with precision, then execute consistently and persist through early milestones to reach sustainable growth.\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"Win by engineering an offer with exceptional, clearly communicated value—priced and positioned for a defined market—so buying feels obvious and low-risk.\"\n}"
-                }
-              ],
-              "role": "assistant"
-            }
-          ]
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Generate Short Workbook": [
-      {
-        "json": {
-          "output": [
-            {
-              "id": "msg_0af883a6f767f9a700693ce2a16fa8819dac6961ad2cbab4e9",
-              "type": "message",
-              "status": "completed",
-              "content": [
-                {
-                  "type": "output_text",
-                  "annotations": [],
-                  "logprobs": [],
-                  "text": "{\n  \"TITLE\": \"$100M Offers: How To Make Offers So Good People Feel Stupid Saying No\",\n  \"AUTHOR\": \"Alex Hormozi\",\n  \"CORE_IDEA\": \"The book explains how to build Grand Slam Offers that stand out from commoditized competition by combining exceptional value, clear market targeting, smart pricing, and proven psychological levers (scarcity, urgency, bonuses, guarantees). By deeply understanding customer needs and executing precisely, entrepreneurs can charge what their solutions are worth, attract ideal buyers, and grow sustainably through offers designed to be easy to say yes to.\",\n  \"PROBLEM_SOLVED\": \"Entrepreneurs struggle to sell consistently and profitably when their products or services feel interchangeable, forcing them into price competition and weak demand.\",\n  \"WHY_IT_MATTERS\": \"When offers are unclear or undifferentiated, businesses face lower margins, inconsistent cash flow, and difficulty attracting the right customers; stronger offers directly improve conversion, pricing power, and long-term viability.\",\n  \"MAIN_THESIS\": \"Business growth becomes more predictable when you focus on constructing and communicating an offer with overwhelming perceived value—tailored to a specific market and reinforced with risk-reduction and decision-making triggers—so customers can clearly see the payoff and feel confident buying.\",\n  \"INSIGHTS_LI\": [\n    \"A Grand Slam Offer is built by increasing perceived value, not by competing on price.\",\n    \"Deep customer insight enables creative problem-solving that makes the offer more compelling and specific.\",\n    \"Scarcity, urgency, bonuses, and guarantees increase commitment by clarifying timing, amplifying value, and reducing risk.\"\n  ],\n  \"STEPS_LI\": [\n    \"Define the specific target market and desired outcome your offer delivers, then align all elements around that outcome.\",\n    \"Improve the offer by adding value and lowering perceived risk (e.g., bonuses and guarantees) before adjusting price.\",\n    \"Name and market the offer with precision, then execute consistently and persist through early milestones to reach sustainable growth.\"\n  ],\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"Win by engineering an offer with exceptional, clearly communicated value—priced and positioned for a defined market—so buying feels obvious and low-risk.\"\n}"
-                }
-              ],
-              "role": "assistant"
-            }
-          ]
         }
       }
     ],
@@ -1465,7 +1439,7 @@
       }
     ]
   },
-  "versionId": "04319e77-5a46-4a00-ab51-7ce6ce8f5947",
+  "versionId": "422ee039-7d8a-4bde-8591-a46fbbe5d91b",
   "activeVersionId": null,
   "triggerCount": 1,
   "shared": [
