@@ -1,0 +1,806 @@
+{
+  "updatedAt": "2025-12-20T23:32:03.303Z",
+  "createdAt": "2025-12-02T21:06:00.144Z",
+  "id": "3r45bGjleYIz8OiW",
+  "name": "v2 Summarize Loop",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "books",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "eq",
+              "keyValue": "ingestion_complete"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "19273c8d-1410-4b58-918c-6defe1eea9d4",
+      "name": "Get Books",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://supabase.megyk.com/rest/v1/summaries_v2?book_id=eq.{{ $json.id }}&select=count ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        160,
+        0
+      ],
+      "id": "c5c18027-5e01-40a3-aeaa-1898e73c8809",
+      "name": "Count Summaries"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a31c1ed5-7e70-4b32-af3b-e7e6db36268c",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": 9,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        0
+      ],
+      "id": "475023aa-3245-4d15-bfb4-9382e297db40",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// This code runs ONCE for each incoming (book_id + length) item\n\nconst book_id = $('Get Books').item.json.id;\n\nreturn {\n  items: [\n    { json: {  book_id, style: \"narrative\" } },\n    { json: {  book_id, style: \"bullet_points\" } },\n    { json: { book_id, style: \"workbook\" } },\n  ]\n}\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        0
+      ],
+      "id": "bb60a8b0-0787-4392-ae9c-9073bd122034",
+      "name": "Split into styles"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "0b568ff3-b9e1-49cf-9d38-9fd7de936d4f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        0
+      ],
+      "id": "a6f7d78a-99b6-492d-80f8-035cbe09187c",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// This code runs ONCE for each incoming (book_id + length) item\n\nconst book_id = $json.json.book_id;\nconst style = $json.json.style\nreturn {\n  items: [\n    { json: {  book_id, style, length: 'short' } },\n    { json: {  book_id, style, length: 'medium' } },\n    { json: { book_id, style, length: 'long' } },\n  ]\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "f8004134-3172-49a2-95ab-b02b6e1dfc99",
+      "name": "Split into Lengths"
+    },
+    {
+      "parameters": {
+        "maxItems": 9
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        0
+      ],
+      "id": "5a02a408-a9ef-4003-8eac-ac33f84629ea",
+      "name": "Limit",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "94cbeced-ca9c-47df-9c17-0f7acbc2ff73",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "e8gHgjRrX19DKYO5",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/e8gHgjRrX19DKYO5",
+          "cachedResultName": "Generate 3 X 3 Summaries V3 Update"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "book_id": "={{ $('Get Books').item.json.id }}",
+            "length": "={{ $json.json.length }}",
+            "style": "={{ $json.json.style }}",
+            "title": "={{ $('Get Books').item.json.title }}",
+            "author": "={{ $('Get Books').item.json.author }}"
+          },
+          "matchingColumns": [
+            "book_id"
+          ],
+          "schema": [
+            {
+              "id": "book_id",
+              "displayName": "book_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "length",
+              "displayName": "length",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "style",
+              "displayName": "style",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "canonical_chapters",
+              "displayName": "canonical_chapters",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1728,
+        0
+      ],
+      "id": "b7ecdccf-0c52-4d73-a083-f9ef65f01ba4",
+      "name": "Call Generate 3 X 3 Summaries V3",
+      "retryOnFail": true
+    }
+  ],
+  "connections": {
+    "Get Books": {
+      "main": [
+        [
+          {
+            "node": "Count Summaries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count Summaries": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Split into styles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split into styles": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Split into Lengths",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split into Lengths": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Call Generate 3 X 3 Summaries V3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
+  "activeVersionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-02T21:06:00.172Z",
+      "createdAt": "2025-12-02T21:06:00.172Z",
+      "role": "workflow:owner",
+      "workflowId": "3r45bGjleYIz8OiW",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-20T23:32:06.000Z",
+    "createdAt": "2025-12-20T23:32:03.304Z",
+    "versionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
+    "workflowId": "3r45bGjleYIz8OiW",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "books",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "status",
+                "condition": "eq",
+                "keyValue": "ingestion_complete"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -64,
+          0
+        ],
+        "id": "19273c8d-1410-4b58-918c-6defe1eea9d4",
+        "name": "Get Books",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://supabase.megyk.com/rest/v1/summaries_v2?book_id=eq.{{ $json.id }}&select=count ",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          160,
+          0
+        ],
+        "id": "c5c18027-5e01-40a3-aeaa-1898e73c8809",
+        "name": "Count Summaries"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "a31c1ed5-7e70-4b32-af3b-e7e6db36268c",
+                "leftValue": "={{ $json.count }}",
+                "rightValue": 9,
+                "operator": {
+                  "type": "number",
+                  "operation": "lt"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          384,
+          0
+        ],
+        "id": "475023aa-3245-4d15-bfb4-9382e297db40",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// This code runs ONCE for each incoming (book_id + length) item\n\nconst book_id = $('Get Books').item.json.id;\n\nreturn {\n  items: [\n    { json: {  book_id, style: \"narrative\" } },\n    { json: {  book_id, style: \"bullet_points\" } },\n    { json: { book_id, style: \"workbook\" } },\n  ]\n}\n\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          608,
+          0
+        ],
+        "id": "bb60a8b0-0787-4392-ae9c-9073bd122034",
+        "name": "Split into styles"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "items",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          832,
+          0
+        ],
+        "id": "0b568ff3-b9e1-49cf-9d38-9fd7de936d4f",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "items",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1280,
+          0
+        ],
+        "id": "a6f7d78a-99b6-492d-80f8-035cbe09187c",
+        "name": "Split Out1"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// This code runs ONCE for each incoming (book_id + length) item\n\nconst book_id = $json.json.book_id;\nconst style = $json.json.style\nreturn {\n  items: [\n    { json: {  book_id, style, length: 'short' } },\n    { json: {  book_id, style, length: 'medium' } },\n    { json: { book_id, style, length: 'long' } },\n  ]\n}\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1056,
+          0
+        ],
+        "id": "f8004134-3172-49a2-95ab-b02b6e1dfc99",
+        "name": "Split into Lengths"
+      },
+      {
+        "parameters": {
+          "maxItems": 9
+        },
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          1504,
+          0
+        ],
+        "id": "5a02a408-a9ef-4003-8eac-ac33f84629ea",
+        "name": "Limit",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -288,
+          0
+        ],
+        "id": "94cbeced-ca9c-47df-9c17-0f7acbc2ff73",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "e8gHgjRrX19DKYO5",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/e8gHgjRrX19DKYO5",
+            "cachedResultName": "Generate 3 X 3 Summaries V3 Update"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "book_id": "={{ $('Get Books').item.json.id }}",
+              "length": "={{ $json.json.length }}",
+              "style": "={{ $json.json.style }}",
+              "title": "={{ $('Get Books').item.json.title }}",
+              "author": "={{ $('Get Books').item.json.author }}"
+            },
+            "matchingColumns": [
+              "book_id"
+            ],
+            "schema": [
+              {
+                "id": "book_id",
+                "displayName": "book_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "length",
+                "displayName": "length",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "style",
+                "displayName": "style",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "title",
+                "displayName": "title",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "author",
+                "displayName": "author",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "canonical_chapters",
+                "displayName": "canonical_chapters",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "mode": "each",
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1728,
+          0
+        ],
+        "id": "b7ecdccf-0c52-4d73-a083-f9ef65f01ba4",
+        "name": "Call Generate 3 X 3 Summaries V3",
+        "retryOnFail": true
+      }
+    ],
+    "connections": {
+      "Get Books": {
+        "main": [
+          [
+            {
+              "node": "Count Summaries",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Count Summaries": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Split into styles",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split into styles": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Split into Lengths",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out1": {
+        "main": [
+          [
+            {
+              "node": "Limit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split into Lengths": {
+        "main": [
+          [
+            {
+              "node": "Split Out1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit": {
+        "main": [
+          [
+            {
+              "node": "Call Generate 3 X 3 Summaries V3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get Books",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 69a8f6a8",
+    "description": ""
+  },
+  "tags": []
+}
