@@ -3,7 +3,7 @@
   "createdAt": "2025-12-02T18:46:42.377Z",
   "id": "ZQp61SzkePFnnurz",
   "name": "Enrich Book by ID",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -274,7 +274,7 @@
     ]
   },
   "versionId": "e10431f6-a5d7-43ce-a309-06004e5fe054",
-  "activeVersionId": null,
+  "activeVersionId": "e10431f6-a5d7-43ce-a309-06004e5fe054",
   "triggerCount": 0,
   "shared": [
     {
@@ -285,6 +285,266 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-12-02T18:57:19.309Z",
+    "createdAt": "2025-12-02T18:57:19.309Z",
+    "versionId": "e10431f6-a5d7-43ce-a309-06004e5fe054",
+    "workflowId": "ZQp61SzkePFnnurz",
+    "nodes": [
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Start').item.json.filename }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          64,
+          16
+        ],
+        "id": "1381f985-d8ee-4f97-af4f-6327d5f3ab2c",
+        "name": "Read Book from Disk",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id"
+              }
+            ]
+          }
+        },
+        "id": "c59ccf0a-891f-4aad-85f9-32084c107c92",
+        "typeVersion": 1.1,
+        "name": "Start",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          -960,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1-MINI"
+          },
+          "responses": {
+            "values": [
+              {
+                "content": "=Partial Title: \"{{ $json.title }}\"\nAuthor: \"{{ $json.author }}\""
+              },
+              {
+                "role": "system",
+                "content": "=You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH. You will be retrieving the data for the following fields:\n\n- title\n- author\n- summary\n- isbn\n- publication_year\n- page_count\n\n\n-----------------------------\nTOOL USE — VERY IMPORTANT\n-----------------------------\nYou have access to a WEB SEARCH tool.\n\nYou MUST call the WEB SEARCH tool to find:\n- complete title if it appears incomplete or uncertain  \n- author  \n- isbn\n- publication_year  \n- page_count  \n- summary\n\nYour WEB SEARCH query MUST be:\n\n\"{{ $json.title }} {{ $json.author }} book metadata\"\n\nAfter receiving search results:\n1. Interpret all results — prioritize authoritative or majority consensus.  \n2. Extract canonical metadata:\n   - **title** → complete, widely recognized title  \n   - **author** → correct full author name  \n   - **isbn** → prefer ISBN-13; do NOT invent one  \n   - **publication_year** → first edition year unless majority reference a specific edition  \n   - **page_count** → choose the most common count across sources  \n   - **summary** → write an 80–150 word objective summary based on real sources  \n3. If results contain multiple possibilities → choose the most widely published  \n4. If the search returns nothing → leave uncertain fields as `null` (except title, which MUST have your best inference)\n\n-----------------------------\nSTRICT OUTPUT FORMAT RULES\n-----------------------------\nYou MUST output ONLY a **single JSON object**.  \nABSOLUTELY NO:\n- markdown  \n- backticks  \n- code fences  \n- prose  \n- explanations  \n- tool call artifacts  \n- \"Here is your JSON:\" prefixes  \n\nThe ONLY valid output is a compact JSON object like this:\n\n{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"summary\": \"\",\n  \"isbn\": \"\",\n  \"publication_year\": null,\n  \"page_count\": null\n}\n\nRules:\n- Use `null` for unknown numbers  \n- Strings MUST be plain strings (never wrapped in extra quotes)  \n- Do NOT invent ISBNs, years, or page counts  \n- Summary must be factual, not fictional  \n- No trailing commas  \n- No additional fields  \n\n-----------------------------\nFINAL INSTRUCTION\n-----------------------------\nIf you require external information → you MUST call WEB SEARCH before producing the final JSON.\n\nWhen you generate your final answer → it MUST be ONLY the JSON object and nothing else."
+              }
+            ]
+          },
+          "builtInTools": {
+            "webSearch": {
+              "searchContextSize": "medium"
+            }
+          },
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 2,
+        "position": [
+          -512,
+          16
+        ],
+        "id": "5466e6ae-66fd-45d7-939f-1f1de8fd2dbe",
+        "name": "Enrich Book",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// INPUT: Full response from the \"Message A Model\" node\n// GOAL: Extract the inner JSON string and return a parsed JSON object\n\n// 1. Get raw model output safely\nlet raw = \"\";\n\ntry {\n  raw =\n    $json.output?.[0]?.content?.[0]?.text ||\n    $json.output?.[0]?.content?.[0]?.output_text ||\n    $json.data ||\n    \"\";\n} catch (e) {\n  raw = \"\";\n}\n\nif (!raw) {\n  throw new Error(\"No content found in model output\");\n}\n\n// 2. Normalize: trim, remove accidental markdown, remove code fences\nraw = raw.trim()\n  .replace(/^```json/i, \"\")\n  .replace(/^```/, \"\")\n  .replace(/```$/, \"\")\n  .trim();\n\n// 3. Sometimes the model wraps JSON in extra quotes → unwrap if needed\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (err) {\n    // leave it as-is if parse fails\n  }\n}\n\n// 4. Extract the FIRST \"{\" and LAST \"}\" to isolate JSON cleanly\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"JSON braces not found in model output\");\n}\n\n// slice out the JSON substring\nconst jsonString = raw.slice(start, end + 1);\n\n// 5. Parse JSON safely\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonString);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON: \" + err.message + \"\\nRaw: \" + jsonString);\n}\n\n// 6. Return parsed metadata as the output item\nreturn [\n  {\n    json: parsed\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          16
+        ],
+        "id": "ae0218c8-8e0d-4fe3-9312-8636b312c5ea",
+        "name": "Code in JavaScript1"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "books",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $('Start').item.json.id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "title",
+                "fieldValue": "={{ $('Code in JavaScript1').item.json.title }}"
+              },
+              {
+                "fieldId": "author",
+                "fieldValue": "={{ $('Code in JavaScript1').item.json.author }}"
+              },
+              {
+                "fieldId": "isbn",
+                "fieldValue": "={{ $('Code in JavaScript1').item.json.isbn }}"
+              },
+              {
+                "fieldId": "publication_year",
+                "fieldValue": "={{ $('Code in JavaScript1').item.json.publication_year }}"
+              },
+              {
+                "fieldId": "page_count",
+                "fieldValue": "={{ $('Code in JavaScript1').item.json.page_count }}"
+              },
+              {
+                "fieldId": "summary",
+                "fieldValue": "={{ $('Code in JavaScript1').item.json.summary }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          288,
+          16
+        ],
+        "id": "965704ac-2657-4cf0-a81b-872ebf3ab361",
+        "name": "Update a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "books",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "keyValue": "={{ $json.id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -736,
+          16
+        ],
+        "id": "4defe766-dcce-409a-b392-4a30e4b49f0d",
+        "name": "Get a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## AI Book Enrichment\n for pre-existing Book (by Supabase ID)",
+          "height": 576,
+          "width": 1216,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1008,
+          -240
+        ],
+        "id": "048c9d37-ac93-49b5-a419-c2a3b41b0dc0",
+        "name": "Sticky Note"
+      }
+    ],
+    "connections": {
+      "Read Book from Disk": {
+        "main": [
+          [
+            {
+              "node": "Update a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start": {
+        "main": [
+          [
+            {
+              "node": "Get a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enrich Book": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "Read Book from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row": {
+        "main": [
+          [
+            {
+              "node": "Enrich Book",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
