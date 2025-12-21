@@ -1,0 +1,244 @@
+{
+  "updatedAt": "2025-11-16T19:24:46.000Z",
+  "createdAt": "2025-07-24T15:56:13.547Z",
+  "id": "BFkLqWhDRcMnrzje",
+  "name": "OP3 Mentor GG Book Sales -> Optimizepress",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://markusdan.com/wp-json/opm-api/v1/members",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"email\": \"{{ $json.body.email }}\",\n\"first_name\": \"{{ $json.body.first_name }}\",\n\"last_name\": \"{{ $json.body.last_name }}\",\n\"memberships\": 1,\n\"notify\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        848,
+        112
+      ],
+      "id": "3b00120c-ad00-4b1d-bb81-f3ab28bb4884",
+      "name": "Post to MarkusDan.com Webhook",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "wAmX1Raq8bFF7PTv",
+          "name": "MarkusDan.com Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1392fe7f-dedf-415b-9a7f-e3fc83fd14c0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        624,
+        112
+      ],
+      "id": "40a602b0-3f06-467e-9201-5ba74a5a95dc",
+      "name": "Digistore On Order",
+      "webhookId": "1392fe7f-dedf-415b-9a7f-e3fc83fd14c0"
+    },
+    {
+      "parameters": {
+        "content": "## OP3 Mentor GG Book Sales -> Optimizepress\n- Listens for new Digistore orders via webhook\n- Posts order info (email, name, membership ID) to markusdan.com's OptiPress API endpoint\n- Designed for handling digital product sales and ensuring access is granted automatically",
+        "height": 208,
+        "width": 464,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -224
+      ],
+      "id": "a2107dd2-ddba-4969-adb3-9073febf36e6",
+      "name": "Sticky Note2"
+    }
+  ],
+  "connections": {
+    "Digistore On Order": {
+      "main": [
+        [
+          {
+            "node": "Post to MarkusDan.com Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "WbISMAIlclQfzorG"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Digistore On Order": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.megyk.com",
+            "user-agent": "DigiStore-API/1.0 (Linux; en-US; rv:1.0.0.0) php/20130430 curl/20130430",
+            "content-length": "357",
+            "accept": "*/*",
+            "accept-charset": "utf-8",
+            "accept-encoding": "deflate, gzip, br, zstd",
+            "cache-control": "no-cache",
+            "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+            "traceparent": "00-0997afa3375125fab95c893bcd643c26-222ab91eeb192e83-01",
+            "tracestate": "es=s:1",
+            "via": "2.0 Caddy",
+            "x-forwarded-for": "34.95.42.191",
+            "x-forwarded-host": "n8n.megyk.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "email": "",
+            "first_name": "",
+            "last_name": "",
+            "title": "",
+            "salutation": "",
+            "company": "",
+            "street": "",
+            "city": "",
+            "zipcode": "",
+            "state": "",
+            "country_code": "",
+            "country_name": "",
+            "phone_no": "",
+            "order_id": "",
+            "transaction_id": "",
+            "product_name": "",
+            "product_name_intern": "",
+            "product_id": "",
+            "quantity": "",
+            "receipt_url": "",
+            "invoice_url": "",
+            "eticket_url": "",
+            "custom": "",
+            "tags": "",
+            "event": "",
+            "amount_brutto": "",
+            "amount_netto": "",
+            "amount_vendor": "",
+            "amount_affiliate": "",
+            "currency": "",
+            "is_gdpr_country": ""
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook-test/1392fe7f-dedf-415b-9a7f-e3fc83fd14c0",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "versionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
+  "activeVersionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-07-24T15:56:13.552Z",
+      "createdAt": "2025-07-24T15:56:13.552Z",
+      "role": "workflow:owner",
+      "workflowId": "BFkLqWhDRcMnrzje",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
+    "workflowId": "BFkLqWhDRcMnrzje",
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://markusdan.com/wp-json/opm-api/v1/members",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpQueryAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n\"email\": \"{{ $json.body.email }}\",\n\"first_name\": \"{{ $json.body.first_name }}\",\n\"last_name\": \"{{ $json.body.last_name }}\",\n\"memberships\": 1,\n\"notify\": 1\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          848,
+          112
+        ],
+        "id": "3b00120c-ad00-4b1d-bb81-f3ab28bb4884",
+        "name": "Post to MarkusDan.com Webhook",
+        "credentials": {
+          "httpQueryAuth": {
+            "id": "wAmX1Raq8bFF7PTv",
+            "name": "MarkusDan.com Auth"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "1392fe7f-dedf-415b-9a7f-e3fc83fd14c0",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          624,
+          112
+        ],
+        "id": "40a602b0-3f06-467e-9201-5ba74a5a95dc",
+        "name": "Digistore On Order",
+        "webhookId": "1392fe7f-dedf-415b-9a7f-e3fc83fd14c0"
+      },
+      {
+        "parameters": {
+          "content": "## OP3 Mentor GG Book Sales -> Optimizepress\n- Listens for new Digistore orders via webhook\n- Posts order info (email, name, membership ID) to markusdan.com's OptiPress API endpoint\n- Designed for handling digital product sales and ensuring access is granted automatically",
+          "height": 208,
+          "width": 464,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          560,
+          -224
+        ],
+        "id": "a2107dd2-ddba-4969-adb3-9073febf36e6",
+        "name": "Sticky Note2"
+      }
+    ],
+    "connections": {
+      "Digistore On Order": {
+        "main": [
+          [
+            {
+              "node": "Post to MarkusDan.com Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
