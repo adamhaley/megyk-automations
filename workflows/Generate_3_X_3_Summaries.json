@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-12-07T22:50:00.000Z",
+  "updatedAt": "2025-12-18T00:41:14.966Z",
   "createdAt": "2025-12-02T21:18:37.241Z",
   "id": "qcWDGRq8GvKymxwu",
   "name": "Generate 3 X 3 Summaries",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -34,10 +34,10 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -1168,
-        -112
+        -2640,
+        1088
       ],
-      "id": "8e02b9fc-667f-46e3-a5fe-041c763946ec",
+      "id": "a09e6de3-01be-4517-b052-9d5d7a4a3172",
       "name": "When Executed by Another Workflow"
     },
     {
@@ -125,10 +125,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        352,
-        -144
+        -1120,
+        1056
       ],
-      "id": "065200db-bbbf-4a19-8a29-9af84788a77b",
+      "id": "53161718-1cb3-4a20-9aaa-8a8dffc414ec",
       "name": "Summary Type"
     },
     {
@@ -142,7 +142,7 @@
         "responses": {
           "values": [
             {
-              "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n6. Adjust level of detail based on user_preferences.length:\n\n- \"short\": 1 sentence per chapter; 1 short paragraph final summary.\n- \"medium\": ~50–100 words per chapter; 2–3 paragraph final summary.\n- \"long\": ~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
+              "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n6. Adjust level of detail based on user_preferences.length:\n\n- \"short\": 1 paragraph per chapter.\n- \"medium\": words per chapter; 2–3 paragraph final summary.\n- \"long\": ~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
             },
             {
               "role": "system",
@@ -156,10 +156,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2,
       "position": [
-        576,
-        -336
+        -896,
+        864
       ],
-      "id": "fcc6c156-0f3a-4165-85ec-2f027042579d",
+      "id": "e8184128-5da8-4487-9b5f-11675833b577",
       "name": "Narrative Summary",
       "executeOnce": true,
       "credentials": {
@@ -194,10 +194,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2,
       "position": [
-        576,
-        -128
+        -896,
+        1072
       ],
-      "id": "7813ea22-9728-4d2f-818e-5e82007f5acc",
+      "id": "3966b76b-2fbb-4ca8-97d8-71d2660ed3f8",
       "name": "Bullet Point Summary",
       "executeOnce": true,
       "credentials": {
@@ -222,7 +222,7 @@
             },
             {
               "role": "system",
-              "content": "You are the Megyk Workbook Summarization Model.\n\nYour job is to produce structured, accurate workbook-style outputs for each canonical chapter of a book, including:\n\n- a narrative chapter summary\n- a set of comprehension questions\n- a set of answers to those questions\n- a full-book narrative summary\n- a consolidated index of all Q&A\n\nYou have access to the following tool:\n\n• Get Chapters(book_id)\n  - Returns extracted chapter text and metadata from Supabase.\n  - Use the “summary_md” field as the canonical grounding source for summarization.\n\nYou will always receive:\n1. user_preferences — e.g. {\"style\":\"workbook\",\"length\":\"medium\"}.\n2. canonical_chapters — the ordered list of human chapter titles.\n3. book_id — for retrieving extracted text via Get Chapters.\n\nYour responsibilities:\n\n1. ALWAYS call Get Chapters(book_id) unless the chapter text is already provided.\n2. For each canonical chapter:\n   • Align it with the best-matching extracted chapter text from Get Chapters.\n   • Use the “summary_md” field as the factual grounding source.\n   • Produce:\n       - A narrative summary (2–5 paragraphs depending on length settings).\n       - A set of 3–5 workbook-style comprehension questions.\n       - Corresponding answers, grounded strictly in the extracted text.\n3. Maintain the chapter order exactly as provided in canonical_chapters.\n4. If a chapter’s text is missing, produce conservative summaries and questions based only on available adjacent context—never hallucinate details.\n5. After all chapters are summarized, produce a complete-book narrative summary (3–8 paragraphs depending on length settings).\n6. Also produce an “index” array consolidating all Q&A pairs across all chapters.\n\nLength rules (workbook mode):\n- “short”: ~1 paragraph per chapter summary; 2–3 questions.\n- “medium”: ~2–3 paragraphs per chapter summary; 3–5 questions.\n- “long”: ~4–6 paragraphs per chapter summary; 5–7 questions.\n\nFormatting rules:\n- Chapter summaries MUST be a single string of narrative prose.\n- “questions” MUST be an array of strings.\n- “answers” MUST be an array of strings, position-matched to questions.\n- “complete_book_summary” MUST be a single narrative string.\n- “index” MUST be an array of objects: { \"question\": \"...\", \"answer\": \"...\" }.\n\nOutput Requirements:\nReturn ONLY a single valid JSON object shaped like:\n\n{\n  \"user_preferences\": {...},\n  \"chapters_summary\": [\n    {\n      \"chapter_index\": 0,\n      \"title\": \"Chapter Title\",\n      \"summary\": \"narrative text...\",\n      \"questions\": [\"...\",\"...\"],\n      \"answers\": [\"...\",\"...\"]\n    }\n  ],\n  \"complete_book_summary\": \"narrative text...\",\n  \"index\": [\n    { \"question\": \"...\", \"answer\": \"...\" }\n  ]\n}\n\nRules:\n- No markdown fences.\n- No commentary.\n- No additional fields.\n- All content MUST be grounded in extracted Supabase text returned by Get Chapters.\n- Never hallucinate facts not supported by the source text.\n"
+              "content": "You are the Megyk Workbook Summarization Model.\n\nYour job is to produce structured, application-oriented workbook outputs for each canonical chapter of a book, designed for business owners, founders, and operators.\n\nThis workbook is NOT a test of memorization or comprehension.\nThere are no correct or incorrect answers.\n\nYou must preserve the existing output structure exactly\n\nYou have access to the following tool:\n\n• Get Chapters(book_id)\n  - Returns extracted chapter text and metadata from Supabase.\n  - Use the “summary_md” field as the canonical grounding source for summarization.\n\nYou will always receive:\n1. user_preferences  e.g. {\"style\":\"workbook\",\"length\":\"medium\"}.\n2. canonical_chapters -  the ordered list of human chapter titles.\n3. book_id -  for retrieving extracted text via Get Chapters.\n\nYour responsibilities:\n\n1. ALWAYS call Get Chapters(book_id) unless the chapter text is already provided.\n\n2. For each canonical chapter:\n   • Align it with the best-matching extracted chapter text from Get Chapters.\n   • Use the “summary_md” field as the factual grounding source.\n\n3. Once you have the chapters,  focus on the following structure as an outline: \nWhat problem does the book solve?\nWhy does this problem matter?\nWhat is the author’s main thesis?\nBiggest insights/principles?\nPractical Steps?\n\nThese questions will be used as outline sections.\nLength rules in workbook mode (ie: how many questions to generate per outline section):\n- “short”:  1 question per  Outline section\n- “medium”: 3 questions per outline section.\n- “long”: 5–7 questions per outline section.\n\n4. Workbook questions:\n   • MUST be open-ended and reflective.\n   • MUST focus on applying the chapter’s ideas to the reader’s own business, leadership, systems, or personal decision-making.\n   • SHOULD encourage implementation, self-assessment, and strategic thinking.\n\n   Acceptable question styles include:\n   - How does this idea show up in your business today?\n   - Where might your current approach conflict with this principle?\n   - What would change if you fully applied this idea?\n   - How could this concept influence your leadership or decision-making?\n   - What obstacles might prevent you from applying this principle?\n\n\nFormatting rules (MUST be followed exactly):\n- “questions” MUST be an array of strings.\n- “complete_book_summary” MUST be a single narrative string.\n\nOutput Requirements:\nReturn ONLY a single valid JSON object shaped like:\n\n{\n  \"user_preferences\": {...},\n  \"chapters_summary\": [\n    {\n      \"chapter_index\": 0,\n      \"title\": \"Chapter Title\",\n      \"summary\": \"narrative text...\",\n      \"questions\": [\"...\",\"...\"],\n    }\n  ]\n}\n\nRules:\n- No markdown fences.\n- No commentary.\n- No additional fields.\n- Never hallucinate facts not supported by the source text.\n"
             }
           ]
         },
@@ -232,10 +232,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2,
       "position": [
-        592,
-        112
+        -896,
+        1312
       ],
-      "id": "a19ebb9a-fc30-4610-b91b-7315b4caabee",
+      "id": "52afe304-3c6e-41be-b917-ae3b8a9e9523",
       "name": "Workbook Summary",
       "executeOnce": true,
       "credentials": {
@@ -264,10 +264,10 @@
       "type": "n8n-nodes-base.supabaseTool",
       "typeVersion": 1,
       "position": [
-        912,
-        400
+        -560,
+        1600
       ],
-      "id": "516d1f5a-d2e7-4ade-83d5-ca7a48a64499",
+      "id": "78fecad4-81db-4772-be8e-465a4f153af6",
       "name": "Get Chapters",
       "credentials": {
         "supabaseApi": {
@@ -283,10 +283,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        928,
-        -336
+        -544,
+        864
       ],
-      "id": "0d058314-6104-47df-8fcc-8922c81f0c29",
+      "id": "b376c6cd-f296-41f2-8a78-8d284df0cc4b",
       "name": "Code in JavaScript"
     },
     {
@@ -320,10 +320,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 2,
       "position": [
-        -464,
-        -128
+        -1936,
+        1072
       ],
-      "id": "9be5881b-ef84-4486-8662-5b4d773f06e3",
+      "id": "91cb86e5-db3f-4484-8ca9-40b56844c6c4",
       "name": "Message a model",
       "credentials": {
         "openAiApi": {
@@ -339,10 +339,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -96,
-        -128
+        -1568,
+        1072
       ],
-      "id": "e3680ed0-5f18-4d1c-9b79-4e5372368962",
+      "id": "891057d8-62d0-4a7f-a6d6-5374726eed19",
       "name": "Parse Chapters"
     },
     {
@@ -353,10 +353,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        112,
-        -128
+        -1360,
+        1072
       ],
-      "id": "730628b5-e88d-4097-8cf9-59eeb0589289",
+      "id": "60651b35-cb06-4232-9e56-0f17d1c93560",
       "name": "Code in JavaScript1"
     },
     {
@@ -366,10 +366,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1136,
-        -336
+        -336,
+        864
       ],
-      "id": "26212cd7-62f1-48d4-bd20-51704d626bc0",
+      "id": "3bf75f66-471a-43af-9971-9142466011c2",
       "name": "Pre-Process"
     },
     {
@@ -379,24 +379,24 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        928,
-        -128
+        -544,
+        1072
       ],
-      "id": "34a484d8-7394-40de-8fe4-654488858063",
+      "id": "a8fb3166-1fc8-4b16-b9f5-ed09fac21a03",
       "name": "Parse Output"
     },
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is inside:\n// $input.item.json.output.output   (n8n nests it oddly)\n// or sometimes $input.item.json.output[0].content[0].text\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array with content → unwrap\nif (Array.isArray(raw)) {\n  // If it's an OpenAI response shape\n  if (raw[0] && raw[0].output) {\n    raw = raw[0].output;\n  } else if (raw[0] && raw[0].content && raw[0].content[0] && raw[0].content[0].text) {\n    raw = raw[0].content[0].text;\n  }\n}\n\n// If still a string → parse it\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw = {\n//   user_preferences,\n//   chapters_summary: [...],\n//   complete_book_summary,\n//   index: [...optional...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (includes Q&A)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
+        "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is usually inside one of:\n// - $input.item.json.output\n// - or directly $input.item.json\n// and then nested like:\n//   [ { output: [ { content: [ { text: \"{...json...}\" } ] } ] } ]\n// or:\n//   [ { content: [ { text: \"{...json...}\" } ] } ]\n// or already a JSON string/object.\n//\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array → iteratively unwrap until we reach a string or object\nif (Array.isArray(raw)) {\n  // Keep unwrapping layers like:\n  // [ { output: [...] } ]  →  [...]  →  { content: [...] }  →  text\n  while (Array.isArray(raw)) {\n    const first = raw[0];\n    if (!first) break;\n\n    // Case: { output: [ { ... } ] }\n    if (first.output && Array.isArray(first.output)) {\n      raw = first.output;\n      continue;\n    }\n\n    // Case: { content: [ { text: \"...\" } ] }\n    if (\n      first.content &&\n      Array.isArray(first.content) &&\n      first.content[0] &&\n      typeof first.content[0].text === \"string\"\n    ) {\n      raw = first.content[0].text;\n      break;\n    }\n\n    // Unknown array shape, stop unwrapping\n    break;\n  }\n}\n\n// If still a string → parse it as JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw should look like:\n// {\n//   user_preferences: { style, length },\n//   chapters_summary: [...],\n//   complete_book_summary: \"...\",\n//   index: [...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (questions, etc.)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1136,
-        112
+        -336,
+        1312
       ],
-      "id": "46e02510-397c-45d3-a835-65433bcb7851",
+      "id": "c07940d8-6e37-4d5f-9c0d-622829c11870",
       "name": "Parse Output1"
     },
     {
@@ -459,10 +459,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1872,
-        -144
+        400,
+        1056
       ],
-      "id": "dd029d6f-f585-4285-bc75-d73ed1b5e34e",
+      "id": "28593e5a-11a9-4383-8b2e-2c4133fd0d8b",
       "name": "Upsert Summary1",
       "executeOnce": false
     },
@@ -490,10 +490,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -960,
-        -112
+        -2432,
+        1088
       ],
-      "id": "618c9ba3-b6d3-47ed-b8de-ee2bc1056046",
+      "id": "f3069f0a-239b-4093-8126-dd65b5519aa4",
       "name": "Get a row",
       "alwaysOutputData": true,
       "credentials": {
@@ -531,10 +531,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -752,
-        -112
+        -2224,
+        1088
       ],
-      "id": "801e2f69-26f5-4725-84aa-7e99e1f944c8",
+      "id": "f35b16dd-8408-4527-82b8-522544a98d74",
       "name": "If"
     }
   ],
@@ -750,8 +750,8 @@
       }
     ]
   },
-  "versionId": "9c574d22-046b-4f02-a2f5-3aa26bb8bcb2",
-  "activeVersionId": null,
+  "versionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
+  "activeVersionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
   "triggerCount": 0,
   "shared": [
     {
@@ -762,6 +762,738 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-12-18T00:41:17.000Z",
+    "createdAt": "2025-12-18T00:41:14.969Z",
+    "versionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
+    "workflowId": "qcWDGRq8GvKymxwu",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "book_id"
+              },
+              {
+                "name": "length"
+              },
+              {
+                "name": "style"
+              },
+              {
+                "name": "title"
+              },
+              {
+                "name": "author"
+              },
+              {
+                "name": "canonical_chapters"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -2640,
+          1088
+        ],
+        "id": "a09e6de3-01be-4517-b052-9d5d7a4a3172",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('When Executed by Another Workflow').item.json.style }}",
+                      "rightValue": "=narrative",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "f73cb591-f577-431d-9a62-a7911e625676"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "narrative"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "5216c0fa-a23c-43d5-9df7-b6872a407df4",
+                      "leftValue": "={{ $('When Executed by Another Workflow').item.json.style }}",
+                      "rightValue": "bullet_points",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "bullet_points"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "82fc4562-66cb-4690-bece-a5aff5c322e3",
+                      "leftValue": "={{ $('When Executed by Another Workflow').item.json.style }}",
+                      "rightValue": "workbook",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "workbook"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          -1120,
+          1056
+        ],
+        "id": "53161718-1cb3-4a20-9aaa-8a8dffc414ec",
+        "name": "Summary Type"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1-MINI"
+          },
+          "responses": {
+            "values": [
+              {
+                "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n6. Adjust level of detail based on user_preferences.length:\n\n- \"short\": 1 paragraph per chapter.\n- \"medium\": words per chapter; 2–3 paragraph final summary.\n- \"long\": ~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
+              },
+              {
+                "role": "system",
+                "content": "You are the Megyk Book Summarization Model. Your job is to produce cohesive, immersive, narrative-style summaries for each canonical chapter, and a final full-book summary.\n\nYou have access to the following tool:\n\n• Get Chapters(book_id)  \n  - Returns an array of extracted chapter text segments stored in Supabase for this book.\n  - These are the authoritative text sources extracted from the EPUB and should be used for grounding and accuracy.\n\nYou will receive:\n1. user_preferences  — an object such as {\"style\":\"narrative\",\"length\":\"short\"}.\n2. canonical_chapters — an ordered list of chapters detected via the canonical chapter lookup step.\n   Example:\n   [\n     {\"index\":0, \"title\":\"Introduction\"},\n     {\"index\":1, \"title\":\"Popularity and the Mind\"},\n     ...\n   ]\n3. book_id — use this with the Get Chapters tool to load the extracted text you must summarize.\n\nYour responsibilities:\n- ALWAYS call Get Chapters as your first action unless chapter text has already been provided.\n- Align each canonical chapter with its best corresponding extracted chapter text.\n- If multiple text segments may relate to a chapter, merge and summarize them consistently.\n- If an extracted chapter is missing or does not clearly match a canonical chapter, write a concise summary based only on grounded material and context from adjacent chapters. Do NOT hallucinate details that are not supported by text.\n- Write in immersive, flowing narrative prose as if retelling the book directly to the reader.\n- Do NOT describe the structure (“this chapter explains…”) — instead convey the ideas themselves.\n- Maintain consistent voice, tense, and tone throughout.\n- Use user_preferences to adjust:\n  • summary density\n  • writing intensity\n  • level of detail\n  • pacing and narrative style\n\nOutput Requirements:\n- Output ONLY a single JSON object in this exact schema:\n\n{\n  \"user_preferences\": {...},\n  \"chapters_summary\": [\n    {\n      \"chapter_index\": 0,\n      \"title\": \"Chapter Title\",\n      \"summary\": \"Narrative paragraph summarizing this chapter.\"\n    }\n  ],\n  \"complete_book_summary\": \"Cohesive narrative summarizing the entire book.\"\n}\n\nRules:\n- No markdown.\n- No commentary.\n- No text outside the JSON object.\n- No placeholder or empty summaries — produce meaningful narrative summaries grounded in the text returned by Get Chapters.\n"
+              }
+            ]
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 2,
+        "position": [
+          -896,
+          864
+        ],
+        "id": "e8184128-5da8-4487-9b5f-11675833b577",
+        "name": "Narrative Summary",
+        "executeOnce": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1-MINI"
+          },
+          "responses": {
+            "values": [
+              {
+                "content": "=length: {{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{$('When Executed by Another Workflow').item.json.book_id  }}.\n2. For each chapter in canonical_chapters, find the best matching extracted chapter text using the available data returned by Get Chapters.\n3. Summarize each chapter strictly in bullet-point form (array of strings), grounded in the “summary_md” field.\n4. Follow length rules for short, medium, and long.\n5. After chapter summaries, produce a complete-book bullet-point summary.\n6. Output ONLY valid JSON matching the schema defined in the system prompt.\n"
+              },
+              {
+                "role": "system",
+                "content": "You are the Megyk Book Summarization Model. Your job is to produce structured, accurate, bullet-point summaries for each canonical chapter, and a final bullet-point summary of the entire book.\n\nYou have access to the following tool:\n\n• Get Chapters(book_id)\n  - Returns extracted chapter text segments stored in Supabase for this book.\n  - Use the “summary_md” field as the canonical grounding source.\n\nInputs you will receive:\n1. user_preferences — e.g. {\"style\":\"bullet_points\",\"length\":\"medium\"}.\n2. canonical_chapters — an ordered list of chapters such as:\n   [\n     {\"index\":0,\"title\":\"Introduction\"},\n     {\"index\":1,\"title\":\"Popularity and the Mind\"},\n     ...\n   ]\n3. book_id — use this with Get Chapters to load extracted chapter texts.\n\nYour responsibilities:\n- ALWAYS call Get Chapters first unless the chapter text has already been provided.\n- For each canonical chapter, align it to the best-matching extracted text from Supabase.\n- Produce bullet-point summaries that:\n  • are concise but meaningful  \n  • capture key ideas, facts, and themes  \n  • avoid fluff or interpretation not grounded in text  \n  • avoid meta language (“this chapter discusses…”)  \n- Maintain the chapter order exactly as provided.\n- If a chapter’s extracted text is missing, summarize conservatively using adjacent context—do not hallucinate.\n- After all chapters, produce a final bullet-point summary of the entire book.\n\nLength control rules:\n- “short”: 2–3 bullet points per chapter; 3–5 bullets overall.\n- “medium”: 5–7 bullet points per chapter; 6–12 bullets overall.\n- “long”: 10–15 bullet points per chapter; 15–25 bullets overall.\n\nFormatting rules:\n- Bullets must be simple dash (“-”) list items.\n- Each bullet should be a complete but concise idea.\n- No long paragraphs.\n- No narrative prose—strictly bullet-point format.\n\nOutput Requirements:\nReturn ONLY a single JSON object:\n\n{\n  \"user_preferences\": {...},\n  \"chapters_summary\": [\n    {\n      \"chapter_index\": 0,\n      \"title\": \"Chapter Title\",\n      \"summary\": [\n        \"- bullet point 1\",\n        \"- bullet point 2\"\n      ]\n    }\n  ],\n  \"complete_book_summary\": [\n    \"- bullet point 1\",\n    \"- bullet point 2\"\n  ]\n}\n\nRules:\n- Do not output any markdown fences.\n- Do not output text outside the JSON object.\n- “summary” MUST be an array of bullet-point strings, not a single string.\n- All content must be grounded in the extracted chapter text returned by Get Chapters.\n"
+              }
+            ]
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 2,
+        "position": [
+          -896,
+          1072
+        ],
+        "id": "3966b76b-2fbb-4ca8-97d8-71d2660ed3f8",
+        "name": "Bullet Point Summary",
+        "executeOnce": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1"
+          },
+          "responses": {
+            "values": [
+              {
+                "content": "=length: {{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $json.book_id }}\n\nInstructions:\n\n1. Call Get Chapters to retrieve all extracted chapter entries for book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}.\n2. For each chapter in canonical_chapters, locate the best-matching extracted text from Get Chapters (using title, semantic similarity, or summary_md).\n3. Write a narrative chapter summary grounded strictly in the “summary_md” field.\n4. Generate comprehension questions (per chapter) based on the grounded content.\n5. Generate answers to those questions, strictly tied to the grounded facts.\n6. Maintain chapter order exactly.\n7. After all chapters, write a complete-book narrative summary.\n8. Then produce an “index” array containing all questions and answers across the entire workbook.\n9. Return ONLY valid JSON conforming to the schema described in the System Prompt.\n"
+              },
+              {
+                "role": "system",
+                "content": "You are the Megyk Workbook Summarization Model.\n\nYour job is to produce structured, application-oriented workbook outputs for each canonical chapter of a book, designed for business owners, founders, and operators.\n\nThis workbook is NOT a test of memorization or comprehension.\nThere are no correct or incorrect answers.\n\nYou must preserve the existing output structure exactly\n\nYou have access to the following tool:\n\n• Get Chapters(book_id)\n  - Returns extracted chapter text and metadata from Supabase.\n  - Use the “summary_md” field as the canonical grounding source for summarization.\n\nYou will always receive:\n1. user_preferences  e.g. {\"style\":\"workbook\",\"length\":\"medium\"}.\n2. canonical_chapters -  the ordered list of human chapter titles.\n3. book_id -  for retrieving extracted text via Get Chapters.\n\nYour responsibilities:\n\n1. ALWAYS call Get Chapters(book_id) unless the chapter text is already provided.\n\n2. For each canonical chapter:\n   • Align it with the best-matching extracted chapter text from Get Chapters.\n   • Use the “summary_md” field as the factual grounding source.\n\n3. Once you have the chapters,  focus on the following structure as an outline: \nWhat problem does the book solve?\nWhy does this problem matter?\nWhat is the author’s main thesis?\nBiggest insights/principles?\nPractical Steps?\n\nThese questions will be used as outline sections.\nLength rules in workbook mode (ie: how many questions to generate per outline section):\n- “short”:  1 question per  Outline section\n- “medium”: 3 questions per outline section.\n- “long”: 5–7 questions per outline section.\n\n4. Workbook questions:\n   • MUST be open-ended and reflective.\n   • MUST focus on applying the chapter’s ideas to the reader’s own business, leadership, systems, or personal decision-making.\n   • SHOULD encourage implementation, self-assessment, and strategic thinking.\n\n   Acceptable question styles include:\n   - How does this idea show up in your business today?\n   - Where might your current approach conflict with this principle?\n   - What would change if you fully applied this idea?\n   - How could this concept influence your leadership or decision-making?\n   - What obstacles might prevent you from applying this principle?\n\n\nFormatting rules (MUST be followed exactly):\n- “questions” MUST be an array of strings.\n- “complete_book_summary” MUST be a single narrative string.\n\nOutput Requirements:\nReturn ONLY a single valid JSON object shaped like:\n\n{\n  \"user_preferences\": {...},\n  \"chapters_summary\": [\n    {\n      \"chapter_index\": 0,\n      \"title\": \"Chapter Title\",\n      \"summary\": \"narrative text...\",\n      \"questions\": [\"...\",\"...\"],\n    }\n  ]\n}\n\nRules:\n- No markdown fences.\n- No commentary.\n- No additional fields.\n- Never hallucinate facts not supported by the source text.\n"
+              }
+            ]
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 2,
+        "position": [
+          -896,
+          1312
+        ],
+        "id": "52afe304-3c6e-41be-b917-ae3b8a9e9523",
+        "name": "Workbook Summary",
+        "executeOnce": true,
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "Query the chapters table and return every chapter belonging to a single book. This tool requires a valid book_id (UUID) and outputs an ordered list of chapter records including chapter index, title, summary fields. do not send vector embeddings, only the  chapter index, title, and summary fields",
+          "operation": "getAll",
+          "tableId": "chapters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "book_id",
+                "condition": "eq",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          -560,
+          1600
+        ],
+        "id": "78fecad4-81db-4772-be8e-465a4f153af6",
+        "name": "Get Chapters",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// --- 1. Extract raw text from OpenAI \"Message a Model\" output ---\nlet raw = \"\";\ntry {\n  raw = $json.output[0].content[0].text || \"\";\n} catch (err) {\n  throw new Error(\"Could not locate output[0].content[0].text\");\n}\n\n// --- 2. Normalize / strip markdown fences ---\nraw = raw.trim();\nraw = raw.replace(/```json/gi, \"\").replace(/```/g, \"\").trim();\n\n// --- 3. Extract the first { ... } block (handles stray text) ---\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\nif (start === -1 || end === -1) {\n  throw new Error(\"No JSON object detected in response.\");\n}\n\nlet jsonStr = raw.slice(start, end + 1);\n\n// --- 4. Parse JSON safely ---\nlet data;\ntry {\n  data = JSON.parse(jsonStr);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON: \" + err.message + \"\\nRaw:\\n\" + jsonStr);\n}\n\n// --- 5. Validate required fields ---\nif (!data.chapters_summary || !Array.isArray(data.chapters_summary)) {\n  throw new Error(\"Parsed JSON missing 'chapters_summary' array.\");\n}\n\nif (typeof data.complete_book_summary !== \"string\") {\n  throw new Error(\"Parsed JSON missing 'complete_book_summary' string.\");\n}\n\n// --- 6. Return clean normalized output ---\nreturn [\n  {\n    json: {\n      user_preferences: data.user_preferences || {},\n      chapters_summary: data.chapters_summary,\n      complete_book_summary: data.complete_book_summary\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -544,
+          864
+        ],
+        "id": "b376c6cd-f296-41f2-8a78-8d284df0cc4b",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1-MINI"
+          },
+          "responses": {
+            "values": [
+              {
+                "content": "=Given the following book metadata:\n\nTitle: {{ $('When Executed by Another Workflow').item.json.title }}\nAuthor: {{ $('When Executed by Another Workflow').item.json.author }}\n\nPlease find the canonical chapter list, performing web searches if needed. Output the final reconciled chapters using the required JSON schema.\n"
+              },
+              {
+                "role": "system",
+                "content": "You are an expert research assistant for Megyk Books, responsible for retrieving canonical chapter lists for well-known books.\n\nYou have access to the web_search tool. When the book’s chapter structure is not already known with high confidence, you MUST call web_search using at least the book title plus the author name. Use multiple queries if needed (e.g., \"TABLE OF CONTENTS\", \"chapter list\", \"summary chapters\").\n\nYour goals:\n1. Collect chapter lists from multiple authoritative sources (e.g., publisher sites, library catalogs, educational summaries, table-of-contents pages).\n2. Reconcile differences and determine the most canonical, widely accepted chapter ordering.\n3. Normalize titles (trim whitespace, remove numbering prefixes, correct capitalization).\n4. Preserve special formatting (e.g., Roman numerals, named parts) when they are canonical.\n5. If sources disagree, compute a confidence score per chapter and an overall confidence score.\n\nOutput format MUST be deterministic JSON:\n\n{\n  \"book_title\": \"...\",\n  \"author\": \"...\",\n  \"overall_confidence\": 0.0,\n  \"chapters\": [\n    {\n      \"index\": 0,\n      \"title\": \"...\",\n      \"confidence\": 0.0,\n      \"source_support_count\": 0,\n      \"sources\": [\"...\", \"...\"]\n    }\n  ],\n  \"notes\": \"...\"\n}\n\nRules:\n- Never invent chapters.\n- If the book has no formal chapters, output an empty chapter list and a note.\n- If sources conflict, choose the majority alignment and document discrepancies.\n- Before answering, ALWAYS consider whether a web search is necessary.\n- If book is obscure or search results are unclear, call web_search again using a more specific or alternative query.\n\nYour output must be pure JSON with no commentary outside the JSON object.\n"
+              }
+            ]
+          },
+          "builtInTools": {
+            "webSearch": {
+              "searchContextSize": "medium"
+            }
+          },
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 2,
+        "position": [
+          -1936,
+          1072
+        ],
+        "id": "91cb86e5-db3f-4484-8ca9-40b56844c6c4",
+        "name": "Message a model",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// --- 1. Extract the raw text from the OpenAI Message output ---\nlet raw = \"\";\ntry {\n  raw = $json.output[0].content[0].text || \"\";\n} catch (err) {\n  throw new Error(\"Could not locate .output[0].content[0].text in incoming data\");\n}\n\n// --- 2. Trim and remove Markdown fences ---\nraw = raw.trim();\nraw = raw.replace(/```json/gi, \"\").replace(/```/g, \"\").trim();\n\n// --- 3. If wrapped in a string literal → unwrap it ---\nif ((raw.startsWith('\"') && raw.endsWith('\"')) ||\n    (raw.startsWith(\"'\") && raw.endsWith(\"'\"))) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (_) {}\n}\n\n// --- 4. Extract JSON from any surrounding junk ---\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\nif (start === -1 || end === -1) {\n  throw new Error(\"Could not find JSON object in model output.\");\n}\n\nlet jsonStr = raw.slice(start, end + 1);\n\n// --- 5. Parse JSON safely ---\nlet data;\ntry {\n  data = JSON.parse(jsonStr);\n} catch (err) {\n  throw new Error(\"JSON parse failed: \" + err.message + \"\\nRaw: \" + jsonStr);\n}\n\n// --- 6. Validate minimal structure ---\nif (!Array.isArray(data.chapters)) {\n  throw new Error(\"Parsed JSON has no chapters array.\");\n}\n\n// --- 7. Output clean canonical structure ---\nreturn [\n  {\n    json: {\n      book_title: data.book_title || null,\n      author: data.author || null,\n      overall_confidence: data.overall_confidence ?? null,\n      chapters: data.chapters,\n      notes: data.notes || null\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1568,
+          1072
+        ],
+        "id": "891057d8-62d0-4a7f-a6d6-5374726eed19",
+        "name": "Parse Chapters"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Expecting the canonicalizer output to be an array with one item\nconst item = $input.item.json;\n\n// Extract raw chapters\nconst rawChapters = item.chapters || [];\n\n// Reduce to essential fields\nconst clean = rawChapters.map(ch => ({\n  index: ch.index,\n  title: ch.title\n}));\n\nreturn {\n    json: {\n      canonical_chapters: clean,\n      book_id: item.book_id || null,\n      book_title: item.book_title || null,\n      author: item.author || null\n    }\n  };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1360,
+          1072
+        ],
+        "id": "60651b35-cb06-4232-9e56-0f17d1c93560",
+        "name": "Code in JavaScript1"
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.item.json;\n\n// Book ID should be available either on this item or earlier in workflow\nconst bookId =$('When Executed by Another Workflow').first().json.book_id;\n\n\nif (!bookId) {\n  throw new Error(\"book_id not found in input.\");\n}\n\nreturn [\n  {\n    json: {\n      book_id: bookId,\n      length: item.user_preferences.length,\n      style: item.user_preferences.style,\n      chapters_summary: item.chapters_summary,\n      complete_book_summary: item.complete_book_summary\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -336,
+          864
+        ],
+        "id": "3bf75f66-471a-43af-9971-9142466011c2",
+        "name": "Pre-Process"
+      },
+      {
+        "parameters": {
+          "jsCode": "//\n// Extract and parse JSON from the bullet-point “Message A Model” output\n//\n\nlet raw = \"\";\n\n// 1. Safely pull the text field from model output\ntry {\n  raw =\n    $json.output?.[0]?.content?.[0]?.text ||\n    $json.output?.[0]?.content?.[0]?.output_text ||\n    $json.data ||\n    \"\";\n} catch (e) {\n  raw = \"\";\n}\n\nif (!raw) {\n  throw new Error(\"No model output text found.\");\n}\n\n// 2. Normalize: trim + remove accidental code fences or markdown\nraw = raw\n  .trim()\n  .replace(/^```json/i, \"\")\n  .replace(/^```/, \"\")\n  .replace(/```$/, \"\")\n  .trim();\n\n// 3. If the entire JSON blob is wrapped in quotes, unwrap\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (err) {\n    // If it fails, continue with raw unchanged\n  }\n}\n\n// 4. Extract the FIRST { and LAST } — isolating the JSON object\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"JSON object braces not found in the model output.\");\n}\n\nconst jsonString = raw.slice(start, end + 1);\n\n// 5. Parse JSON safely\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonString);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON: \" + err.message + \"\\nRaw: \" + jsonString);\n}\n\n// 6. Return parsed fields as the node's output\nreturn [\n  {\n    json: parsed\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -544,
+          1072
+        ],
+        "id": "a8fb3166-1fc8-4b16-b9f5-ed09fac21a03",
+        "name": "Parse Output"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is usually inside one of:\n// - $input.item.json.output\n// - or directly $input.item.json\n// and then nested like:\n//   [ { output: [ { content: [ { text: \"{...json...}\" } ] } ] } ]\n// or:\n//   [ { content: [ { text: \"{...json...}\" } ] } ]\n// or already a JSON string/object.\n//\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array → iteratively unwrap until we reach a string or object\nif (Array.isArray(raw)) {\n  // Keep unwrapping layers like:\n  // [ { output: [...] } ]  →  [...]  →  { content: [...] }  →  text\n  while (Array.isArray(raw)) {\n    const first = raw[0];\n    if (!first) break;\n\n    // Case: { output: [ { ... } ] }\n    if (first.output && Array.isArray(first.output)) {\n      raw = first.output;\n      continue;\n    }\n\n    // Case: { content: [ { text: \"...\" } ] }\n    if (\n      first.content &&\n      Array.isArray(first.content) &&\n      first.content[0] &&\n      typeof first.content[0].text === \"string\"\n    ) {\n      raw = first.content[0].text;\n      break;\n    }\n\n    // Unknown array shape, stop unwrapping\n    break;\n  }\n}\n\n// If still a string → parse it as JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw should look like:\n// {\n//   user_preferences: { style, length },\n//   chapters_summary: [...],\n//   complete_book_summary: \"...\",\n//   index: [...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (questions, etc.)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -336,
+          1312
+        ],
+        "id": "c07940d8-6e37-4d5f-9c0d-622829c11870",
+        "name": "Parse Output1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://supabase.megyk.com/rest/v1/summaries_v2",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "on_conflict",
+                "value": "book_id,length,style"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "Prefer",
+                "value": "resolution=merge-duplicates, return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "summary",
+                "value": "={{ $json.chapters_summary }}"
+              },
+              {
+                "name": "book_id",
+                "value": "={{ $('When Executed by Another Workflow').item.json.book_id }}"
+              },
+              {
+                "name": "length",
+                "value": "={{ $('When Executed by Another Workflow').item.json.length }}"
+              },
+              {
+                "name": "style",
+                "value": "={{ $('When Executed by Another Workflow').item.json.style }}"
+              },
+              {
+                "name": "complete_book_summary",
+                "value": "={{ $json.complete_book_summary }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          400,
+          1056
+        ],
+        "id": "28593e5a-11a9-4383-8b2e-2c4133fd0d8b",
+        "name": "Upsert Summary1",
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "summaries_v2",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "book_id",
+                "keyValue": "={{ $json.book_id }}"
+              },
+              {
+                "keyName": "style",
+                "keyValue": "={{ $json.style }}"
+              },
+              {
+                "keyName": "length",
+                "keyValue": "={{ $json.length }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -2432,
+          1088
+        ],
+        "id": "f3069f0a-239b-4093-8126-dd65b5519aa4",
+        "name": "Get a row",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f58d7f57-58e3-4cc2-a3e7-57ca045602c3",
+                "leftValue": "={{$json}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "empty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -2224,
+          1088
+        ],
+        "id": "f35b16dd-8408-4527-82b8-522544a98d74",
+        "name": "If"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Get a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Summary Type": {
+        "main": [
+          [
+            {
+              "node": "Narrative Summary",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Bullet Point Summary",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Workbook Summary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bullet Point Summary": {
+        "main": [
+          [
+            {
+              "node": "Parse Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Narrative Summary": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Workbook Summary": {
+        "main": [
+          [
+            {
+              "node": "Parse Output1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Chapters": {
+        "ai_tool": [
+          [
+            {
+              "node": "Bullet Point Summary",
+              "type": "ai_tool",
+              "index": 0
+            },
+            {
+              "node": "Narrative Summary",
+              "type": "ai_tool",
+              "index": 0
+            },
+            {
+              "node": "Workbook Summary",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Pre-Process",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Message a model": {
+        "main": [
+          [
+            {
+              "node": "Parse Chapters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Chapters": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "Summary Type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pre-Process": {
+        "main": [
+          [
+            {
+              "node": "Upsert Summary1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Output": {
+        "main": [
+          [
+            {
+              "node": "Upsert Summary1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Output1": {
+        "main": [
+          [
+            {
+              "node": "Upsert Summary1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Message a model",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 42fede35",
+    "description": ""
+  },
   "tags": []
 }
