@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-21T16:56:32.841Z",
+  "updatedAt": "2025-12-21T19:11:32.651Z",
   "createdAt": "2025-12-17T23:52:47.951Z",
   "id": "e8gHgjRrX19DKYO5",
   "name": "Generate 3 X 3 Summaries V3 Update",
@@ -35,7 +35,7 @@
       "typeVersion": 1.1,
       "position": [
         -3712,
-        1360
+        1376
       ],
       "id": "fefdb88f-b758-461a-bb97-abd23c413e1c",
       "name": "When Executed by Another Workflow"
@@ -180,7 +180,7 @@
         "responses": {
           "values": [
             {
-              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section must contain exactly ONE application-oriented questions.\nDo NOT include answers, examples, or explanations.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA_Q\": [\n    \"Reflective question that helps the reader examine how the book’s core idea applies to their own situation\",\n    \"Reflective question that prompts comparison between the book’s core idea and the reader’s current beliefs or practices\",\n    \"Reflective question that encourages the reader to identify gaps or opportunities related to the core idea\"\n  ],\n\n  \"PROBLEM_SOLVED_Q\": [\n    \"Question that helps the reader identify whether this problem exists in their own context\"\n  ],\n\n  \"WHY_IT_MATTERS_Q\": [\n    \"Question that prompts the reader to consider the personal or professional consequences of this issue\"\n\n  ],\n\n  \"MAIN_THESIS_Q\": [\n    \"Question that challenges the reader to evaluate their alignment with the author’s thesis\"\n\n  ],\n\n  \"KEY_THEMES_Q\": [\n    \"Question that helps the reader identify which theme is most relevant to them right now\"\n  ],\n\n  \"INSIGHTS_Q\": [\n    \"Question that prompts the reader to test one key insight against their lived experience\"\n  ],\n\n  \"STEPS_Q\": [\n    \"Question that helps the reader define a realistic first action\"\n  ],\n\n  \"WHO_THIS_BOOK_IS_FOR_Q\": [\n    \"Question that helps the reader assess whether they are the intended audience\"\n  ],\n\n  \"INTEGRATION_Q\": [\n    \"Question that helps the reader synthesize the book’s ideas into their existing systems or habits\"\n  ]\n}\n\nReturn JSON only. No additional text.\n"
+              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section (except where explicitly noted) must contain:\n1. A brief priming summary (1–2 sentences) explaining the idea in plain language\n2. Exactly ONE application-oriented question\n\nDo NOT include answers, examples, exercises, or explanations beyond the brief priming summary.\nDo NOT include multiple questions per section.\n\nThe tone should be reflective, practical, and grounded in real-world application.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA\": \"One concise paragraph summarizing the central idea of the book, written like a normal executive summary (NOT a question)\",\n\n  \"PROBLEM_SOLVED\": {\n    \"SUMMARY\": \"Brief statement describing the core problem or tension the book addresses\",\n    \"QUESTION\": \"Application-oriented question that helps the reader identify whether this problem exists in their own context\"\n  },\n\n  \"WHY_IT_MATTERS\": {\n    \"SUMMARY\": \"Brief statement explaining why this problem is important or consequential\",\n    \"QUESTION\": \"Question that prompts the reader to consider the personal or professional impact of solving this problem\"\n  },\n\n  \"MAIN_THESIS\": {\n    \"SUMMARY\": \"Short summary of the author’s main argument or point of view\",\n    \"QUESTION\": \"Question that challenges the reader to examine their alignment or disagreement with this thesis\"\n  },\n\n  \"KEY_THEMES\": {\n    \"SUMMARY\": \"Brief overview of the major themes or recurring ideas in the book\",\n    \"QUESTION\": \"Question that helps the reader identify which theme is most relevant to their current situation\"\n  },\n\n  \"INSIGHTS\": {\n    \"SUMMARY\": \"Short synthesis of the book’s most important insights or principles\",\n    \"QUESTION\": \"Question that prompts the reader to test one insight against their own experience\"\n  },\n\n  \"STEPS\": {\n    \"SUMMARY\": \"Concise description of the type of action or change the book encourages\",\n    \"QUESTION\": \"Question that helps the reader define a realistic first step they could take\"\n  },\n\n  \"WHO_THIS_BOOK_IS_FOR\": {\n    \"SUMMARY\": \"Brief description of the type of reader who would benefit most from this book\",\n    \"QUESTION\": \"Question that helps the reader assess whether they are the intended audience\"\n  },\n\n  \"INTEGRATION\": {\n    \"SUMMARY\": \"Short statement about integrating the book’s ideas into existing systems, habits, or workflows\",\n    \"QUESTION\": \"Question that helps the reader synthesize these ideas into their ongoing practices\"\n  },\n\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence capturing the book’s essence, written like a normal TL;DR summary (NOT a question)\"\n}\n\n=== STYLE GUIDELINES ===\n\n- Questions: reflective, application-oriented, and open-ended\n- Avoid abstract philosophy; anchor ideas in lived experience\n- Maintain clarity and simplicity over cleverness\n- Favor specificity over breadth: name one concrete idea clearly rather than several abstract ones briefly.\n\n=== STRICT LENGTH & DENSITY CONSTRAINTS ===\n\nThese constraints exist to ensure the workbook fits cleanly on one page.\n\nPriming summaries (SUMMARY fields):\n- Max 35 words per summary\n- 1–2 sentences only\n- Express a single idea or theme\n- Do NOT enumerate multiple concepts with lists or conjunction chains\n\nApplication questions (QUESTION fields):\n- Exactly one question per section\n- Max 30 words per question\n- One clear focus; no compound or multi-part questions\n\nCORE_IDEA:\n- Max 100 words\n- Written as a concise executive-style summary (not instructional)\n\nTLDR_QUOTE_OR_SUMMARY_LINE:\n- Max 25 words\n- One strong declarative sentence\n- No quotes attribution or explanation\n\nIf content exceeds these limits:\n- Shorten sentences\n- Remove qualifiers\n- Prefer clarity over completeness\n- Never spill content into a second page\n\nReturn JSON only. No additional text.\n"
             },
             {
               "role": "system",
@@ -323,33 +323,6 @@
     },
     {
       "parameters": {
-        "jsCode": "//\n// Extract and parse JSON from the bullet-point “Message A Model” output\n//\n\nlet raw = \"\";\n\n// 1. Safely pull the text field from model output\ntry {\n  raw =\n    $json.output?.[0]?.content?.[0]?.text ||\n    $json.output?.[0]?.content?.[0]?.output_text ||\n    $json.data ||\n    \"\";\n} catch (e) {\n  raw = \"\";\n}\n\nif (!raw) {\n  throw new Error(\"No model output text found.\");\n}\n\n// 2. Normalize: trim + remove accidental code fences or markdown\nraw = raw\n  .trim()\n  .replace(/^```json/i, \"\")\n  .replace(/^```/, \"\")\n  .replace(/```$/, \"\")\n  .trim();\n\n// 3. If the entire JSON blob is wrapped in quotes, unwrap\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (err) {\n    // If it fails, continue with raw unchanged\n  }\n}\n\n// 4. Extract the FIRST { and LAST } — isolating the JSON object\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"JSON object braces not found in the model output.\");\n}\n\nconst jsonString = raw.slice(start, end + 1);\n\n// 5. Parse JSON safely\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonString);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON: \" + err.message + \"\\nRaw: \" + jsonString);\n}\n\n// 6. Return parsed fields as the node's output\nreturn [\n  {\n    json: parsed\n  }\n];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -112,
-        1952
-      ],
-      "id": "0cdb22ab-e557-40ed-94fe-b1a21c2225df",
-      "name": "Parse Output"
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is usually inside one of:\n// - $input.item.json.output\n// - or directly $input.item.json\n// and then nested like:\n//   [ { output: [ { content: [ { text: \"{...json...}\" } ] } ] } ]\n// or:\n//   [ { content: [ { text: \"{...json...}\" } ] } ]\n// or already a JSON string/object.\n//\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array → iteratively unwrap until we reach a string or object\nif (Array.isArray(raw)) {\n  // Keep unwrapping layers like:\n  // [ { output: [...] } ]  →  [...]  →  { content: [...] }  →  text\n  while (Array.isArray(raw)) {\n    const first = raw[0];\n    if (!first) break;\n\n    // Case: { output: [ { ... } ] }\n    if (first.output && Array.isArray(first.output)) {\n      raw = first.output;\n      continue;\n    }\n\n    // Case: { content: [ { text: \"...\" } ] }\n    if (\n      first.content &&\n      Array.isArray(first.content) &&\n      first.content[0] &&\n      typeof first.content[0].text === \"string\"\n    ) {\n      raw = first.content[0].text;\n      break;\n    }\n\n    // Unknown array shape, stop unwrapping\n    break;\n  }\n}\n\n// If still a string → parse it as JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw should look like:\n// {\n//   user_preferences: { style, length },\n//   chapters_summary: [...],\n//   complete_book_summary: \"...\",\n//   index: [...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (questions, etc.)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        0,
-        2128
-      ],
-      "id": "58006eba-eb69-4447-a7b1-1095b6f1c827",
-      "name": "Parse Output1"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/summaries_v2",
         "sendQuery": true,
@@ -444,7 +417,7 @@
       "typeVersion": 1,
       "position": [
         -3488,
-        1360
+        1376
       ],
       "id": "69617b3f-7d5e-47eb-a0aa-bf1da6cd2bd9",
       "name": "Get a row",
@@ -485,7 +458,7 @@
       "typeVersion": 2.2,
       "position": [
         -3264,
-        1360
+        1376
       ],
       "id": "8c16d77c-3d97-4640-88b5-3a24f140472c",
       "name": "If"
@@ -1187,7 +1160,7 @@
         "responses": {
           "values": [
             {
-              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section must contain exactly THREE application-oriented questions.\nDo NOT include answers, examples, or explanations.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA_Q\": [\n    \"Reflective question that helps the reader examine how the book’s core idea applies to their own situation\",\n    \"Reflective question that prompts comparison between the book’s core idea and the reader’s current beliefs or practices\",\n    \"Reflective question that encourages the reader to identify gaps or opportunities related to the core idea\"\n  ],\n\n  \"PROBLEM_SOLVED_Q\": [\n    \"Question that helps the reader identify whether this problem exists in their own context\",\n    \"Question that explores how the problem currently shows up in the reader’s work or life\",\n    \"Question that surfaces the cost of leaving this problem unresolved\"\n  ],\n\n  \"WHY_IT_MATTERS_Q\": [\n    \"Question that prompts the reader to consider the personal or professional consequences of this issue\",\n    \"Question that explores who else is affected by this issue in the reader’s environment\",\n    \"Question that helps the reader assess urgency or priority\"\n  ],\n\n  \"MAIN_THESIS_Q\": [\n    \"Question that challenges the reader to evaluate their alignment with the author’s thesis\",\n    \"Question that explores tension between the thesis and the reader’s current approach\",\n    \"Question that prompts consideration of what would change if the thesis were fully adopted\"\n  ],\n\n  \"KEY_THEMES_Q\": [\n    \"Question that helps the reader identify which theme is most relevant to them right now\",\n    \"Question that explores how multiple themes interact in the reader’s real-world context\",\n    \"Question that encourages prioritization among the themes\"\n  ],\n\n  \"INSIGHTS_Q\": [\n    \"Question that prompts the reader to test one key insight against their lived experience\",\n    \"Question that helps the reader identify resistance or friction related to an insight\",\n    \"Question that encourages the reader to translate an insight into a concrete shift\"\n  ],\n\n  \"STEPS_Q\": [\n    \"Question that helps the reader define a realistic first action\",\n    \"Question that explores obstacles to implementation\",\n    \"Question that prompts accountability or measurement of progress\"\n  ],\n\n  \"WHO_THIS_BOOK_IS_FOR_Q\": [\n    \"Question that helps the reader assess whether they are the intended audience\",\n    \"Question that explores how the book’s ideas fit the reader’s current stage or role\",\n    \"Question that encourages adaptation rather than blind adoption\"\n  ],\n\n  \"INTEGRATION_Q\": [\n    \"Question that helps the reader synthesize the book’s ideas into their existing systems or habits\",\n    \"Question that prompts reflection on what must change to sustain these ideas long-term\",\n    \"Question that encourages commitment to experimentation or iteration\"\n  ]\n}\n\nReturn JSON only. No additional text.\n"
+              "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section (except where explicitly noted) must contain:\n1. A brief priming summary (1–2 sentences) explaining the idea in plain language\n2. Exactly THREE application-oriented questions\n\nDo NOT include answers, examples, exercises, or explanations beyond the brief priming summary.\nDo NOT combine multiple questions into a single compound question.\n\nThe tone should be reflective, practical, and grounded in real-world application.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA\": \"One concise paragraph summarizing the central idea of the book, written like a normal executive summary (NOT a question)\",\n\n  \"PROBLEM_SOLVED\": {\n    \"SUMMARY\": \"Brief statement describing the core problem or tension the book addresses\",\n    \"QUESTIONS\": [\n      \"Application-oriented question\",\n      \"Application-oriented question\",\n      \"Application-oriented question\"\n    ]\n  },\n\n  \"WHY_IT_MATTERS\": {\n    \"SUMMARY\": \"Brief statement explaining why this problem is important or consequential\",\n    \"QUESTIONS\": [\n      \"Application-oriented question\",\n      \"Application-oriented question\",\n      \"Application-oriented question\"\n    ]\n  },\n\n  \"MAIN_THESIS\": {\n    \"SUMMARY\": \"Short summary of the author’s main argument or point of view\",\n    \"QUESTIONS\": [\n      \"Reflective alignment or challenge question\",\n      \"Reflective alignment or challenge question\",\n      \"Reflective alignment or challenge question\"\n    ]\n  },\n\n  \"KEY_THEMES\": {\n    \"SUMMARY\": \"Brief overview of the major themes or recurring ideas in the book\",\n    \"QUESTIONS\": [\n      \"Theme-selection question\",\n      \"Theme-selection question\",\n      \"Theme-selection question\"\n    ]\n  },\n\n  \"INSIGHTS\": {\n    \"SUMMARY\": \"Short synthesis of the book’s most important insights or principles\",\n    \"QUESTIONS\": [\n      \"Insight-testing question\",\n      \"Insight-testing question\",\n      \"Insight-testing question\"\n    ]\n  },\n\n  \"STEPS\": {\n    \"SUMMARY\": \"Concise description of the type of action or change the book encourages\",\n    \"QUESTIONS\": [\n      \"Action-definition question\",\n      \"Action-definition question\",\n      \"Action-definition question\"\n    ]\n  },\n\n  \"WHO_THIS_BOOK_IS_FOR\": {\n    \"SUMMARY\": \"Brief description of the type of reader who would benefit most from this book\",\n    \"QUESTIONS\": [\n      \"Audience-fit question\",\n      \"Audience-fit question\",\n      \"Audience-fit question\"\n    ]\n  },\n\n  \"INTEGRATION\": {\n    \"SUMMARY\": \"Short statement about integrating the book’s ideas into existing systems, habits, or workflows\",\n    \"QUESTIONS\": [\n      \"Integration question\",\n      \"Integration question\",\n      \"Integration question\"\n    ]\n  },\n\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence capturing the book’s essence, written like a normal TL;DR summary (NOT a question)\"\n}\n\n=== STYLE & DENSITY GUIDELINES ===\n\nPriming summaries (SUMMARY fields):\n- Max 50 words per summary\n- 1–2 sentences only\n- Express a single idea or theme\n- Avoid enumerations or lists\n\nApplication questions (QUESTIONS fields):\n- Exactly 3 questions per section\n- Max 30 words per question\n- One clear focus per question\n\nCORE_IDEA:\n- Max 120 words\n- Executive summary style, not instructional\n\nTLDR_QUOTE_OR_SUMMARY_LINE:\n- Max 30 words\n- One strong declarative sentence\n\nFavor specificity over breadth.\nPrefer clarity over completeness.\n\nReturn JSON only. No additional text.\n"
             },
             {
               "role": "system",
@@ -1394,16 +1367,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Parse Output": {
-      "main": [
-        []
-      ]
-    },
-    "Parse Output1": {
-      "main": [
-        []
       ]
     },
     "Get a row": {
@@ -1726,19 +1689,16 @@
         "json": {
           "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
           "length": "short",
-          "style": "workbook",
+          "style": "bullet_points",
           "title": "$100M Offers",
           "author": "Alex Hormozi",
           "canonical_chapters": null
-        },
-        "pairedItem": {
-          "item": 0
         }
       }
     ]
   },
-  "versionId": "dc266057-cec0-4d7d-913e-d8d867bd858c",
-  "activeVersionId": "dc266057-cec0-4d7d-913e-d8d867bd858c",
+  "versionId": "6ab43f35-4f60-4c91-b748-ef72b049536d",
+  "activeVersionId": "6ab43f35-4f60-4c91-b748-ef72b049536d",
   "triggerCount": 0,
   "shared": [
     {
@@ -1750,9 +1710,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-21T16:56:35.000Z",
-    "createdAt": "2025-12-21T16:56:32.848Z",
-    "versionId": "dc266057-cec0-4d7d-913e-d8d867bd858c",
+    "updatedAt": "2025-12-21T18:49:59.000Z",
+    "createdAt": "2025-12-21T18:49:54.205Z",
+    "versionId": "6ab43f35-4f60-4c91-b748-ef72b049536d",
     "workflowId": "e8gHgjRrX19DKYO5",
     "nodes": [
       {
@@ -1784,7 +1744,7 @@
         "typeVersion": 1.1,
         "position": [
           -3712,
-          1360
+          1376
         ],
         "id": "fefdb88f-b758-461a-bb97-abd23c413e1c",
         "name": "When Executed by Another Workflow"
@@ -1929,7 +1889,7 @@
           "responses": {
             "values": [
               {
-                "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section must contain exactly ONE application-oriented questions.\nDo NOT include answers, examples, or explanations.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA_Q\": [\n    \"Reflective question that helps the reader examine how the book’s core idea applies to their own situation\",\n    \"Reflective question that prompts comparison between the book’s core idea and the reader’s current beliefs or practices\",\n    \"Reflective question that encourages the reader to identify gaps or opportunities related to the core idea\"\n  ],\n\n  \"PROBLEM_SOLVED_Q\": [\n    \"Question that helps the reader identify whether this problem exists in their own context\"\n  ],\n\n  \"WHY_IT_MATTERS_Q\": [\n    \"Question that prompts the reader to consider the personal or professional consequences of this issue\"\n\n  ],\n\n  \"MAIN_THESIS_Q\": [\n    \"Question that challenges the reader to evaluate their alignment with the author’s thesis\"\n\n  ],\n\n  \"KEY_THEMES_Q\": [\n    \"Question that helps the reader identify which theme is most relevant to them right now\"\n  ],\n\n  \"INSIGHTS_Q\": [\n    \"Question that prompts the reader to test one key insight against their lived experience\"\n  ],\n\n  \"STEPS_Q\": [\n    \"Question that helps the reader define a realistic first action\"\n  ],\n\n  \"WHO_THIS_BOOK_IS_FOR_Q\": [\n    \"Question that helps the reader assess whether they are the intended audience\"\n  ],\n\n  \"INTEGRATION_Q\": [\n    \"Question that helps the reader synthesize the book’s ideas into their existing systems or habits\"\n  ]\n}\n\nReturn JSON only. No additional text.\n"
+                "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section (except where explicitly noted) must contain:\n1. A brief priming summary (1–2 sentences) explaining the idea in plain language\n2. Exactly ONE application-oriented question\n\nDo NOT include answers, examples, exercises, or explanations beyond the brief priming summary.\nDo NOT include multiple questions per section.\n\nThe tone should be reflective, practical, and grounded in real-world application.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA\": \"One concise paragraph summarizing the central idea of the book, written like a normal executive summary (NOT a question)\",\n\n  \"PROBLEM_SOLVED\": {\n    \"SUMMARY\": \"Brief statement describing the core problem or tension the book addresses\",\n    \"QUESTION\": \"Application-oriented question that helps the reader identify whether this problem exists in their own context\"\n  },\n\n  \"WHY_IT_MATTERS\": {\n    \"SUMMARY\": \"Brief statement explaining why this problem is important or consequential\",\n    \"QUESTION\": \"Question that prompts the reader to consider the personal or professional impact of solving this problem\"\n  },\n\n  \"MAIN_THESIS\": {\n    \"SUMMARY\": \"Short summary of the author’s main argument or point of view\",\n    \"QUESTION\": \"Question that challenges the reader to examine their alignment or disagreement with this thesis\"\n  },\n\n  \"KEY_THEMES\": {\n    \"SUMMARY\": \"Brief overview of the major themes or recurring ideas in the book\",\n    \"QUESTION\": \"Question that helps the reader identify which theme is most relevant to their current situation\"\n  },\n\n  \"INSIGHTS\": {\n    \"SUMMARY\": \"Short synthesis of the book’s most important insights or principles\",\n    \"QUESTION\": \"Question that prompts the reader to test one insight against their own experience\"\n  },\n\n  \"STEPS\": {\n    \"SUMMARY\": \"Concise description of the type of action or change the book encourages\",\n    \"QUESTION\": \"Question that helps the reader define a realistic first step they could take\"\n  },\n\n  \"WHO_THIS_BOOK_IS_FOR\": {\n    \"SUMMARY\": \"Brief description of the type of reader who would benefit most from this book\",\n    \"QUESTION\": \"Question that helps the reader assess whether they are the intended audience\"\n  },\n\n  \"INTEGRATION\": {\n    \"SUMMARY\": \"Short statement about integrating the book’s ideas into existing systems, habits, or workflows\",\n    \"QUESTION\": \"Question that helps the reader synthesize these ideas into their ongoing practices\"\n  },\n\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence capturing the book’s essence, written like a normal TL;DR summary (NOT a question)\"\n}\n\n=== STYLE GUIDELINES ===\n\n- Questions: reflective, application-oriented, and open-ended\n- Avoid abstract philosophy; anchor ideas in lived experience\n- Maintain clarity and simplicity over cleverness\n- Favor specificity over breadth: name one concrete idea clearly rather than several abstract ones briefly.\n\n=== STRICT LENGTH & DENSITY CONSTRAINTS ===\n\nThese constraints exist to ensure the workbook fits cleanly on one page.\n\nPriming summaries (SUMMARY fields):\n- Max 35 words per summary\n- 1–2 sentences only\n- Express a single idea or theme\n- Do NOT enumerate multiple concepts with lists or conjunction chains\n\nApplication questions (QUESTION fields):\n- Exactly one question per section\n- Max 30 words per question\n- One clear focus; no compound or multi-part questions\n\nCORE_IDEA:\n- Max 100 words\n- Written as a concise executive-style summary (not instructional)\n\nTLDR_QUOTE_OR_SUMMARY_LINE:\n- Max 25 words\n- One strong declarative sentence\n- No quotes attribution or explanation\n\nIf content exceeds these limits:\n- Shorten sentences\n- Remove qualifiers\n- Prefer clarity over completeness\n- Never spill content into a second page\n\nReturn JSON only. No additional text.\n"
               },
               {
                 "role": "system",
@@ -2072,33 +2032,6 @@
       },
       {
         "parameters": {
-          "jsCode": "//\n// Extract and parse JSON from the bullet-point “Message A Model” output\n//\n\nlet raw = \"\";\n\n// 1. Safely pull the text field from model output\ntry {\n  raw =\n    $json.output?.[0]?.content?.[0]?.text ||\n    $json.output?.[0]?.content?.[0]?.output_text ||\n    $json.data ||\n    \"\";\n} catch (e) {\n  raw = \"\";\n}\n\nif (!raw) {\n  throw new Error(\"No model output text found.\");\n}\n\n// 2. Normalize: trim + remove accidental code fences or markdown\nraw = raw\n  .trim()\n  .replace(/^```json/i, \"\")\n  .replace(/^```/, \"\")\n  .replace(/```$/, \"\")\n  .trim();\n\n// 3. If the entire JSON blob is wrapped in quotes, unwrap\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (err) {\n    // If it fails, continue with raw unchanged\n  }\n}\n\n// 4. Extract the FIRST { and LAST } — isolating the JSON object\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"JSON object braces not found in the model output.\");\n}\n\nconst jsonString = raw.slice(start, end + 1);\n\n// 5. Parse JSON safely\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonString);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON: \" + err.message + \"\\nRaw: \" + jsonString);\n}\n\n// 6. Return parsed fields as the node's output\nreturn [\n  {\n    json: parsed\n  }\n];\n"
-        },
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          -112,
-          1952
-        ],
-        "id": "0cdb22ab-e557-40ed-94fe-b1a21c2225df",
-        "name": "Parse Output"
-      },
-      {
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is usually inside one of:\n// - $input.item.json.output\n// - or directly $input.item.json\n// and then nested like:\n//   [ { output: [ { content: [ { text: \"{...json...}\" } ] } ] } ]\n// or:\n//   [ { content: [ { text: \"{...json...}\" } ] } ]\n// or already a JSON string/object.\n//\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array → iteratively unwrap until we reach a string or object\nif (Array.isArray(raw)) {\n  // Keep unwrapping layers like:\n  // [ { output: [...] } ]  →  [...]  →  { content: [...] }  →  text\n  while (Array.isArray(raw)) {\n    const first = raw[0];\n    if (!first) break;\n\n    // Case: { output: [ { ... } ] }\n    if (first.output && Array.isArray(first.output)) {\n      raw = first.output;\n      continue;\n    }\n\n    // Case: { content: [ { text: \"...\" } ] }\n    if (\n      first.content &&\n      Array.isArray(first.content) &&\n      first.content[0] &&\n      typeof first.content[0].text === \"string\"\n    ) {\n      raw = first.content[0].text;\n      break;\n    }\n\n    // Unknown array shape, stop unwrapping\n    break;\n  }\n}\n\n// If still a string → parse it as JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw should look like:\n// {\n//   user_preferences: { style, length },\n//   chapters_summary: [...],\n//   complete_book_summary: \"...\",\n//   index: [...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (questions, etc.)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
-        },
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          0,
-          2128
-        ],
-        "id": "58006eba-eb69-4447-a7b1-1095b6f1c827",
-        "name": "Parse Output1"
-      },
-      {
-        "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/summaries_v2",
           "sendQuery": true,
@@ -2193,7 +2126,7 @@
         "typeVersion": 1,
         "position": [
           -3488,
-          1360
+          1376
         ],
         "id": "69617b3f-7d5e-47eb-a0aa-bf1da6cd2bd9",
         "name": "Get a row",
@@ -2234,7 +2167,7 @@
         "typeVersion": 2.2,
         "position": [
           -3264,
-          1360
+          1376
         ],
         "id": "8c16d77c-3d97-4640-88b5-3a24f140472c",
         "name": "If"
@@ -2936,7 +2869,7 @@
           "responses": {
             "values": [
               {
-                "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section must contain exactly THREE application-oriented questions.\nDo NOT include answers, examples, or explanations.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA_Q\": [\n    \"Reflective question that helps the reader examine how the book’s core idea applies to their own situation\",\n    \"Reflective question that prompts comparison between the book’s core idea and the reader’s current beliefs or practices\",\n    \"Reflective question that encourages the reader to identify gaps or opportunities related to the core idea\"\n  ],\n\n  \"PROBLEM_SOLVED_Q\": [\n    \"Question that helps the reader identify whether this problem exists in their own context\",\n    \"Question that explores how the problem currently shows up in the reader’s work or life\",\n    \"Question that surfaces the cost of leaving this problem unresolved\"\n  ],\n\n  \"WHY_IT_MATTERS_Q\": [\n    \"Question that prompts the reader to consider the personal or professional consequences of this issue\",\n    \"Question that explores who else is affected by this issue in the reader’s environment\",\n    \"Question that helps the reader assess urgency or priority\"\n  ],\n\n  \"MAIN_THESIS_Q\": [\n    \"Question that challenges the reader to evaluate their alignment with the author’s thesis\",\n    \"Question that explores tension between the thesis and the reader’s current approach\",\n    \"Question that prompts consideration of what would change if the thesis were fully adopted\"\n  ],\n\n  \"KEY_THEMES_Q\": [\n    \"Question that helps the reader identify which theme is most relevant to them right now\",\n    \"Question that explores how multiple themes interact in the reader’s real-world context\",\n    \"Question that encourages prioritization among the themes\"\n  ],\n\n  \"INSIGHTS_Q\": [\n    \"Question that prompts the reader to test one key insight against their lived experience\",\n    \"Question that helps the reader identify resistance or friction related to an insight\",\n    \"Question that encourages the reader to translate an insight into a concrete shift\"\n  ],\n\n  \"STEPS_Q\": [\n    \"Question that helps the reader define a realistic first action\",\n    \"Question that explores obstacles to implementation\",\n    \"Question that prompts accountability or measurement of progress\"\n  ],\n\n  \"WHO_THIS_BOOK_IS_FOR_Q\": [\n    \"Question that helps the reader assess whether they are the intended audience\",\n    \"Question that explores how the book’s ideas fit the reader’s current stage or role\",\n    \"Question that encourages adaptation rather than blind adoption\"\n  ],\n\n  \"INTEGRATION_Q\": [\n    \"Question that helps the reader synthesize the book’s ideas into their existing systems or habits\",\n    \"Question that prompts reflection on what must change to sustain these ideas long-term\",\n    \"Question that encourages commitment to experimentation or iteration\"\n  ]\n}\n\nReturn JSON only. No additional text.\n"
+                "content": "=You will be given:\n1. A full book summary (already generated elsewhere)\n2. The book title and author\n\nYour task is to transform the incoming full summary into a structured\nWORKBOOK designed to help the reader apply the book’s ideas to their\nown business, career, and life.\n\nThis is NOT a comprehension quiz.\nThis is NOT factual recall.\n\nEach section (except where explicitly noted) must contain:\n1. A brief priming summary (1–2 sentences) explaining the idea in plain language\n2. Exactly THREE application-oriented questions\n\nDo NOT include answers, examples, exercises, or explanations beyond the brief priming summary.\nDo NOT combine multiple questions into a single compound question.\n\nThe tone should be reflective, practical, and grounded in real-world application.\n\n=== INPUT ===\n\nTITLE:\n{{ $('Parse Chapters').item.json.book_title }}\n\nAUTHOR:\n{{ $('Parse Chapters').item.json.author }}\n\nFULL_BOOK_SUMMARY:\n{{ $json.chapters_summary.pluck('summary').join('\\n\\n') }}\n\n=== OUTPUT SCHEMA ===\n\n{\n  \"TITLE\": \"Full book title\",\n  \"AUTHOR\": \"Author full name\",\n\n  \"CORE_IDEA\": \"One concise paragraph summarizing the central idea of the book, written like a normal executive summary (NOT a question)\",\n\n  \"PROBLEM_SOLVED\": {\n    \"SUMMARY\": \"Brief statement describing the core problem or tension the book addresses\",\n    \"QUESTIONS\": [\n      \"Application-oriented question\",\n      \"Application-oriented question\",\n      \"Application-oriented question\"\n    ]\n  },\n\n  \"WHY_IT_MATTERS\": {\n    \"SUMMARY\": \"Brief statement explaining why this problem is important or consequential\",\n    \"QUESTIONS\": [\n      \"Application-oriented question\",\n      \"Application-oriented question\",\n      \"Application-oriented question\"\n    ]\n  },\n\n  \"MAIN_THESIS\": {\n    \"SUMMARY\": \"Short summary of the author’s main argument or point of view\",\n    \"QUESTIONS\": [\n      \"Reflective alignment or challenge question\",\n      \"Reflective alignment or challenge question\",\n      \"Reflective alignment or challenge question\"\n    ]\n  },\n\n  \"KEY_THEMES\": {\n    \"SUMMARY\": \"Brief overview of the major themes or recurring ideas in the book\",\n    \"QUESTIONS\": [\n      \"Theme-selection question\",\n      \"Theme-selection question\",\n      \"Theme-selection question\"\n    ]\n  },\n\n  \"INSIGHTS\": {\n    \"SUMMARY\": \"Short synthesis of the book’s most important insights or principles\",\n    \"QUESTIONS\": [\n      \"Insight-testing question\",\n      \"Insight-testing question\",\n      \"Insight-testing question\"\n    ]\n  },\n\n  \"STEPS\": {\n    \"SUMMARY\": \"Concise description of the type of action or change the book encourages\",\n    \"QUESTIONS\": [\n      \"Action-definition question\",\n      \"Action-definition question\",\n      \"Action-definition question\"\n    ]\n  },\n\n  \"WHO_THIS_BOOK_IS_FOR\": {\n    \"SUMMARY\": \"Brief description of the type of reader who would benefit most from this book\",\n    \"QUESTIONS\": [\n      \"Audience-fit question\",\n      \"Audience-fit question\",\n      \"Audience-fit question\"\n    ]\n  },\n\n  \"INTEGRATION\": {\n    \"SUMMARY\": \"Short statement about integrating the book’s ideas into existing systems, habits, or workflows\",\n    \"QUESTIONS\": [\n      \"Integration question\",\n      \"Integration question\",\n      \"Integration question\"\n    ]\n  },\n\n  \"TLDR_QUOTE_OR_SUMMARY_LINE\": \"A single strong sentence capturing the book’s essence, written like a normal TL;DR summary (NOT a question)\"\n}\n\n=== STYLE & DENSITY GUIDELINES ===\n\nPriming summaries (SUMMARY fields):\n- Max 50 words per summary\n- 1–2 sentences only\n- Express a single idea or theme\n- Avoid enumerations or lists\n\nApplication questions (QUESTIONS fields):\n- Exactly 3 questions per section\n- Max 30 words per question\n- One clear focus per question\n\nCORE_IDEA:\n- Max 120 words\n- Executive summary style, not instructional\n\nTLDR_QUOTE_OR_SUMMARY_LINE:\n- Max 30 words\n- One strong declarative sentence\n\nFavor specificity over breadth.\nPrefer clarity over completeness.\n\nReturn JSON only. No additional text.\n"
               },
               {
                 "role": "system",
@@ -3143,16 +3076,6 @@
               "index": 0
             }
           ]
-        ]
-      },
-      "Parse Output": {
-        "main": [
-          []
-        ]
-      },
-      "Parse Output1": {
-        "main": [
-          []
         ]
       },
       "Get a row": {
@@ -3463,7 +3386,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version dc266057",
+    "name": "Version 6ab43f35",
     "description": ""
   },
   "tags": []
