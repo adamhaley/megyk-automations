@@ -3,7 +3,7 @@
   "createdAt": "2025-08-20T18:49:40.535Z",
   "id": "u7ok4F5VAiBnOQrV",
   "name": "Pitch Paul",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -271,7 +271,8 @@
           "id": "viVc14WIZm8mnB3N",
           "name": "Pitch Paul Telegram"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -626,7 +627,8 @@
         -672
       ],
       "id": "c6a838be-0b2e-4ec5-b969-04dcc86f5aa0",
-      "name": "When clicking ‘Execute workflow’"
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
     },
     {
       "parameters": {
@@ -1035,8 +1037,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "a2740ee3-b5b4-4561-bfef-9f6f3201879b",
-  "activeVersionId": null,
+  "versionId": "0b8c9ddd-ce8b-473c-8150-739ed1ee147e",
+  "activeVersionId": "0b8c9ddd-ce8b-473c-8150-739ed1ee147e",
   "triggerCount": 0,
   "shared": [
     {
@@ -1047,6 +1049,1038 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-12-17T18:43:08.331Z",
+    "createdAt": "2025-12-17T18:43:08.331Z",
+    "versionId": "0b8c9ddd-ce8b-473c-8150-739ed1ee147e",
+    "workflowId": "u7ok4F5VAiBnOQrV",
+    "nodes": [
+      {
+        "parameters": {
+          "model": "openai/gpt-4.1",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          192,
+          432
+        ],
+        "id": "3ecc4760-d371-478b-82c6-0e555fe189b1",
+        "name": "OpenRouter Chat Model",
+        "credentials": {
+          "openRouterApi": {
+            "id": "kRKxZkSBiWUL3Xr4",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Message Paul').item.json.message.chat.id }}",
+          "text": "={{ $json.output.pitchPaulAnswer }}",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          720,
+          160
+        ],
+        "id": "430256c8-1cca-4717-bb29-6ac9a5e29e30",
+        "name": "Answer User",
+        "webhookId": "06135021-087d-4558-be06-94de90f2f053",
+        "credentials": {
+          "telegramApi": {
+            "id": "viVc14WIZm8mnB3N",
+            "name": "Pitch Paul Telegram"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"userMessage\": \"<verstandene Nutzereingabe>\",\n  \"pitchPaulAnswer\": \"<deine charismatische Antwort>\",\n  \"emails\": [\n    \"email1@example.com\",\n    \"email2@example.com\"\n  ],\n  \"userGoal\": \"<konkret erfasstes Ziel>\",\n  \"startPitch\": true\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          832,
+          432
+        ],
+        "id": "b3515926-756b-479f-9c2c-9994781a1e2c",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "german_companies",
+          "returnAll": true,
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "state",
+                "condition": "ilike",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          304,
+          528
+        ],
+        "id": "7aee1694-8d94-49c9-8e85-948642d0e9d3",
+        "name": "Get_Companies_By_State",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "german_companies",
+          "returnAll": true,
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "city",
+                "condition": "ilike",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          512,
+          528
+        ],
+        "id": "ea6af834-c888-4e2a-9076-ebe77f8f9af3",
+        "name": "Get_Companies_By_City",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "german_companies",
+          "returnAll": true,
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "district",
+                "condition": "ilike",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          704,
+          528
+        ],
+        "id": "4f6084cd-3739-4a52-871a-bc940c6f2884",
+        "name": "Get_Companies_By_District",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "german_companies",
+          "returnAll": true,
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "industry",
+                "condition": "ilike",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          608,
+          368
+        ],
+        "id": "7b503f04-3e31-4963-82d9-bd256d170ff0",
+        "name": "Get_Companies_By_Industry",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "german_companies",
+          "returnAll": true,
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "company",
+                "condition": "ilike",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          400,
+          368
+        ],
+        "id": "efa0c64e-4bb9-4e03-9c64-d4e771b4d660",
+        "name": "Get_Companies_By_Name",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "userMessage"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -608,
+          -16
+        ],
+        "id": "5910ee4a-dce0-4959-83b2-603c29519fb3",
+        "name": "Team Leader"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.message.text }}",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "=# Rolle: Pitch Paul 🎯\n\nDu bist **Pitch Paul**, der weltbeste E-Mail-Vertriebler für Kaltaquise.  \nVerkaufen liegt dir im Blut – aber nie plump, sondern **smart, charmant und zielsicher**.\n\nDein Revier: der deutschsprachige Markt.  \nDeine Spezialität: **zielgerichtete E-Mail-Kampagnen**, die öffnen, klicken und antworten auslösen.\n\nDu sprichst den Nutzer wie ein guter Verkäufer an: direkt, kompetent, mit einem Hauch Selbstironie – aber **immer professionell**.\n\n---\n\n## 🎯 Dein Auftrag\n\nBasierend auf der Nutzereingabe startest du eine gezielte E-Mail-Kampagne.  \nDu brauchst dazu:\n\n1. **Zielgruppe**:  \n   - Entweder ein **konkreter Firmenname**,  \n   - oder ein **Branchenbegriff** (z. B. „Solarfirmen“),  \n   - oder ein **Ort** (z. B. Stadt, Bezirk oder Bundesland).  \n   \n2. **Ziel der Kampagne**:  \n   - Was genau willst du erreichen? Z. B. Produkt verkaufen, Kontakt aufbauen, Bedarf prüfen etc.\n\n---\n\n## 🔧 Tools\n\nNutze **immer das passende Tool** basierend auf der Zielgruppeneingabe:\n\n- `Get_Companies_By_Name` – für einen einzelnen Firmennamen  \n- `Get_Companies_By_Industry` – für eine Branche  \n- `Get_Companies_By_State` – für ein Bundesland  \n- `Get_Companies_By_City` – für eine Stadt  \n- `Get_Companies_By_District` – für einen Stadtteil  \n\nWenn die Eingabe **nicht eindeutig** ist: Frag **freundlich, aber bestimmt** nach.\n\n---\n\n## 🧠 Deine Aufgabe Schritt für Schritt\n\n1. **Verstehe die Eingabe**: Zielgruppe & Ziel der Kampagne identifizieren  \n2. **Wähle das passende Tool** zur Datenabfrage  \n3. **Hole passende Firmen + E-Mail-Adressen aus der Datenbank**  \n4. **Erzeuge ein Array mit gültigen E-Mail-Adressen**  \n5. Setze `startPitch = true` **nur, wenn Ziel + E-Mail-Adressen vollständig sind**\n\n---\n\n## 💬 Antwortstil\n\nDu bist **selbstbewusst, erfahren und ein bisschen druckvoll**, aber nie unangenehm.  \nSprich den Nutzer ruhig auch direkt an – du bist schließlich Paul, der Pitch-Profi!\n\n### Beispiele für deinen Ton:\n\n> „Chef, das riecht nach einer heißen Branche. Ich zieh mir mal die passenden Firmen rein und bereite den Pitch vor.“  \n> „Scharfes Ziel, starke Richtung – ich checke die passenden Adressen und melde mich mit Kugelschreiber in der Hand.“  \n> „Solarfirmen in Brandenburg? Sag nicht mehr. Ich bin schon unterwegs mit dem Akquise-Scooter.“\n\n---\n\n## 🛑 Sonderfall: Smalltalk oder irrelevante Nachricht\n\nWenn die Eingabe **nicht kampagnenrelevant** ist, antworte locker – aber charmant:\n\n> „Schön, dass du fragst – aber mich juckt’s in den Fingern, ein paar Deals einzutüten. Wer darf heute gepitcht werden?“\n\n---\n\n## 🧾 Output-Format\n\n{\n  \"userMessage\": \"<verstandene Nutzereingabe>\",\n  \"pitchPaulAnswer\": \"<deine charismatische Antwort>\",\n  \"emails\": [\n    \"email1@example.com\",\n    \"email2@example.com\"\n  ],\n  \"userGoal\": \"<konkret erfasstes Ziel>\",\n  \"startPitch\": true\n}\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          384,
+          160
+        ],
+        "id": "5dd6adfe-6c16-4e78-934a-a62b310d7143",
+        "name": "Pitch-Paul"
+      },
+      {
+        "parameters": {
+          "updates": [
+            "message"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -608,
+          176
+        ],
+        "id": "aac40720-7121-47e1-a433-bdc1a6519a43",
+        "name": "Message Paul",
+        "webhookId": "d7f347dd-476e-414b-a30c-357b366ce6d0",
+        "credentials": {
+          "telegramApi": {
+            "id": "viVc14WIZm8mnB3N",
+            "name": "Pitch Paul Telegram"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1264,
+          160
+        ],
+        "id": "21718e4f-8710-4598-99ed-45fde9dac19f",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Input:\n1. Firma (JSON oder Objekt):\n{{ $('Get General Info').all().toJsonString() }}\n\n2. Initiale Anfrage:\n{{ $('Pitch-Paul').item.json.output.userMessage }}\n\n3. Angebot für den Pitch\n{{ $('Define Offer').item.json.offer }}\n\n4. Antwort von Pitch Paul (Pitchbeispiel):\n{{ $('Pitch-Paul').item.json.output.pitchPaulAnswer }}\n\nOutput:\nDie E-Mail wird im HTML-Format erstellt und soll folgende Eigenschaften haben:\n\n1. **Anrede:**  \n   - Falls ein Ansprechpartner existiert, wird der Name des Ansprechpartners verwendet (\"Sehr geehrter Herr Mustermann\").  \n   - Falls kein Ansprechpartner existiert, wird \"Sehr geehrte Damen und Herren\" verwendet.\n\n2. **Pitch:**  \n   - Die E-Mail sollte ein überzeugendes Verkaufsargument enthalten, das sich auf die Anfrage und die spezifischen Anforderungen des Unternehmens bezieht.\n   - Die Lösung muss klar und einfach erklärt werden, dabei aber auch deren einzigartige Stärken und Vorteile hervorheben.\n   - Es soll verdeutlicht werden, dass diese Lösung der ideale Partner für das Unternehmen ist.\n\n3. **Call-to-Action (CTA):**  \n   - Ein klarer Call-to-Action, z.B. ein Vorschlag für einen Gesprächstermin oder eine Demo, um die Lösung weiter zu erläutern und die Zusammenarbeit zu fördern.\n\n4. **Abschluss:**  \n   - Freundliche und professionelle Verabschiedung\n   - Kontaktinformationen (Name, Position, Telefonnummer, E-Mail)\n   - Hinweis auf Website und gegebenenfalls ein Angebot für einen ersten Termin\n\nBeispiel einer perfekten Verkaufs-E-Mail im HTML-Format:\n\n\n```html\n<!DOCTYPE html>\n<html lang=\"de\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Antwort auf Ihre Anfrage</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; color: #333333; background-color: #f9f9f9; padding: 20px;\">\n    <div style=\"max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">\n        <p>Sehr geehrter Herr Mustermann,</p>\n        \n        <p>vielen Dank für Ihre Anfrage bezüglich unserer <strong>Softwarelösung zur Automatisierung Ihrer internen Prozesse</strong>. Wir freuen uns, Ihnen mitteilen zu können, dass unsere Lösung genau die Anforderungen erfüllt, die Sie an eine moderne, einfach zu implementierende und benutzerfreundliche Software stellen.</p>\n\n        <p><strong>Warum unsere Lösung perfekt für Ihr Unternehmen ist:</strong></p>\n        <ul>\n            <li>Nahtlose Integration in Ihre bestehenden Systeme – keine Umstellung nötig.</li>\n            <li>Automatisiert Ihre Prozesse effizient, was Ihre internen Abläufe enorm beschleunigt und Kosten spart.</li>\n            <li>Benutzerfreundlich und einfach in der Bedienung, ohne dass Ihre Mitarbeiter zusätzliche Schulungen benötigen.</li>\n            <li>Skalierbar, sodass Sie mit uns wachsen können, ganz nach Ihren Bedürfnissen.</li>\n        </ul>\n\n        <p>Unser Team hat umfassende Erfahrung mit Unternehmen Ihrer Branche und hat bereits zahlreiche erfolgreiche Implementierungen abgeschlossen. Wir sind überzeugt, dass auch Ihre Prozesse von unserer Lösung enorm profitieren werden.</p>\n\n        <p>Gerne möchten wir Ihnen die Software in einer persönlichen Demo vorstellen und gemeinsam besprechen, wie wir Ihre Automatisierungsziele umsetzen können. Wie wäre es mit einem unverbindlichen Termin? Wir sind flexibel und richten uns nach Ihrem Zeitplan.</p>\n\n        <p>Ich freue mich auf Ihre Rückmeldung und darauf, Sie bald persönlich kennenzulernen.</p>\n\n        <p>Mit freundlichen Grüßen,<br>\n        Sebastian Claes<br><br>\n        Claes & Herrmann KI-Agenten GmbH<br>\n        Brückenstraße 4, 14913 Jüterbog<br>\n        +49 176 614 759 65<br>\n        🌐 https://www.ki-business-agenten.de<br>\n        🎬 https://youtube.com/@claes-work</p>\n</body>\n</html>\n```\n\n# Output JSON\n\n{\n  \"subject\": \"...\",\n  \"emailText\": \"...\"\n}",
+                "role": "system"
+              }
+            ]
+          },
+          "jsonOutput": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          1872,
+          288
+        ],
+        "id": "521e5934-7c6c-4f1b-a00e-42c24898d7b9",
+        "name": "Write Email",
+        "credentials": {
+          "openAiApi": {
+            "id": "RMCgUrxutvJgFiK9",
+            "name": "Adams Test OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "emails[0]",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1088,
+          160
+        ],
+        "id": "57829f94-1ebc-4b3a-904f-278a4d06676c",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9b6d1cee-2d0f-42ca-9f3b-269396eedf86",
+                "name": "emails",
+                "value": "={{ $('Pitch-Paul').item.json.output.emails }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          912,
+          160
+        ],
+        "id": "7746f449-673e-4a32-b1ce-d2849ff3d0bc",
+        "name": "Split Out Emails"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "german_companies",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "email",
+                "keyValue": "={{ $json['emails[0]'] }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1440,
+          288
+        ],
+        "id": "289d5614-14fd-49d3-ac7a-8eeaae3d23ff",
+        "name": "Get General Info",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a54faf43-594c-4dc8-9fec-6cf5e34a7290",
+                "name": "offer",
+                "value": "KI-Automatisierung für Unternehmen – Effizienz steigern und Kosten senke. Wir bieten maßgeschneiderte Automatisierungsdienstleistungen mit Künstlicher Intelligenz, die speziell darauf ausgerichtet sind, Ihre Geschäftsprozesse effizienter zu gestalten und Ihre Kosten zu senken. Unser Fokus liegt auf der Entwicklung von KI-Agenten, die für eine Vielzahl von Anwendungen optimiert sind, einschließlich Datenanalyse und KI-Telefonagenten.  Mit unserer Expertise können wir ganze Prozessketten automatisieren und so nicht nur Zeit, sondern auch Ressourcen für Ihr Unternehmen sparen. Wir arbeiten eng mit Unternehmen zusammen, um intelligente Automatisierungslösungen zu entwickeln, die einen echten Mehrwert bieten und die Leistung Ihrer Geschäftsprozesse steigern.  Unsere Community aus KI-Automatisierungsexperten ist ein wertvolles Netzwerk, in dem Fachwissen geteilt und neue Lösungen entwickelt werden. Darüber hinaus bieten wir auf unserem großen YouTube-Kanal wertvolle Inhalte zu KI-Automatisierung und deren Einsatzmöglichkeiten. Hier teilen wir unser Wissen und unterstützen Unternehmen dabei, in der Welt der KI-Automatisierung durchzustarten.",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          208,
+          160
+        ],
+        "id": "89980335-dbfb-4a8f-a2b4-f60c0598ca9c",
+        "name": "Define Offer"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "if( $json.message?.labelIds[0] === 'DRAFT'){\n  return {\n    success: true\n  }\n}else{\n  return {\n    success: false\n  }\n}\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1648,
+          80
+        ],
+        "id": "688f1599-4c97-4981-9899-8a90e8dc52ad",
+        "name": "Code",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "resource": "draft",
+          "subject": "={{ $json.message.content.subject }}",
+          "emailType": "html",
+          "message": "={{ $json.message.content.emailText }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          2272,
+          288
+        ],
+        "id": "61c5271d-e1e4-438d-9967-b809fb51e783",
+        "name": "Create a draft",
+        "webhookId": "c7e327f5-5ae1-444a-9425-bc4a6e9d6ff6",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "EzrY9VipLbH4tmwq",
+            "name": "Gmail account Adam Test"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Pitch Paul\n",
+          "height": 928,
+          "width": 1728
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -704,
+          -208
+        ],
+        "id": "f4662ed7-ce6c-4f45-8be0-2871d5d818a6",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          1648,
+          288
+        ],
+        "id": "0719a6cd-105a-413f-a76e-0f92722b12e2",
+        "name": "Limit"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Message Paul').item.json.message.chat.id }}",
+          "text": "Ich habe Ihnen einen entsprechenden Email Entwurf fertiggestellt.",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1856,
+          -32
+        ],
+        "id": "66c79328-b8ee-4142-9441-1fba98161186",
+        "name": "Send Success",
+        "webhookId": "8e75eec2-12ee-4452-ac72-d6176d375908",
+        "credentials": {
+          "telegramApi": {
+            "id": "viVc14WIZm8mnB3N",
+            "name": "Pitch Paul Telegram"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Message Paul').item.json.message.chat.id }}",
+          "text": "={{ $json.error }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2032,
+          96
+        ],
+        "id": "aa36f099-6bff-4751-8b90-d61f39903c17",
+        "name": "Send Error",
+        "webhookId": "0c2a8927-885b-4773-9643-97345ca69661",
+        "credentials": {
+          "telegramApi": {
+            "id": "viVc14WIZm8mnB3N",
+            "name": "Pitch Paul Telegram"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "e3db0b94-3a65-48f3-a176-0b42aa6a65bf",
+                "leftValue": "={{ $json.approved_telegram_users }}",
+                "rightValue": "={{ $('Message Paul').item.json.message.from.username }}",
+                "operator": {
+                  "type": "array",
+                  "operation": "contains",
+                  "rightType": "any"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -192,
+          176
+        ],
+        "id": "21d994a3-e87d-42db-b869-d1f531ae86ca",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Message Felix').item.json.message.chat.id }}",
+          "text": "Sorry, access is restricted.",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          16,
+          272
+        ],
+        "id": "b5a048ea-a851-4085-956f-09c9def100bd",
+        "name": "Send Access Restricted Message",
+        "webhookId": "9a7ebb57-ecde-4b89-85f5-c6bc186acf68",
+        "credentials": {
+          "telegramApi": {
+            "id": "21k3Gq1rd0e8svfM",
+            "name": "Finder Felix Telegram"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b5e8dfe5-5d7b-459e-8682-f0d793aeece7",
+                "name": "approved_telegram_users",
+                "value": "={{ ['adamhaley7'] }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -400,
+          176
+        ],
+        "id": "3db3e4fd-2936-4445-8694-6e3acfc69e43",
+        "name": "Approved Telegram users"
+      },
+      {
+        "parameters": {
+          "content": "## Generate Email from Word Doc\n\nt.haufler@deutsches-efelsteinhaus.com",
+          "height": 496,
+          "width": 912,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -704,
+          -848
+        ],
+        "id": "3031dc15-ce35-423a-a753-6ad0c0d7596a",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -608,
+          -672
+        ],
+        "id": "c6a838be-0b2e-4ec5-b969-04dcc86f5aa0",
+        "name": "When clicking ‘Execute workflow’",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "documentURL": "1Xxx8LEzIJUdW00VkkyyNpo1ks3-CsGEoVh19bdUBCBY"
+        },
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 2,
+        "position": [
+          -400,
+          -672
+        ],
+        "id": "e087fdc8-6473-42fa-bb27-7afe9bd3194b",
+        "name": "Get a document",
+        "credentials": {
+          "googleDocsOAuth2Api": {
+            "id": "qVRiWRvOhvPAHWEY",
+            "name": "Google Docs account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Helper: escape regex metacharacters in literal placeholder keys\nfunction escRe(s) {\n  return s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n}\n\n// 1) INPUTS\n// Assumes the previous node \"Get a document\" puts the text in $json.content\nconst raw = $json.content || '';\n\n// Build your replacement map here. Pull from other nodes as needed.\n// Use whatever placeholders you inserted in the Google Doc (ALL CAPS recommended).\n// Examples shown pulling from your existing nodes; adjust names/paths to match your workflow.\nconst replacements = {\n  '{{SALUTATION}}':          $('Build Salutation')?.item?.json?.salutation\n                            ?? 'Sehr geehrte Damen und Herren',\n  '{{CONTACT_NAME}}':        $('Get General Info')?.item?.json?.contactName\n                            ?? '',\n  '{{COMPANY_NAME}}':        $('Get General Info')?.item?.json?.companyName\n                            ?? '',\n  '{{PERSONALIZED_OPEN}}':   $('Pitch-Paul')?.item?.json?.output?.pitchPaulAnswer\n                            ?? '',\n  '{{OFFER_SNIPPET}}':       $('Define Offer')?.item?.json?.offer\n                            ?? '',\n  '{{CTA}}':                 $('Generate CTA')?.item?.json?.cta\n                            ?? 'Lassen Sie uns einen 15-minütigen Termin finden—passt Ihnen diese Woche Mittwoch oder Donnerstag?',\n  '{{PHONE}}':               $('Get General Info')?.item?.json?.phone\n                            ?? '',\n  '{{EMAIL}}':               $('Get General Info')?.item?.json?.email\n                            ?? '',\n  '{{WEBSITE}}':             $('Get General Info')?.item?.json?.website\n                            ?? '',\n};\n\n// 2) DO THE REPLACEMENTS (global, case-sensitive, all occurrences)\nlet out = raw;\nfor (const [key, val] of Object.entries(replacements)) {\n  const re = new RegExp(escRe(key), 'g'); // replace all occurrences\n  out = out.replace(re, (val ?? '').toString().trim());\n}\n\n// 3) OPTIONAL: Basic cleanup (collapse triple newlines, trim ends)\nout = out.replace(/\\n{3,}/g, '\\n\\n').trim();\n\n// 4) Emit updated content; keep original documentId for traceability\nreturn [\n  {\n    json: {\n      documentId: $json.documentId,\n      contentReplaced: out,\n      // Optional: also return a minimal HTML-wrapped version ready for email:\n      htmlEmail: `\n<!DOCTYPE html>\n<html lang=\"de\">\n<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Angebot</title></head>\n<body style=\"font-family: Arial, sans-serif; color:#333; background:#f9f9f9; padding:20px;\">\n  <div style=\"max-width:600px; margin:0 auto; background:#fff; padding:20px; border-radius:8px;\">\n    ${out\n      .split('\\n')\n      .map(p => p.trim() ? `<p>${p.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>` : '<br>') // simple text→HTML\n      .join('\\n')}\n  </div>\n</body>\n</html>`.trim()\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1776,
+          560
+        ],
+        "id": "09793109-06f8-4d01-8b06-f1178364942d",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// --- CONFIG -------------------------------------------------\nconst TEST_MODE = true;  // flip to false when wiring to real nodes\n\nconst TEST_SUBJECT = 'Nachhaltige Sachwerte für Ihre Praxis';\nconst TEST_INTRO   = 'vielen Dank für Ihr Interesse. Basierend auf Ihren Schwerpunkten habe ich eine kurze, relevante Zusammenfassung vorbereitet.';\n\n// Node names as they appear in your canvas (change if needed)\nconst NODES = {\n  genSubject: 'Generate Subject',\n  genIntro: 'Generate Intro',\n  pitchPaul: 'Pitch-Paul',\n  defineOffer: 'Define Offer',\n};\n// ------------------------------------------------------------\n\n// Helpers\nfunction getFrom(nodeName, path) {\n  try {\n    const it = $items(nodeName, 0, 0); // first run, first item\n    if (!it || !it.json) return undefined;\n    return path.split('.').reduce((o, k) => (o == null ? o : o[k]), it.json);\n  } catch (_) {\n    return undefined;\n  }\n}\n\nfunction replaceAllLiteral(haystack, needle, replacement) {\n  const esc = needle.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n  return haystack.replace(new RegExp(esc, 'g'), (replacement ?? '').toString().trim());\n}\n\nfunction esc(s) {\n  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');\n}\n\n// 1) Load doc text\nlet raw = $json.content || '';\nraw = raw.replace(/\\u000b/g, '\\n').replace(/\\r/g, '').trim();\n\n// 2) Resolve subject/intro (test or prod)\nconst prodSubject =\n  getFrom(NODES.genSubject, 'subject') ??\n  getFrom(NODES.pitchPaul,  'output.subject') ??\n  getFrom(NODES.defineOffer,'emailSubject') ?? '';\n\nconst prodIntro =\n  getFrom(NODES.genIntro,   'intro') ??\n  getFrom(NODES.pitchPaul,  'output.pitchPaulAnswer') ??\n  getFrom(NODES.defineOffer,'offer') ?? '';\n\nconst subjectFrom = ($json.subject ?? (TEST_MODE ? TEST_SUBJECT : prodSubject)).toString();\nconst introFrom   = ($json.intro   ?? (TEST_MODE ? TEST_INTRO   : prodIntro)).toString();\n\n// 3) Do replacements (lowercase placeholders)\nlet content = raw;\ncontent = replaceAllLiteral(content, '{{subject}}', subjectFrom);\ncontent = replaceAllLiteral(content, '{{intro}}',   introFrom);\n\n// 4) Extract subject from \"Betreff:\" line if present\nlet subject = subjectFrom || '';\nlet textBody = content;\n\nconst lines = content.split('\\n');\nif (lines.length > 0 && /^ *betreff *:/i.test(lines[0])) {\n  const m = lines[0].match(/betreff *:\\s*(.*)$/i);\n  if (m && m[1]) subject = m[1].trim() || subject;\n  textBody = lines.slice(1).join('\\n').trim();\n}\n\n// 5) Cleanup + build HTML\ntextBody = textBody.replace(/\\n{3,}/g, '\\n\\n').trim();\n\nconst htmlBody = `\n<!DOCTYPE html>\n<html lang=\"de\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>${esc(subject || 'anfrage')}</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; color:#333; background:#f9f9f9; padding:20px;\">\n  <div style=\"max-width:600px; margin:0 auto; background:#fff; padding:20px; border-radius:8px;\">\n    ${textBody.split('\\n').map(line => line.trim() ? `<p>${esc(line)}</p>` : '<br>').join('\\n')}\n  </div>\n</body>\n</html>\n`.trim();\n\n// 6) Emit\nreturn [{\n  json: {\n    documentId: $json.documentId,\n    subject,\n    textBody,\n    htmlBody,\n    contentReplaced: content,\n    TEST_MODE\n  }\n}];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -192,
+          -672
+        ],
+        "id": "d71b0389-2275-4670-bdf3-e20a316cdf22",
+        "name": "Replace"
+      },
+      {
+        "parameters": {
+          "fromEmail": "t.haufler@deutsches-efelsteinhaus.com",
+          "toEmail": "adamhaley@gmail.com",
+          "subject": "Test",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          240,
+          -640
+        ],
+        "id": "fade29b2-6808-4269-8f09-0cf4c93d2706",
+        "name": "Send email",
+        "webhookId": "9047df5b-f709-49fe-a0c8-3357aff14764",
+        "credentials": {
+          "smtp": {
+            "id": "5V2yPWlvcuwlGLPC",
+            "name": "SMTP account (deutsches-edelsteinhaus.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://ec2-54-67-32-206.us-west-1.compute.amazonaws.com/send",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"to\":\"adamhaley@gmail.com\",\"subject\":\"hi\",\"body\":\"from DO\"}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          16,
+          -672
+        ],
+        "id": "3aa6b19e-5fb8-4aa5-8782-aeeac4d0f1c6",
+        "name": "SMTP Send (via relay)",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "WRKaxwHWdqv1jdTs",
+            "name": "Header Auth account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Companies_By_State": {
+        "ai_tool": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Companies_By_City": {
+        "ai_tool": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Companies_By_District": {
+        "ai_tool": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Companies_By_Industry": {
+        "ai_tool": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Companies_By_Name": {
+        "ai_tool": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Team Leader": {
+        "main": [
+          [
+            {
+              "node": "Define Offer",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pitch-Paul": {
+        "main": [
+          [
+            {
+              "node": "Answer User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Message Paul": {
+        "main": [
+          [
+            {
+              "node": "Approved Telegram users",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Answer User": {
+        "main": [
+          [
+            {
+              "node": "Split Out Emails",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Get General Info",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out Emails": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get General Info": {
+        "main": [
+          [
+            {
+              "node": "Limit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Write Email": {
+        "main": [
+          [
+            {
+              "node": "Create a draft",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Define Offer": {
+        "main": [
+          [
+            {
+              "node": "Pitch-Paul",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Send Success",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create a draft": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit": {
+        "main": [
+          [
+            {
+              "node": "Write Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Define Offer",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Access Restricted Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approved Telegram users": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Get a document",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a document": {
+        "main": [
+          [
+            {
+              "node": "Replace",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace": {
+        "main": [
+          [
+            {
+              "node": "SMTP Send (via relay)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
