@@ -1,0 +1,352 @@
+{
+  "updatedAt": "2025-12-11T05:42:22.942Z",
+  "createdAt": "2025-10-20T07:06:36.569Z",
+  "id": "OuQszsYYC27GC7YO",
+  "name": "Lead Transfer Fr. Elstner",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ce4d74a1-461a-4420-b92e-98008b7adb43",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "811253a5-f308-475f-8827-9c3e0275a9ac",
+      "name": "Webhook",
+      "webhookId": "ce4d74a1-461a-4420-b92e-98008b7adb43"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1OS4j2z7q2bLfJGiqKO0ok6zFWfondcxq76HkH2SiPHA",
+          "mode": "list",
+          "cachedResultName": "KI WhatsApp Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OS4j2z7q2bLfJGiqKO0ok6zFWfondcxq76HkH2SiPHA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tabellenblatt1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OS4j2z7q2bLfJGiqKO0ok6zFWfondcxq76HkH2SiPHA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Vorname": "={{ $json.body.customData.first_name }}",
+            "Nachname": "={{ $json.body.customData.last_name }}",
+            "Telefon": "={{ $json.body.customData.phone }}",
+            "Email": "={{ $json.body.customData['e-mail'] }}",
+            "Erstellungsdatum": "={{ $json.body.date_created }}",
+            "Source": "={{ $json.body['UTM Source'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Vorname",
+              "displayName": "Vorname",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nachname",
+              "displayName": "Nachname",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Telefon",
+              "displayName": "Telefon",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Erstellungsdatum",
+              "displayName": "Erstellungsdatum",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Kommentar",
+              "displayName": "Kommentar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Termin JA",
+              "displayName": "Termin JA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "171994b2-16a1-45e1-9dba-cfcde3e2768d",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "2d4e2ba6-7844-4c58-9093-e59e501dfc55",
+  "activeVersionId": "2d4e2ba6-7844-4c58-9093-e59e501dfc55",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-10-20T07:06:36.593Z",
+      "createdAt": "2025-10-20T07:06:36.593Z",
+      "role": "workflow:owner",
+      "workflowId": "OuQszsYYC27GC7YO",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-11T05:42:22.945Z",
+    "createdAt": "2025-12-11T05:42:22.945Z",
+    "versionId": "2d4e2ba6-7844-4c58-9093-e59e501dfc55",
+    "workflowId": "OuQszsYYC27GC7YO",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "ce4d74a1-461a-4420-b92e-98008b7adb43",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "811253a5-f308-475f-8827-9c3e0275a9ac",
+        "name": "Webhook",
+        "webhookId": "ce4d74a1-461a-4420-b92e-98008b7adb43"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1OS4j2z7q2bLfJGiqKO0ok6zFWfondcxq76HkH2SiPHA",
+            "mode": "list",
+            "cachedResultName": "KI WhatsApp Funnel",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OS4j2z7q2bLfJGiqKO0ok6zFWfondcxq76HkH2SiPHA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Tabellenblatt1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OS4j2z7q2bLfJGiqKO0ok6zFWfondcxq76HkH2SiPHA/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Vorname": "={{ $json.body.customData.first_name }}",
+              "Nachname": "={{ $json.body.customData.last_name }}",
+              "Telefon": "={{ $json.body.customData.phone }}",
+              "Email": "={{ $json.body.customData['e-mail'] }}",
+              "Erstellungsdatum": "={{ $json.body.date_created }}",
+              "Source": "={{ $json.body['UTM Source'] }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Vorname",
+                "displayName": "Vorname",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Nachname",
+                "displayName": "Nachname",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Email",
+                "displayName": "Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Telefon",
+                "displayName": "Telefon",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Erstellungsdatum",
+                "displayName": "Erstellungsdatum",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Source",
+                "displayName": "Source",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Kommentar",
+                "displayName": "Kommentar",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Termin JA",
+                "displayName": "Termin JA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          208,
+          0
+        ],
+        "id": "171994b2-16a1-45e1-9dba-cfcde3e2768d",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
