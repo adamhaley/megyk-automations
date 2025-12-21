@@ -3,7 +3,7 @@
   "createdAt": "2025-11-29T00:15:28.375Z",
   "id": "axrCYk80eH1vcZvp",
   "name": "Ingest Ebook v2",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -1752,7 +1752,7 @@
     ]
   },
   "versionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
-  "activeVersionId": null,
+  "activeVersionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
   "triggerCount": 0,
   "shared": [
     {
@@ -1763,6 +1763,806 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-11-29T03:50:17.108Z",
+    "createdAt": "2025-11-29T03:50:17.108Z",
+    "versionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
+    "workflowId": "axrCYk80eH1vcZvp",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -32,
+          -96
+        ],
+        "id": "57efaccf-dc80-4b4f-98e4-1ae6760828cd",
+        "name": "Extract Text"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Extract Title/Author from Filename').item.json.originalFilename }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          -928,
+          -96
+        ],
+        "id": "b41490cb-d900-4438-85b4-c3f60f546a97",
+        "name": "Read Book from Disk",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "application/pdf",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "dae5a7d7-4c1d-475a-a730-d05a534dea0f"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pdf"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "9a55ed5a-ca44-412c-9543-f3fd83332384",
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "application/epub+zip",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "epub"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "fecb5e9f-2a6f-45b3-89dd-686663afd69c",
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "text/plain",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "txt"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "1c7fa4f9-22bc-4ce7-b263-0f232fe8e922",
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "application/x-mobipocket-ebook",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mobi"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          -704,
+          -128
+        ],
+        "id": "f9eb4ca5-f456-4084-a393-c0d9cbf485b4",
+        "name": "Detect Filetype"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "6f0620d3-1342-4637-9d3e-e00e9e6749cc",
+        "typeVersion": 1.1,
+        "name": "Start",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          -2176,
+          -96
+        ]
+      },
+      {
+        "parameters": {
+          "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  ebook-convert \"/data/{{ $json.fileName }}\" \"/data/{{ $json.fileName.replace('.mobi', '.txt') }}\"\n"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          -480,
+          144
+        ],
+        "id": "6aed7048-1dc7-4862-b63f-b637dacd7f9e",
+        "name": "Convert MOBI to TXT"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.fileName.replace('.mobi', '.txt') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          -256,
+          144
+        ],
+        "id": "6b0d9c3a-d679-48dc-bc4a-d8bc1590325e",
+        "name": "Read/Write Files from Disk"
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -32,
+          144
+        ],
+        "id": "c86cf2e9-f4a5-4fac-a60e-8aa1163e608b",
+        "name": "Extract Text1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "44e588ef-ab9b-460c-909c-84ea218957f2",
+                "leftValue": "={{ $json.filename }}",
+                "rightValue": "mobi",
+                "operator": {
+                  "type": "string",
+                  "operation": "endsWith"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          -1952,
+          -96
+        ],
+        "id": "b5207682-2e8a-422a-9943-a090bb0321d3",
+        "name": "Filter",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "return [\n  {\n    json: {\n      filename: \"80 Fundamental Models for Busin - Alberto Scappini.txt\"\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1728,
+          -96
+        ],
+        "id": "fcd67dc6-3660-4da3-9414-80d32f0a83e7",
+        "name": "Code in JavaScript",
+        "executeOnce": true,
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  bash -c 'ebook-convert \"/data/{{ $json.fileName }}\" \"/data/{{ $json.fileName.replace(\".epub\", \".txt\") }}\" && cat \"/data/{{ $json.fileName.replace(\".epub\", \".txt\") }}\"'\n"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          -480,
+          -176
+        ],
+        "id": "513c1768-bdf5-4dd9-bc0b-b85c9102b327",
+        "name": "Execute Command"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.fileName.replace('.epub', '.txt') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          -256,
+          -176
+        ],
+        "id": "2ca1ddc7-87be-4bd7-a713-27a1647a549f",
+        "name": "Read/Write Files from Disk1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get filename from input\nconst fileName = $('Start').first().json.filename || \"\";\n\n// Remove extension\nconst ext = fileName.includes(\".\")\n  ? fileName.split(\".\").pop().trim()\n  : null;\n\nconst nameWithoutExt = fileName.replace(/\\.[^.]+$/, \"\").trim();\n\n// Pattern: \"Title - Author\"\nlet title = null;\nlet author = null;\n\nconst match = nameWithoutExt.match(/^(.*?)\\s*-\\s*(.*)$/);\n\nif (match) {\n  title = match[1].trim() || null;\n  author = match[2].trim() || null;\n} else {\n  // Fallback if no \" - \" separator\n  title = nameWithoutExt.trim();\n  author = null;\n}\n\nreturn [\n  {\n    json: {\n      title,\n      author,\n      baseName: nameWithoutExt,\n      ext,\n      originalFilename: fileName,\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1504,
+          -96
+        ],
+        "id": "31f4418b-cc83-4ae0-80de-afbc3ad44f76",
+        "name": "Extract Title/Author from Filename"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1"
+          },
+          "responsesApiEnabled": false,
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -1408,
+          128
+        ],
+        "id": "15f9fb76-6b8d-450c-a28a-e8be3a70e793",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"title\": \"Lorem Ipsum Dolor Samet\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -1152,
+          128
+        ],
+        "id": "0e8b213f-1494-4b2f-bf47-02dd2a782396",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -480,
+          -432
+        ],
+        "id": "3b473640-a228-462a-a833-fd2da02e35b7",
+        "name": "PDF to Text"
+      },
+      {
+        "parameters": {
+          "jsCode": "// AvionAI / Megyk — LLM-Friendly Normalization Pass\n\nlet text = '';\n\ntry { text = $('PDF to Text').first().json.text || ''; } catch (e) {}\nif (!text) try { text = $('Extract Text').first().json.data || ''; } catch (e) {}\nif (!text) try { text = $('Extract Text1').first().json.data || ''; } catch (e) {}\nif (!text && $json.text) text = $json.text;\nif (!text && $json.data) text = $json.data;\nif (!text) throw new Error('No text found.');\n\n// 1. Normalize whitespace and invisible characters\nlet cleaned = text\n  .replace(/\\r/g, '')\n  .replace(/\\t+/g, ' ')\n  .replace(/\\u00A0/g, ' ')\n  .replace(/ {2,}/g, ' ')\n  .trim();\n\n// 2. Remove repeated headers/footers\nconst lines = cleaned.split('\\n');\nconst freq = {};\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (trimmed.length > 0 && trimmed.length < 80) {\n    freq[trimmed] = (freq[trimmed] || 0) + 1;\n  }\n}\nconst repeats = new Set(Object.keys(freq).filter(k => freq[k] > 3));\ncleaned = lines.filter(line => !repeats.has(line.trim())).join('\\n');\n\n// 3. Remove standalone page numbers\ncleaned = cleaned.replace(/^\\s*\\d{1,4}\\s*$/gm, '');\n\n// 4. Merge hyphenated words (safe)\ncleaned = cleaned.replace(/([a-zA-Z])-?\\n([a-zA-Z])/g, '$1$2');\n\n// 5. Normalize paragraph spacing BUT preserve line structure\ncleaned = cleaned\n  .replace(/\\n{3,}/g, '\\n\\n') // collapse 3+ newlines → 2\n  .trim();\n\n// DO NOT MERGE SINGLE NEWLINES HERE — preserves headings, chapters, TOC\n\nreturn { text: cleaned };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          192,
+          -96
+        ],
+        "id": "93edb6b3-95a6-45c8-85cc-6ed5ee16d078",
+        "name": "Normalize for LLM"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "gpt-4o"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -1872,
+          624
+        ],
+        "id": "9631f52b-bd94-45c4-9c94-d7ce84579c54",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={\n  \"chunk\": \"{{ $json.chunk }}\",\n  \"global_start_index\": {{ $json.global_start_index }}\n}\n",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "You are a chapter-boundary detector for long books. You will receive:  - \"chunk\": a slice of the book text - \"global_start_index\": the starting character index of the slice in the full book  Your job: Identify any chapter start headings in this chunk.  Output format: Return one single JSON object with the field \"chapter_starts\": an array of objects.  Each item in \"chapter_starts\" must include: - global_index (global_start_index + local_index) - local_index (offset inside chunk) - raw_heading - normalized_title - confidence (0–1)  If no chapter starts are found, return: { \"chapter_starts\": [] }  Never return multiple top-level objects. Never return bare arrays.  Never return text outside the JSON."
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          -1952,
+          400
+        ],
+        "id": "5d249646-a525-40ac-bff5-d65727ef1acf",
+        "name": "Detect Chapters"
+      },
+      {
+        "parameters": {
+          "jsCode": "const text = $json.text || $json.data || \"\";\nif (!text) throw new Error(\"No book text found\");\n\nconst CHUNK_SIZE = 6000;      // chars\nconst OVERLAP    = 800;       // chars\n\nlet chunks = [];\nlet i = 0;\nconst total = text.length;\n\nwhile (i < total) {\n  const start = i;\n  const end   = Math.min(i + CHUNK_SIZE, total);\n\n  const chunk = text.slice(start, end);\n\n  chunks.push({\n    chunk,\n    global_start_index: start,\n  });\n\n  // advance with overlap\n  if (end === total) break;\n  i = end - OVERLAP;\n}\n\nreturn chunks.map(c => ({ json: c }));\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -2176,
+          400
+        ],
+        "id": "b20f2606-e8e0-44a7-9364-bf4227758a06",
+        "name": "Chunk"
+      },
+      {
+        "parameters": {
+          "jsCode": "//\n// FUZZY MERGE CHAPTER BOUNDARIES (NO CHAPTER NUMBERS REQUIRED)\n//\n\nconst items = $input.all();\nlet all = [];\n\n// ---------------------------------------------\n// Phase 1: Parse each LLM output JSON\n// ---------------------------------------------\nfor (const item of items) {\n  let data = item.json;\n\n  if (typeof data.text === 'string') {\n    let raw = data.text.replace(/```json|```/g, '').trim();\n    try { data = JSON.parse(raw); } catch { continue; }\n  }\n\n  if (!Array.isArray(data.chapter_starts)) continue;\n\n  for (const s of data.chapter_starts) {\n    if (typeof s.global_index !== 'number') continue;\n\n    all.push({\n      global_index: s.global_index,\n      raw_heading: (s.raw_heading || \"\").trim(),\n      normalized_title: (s.normalized_title || \"\").trim(),\n      confidence: s.confidence || 0,\n    });\n  }\n}\n\n// ---------------------------------------------\n// If nothing found, return empty array (safe)\n// ---------------------------------------------\nif (all.length === 0) {\n  return [{ json: { chapter_boundaries: [] }}];\n}\n\n// ---------------------------------------------\n// Phase 2: Sort by position\n// ---------------------------------------------\nall.sort((a, b) => a.global_index - b.global_index);\n\n// ---------------------------------------------\n// Phase 3: Basic Filters\n// ---------------------------------------------\n\nfunction looksLikeChapter(h) {\n  if (!h) return false;\n\n  const lower = h.toLowerCase();\n\n  // MOST important: if it literally contains chapter\n  if (lower.includes(\"chapter\")) return true;\n\n  // Skip obvious garbage\n  if ([\"preface\",\"foreword\",\"index\",\"appendix\",\"introduction\",\"acknowledg\", \"contents\"].some(w => lower.includes(w)))\n    return false;\n\n  // Title with 2+ capitalized words usually means section heading\n  const capWords = h.split(/\\s+/).filter(w => /^[A-Z][A-Za-z]/.test(w)).length;\n  if (capWords >= 2) return true;\n\n  // Last resort: headings of at least 15 chars AND confidence ≥ 0.85\n  if (h.length >= 15) return true;\n\n  return false;\n}\n\n// Filter out junk\nlet filtered = all.filter(s =>\n  s.confidence >= 0.75 &&\n  (looksLikeChapter(s.raw_heading) || looksLikeChapter(s.normalized_title))\n);\n\n// If filtering killed everything, fall back to the raw list\nif (filtered.length === 0) filtered = all;\n\n// ---------------------------------------------\n// Phase 4: Deduplicate headings\n// ---------------------------------------------\nfunction normalizeForDedup(s) {\n  return s.normalized_title.toLowerCase().replace(/[^a-z0-9]/g, \"\").trim();\n}\n\nconst seen = new Set();\nlet deduped = [];\n\nfor (const s of filtered) {\n  const key = normalizeForDedup(s);\n  if (!key) continue;\n\n  if (!seen.has(key)) {\n    seen.add(key);\n    deduped.push(s);\n  }\n}\n\n// ---------------------------------------------\n// Phase 5: Sort by global index again\n// ---------------------------------------------\ndeduped.sort((a, b) => a.global_index - b.global_index);\n\n// ---------------------------------------------\n// DONE\n// ---------------------------------------------\nreturn [\n  { json: { chapter_boundaries: deduped } }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1600,
+          400
+        ],
+        "id": "17f4e8d2-7026-4e06-8aa2-577f32b21f12",
+        "name": "Merge",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "jsCode": "//\n// CHAPTER SLICER WITH SMART BOUNDARY SNAPPING\n// Run Once For All Items\n//\n\n// 1. Full book text (from your Normalize node)\nconst fullText = $('Normalize for LLM').first().json.text || \"\";\n\n// 2. Chapter boundaries (from Merge)\nconst mergeNode = $('Merge').first();\nlet boundaries = mergeNode.json.chapter_boundaries || [];\n\nif (!fullText || !boundaries.length) {\n  throw new Error(\"Missing fullText or chapter_boundaries\");\n}\n\n// --------------------------------------------------------------\n// Helper: get candidate anchor strings for a boundary\n// (raw heading, normalized heading, and versions without numbers)\n// --------------------------------------------------------------\nfunction getAnchorCandidates(boundary) {\n  const raw = String(boundary.raw_heading || \"\").trim();\n  const norm = String(boundary.normalized_title || \"\").trim();\n\n  const stripNum = (s) => s.replace(/^\\d+[\\.\\s:\\-\\u2013\\u2014]*/, \"\").trim();\n\n  const candidates = [];\n  if (norm) candidates.push(norm);\n  if (raw) candidates.push(raw);\n\n  const normNoNum = stripNum(norm);\n  const rawNoNum = stripNum(raw);\n\n  if (normNoNum && normNoNum !== norm) candidates.push(normNoNum);\n  if (rawNoNum && rawNoNum !== raw) candidates.push(rawNoNum);\n\n  // Deduplicate while preserving order\n  const seen = new Set();\n  return candidates.filter(c => {\n    const key = c.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n}\n\n// --------------------------------------------------------------\n// Helper: find best index of any anchor candidate near originalStart\n// --------------------------------------------------------------\nfunction findAnchorIndex(originalStart, boundary) {\n  const SEARCH_RADIUS = 4000; // how far back to look\n  const candidates = getAnchorCandidates(boundary);\n  if (!candidates.length) return -1;\n\n  const searchStart = Math.max(0, originalStart - SEARCH_RADIUS);\n  const searchEnd = originalStart + SEARCH_RADIUS;\n\n  let bestIdx = -1;\n  let bestDistance = Infinity;\n\n  for (const cand of candidates) {\n    if (!cand) continue;\n\n    let idx = fullText.indexOf(cand, searchStart);\n    while (idx !== -1 && idx <= searchEnd) {\n      const dist = Math.abs(idx - originalStart);\n      if (dist < bestDistance) {\n        bestDistance = dist;\n        bestIdx = idx;\n      }\n      // look for next occurrence\n      idx = fullText.indexOf(cand, idx + 1);\n    }\n  }\n\n  return bestIdx;\n}\n\n// --------------------------------------------------------------\n// Helper: snap a start position to a clean boundary\n// --------------------------------------------------------------\nfunction snapStart(originalStart, boundary) {\n  const PARAGRAPH_BACKTRACK = 600;\n\n  // 1) Try to snap to where the anchor (title) actually appears\n  const anchorIdx = findAnchorIndex(originalStart, boundary);\n  if (anchorIdx !== -1) {\n    // Try to snap back to paragraph boundary before the anchor\n    let paraStart = fullText.lastIndexOf(\"\\n\\n\", anchorIdx);\n    if (paraStart !== -1 && anchorIdx - paraStart < PARAGRAPH_BACKTRACK) {\n      return paraStart;\n    }\n    return anchorIdx;\n  }\n\n  // 2) Fallback: snap to nearest paragraph boundary before originalStart\n  let paraStart = fullText.lastIndexOf(\"\\n\\n\", originalStart);\n  if (paraStart !== -1 && originalStart - paraStart < PARAGRAPH_BACKTRACK) {\n    return paraStart;\n  }\n\n  // 3) Last resort: leave it as-is\n  return originalStart;\n}\n\n// --------------------------------------------------------------\n// Precompute snapped starts for all chapters\n// --------------------------------------------------------------\nconst snappedStarts = boundaries.map((b) =>\n  snapStart(b.global_index, b)\n);\n\n// --------------------------------------------------------------\n// Build chapter slices\n// --------------------------------------------------------------\nlet chapters = [];\n\nfor (let i = 0; i < boundaries.length; i++) {\n  const boundary = boundaries[i];\n\n  const start = snappedStarts[i];\n  const end = (i < boundaries.length - 1)\n    ? snappedStarts[i + 1]\n    : fullText.length;\n\n  const content = fullText.slice(start, end).trim();\n\n  chapters.push({\n    chapter_index: i + 1,\n    chapter_num: i + 1, // sequential only; you can ignore downstream\n    chapter_title:\n      boundary.normalized_title ||\n      boundary.raw_heading ||\n      `Section ${i + 1}`,\n    start,\n    end,\n    raw_heading: boundary.raw_heading,\n    normalized_title: boundary.normalized_title,\n    word_count: content ? content.split(/\\s+/).length : 0,\n    content,\n  });\n}\n\n// --------------------------------------------------------------\n// Output as individual items\n// --------------------------------------------------------------\nreturn chapters.map(ch => ({ json: ch }));\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1376,
+          400
+        ],
+        "id": "49f0bb9b-4043-4a62-91ac-306eef5d411c",
+        "name": "Slice Chapters"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Partial Title: \"{{ $json.title }}\"\nAuthor: \"{{ $json.author }}\"\n\n",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH.   When needed, you MUST call the WEB SEARCH tool using the query: \"{{ $json.title }} {{ $json.author }} complete book title\"  After receiving the WEB SEARCH results, you MUST:  1. Read and interpret the search results. 2. Extract or infer the MOST WIDELY KNOWN, MOST LIKELY, or MOST PUBLISHED full title. 3. Output ONLY the corrected full book title, nothing else.  If the tool output includes multiple possibilities, choose the majority or top-ranked title.  If the tool output is empty, fall back to a reasonable inference but still output ONLY the title.  You MUST NOT output the tool call or the search transcript — only the final corrected book title."
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          -1280,
+          -96
+        ],
+        "id": "63744b33-482b-4378-8f89-97ae8ab17a42",
+        "name": "Complete Book Title"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -1248,
+          608
+        ],
+        "id": "49cfceee-4909-4172-8184-4792fadda58f",
+        "name": "OpenAI Chat Model2",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Clean and improve this chapter title:\n\n\"{{ $json.raw_heading || $json.normalized_title || $json.chapter_title }}\"\n\nReturn ONLY the new title. No numbers. No \"Chapter\". No explanations.\n",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=You are a title cleaner and enhancer for a book summarization system.  TASK: Given a raw chapter heading, generate a clean, modern, semantically equivalent title.  RULES: - REMOVE all numbers (e.g., “1.”, “Chapter 3”, “27 –”, \"51.\", etc.) - REMOVE all numeric ordinals (“First”, “Second”, “Fifth”, etc. ONLY if they refer to ordering, not concepts) - DO NOT add new numbers. - DO NOT reintroduce “Chapter”, “Section”, “Part”, etc. - Title must be semantic, meaningful, human-readable. - Keep it short (3–8 words). - Preserve the intent of the original heading. - Improve clarity if the title is low-quality or all-caps.  OUTPUT FORMAT: Return ONLY the cleaned title as plain text. No quotes, no markdown, no explanations.  EXAMPLES: \"1. INTRODUCTION\" → Introduction   \"Chapter 12: Porter’s Five Forces\" → Porter's Five Forces   \"5. COMPETITIVE MAP\" → Competitive Map   \"51. MANN–WHITNEY U TEST\" → Mann–Whitney U Test   \"7. IMPORTANCE–PERFORMANCE MATRIX\" → Importance–Performance Matrix   \"Chapter 3 - Introduction to Regressions\" → Introduction to Regressions  INPUT: {{ $json.raw_heading || $json.normalized_title || $json.chapter_title }}  OUTPUT:"
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          -1168,
+          400
+        ],
+        "id": "8437f7d1-86fd-4fd1-9cb1-ebc502a51838",
+        "name": "Clean Titles"
+      }
+    ],
+    "connections": {
+      "Read Book from Disk": {
+        "main": [
+          [
+            {
+              "node": "Detect Filetype",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Detect Filetype": {
+        "main": [
+          [
+            {
+              "node": "PDF to Text",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Command",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Extract Text",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Convert MOBI to TXT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert MOBI to TXT": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk": {
+        "main": [
+          [
+            {
+              "node": "Extract Text1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Extract Title/Author from Filename",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Command": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk1": {
+        "main": [
+          [
+            {
+              "node": "Extract Text",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Title/Author from Filename": {
+        "main": [
+          [
+            {
+              "node": "Complete Book Title",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Complete Book Title",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Complete Book Title",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Text": {
+        "main": [
+          [
+            {
+              "node": "Normalize for LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Text1": {
+        "main": [
+          [
+            {
+              "node": "Normalize for LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PDF to Text": {
+        "main": [
+          [
+            {
+              "node": "Normalize for LLM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize for LLM": {
+        "main": [
+          [
+            {
+              "node": "Chunk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Detect Chapters",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chunk": {
+        "main": [
+          [
+            {
+              "node": "Detect Chapters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Detect Chapters": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Slice Chapters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Slice Chapters": {
+        "main": [
+          [
+            {
+              "node": "Clean Titles",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Complete Book Title": {
+        "main": [
+          [
+            {
+              "node": "Read Book from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Clean Titles",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
