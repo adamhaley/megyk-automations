@@ -3,7 +3,7 @@
   "createdAt": "2025-11-15T22:49:52.778Z",
   "id": "PQKE2hMgsVaO08Cz",
   "name": "Generate Pitch Paul Email",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -130,7 +130,7 @@
     ]
   },
   "versionId": "1f91ea66-7141-4470-95b9-e4a81d1eecd2",
-  "activeVersionId": null,
+  "activeVersionId": "1f91ea66-7141-4470-95b9-e4a81d1eecd2",
   "triggerCount": 0,
   "shared": [
     {
@@ -141,6 +141,123 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "1f91ea66-7141-4470-95b9-e4a81d1eecd2",
+    "workflowId": "PQKE2hMgsVaO08Cz",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "company"
+              },
+              {
+                "name": "email"
+              }
+            ]
+          }
+        },
+        "id": "c254ed44-4b85-4451-8bf7-f2b83f9692c7",
+        "typeVersion": 1.1,
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "65ba10ec-2d96-448b-8d85-139f71670a6d",
+                "name": "subject",
+                "value": "=Kurze Frage zu {{ $json.company }}",
+                "type": "string"
+              },
+              {
+                "id": "2d9ef907-93a6-47c8-a47a-a03a205e14c5",
+                "name": "body",
+                "value": "Hallo,   durch das Wachstumschancengesetz (§ 7g EStG und § 7 Abs. 2 EStG) hat sich die Situation für Zahnärzte [grundlegend; drastisch; dramatisch; deutlich; spürbar; maßgeblich; nachhaltig, entscheidend] verändert. Es geht um Praxisrücklagen.  Wir würden Ihnen gerne aktuelle Informationen dazu zukommen lassen, wer wäre die richtige Ansprechperson in Ihrer Praxis dafür?  Vielen Dank",
+                "type": "string"
+              },
+              {
+                "id": "71ecb567-2a8b-4f34-ad18-71d9b5f5a7c4",
+                "name": "footer",
+                "value": "Tatjana Haufler Key-Account   Deutsches Edelsteinhaus DEH GmbH Kogenwiese 5 88279 Amtzell Telefon tel:+49 (0) 7520 9139297 Website: www.deutsches-edelsteinhaus.com  E-Mail: t.haufler@deutsches-edelsteinhaus.com  Sitz der Gesellschaft : 88279 Amtzell Handelsregister Ulm HRB 737047  Geschäftsführer: Alexander Streeb, Oliver Kleimaier  Diese E-Mail enthält für den Adressaten persönlich bestimmte vertrauliche und/oder rechtlich geschützte Informationen. Wenn Sie nicht der richtige Adressat sind oder diese E-Mail irrtümlich erhalten haben, informieren Sie bitte sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopieren sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet. Der Inhalt dieser E-Mail ist nur rechtsverbindlich, wenn er von unserer Seite schriftlich durch Brief oder Telefax bestätigt wird. Die Versendung von E-Mails an uns hat keine fristwahrende Wirkung.",
+                "type": "string"
+              },
+              {
+                "id": "98cd9c87-303b-418b-a57a-593e4b614910",
+                "name": "company",
+                "value": "$json",
+                "type": "string"
+              },
+              {
+                "id": "13e030ba-86c9-492e-95c4-7a5576550404",
+                "name": "from",
+                "value": "Tatjana Haufler | Deutsches Edelsteinhaus DEH GmbH.",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          0
+        ],
+        "id": "c70396aa-cb28-487d-b250-f83cf00abe99",
+        "name": "Seed Email",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Spintax-enabled outreach message sent by Tatjana Haufler\nconst spintax = $json.spintax || `Hallo,\n\ndurch das Wachstumschancengesetz (§ 7g EStG und § 7 Abs. 2 EStG) hat sich die Situation für Zahnärzte { grundlegend | drastisch | dramatisch | deutlich | spürbar | maßgeblich | nachhaltig | entscheidend } verändert. Es geht um Praxisrücklagen.\n\nWir würden Ihnen gerne aktuelle Informationen dazu zukommen lassen.\nWer wäre die richtige Ansprechperson in Ihrer Praxis dafür?\n\nVielen Dank\n\nTatjana Haufler\nKey-Account\n\nDeutsches Edelsteinhaus DEH GmbH\nKogenwiese 5\n88279 Amtzell\n\nTelefon: +49 (0) 7520 9139297\nWebsite: www.deutsches-edelsteinhaus.com\nE-Mail: t.haufler@deutsches-edelsteinhaus.com\n\nSitz der Gesellschaft: 88279 Amtzell\nHandelsregister Ulm HRB 737047\nGeschäftsführer: Alexander Streeb, Oliver Kleimaier\n\nDiese E-Mail enthält für den Adressaten persönlich bestimmte vertrauliche und/oder rechtlich geschützte Informationen. Wenn Sie nicht der richtige Adressat sind oder diese E-Mail irrtümlich erhalten haben, informieren Sie bitte sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopieren sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet. Der Inhalt dieser E-Mail ist nur rechtsverbindlich, wenn er von unserer Seite schriftlich durch Brief oder Telefax bestätigt wird. Die Versendung von E-Mails an uns hat keine fristwahrende Wirkung.\n`;\n\n// ---------- Spintax Parser ----------\nfunction spin(text) {\n  const regex = /\\{([^{}]+)\\}/;\n\n  let match;\n  const variables = [];\n\n  while ((match = regex.exec(text)) !== null) {\n    const full = match[0];\n    const options = match[1].split(\"|\").map(s => s.trim());\n    const choice = options[Math.floor(Math.random() * options.length)];\n\n    variables.push({ options, selected: choice });\n    text = text.replace(full, choice);\n  }\n\n  return { text, variables };\n}\n\n// ---------- Format Cleanup ----------\nfunction formatPlainText(str) {\n  return str\n    .replace(/[ \\t]+/g, \" \")    \n    .replace(/\\r\\n/g, \"\\n\")     \n    .replace(/\\n{3,}/g, \"\\n\\n\") \n    .trim() + \"\\n\";\n}\n\n// ---------- Process ----------\nconst spun = spin(spintax);\nconst cleanedBody = formatPlainText(spun.text);\n\n//   Set subject here\nconst subject = \"Kurze Frage zu \" + $input.first().json.company;\n\n//   Set sender name here\nconst from = `Tatjana Haufler | Deutsches Edelsteinhaus DEH GmbH.`;\n\n// Final output for downstream nodes\nreturn [\n  {\n    json: {\n      from,\n      subject,\n      body: cleanedBody\n    }\n  }\n];\n\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          448,
+          0
+        ],
+        "id": "ca3c05f4-4396-4c85-8e3d-474d5ac4f4a8",
+        "name": "Generate Email Token Seed Variations"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Seed Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Seed Email": {
+        "main": [
+          [
+            {
+              "node": "Generate Email Token Seed Variations",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
