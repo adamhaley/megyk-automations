@@ -1,0 +1,240 @@
+{
+  "updatedAt": "2025-12-20T02:56:45.219Z",
+  "createdAt": "2025-12-20T02:45:16.977Z",
+  "id": "DY9WaEz6iavgmQvY",
+  "name": "OnQuizCompletion",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "newgold-quiz-complete",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "265e5713-0ab3-42ae-a00e-3fa04270cfaa",
+      "name": "Webhook",
+      "webhookId": "43131d2a-a1f1-4f2a-a94c-0f35824ba69e"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo",
+          "mode": "list",
+          "cachedResultName": "TheNew Gold Campaign",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.body['user[email]'] }}"
+          },
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_campaign",
+              "displayName": "utm_campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_term",
+              "displayName": "utm_term",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c2043359-b4be-4a90-9e61-da593a38072b",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.megyk.com",
+            "user-agent": "WordPress/6.9; https://thenew.gold",
+            "content-length": "173",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip",
+            "content-type": "application/x-www-form-urlencoded",
+            "via": "1.1 Caddy",
+            "x-forwarded-for": "185.61.154.57",
+            "x-forwarded-host": "n8n.megyk.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "quiz[Name]": "IN: NewGold Wealth Discovery Survey Emerging Markets",
+            "user[result]": "5",
+            "user[email]": "adamhaley@gmail.com",
+            "user[date_started]": "2025-12-20 02:52:51"
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook/newgold-quiz-complete",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "b0e86982-a857-46d6-b061-ebf3addd03ee",
+  "activeVersionId": "f6ccd4c7-f9c3-47d4-ac0d-5c8ee64f2978",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-20T02:45:16.984Z",
+      "createdAt": "2025-12-20T02:45:16.984Z",
+      "role": "workflow:owner",
+      "workflowId": "DY9WaEz6iavgmQvY",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-20T02:52:37.000Z",
+    "createdAt": "2025-12-20T02:52:34.344Z",
+    "versionId": "f6ccd4c7-f9c3-47d4-ac0d-5c8ee64f2978",
+    "workflowId": "DY9WaEz6iavgmQvY",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "newgold-quiz-complete",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "265e5713-0ab3-42ae-a00e-3fa04270cfaa",
+        "name": "Webhook",
+        "webhookId": "43131d2a-a1f1-4f2a-a94c-0f35824ba69e"
+      }
+    ],
+    "connections": {},
+    "authors": "Gordan Kljajic",
+    "name": "Version f6ccd4c7",
+    "description": ""
+  },
+  "tags": []
+}
