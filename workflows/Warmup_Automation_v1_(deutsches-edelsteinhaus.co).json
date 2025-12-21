@@ -1,0 +1,2827 @@
+{
+  "updatedAt": "2025-11-16T19:53:42.000Z",
+  "createdAt": "2025-11-15T19:03:54.629Z",
+  "id": "9XZQJvMbt1JAaahW",
+  "name": "Warmup Automation v1 (deutsches-edelsteinhaus.co)",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "4d1816e5-abf5-432f-b355-f7d21300ac40",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.floor(Math.random() * 24) }}"
+      },
+      "id": "5255dc60-dd90-410b-8241-e3d7603b381f",
+      "name": "Wait Random Start",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        64,
+        480
+      ],
+      "webhookId": "1ef0f37f-5223-4b73-91d0-615722f719cd"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1840,
+        480
+      ],
+      "id": "d9097aca-80d5-4275-bc1b-846df6406aea",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "xke0OqHvSY3GQDAc",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/xke0OqHvSY3GQDAc",
+          "cachedResultName": "Generate Warm-Up Email"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2064,
+        496
+      ],
+      "name": "Call Generate Warm-Up Email",
+      "id": "d1e1da4e-b8da-495f-b081-5291e936c015"
+    },
+    {
+      "parameters": {
+        "amount": "={{Math.floor(Math.random() * 60)}}",
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3296,
+        1040
+      ],
+      "id": "181ca63e-ed05-431b-b1f9-810872bfc686",
+      "name": "Wait",
+      "webhookId": "91151458-ea62-48bd-b44b-827e82ed7ab4"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "uKmqZEOMqpMNkRGW",
+          "mode": "list",
+          "cachedResultName": "pitch-paul-test-emails",
+          "cachedResultUrl": "/projects/B7QJE85HA2Vij1it/datatables/uKmqZEOMqpMNkRGW"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        864,
+        480
+      ],
+      "id": "5b245d73-d38b-4883-aea6-c7bc7f33e5a9",
+      "name": "Get Recipients"
+    },
+    {
+      "parameters": {
+        "fromEmail": "tatjana.h@deutsches-edelsteinhaus.co",
+        "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+        "subject": "={{ $json.output.parseJson().subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.output.parseJson().body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2512,
+        112
+      ],
+      "id": "a24a0c6c-0d3c-4e5a-b702-9b0a5de665df",
+      "name": "Send email",
+      "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+      "credentials": {
+        "smtp": {
+          "id": "Jq3TLYprdcX6NXNS",
+          "name": "tatjana.h@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": " ## Warm-Up Email Boxes",
+        "height": 1120,
+        "width": 1584,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "02efe913-2362-4796-8840-1441e2816e0b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Number of recipients to randomly pick (you can map this dynamically)\nlet n = $('Set Max Emails').first().json.max_emails || 5;\n// Get the incoming array of recipients\nconst recipients = items.map(item => item.json);\n\n// Shuffle the list\nconst shuffled = recipients.sort(() => 0.5 - Math.random());\n\n// Pick the first n from the shuffled list\nconst selected = shuffled.slice(0, n);\n\n// Return each as a separate item\nreturn selected.map(r => ({ json: r }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        480
+      ],
+      "id": "aa590261-3f30-400d-9b8f-d5903f665bc0",
+      "name": "Get Random Recipients"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ee7r4w0YHVDsGcRK",
+          "mode": "list",
+          "cachedResultName": "pitch-paul-mailboxes",
+          "cachedResultUrl": "/projects/B7QJE85HA2Vij1it/datatables/ee7r4w0YHVDsGcRK"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        480
+      ],
+      "id": "1a52ef75-2984-469b-8dd3-b286260a5d64",
+      "name": "Get Mailboxes",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                    "rightValue": "tatjana.h@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9e0eefd6-5aa4-4ca5-8797-d6466a40ad87"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "343f9be3-7f2d-4fcb-be42-d549d3c36434",
+                    "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                    "rightValue": "haufler@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ba01f1f2-b820-4e6b-9897-a0c9f991aaa1",
+                    "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                    "rightValue": "t.haufler@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_3"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "18d80fd2-eca7-496b-b991-ebd35d6b9990",
+                    "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                    "rightValue": "tatjana@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_4"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6e69e218-0f85-4c63-aa5e-54c4e59ab001",
+                    "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                    "rightValue": "thaufler@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2288,
+        448
+      ],
+      "id": "fa73cba5-7edb-445b-9ce0-93829c88083a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fromEmail": "haufler@deutsches-edelsteinhaus.co",
+        "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+        "subject": "={{ $json.output.parseJson().subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.output.parseJson().body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2512,
+        304
+      ],
+      "id": "099db4d0-0a7a-4a5c-b218-86de0f51d976",
+      "name": "Send email1",
+      "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+      "credentials": {
+        "smtp": {
+          "id": "UBjHJGCSMB0OEhGp",
+          "name": "haufler@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "t.haufler@deutsches-edelsteinhaus.co",
+        "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+        "subject": "={{ $json.output.parseJson().subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.output.parseJson().body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2512,
+        496
+      ],
+      "id": "c3c2cd43-1143-4bed-8616-a9b809b0efd7",
+      "name": "Send email2",
+      "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+      "credentials": {
+        "smtp": {
+          "id": "e4fCj2Z1fiBIJ0H2",
+          "name": "t.haufler@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "tatjana@deutsches-edelsteinhaus.co",
+        "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+        "subject": "={{ $json.output.parseJson().subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.output.parseJson().body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2512,
+        688
+      ],
+      "id": "df60c202-6f67-4d8b-95e7-9510830d37f7",
+      "name": "Send email3",
+      "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+      "credentials": {
+        "smtp": {
+          "id": "qlxsPygHLHyxpZTP",
+          "name": "tatjana@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "thaufler@deutsches-edelsteinhaus.co",
+        "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+        "subject": "={{ $json.output.parseJson().subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.output.parseJson().body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2512,
+        880
+      ],
+      "id": "f117a5ad-ec5f-43f9-b3f1-484c46877fce",
+      "name": "Send email4",
+      "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+      "credentials": {
+        "smtp": {
+          "id": "nZRv6uyByqxgJsz5",
+          "name": "thaufler@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3024,
+        464
+      ],
+      "id": "45111647-0eed-4426-a7e5-f0e72a3a4d15",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "to": "={{ $json.accepted[0] }}",
+            "from": "={{ $json.envelope.from }}",
+            "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+            "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+            "Date": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 6",
+              "displayName": "Column 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2736,
+        112
+      ],
+      "id": "c7085943-e436-475d-a506-02d81d275f8d",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "to": "={{ $json.accepted[0] }}",
+            "from": "={{ $json.envelope.from }}",
+            "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+            "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+            "Date": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 6",
+              "displayName": "Column 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2736,
+        304
+      ],
+      "id": "efe4c5ab-4f67-4f6c-9132-908caa401495",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "to": "={{ $json.accepted[0] }}",
+            "from": "={{ $json.envelope.from }}",
+            "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+            "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+            "Date": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 6",
+              "displayName": "Column 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2736,
+        496
+      ],
+      "id": "c278ed67-f1f0-4bbc-8aeb-322a7798a13d",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "to": "={{ $json.accepted[0] }}",
+            "from": "={{ $json.envelope.from }}",
+            "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+            "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+            "Date": "={{  $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 6",
+              "displayName": "Column 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2736,
+        688
+      ],
+      "id": "899644ed-e417-4c92-8aaf-5b9b1d325f1d",
+      "name": "Append row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "to": "={{ $json.accepted[0] }}",
+            "from": "={{ $json.envelope.from }}",
+            "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+            "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+            "Date": "={{  $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 6",
+              "displayName": "Column 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2736,
+        880
+      ],
+      "id": "304234d4-bb57-4111-901d-b93709b3fd96",
+      "name": "Append row in sheet4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        192
+      ],
+      "id": "a1deccf3-a8bc-48fe-8ecd-be7251adaea6",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3fbcb8c6-28eb-45f2-bf13-c50d165c202b",
+              "leftValue": "={{ $json.address }}",
+              "rightValue": "co",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        480
+      ],
+      "id": "bf5cfe57-56d8-4928-ae75-e690225478f1",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "86fa268e-262d-4812-8312-24c5ece8e1b1",
+              "name": "Date ",
+              "value": "={{ $now.format('MM/dd/y')}}",
+              "type": "string"
+            },
+            {
+              "id": "7d188d23-4c74-42c2-aba3-0bc67bc6f3e2",
+              "name": "Max Emails",
+              "value": "=10",
+              "type": "number"
+            },
+            {
+              "id": "0c5b52e9-e000-461f-8e29-9a844be8af79",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        480
+      ],
+      "id": "008bbff1-b0e9-4774-8371-8e6d91e50197",
+      "name": "Max Emails for Today"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ff274c0b-17d5-4e01-9994-7ced488f8d7b",
+              "name": "max_emails",
+              "value": 10,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        480
+      ],
+      "id": "eace0052-0f79-48fa-a9d1-fe8f05ef9506",
+      "name": "Set Max Emails"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait Random Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Random Start": {
+      "main": [
+        [
+          {
+            "node": "Set Max Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call Generate Warm-Up Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Generate Warm-Up Email": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Recipients": {
+      "main": [
+        [
+          {
+            "node": "Get Random Recipients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Random Recipients": {
+      "main": [
+        [
+          {
+            "node": "Get Mailboxes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Mailboxes": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email3": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email4": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Append row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Append row in sheet3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Append row in sheet4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Max Emails for Today": {
+      "main": [
+        [
+          {
+            "node": "Get Recipients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Max Emails": {
+      "main": [
+        [
+          {
+            "node": "Max Emails for Today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "WbISMAIlclQfzorG"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-11-15T00:00:08.324-08:00",
+          "Readable date": "November 15th 2025, 12:00:08 am",
+          "Readable time": "12:00:08 am",
+          "Day of week": "Saturday",
+          "Year": "2025",
+          "Month": "November",
+          "Day of month": "15",
+          "Hour": "00",
+          "Minute": "00",
+          "Second": "08",
+          "Timezone": "America/Los_Angeles (UTC-08:00)"
+        }
+      }
+    ]
+  },
+  "versionId": "9700c738-7ae9-4673-a0bd-aae7e71e6433",
+  "activeVersionId": "9700c738-7ae9-4673-a0bd-aae7e71e6433",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-15T19:03:54.639Z",
+      "createdAt": "2025-11-15T19:03:54.639Z",
+      "role": "workflow:owner",
+      "workflowId": "9XZQJvMbt1JAaahW",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "9700c738-7ae9-4673-a0bd-aae7e71e6433",
+    "workflowId": "9XZQJvMbt1JAaahW",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {}
+            ]
+          }
+        },
+        "id": "4d1816e5-abf5-432f-b355-f7d21300ac40",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1,
+        "position": [
+          -176,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "amount": "={{ Math.floor(Math.random() * 24) }}"
+        },
+        "id": "5255dc60-dd90-410b-8241-e3d7603b381f",
+        "name": "Wait Random Start",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          64,
+          480
+        ],
+        "webhookId": "1ef0f37f-5223-4b73-91d0-615722f719cd"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1840,
+          480
+        ],
+        "id": "d9097aca-80d5-4275-bc1b-846df6406aea",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "xke0OqHvSY3GQDAc",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/xke0OqHvSY3GQDAc",
+            "cachedResultName": "Generate Warm-Up Email"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          2064,
+          496
+        ],
+        "name": "Call Generate Warm-Up Email",
+        "id": "d1e1da4e-b8da-495f-b081-5291e936c015"
+      },
+      {
+        "parameters": {
+          "amount": "={{Math.floor(Math.random() * 60)}}",
+          "unit": "minutes"
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          3296,
+          1040
+        ],
+        "id": "181ca63e-ed05-431b-b1f9-810872bfc686",
+        "name": "Wait",
+        "webhookId": "91151458-ea62-48bd-b44b-827e82ed7ab4"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "uKmqZEOMqpMNkRGW",
+            "mode": "list",
+            "cachedResultName": "pitch-paul-test-emails",
+            "cachedResultUrl": "/projects/B7QJE85HA2Vij1it/datatables/uKmqZEOMqpMNkRGW"
+          },
+          "returnAll": true
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1,
+        "position": [
+          864,
+          480
+        ],
+        "id": "5b245d73-d38b-4883-aea6-c7bc7f33e5a9",
+        "name": "Get Recipients"
+      },
+      {
+        "parameters": {
+          "fromEmail": "tatjana.h@deutsches-edelsteinhaus.co",
+          "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+          "subject": "={{ $json.output.parseJson().subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.output.parseJson().body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2512,
+          112
+        ],
+        "id": "a24a0c6c-0d3c-4e5a-b702-9b0a5de665df",
+        "name": "Send email",
+        "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+        "credentials": {
+          "smtp": {
+            "id": "Jq3TLYprdcX6NXNS",
+            "name": "tatjana.h@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": " ## Warm-Up Email Boxes",
+          "height": 1120,
+          "width": 1584,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "02efe913-2362-4796-8840-1441e2816e0b",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Number of recipients to randomly pick (you can map this dynamically)\nlet n = $('Set Max Emails').first().json.max_emails || 5;\n// Get the incoming array of recipients\nconst recipients = items.map(item => item.json);\n\n// Shuffle the list\nconst shuffled = recipients.sort(() => 0.5 - Math.random());\n\n// Pick the first n from the shuffled list\nconst selected = shuffled.slice(0, n);\n\n// Return each as a separate item\nreturn selected.map(r => ({ json: r }));\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1136,
+          480
+        ],
+        "id": "aa590261-3f30-400d-9b8f-d5903f665bc0",
+        "name": "Get Random Recipients"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ee7r4w0YHVDsGcRK",
+            "mode": "list",
+            "cachedResultName": "pitch-paul-mailboxes",
+            "cachedResultUrl": "/projects/B7QJE85HA2Vij1it/datatables/ee7r4w0YHVDsGcRK"
+          },
+          "returnAll": true
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1,
+        "position": [
+          1376,
+          480
+        ],
+        "id": "1a52ef75-2984-469b-8dd3-b286260a5d64",
+        "name": "Get Mailboxes",
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                      "rightValue": "tatjana.h@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "9e0eefd6-5aa4-4ca5-8797-d6466a40ad87"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_1"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "343f9be3-7f2d-4fcb-be42-d549d3c36434",
+                      "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                      "rightValue": "haufler@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_2"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "ba01f1f2-b820-4e6b-9897-a0c9f991aaa1",
+                      "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                      "rightValue": "t.haufler@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_3"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "18d80fd2-eca7-496b-b991-ebd35d6b9990",
+                      "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                      "rightValue": "tatjana@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_4"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "6e69e218-0f85-4c63-aa5e-54c4e59ab001",
+                      "leftValue": "={{ $('Get Mailboxes').item.json.address }}",
+                      "rightValue": "thaufler@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_5"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          2288,
+          448
+        ],
+        "id": "fa73cba5-7edb-445b-9ce0-93829c88083a",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "fromEmail": "haufler@deutsches-edelsteinhaus.co",
+          "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+          "subject": "={{ $json.output.parseJson().subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.output.parseJson().body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2512,
+          304
+        ],
+        "id": "099db4d0-0a7a-4a5c-b218-86de0f51d976",
+        "name": "Send email1",
+        "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+        "credentials": {
+          "smtp": {
+            "id": "UBjHJGCSMB0OEhGp",
+            "name": "haufler@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "t.haufler@deutsches-edelsteinhaus.co",
+          "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+          "subject": "={{ $json.output.parseJson().subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.output.parseJson().body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2512,
+          496
+        ],
+        "id": "c3c2cd43-1143-4bed-8616-a9b809b0efd7",
+        "name": "Send email2",
+        "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+        "credentials": {
+          "smtp": {
+            "id": "e4fCj2Z1fiBIJ0H2",
+            "name": "t.haufler@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "tatjana@deutsches-edelsteinhaus.co",
+          "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+          "subject": "={{ $json.output.parseJson().subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.output.parseJson().body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2512,
+          688
+        ],
+        "id": "df60c202-6f67-4d8b-95e7-9510830d37f7",
+        "name": "Send email3",
+        "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+        "credentials": {
+          "smtp": {
+            "id": "qlxsPygHLHyxpZTP",
+            "name": "tatjana@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "thaufler@deutsches-edelsteinhaus.co",
+          "toEmail": "={{ $('Get Random Recipients').item.json.address }}",
+          "subject": "={{ $json.output.parseJson().subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.output.parseJson().body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2512,
+          880
+        ],
+        "id": "f117a5ad-ec5f-43f9-b3f1-484c46877fce",
+        "name": "Send email4",
+        "webhookId": "f471943d-a1bb-4c32-a931-2015e5f92597",
+        "credentials": {
+          "smtp": {
+            "id": "nZRv6uyByqxgJsz5",
+            "name": "thaufler@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "numberInputs": 5
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          3024,
+          464
+        ],
+        "id": "45111647-0eed-4426-a7e5-f0e72a3a4d15",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+            "mode": "list"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "to": "={{ $json.accepted[0] }}",
+              "from": "={{ $json.envelope.from }}",
+              "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+              "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+              "Date": "={{ $now }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Column 6",
+                "displayName": "Column 6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2736,
+          112
+        ],
+        "id": "c7085943-e436-475d-a506-02d81d275f8d",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+            "mode": "list"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "to": "={{ $json.accepted[0] }}",
+              "from": "={{ $json.envelope.from }}",
+              "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+              "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+              "Date": "={{ $now }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Column 6",
+                "displayName": "Column 6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2736,
+          304
+        ],
+        "id": "efe4c5ab-4f67-4f6c-9132-908caa401495",
+        "name": "Append row in sheet1",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+            "mode": "list"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "to": "={{ $json.accepted[0] }}",
+              "from": "={{ $json.envelope.from }}",
+              "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+              "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+              "Date": "={{ $now }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Column 6",
+                "displayName": "Column 6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2736,
+          496
+        ],
+        "id": "c278ed67-f1f0-4bbc-8aeb-322a7798a13d",
+        "name": "Append row in sheet2",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+            "mode": "list"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "to": "={{ $json.accepted[0] }}",
+              "from": "={{ $json.envelope.from }}",
+              "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+              "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+              "Date": "={{  $now }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Column 6",
+                "displayName": "Column 6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2736,
+          688
+        ],
+        "id": "899644ed-e417-4c92-8aaf-5b9b1d325f1d",
+        "name": "Append row in sheet3",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU",
+            "mode": "list"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lz4NJaaC9Mrh0BZNiI15Ap2fEk1Fa-VHUrtI4gj1qbU/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "to": "={{ $json.accepted[0] }}",
+              "from": "={{ $json.envelope.from }}",
+              "subject": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().subject }}",
+              "body": "={{ $('Call Generate Warm-Up Email').item.json.output.parseJson().body }}",
+              "Date": "={{  $now }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Column 6",
+                "displayName": "Column 6",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2736,
+          880
+        ],
+        "id": "304234d4-bb57-4111-901d-b93709b3fd96",
+        "name": "Append row in sheet4",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2064,
+          192
+        ],
+        "id": "a1deccf3-a8bc-48fe-8ecd-be7251adaea6",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "3fbcb8c6-28eb-45f2-bf13-c50d165c202b",
+                "leftValue": "={{ $json.address }}",
+                "rightValue": "co",
+                "operator": {
+                  "type": "string",
+                  "operation": "endsWith"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          1616,
+          480
+        ],
+        "id": "bf5cfe57-56d8-4928-ae75-e690225478f1",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "86fa268e-262d-4812-8312-24c5ece8e1b1",
+                "name": "Date ",
+                "value": "={{ $now.format('MM/dd/y')}}",
+                "type": "string"
+              },
+              {
+                "id": "7d188d23-4c74-42c2-aba3-0bc67bc6f3e2",
+                "name": "Max Emails",
+                "value": "=10",
+                "type": "number"
+              },
+              {
+                "id": "0c5b52e9-e000-461f-8e29-9a844be8af79",
+                "name": "",
+                "value": "",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          592,
+          480
+        ],
+        "id": "008bbff1-b0e9-4774-8371-8e6d91e50197",
+        "name": "Max Emails for Today"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ff274c0b-17d5-4e01-9994-7ced488f8d7b",
+                "name": "max_emails",
+                "value": 10,
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          320,
+          480
+        ],
+        "id": "eace0052-0f79-48fa-a9d1-fe8f05ef9506",
+        "name": "Set Max Emails"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Wait Random Start",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait Random Start": {
+        "main": [
+          [
+            {
+              "node": "Set Max Emails",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Call Generate Warm-Up Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Generate Warm-Up Email": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Recipients": {
+        "main": [
+          [
+            {
+              "node": "Get Random Recipients",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Random Recipients": {
+        "main": [
+          [
+            {
+              "node": "Get Mailboxes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Mailboxes": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Send email",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email3",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email1": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email2": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email3": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email4": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append row in sheet1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Append row in sheet2": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Append row in sheet3": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Append row in sheet4": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 4
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Max Emails for Today": {
+        "main": [
+          [
+            {
+              "node": "Get Recipients",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Max Emails": {
+        "main": [
+          [
+            {
+              "node": "Max Emails for Today",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
