@@ -1,0 +1,481 @@
+{
+  "updatedAt": "2025-10-31T08:52:16.000Z",
+  "createdAt": "2025-09-17T11:41:57.696Z",
+  "id": "NpNXqyFPZrmcWZLX",
+  "name": "Terminly KI-Vertriebssystem",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "be0de0fd-b1a6-44d2-883d-90e9996f6f20",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        240
+      ],
+      "id": "b1393eb2-84e0-4ca9-96fc-c2bdf273f877",
+      "name": "New Lead",
+      "webhookId": "be0de0fd-b1a6-44d2-883d-90e9996f6f20"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b10cb06d-c3e8-4990-9970-d5840192a95b",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d42b7d38-2a0f-4bef-a478-06e7c1cb8828",
+      "name": "New Appointment",
+      "webhookId": "b10cb06d-c3e8-4990-9970-d5840192a95b"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sr1zxm.eu-5.quentn.com/public/api/v1/contact",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eVL7RXZgD0FuKQUsp-jYITrBlnu4McnCFP8ST2yYapA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contact\": {\n    \"first_name\": \"{{ $json.body.first_name }}\",\n    \"family_name\": \"{{ $json.body.last_name }}\",\n    \"mail\": \"{{ $json.body.email }}\",\n    \"phone\": \"{{ $json.body.phone }}\",\n    \"terms\": [30]\n  },\n  \"duplicate_check_method\": \"email\",\n  \"duplicate_merge_method\": \"update_add\",\n  \"return_fields\": [\"id\", \"mail\", \"first_name\", \"family_name\", \"terms\"]\n}\n",
+        "options": {
+          "lowercaseHeaders": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        32,
+        240
+      ],
+      "id": "ad47d805-b6ee-43fa-8e3b-d5789549ea62",
+      "name": "Add Lead to Quentn"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://yourcompany.bitrix24.com/rest/123/abcde12345/crm.lead.add",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=first_name",
+              "value": "={{ $json.body.first_name }}"
+            },
+            {
+              "name": "last_name",
+              "value": "={{ $json.body.last_name }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.body.phone }}"
+            },
+            {
+              "name": "appointment",
+              "value": "={{ $json.body.customData.appointment }}"
+            },
+            {
+              "name": "message_history",
+              "value": "={{ $json.body.customData.history }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.body.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        -192
+      ],
+      "id": "5664731b-2fba-4dc1-b457-21c0d4351e4f",
+      "name": "Add Note to Bitrix24"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.all-for-web.de/webhook/c66df5cd-9745-4cfe-ac34-97320f62133a",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "data",
+              "value": "={{ $json.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d47c7714-28e2-4b4c-9798-68f7850b573b",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "yONoI6w2SKvZQAjd",
+          "name": "Unnamed credential"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "New Appointment": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Lead": {
+      "main": [
+        [
+          {
+            "node": "Add Lead to Quentn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Lead to Quentn": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "New Appointment": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.megyk.com",
+            "user-agent": "axios/1.7.7",
+            "content-length": "1534",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "traceparent": "00-645f37dfa2e434fbd3c0662a5d87f859-487c24ee99acc27d-00",
+            "via": "1.1 Caddy",
+            "x-forwarded-for": "34.170.216.228",
+            "x-forwarded-host": "n8n.megyk.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "contact_id": "57dEVlyyid1JbThzC2jD",
+            "first_name": "Philipp",
+            "last_name": "Test",
+            "full_name": "Philipp Test",
+            "email": "philipp-l@gmx.de",
+            "phone": "+4917655524643",
+            "tags": "",
+            "country": "DE",
+            "date_created": "2025-09-17T11:40:11.860Z",
+            "full_address": "",
+            "contact_type": "lead",
+            "location": {
+              "name": "Deutsches Edelsteinhaus DEH GmbH",
+              "address": "Kogenwiese 5",
+              "city": "Amtzell",
+              "state": "Baden-Württemberg",
+              "country": "DE",
+              "postalCode": "88279",
+              "fullAddress": "Kogenwiese 5, Amtzell Baden-Württemberg 88279",
+              "id": "MIYPP8UL1HJQHGEmtzmm"
+            },
+            "calendar": {
+              "title": "Kennenlerngespräch mit Philipp Test",
+              "selectedTimezone": "Europe/Oslo",
+              "appointmentId": "iZYURGyGBIJXp2YrKlfQ",
+              "startTime": "2025-09-17T15:00:00",
+              "endTime": "2025-09-17T16:00:00",
+              "status": "booked",
+              "appoinmentStatus": "confirmed",
+              "address": "",
+              "notes": "",
+              "date_created": "2025-09-17T11:42:13.970Z",
+              "created_by": "Philipp Leirich",
+              "created_by_user_id": "B8rjR0PY486LdQQkuyeQ",
+              "created_by_meta": {
+                "source": "contactdetails_page",
+                "channel": "web_app"
+              },
+              "last_updated_by_meta": {
+                "source": "contactdetails_page",
+                "channel": "web_app"
+              },
+              "id": "9CFQfRWgydkANdkPPUZo",
+              "calendarName": "DEH Workshop"
+            },
+            "workflow": {
+              "id": "ad38ddda-05d8-4f17-939b-d840da340733",
+              "name": "Appointment Notification"
+            },
+            "triggerData": {},
+            "contact": {
+              "attributionSource": {
+                "sessionSource": "CRM UI",
+                "medium": "manual",
+                "mediumId": null
+              },
+              "lastAttributionSource": {}
+            },
+            "attributionSource": {},
+            "customData": {
+              "appointment": "Mittwoch, 17. September 2025 15:00",
+              "history": "",
+              "first_name": "Philipp",
+              "email": "philipp-l@gmx.de",
+              "phone": "0176 55524643",
+              "last_name": "Test"
+            }
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook-test/b10cb06d-c3e8-4990-9970-d5840192a95b",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "versionId": "bca9e86c-9bbe-45d9-902d-8d3d240a1baf",
+  "activeVersionId": "bca9e86c-9bbe-45d9-902d-8d3d240a1baf",
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2025-09-17T11:41:57.704Z",
+      "createdAt": "2025-09-17T11:41:57.704Z",
+      "role": "workflow:owner",
+      "workflowId": "NpNXqyFPZrmcWZLX",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "bca9e86c-9bbe-45d9-902d-8d3d240a1baf",
+    "workflowId": "NpNXqyFPZrmcWZLX",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "be0de0fd-b1a6-44d2-883d-90e9996f6f20",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -320,
+          240
+        ],
+        "id": "b1393eb2-84e0-4ca9-96fc-c2bdf273f877",
+        "name": "New Lead",
+        "webhookId": "be0de0fd-b1a6-44d2-883d-90e9996f6f20"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "b10cb06d-c3e8-4990-9970-d5840192a95b",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "d42b7d38-2a0f-4bef-a478-06e7c1cb8828",
+        "name": "New Appointment",
+        "webhookId": "b10cb06d-c3e8-4990-9970-d5840192a95b"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://sr1zxm.eu-5.quentn.com/public/api/v1/contact",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Accept",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer eVL7RXZgD0FuKQUsp-jYITrBlnu4McnCFP8ST2yYapA"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contact\": {\n    \"first_name\": \"{{ $json.body.first_name }}\",\n    \"family_name\": \"{{ $json.body.last_name }}\",\n    \"mail\": \"{{ $json.body.email }}\",\n    \"phone\": \"{{ $json.body.phone }}\",\n    \"terms\": [30]\n  },\n  \"duplicate_check_method\": \"email\",\n  \"duplicate_merge_method\": \"update_add\",\n  \"return_fields\": [\"id\", \"mail\", \"first_name\", \"family_name\", \"terms\"]\n}\n",
+          "options": {
+            "lowercaseHeaders": false
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          32,
+          240
+        ],
+        "id": "ad47d805-b6ee-43fa-8e3b-d5789549ea62",
+        "name": "Add Lead to Quentn"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://yourcompany.bitrix24.com/rest/123/abcde12345/crm.lead.add",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "=first_name",
+                "value": "={{ $json.body.first_name }}"
+              },
+              {
+                "name": "last_name",
+                "value": "={{ $json.body.last_name }}"
+              },
+              {
+                "name": "phone",
+                "value": "={{ $json.body.phone }}"
+              },
+              {
+                "name": "appointment",
+                "value": "={{ $json.body.customData.appointment }}"
+              },
+              {
+                "name": "message_history",
+                "value": "={{ $json.body.customData.history }}"
+              },
+              {
+                "name": "email",
+                "value": "={{ $json.body.email }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          256,
+          -192
+        ],
+        "id": "5664731b-2fba-4dc1-b457-21c0d4351e4f",
+        "name": "Add Note to Bitrix24"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n.all-for-web.de/webhook/c66df5cd-9745-4cfe-ac34-97320f62133a",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpBasicAuth",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "data",
+                "value": "={{ $json.body }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          208,
+          0
+        ],
+        "id": "d47c7714-28e2-4b4c-9798-68f7850b573b",
+        "name": "HTTP Request",
+        "credentials": {
+          "httpBasicAuth": {
+            "id": "yONoI6w2SKvZQAjd",
+            "name": "Unnamed credential"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "New Appointment": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "New Lead": {
+        "main": [
+          [
+            {
+              "node": "Add Lead to Quentn",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Lead to Quentn": {
+        "main": [
+          []
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
