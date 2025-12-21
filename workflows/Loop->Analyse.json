@@ -1,0 +1,1012 @@
+{
+  "updatedAt": "2025-09-29T03:23:58.000Z",
+  "createdAt": "2025-09-02T01:20:32.635Z",
+  "id": "dkz2csIplb3E9eYF",
+  "name": "Loop->Analyse",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Loop Analysis Anna\n- store pointer to redis store (incrementing digit)\n- on schedule trigger, load next row in google sheet",
+        "height": 672,
+        "width": 672,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -176
+      ],
+      "id": "a4c1f7de-be9e-4e75-a557-6b83b5844dd7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        -16
+      ],
+      "id": "7dcbf1f2-b6ce-43a0-803e-9e495b25d101",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4c490260-42d5-4342-bfac-1aa66ebd6785",
+              "name": "row_number",
+              "value": "={{ $json.megyk_incrementor }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        -16
+      ],
+      "id": "708b34c6-25ac-4e40-b0a7-f833db83485f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals",
+          "mode": "list",
+          "cachedResultName": "Companies - AI Sales Team",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 233130169,
+          "mode": "list",
+          "cachedResultName": "Google Test Results",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit#gid=233130169"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "row_number",
+              "lookupValue": "={{ $json.row_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        80
+      ],
+      "id": "1978c97a-279f-4048-beec-b38dd610cf0e",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "E9DIeC5qr9BvwdK8",
+          "mode": "list",
+          "cachedResultName": "Analyse \"Impressum\""
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_id": "={{ $json.row_number }}",
+            "company_name": "={{ $json.company }}",
+            "company_website": "={{ $json.website }}",
+            "location_link": "={{ $json.location_link }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "row_id",
+              "displayName": "row_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number"
+            },
+            {
+              "id": "company_name",
+              "displayName": "company_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "location_link",
+              "displayName": "location_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "company_website",
+              "displayName": "company_website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        304
+      ],
+      "id": "46457d4e-bf0c-44e4-a3f7-4929dde75bc8",
+      "name": "Execute Analysys",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "incr",
+        "key": "megyk_incrementor"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -16
+      ],
+      "id": "40831f4c-4d89-42a6-b436-467db08958c8",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "YhGZ2V2NRW4flPo5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2b1afc08-e991-4e8f-aa8e-0595fab3ecd2",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "Insufficient quota detected",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -368,
+        352
+      ],
+      "id": "94bda2d0-f2c3-4f2f-8d8c-1ed056af7b53",
+      "name": "If Insufficient Quota"
+    },
+    {
+      "parameters": {
+        "operation": "deactivate",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$workflow.id}}"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        336
+      ],
+      "id": "3d58ad21-8247-4457-894c-56323855d377",
+      "name": "Deactivate this workflow",
+      "credentials": {
+        "n8nApi": {
+          "id": "lo23nGVR8nVRtIwQ",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1uJgVKic8z9oLtmvS1wTPAZBY611BjVaIG4td4JrZBwQ",
+          "mode": "list",
+          "cachedResultName": "n8n Errors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uJgVKic8z9oLtmvS1wTPAZBY611BjVaIG4td4JrZBwQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tabellenblatt1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uJgVKic8z9oLtmvS1wTPAZBY611BjVaIG4td4JrZBwQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $now.format('y-MM-dd') }}",
+            "time": "={{ $now.format('hh:mm a') }}",
+            "workflow name": "={{ $workflow.name }}",
+            "workflow id": "={{ $workflow.id }}",
+            "message": "=Analysis Anna returned \"Insufficient Quota\" from Open AI. Workflow has been temporarily deactivated at Redis increment {{ $('Redis').item.json.megyk_incrementor }} Please fund API account to continue.  ",
+            "execution": "={{ $execution.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow name",
+              "displayName": "workflow name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow id",
+              "displayName": "workflow id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "execution",
+              "displayName": "execution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stacktrace",
+              "displayName": "stacktrace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "node",
+              "displayName": "node",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        336
+      ],
+      "id": "bac50b65-eedf-4031-8452-8037cfc99ce0",
+      "name": "Log Error",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "adamhaley@gmail.com",
+        "subject": "Analysis Anna Halted",
+        "message": "=Analysis Anna returned \"Insufficient Quota\" from Open AI. Workflow has been temporarily deactivated at Redis increment {{ $('Redis').item.json.megyk_incrementor }} Please fund API account to continue.  ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        272,
+        336
+      ],
+      "id": "aba4cb81-df60-4a8f-a141-74791c4d06ac",
+      "name": "Send a message",
+      "webhookId": "98dc4954-caa2-46e4-aee1-736100f6cb3d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sVqb0m2UfqzXbdvL",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Execute Analysys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Analysys": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If Insufficient Quota",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Insufficient Quota": {
+      "main": [
+        [
+          {
+            "node": "Deactivate this workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deactivate this workflow": {
+      "main": [
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Error": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d887a18e-1594-46e6-a105-6ca39340189a",
+  "activeVersionId": "d887a18e-1594-46e6-a105-6ca39340189a",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-09-02T01:20:32.675Z",
+      "createdAt": "2025-09-02T01:20:32.675Z",
+      "role": "workflow:owner",
+      "workflowId": "dkz2csIplb3E9eYF",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "d887a18e-1594-46e6-a105-6ca39340189a",
+    "workflowId": "dkz2csIplb3E9eYF",
+    "nodes": [
+      {
+        "parameters": {
+          "content": "## Loop Analysis Anna\n- store pointer to redis store (incrementing digit)\n- on schedule trigger, load next row in google sheet",
+          "height": 672,
+          "width": 672,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -640,
+          -176
+        ],
+        "id": "a4c1f7de-be9e-4e75-a557-6b83b5844dd7",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "seconds"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -576,
+          -16
+        ],
+        "id": "7dcbf1f2-b6ce-43a0-803e-9e495b25d101",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "4c490260-42d5-4342-bfac-1aa66ebd6785",
+                "name": "row_number",
+                "value": "={{ $json.megyk_incrementor }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -176,
+          -16
+        ],
+        "id": "708b34c6-25ac-4e40-b0a7-f833db83485f",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals",
+            "mode": "list",
+            "cachedResultName": "Companies - AI Sales Team",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 233130169,
+            "mode": "list",
+            "cachedResultName": "Google Test Results",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit#gid=233130169"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "row_number",
+                "lookupValue": "={{ $json.row_number }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          64,
+          80
+        ],
+        "id": "1978c97a-279f-4048-beec-b38dd610cf0e",
+        "name": "Get row(s) in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "E9DIeC5qr9BvwdK8",
+            "mode": "list",
+            "cachedResultName": "Analyse \"Impressum\""
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_id": "={{ $json.row_number }}",
+              "company_name": "={{ $json.company }}",
+              "company_website": "={{ $json.website }}",
+              "location_link": "={{ $json.location_link }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "row_id",
+                "displayName": "row_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "number"
+              },
+              {
+                "id": "company_name",
+                "displayName": "company_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "location_link",
+                "displayName": "location_link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "company_website",
+                "displayName": "company_website",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -576,
+          304
+        ],
+        "id": "46457d4e-bf0c-44e4-a3f7-4929dde75bc8",
+        "name": "Execute Analysys",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "incr",
+          "key": "megyk_incrementor"
+        },
+        "type": "n8n-nodes-base.redis",
+        "typeVersion": 1,
+        "position": [
+          -384,
+          -16
+        ],
+        "id": "40831f4c-4d89-42a6-b436-467db08958c8",
+        "name": "Redis",
+        "credentials": {
+          "redis": {
+            "id": "YhGZ2V2NRW4flPo5",
+            "name": "Redis account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "2b1afc08-e991-4e8f-aa8e-0595fab3ecd2",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "Insufficient quota detected",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -368,
+          352
+        ],
+        "id": "94bda2d0-f2c3-4f2f-8d8c-1ed056af7b53",
+        "name": "If Insufficient Quota"
+      },
+      {
+        "parameters": {
+          "operation": "deactivate",
+          "workflowId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{$workflow.id}}"
+          },
+          "requestOptions": {}
+        },
+        "type": "n8n-nodes-base.n8n",
+        "typeVersion": 1,
+        "position": [
+          -144,
+          336
+        ],
+        "id": "3d58ad21-8247-4457-894c-56323855d377",
+        "name": "Deactivate this workflow",
+        "credentials": {
+          "n8nApi": {
+            "id": "lo23nGVR8nVRtIwQ",
+            "name": "n8n account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1uJgVKic8z9oLtmvS1wTPAZBY611BjVaIG4td4JrZBwQ",
+            "mode": "list",
+            "cachedResultName": "n8n Errors",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uJgVKic8z9oLtmvS1wTPAZBY611BjVaIG4td4JrZBwQ/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Tabellenblatt1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uJgVKic8z9oLtmvS1wTPAZBY611BjVaIG4td4JrZBwQ/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "date": "={{ $now.format('y-MM-dd') }}",
+              "time": "={{ $now.format('hh:mm a') }}",
+              "workflow name": "={{ $workflow.name }}",
+              "workflow id": "={{ $workflow.id }}",
+              "message": "=Analysis Anna returned \"Insufficient Quota\" from Open AI. Workflow has been temporarily deactivated at Redis increment {{ $('Redis').item.json.megyk_incrementor }} Please fund API account to continue.  ",
+              "execution": "={{ $execution.id }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "date",
+                "displayName": "date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "time",
+                "displayName": "time",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "workflow name",
+                "displayName": "workflow name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "workflow id",
+                "displayName": "workflow id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "message",
+                "displayName": "message",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "execution",
+                "displayName": "execution",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stacktrace",
+                "displayName": "stacktrace",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "node",
+                "displayName": "node",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          64,
+          336
+        ],
+        "id": "bac50b65-eedf-4031-8452-8037cfc99ce0",
+        "name": "Log Error",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sendTo": "adamhaley@gmail.com",
+          "subject": "Analysis Anna Halted",
+          "message": "=Analysis Anna returned \"Insufficient Quota\" from Open AI. Workflow has been temporarily deactivated at Redis increment {{ $('Redis').item.json.megyk_incrementor }} Please fund API account to continue.  ",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          272,
+          336
+        ],
+        "id": "aba4cb81-df60-4a8f-a141-74791c4d06ac",
+        "name": "Send a message",
+        "webhookId": "98dc4954-caa2-46e4-aee1-736100f6cb3d",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "sVqb0m2UfqzXbdvL",
+            "name": "Gmail account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Redis",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Get row(s) in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "Execute Analysys",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Analysys": {
+        "main": [
+          [],
+          [
+            {
+              "node": "If Insufficient Quota",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Redis": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If Insufficient Quota": {
+        "main": [
+          [
+            {
+              "node": "Deactivate this workflow",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deactivate this workflow": {
+        "main": [
+          [
+            {
+              "node": "Log Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Error": {
+        "main": [
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
