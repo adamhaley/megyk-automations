@@ -3,7 +3,7 @@
   "createdAt": "2025-12-01T03:11:56.801Z",
   "id": "JWGYGW2xxbrjdi13",
   "name": "Enrich and Save Book",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -283,7 +283,7 @@
     ]
   },
   "versionId": "4b612806-321b-49db-914c-a28a63b646d1",
-  "activeVersionId": null,
+  "activeVersionId": "4b612806-321b-49db-914c-a28a63b646d1",
   "triggerCount": 0,
   "shared": [
     {
@@ -294,6 +294,275 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-12-05T14:35:12.452Z",
+    "createdAt": "2025-12-05T14:35:12.452Z",
+    "versionId": "4b612806-321b-49db-914c-a28a63b646d1",
+    "workflowId": "JWGYGW2xxbrjdi13",
+    "nodes": [
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Start').item.json.filename }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          288,
+          32
+        ],
+        "id": "9a5758f2-0a08-4142-9366-931ead77ef5b",
+        "name": "Read Book from Disk",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "return [\n  {\n    json: {\n      filename: $input.first().json.filename\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -736,
+          32
+        ],
+        "id": "34b28e25-2c7a-4b11-9942-c850c9455d25",
+        "name": "Code in JavaScript",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get filename from input\nconst fileName = $json.filename || \"\";\n\n// Remove extension\nconst ext = fileName.includes(\".\")\n  ? fileName.split(\".\").pop().trim()\n  : null;\n\nconst nameWithoutExt = fileName.replace(/\\.[^.]+$/, \"\").trim();\n\n// Pattern: \"Title - Author\"\nlet title = null;\nlet author = null;\n\nconst match = nameWithoutExt.match(/^(.*?)\\s*-\\s*(.*)$/);\n\nif (match) {\n  title = match[1].trim() || null;\n  author = match[2].trim() || null;\n} else {\n  // Fallback if no \" - \" separator\n  title = nameWithoutExt.trim();\n  author = null;\n}\n\nreturn [\n  {\n    json: {\n      title,\n      author,\n      baseName: nameWithoutExt,\n      ext,\n      originalFilename: fileName,\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -512,
+          32
+        ],
+        "id": "701c1316-2de1-4de7-83bc-e6246ed27c7a",
+        "name": "Extract Title/Author from Filename"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://supabase.megyk.com/rest/v1/books",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "on_conflict",
+                "value": "title,author"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "Prefer",
+                "value": "resolution=merge-duplicates, return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "title",
+                "value": "={{ $('Parse JSON').item.json.title }}"
+              },
+              {
+                "name": "author",
+                "value": "={{ $('Parse JSON').item.json.author }}"
+              },
+              {
+                "name": "isbn",
+                "value": "={{ $('Parse JSON').item.json.isbn }}"
+              },
+              {
+                "name": "publication_year",
+                "value": "={{ $('Parse JSON').item.json.publication_year }}"
+              },
+              {
+                "name": "page_count",
+                "value": "={{ $('Parse JSON').item.json.page_count }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          512,
+          32
+        ],
+        "id": "2bea8a9e-4178-4b9c-8257-e336438c4b50",
+        "name": "Upsert Book",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "filename"
+              }
+            ]
+          }
+        },
+        "id": "87090254-d5a7-4370-9a00-70ca35cc3d7a",
+        "typeVersion": 1.1,
+        "name": "Start",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          -960,
+          32
+        ]
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1-MINI"
+          },
+          "responses": {
+            "values": [
+              {
+                "content": "=Partial Title: \"{{ $json.title }}\"\nAuthor: \"{{ $json.author }}\""
+              },
+              {
+                "role": "system",
+                "content": "=You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH. You will be retrieving the data for the following fields:\n\n- title\n- author\n- summary\n- isbn\n- publication_year\n- page_count\n\n\n-----------------------------\nTOOL USE — VERY IMPORTANT\n-----------------------------\nYou have access to a WEB SEARCH tool.\n\nYou MUST call the WEB SEARCH tool to find:\n- complete title if it appears incomplete or uncertain  \n- author  \n- isbn\n- publication_year  \n- page_count  \n- summary\n\nYour WEB SEARCH query MUST be:\n\n\"{{ $json.title }} {{ $json.author }} book metadata\"\n\nAfter receiving search results:\n1. Interpret all results — prioritize authoritative or majority consensus.  \n2. Extract canonical metadata:\n   - **title** → complete, widely recognized title  \n   - **author** → correct full author name  \n   - **isbn** → prefer ISBN-13; do NOT invent one  \n   - **publication_year** → first edition year unless majority reference a specific edition  \n   - **page_count** → choose the most common count across sources  \n   - **summary** → write an 80–150 word objective summary based on real sources  \n3. If results contain multiple possibilities → choose the most widely published  \n4. If the search returns nothing → leave uncertain fields as `null` (except title, which MUST have your best inference)\n\n-----------------------------\nSTRICT OUTPUT FORMAT RULES\n-----------------------------\nYou MUST output ONLY a **single JSON object**.  \nABSOLUTELY NO:\n- markdown  \n- backticks  \n- code fences  \n- prose  \n- explanations  \n- tool call artifacts  \n- \"Here is your JSON:\" prefixes  \n\nThe ONLY valid output is a compact JSON object like this:\n\n{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"summary\": \"\",\n  \"isbn\": \"\",\n  \"publication_year\": null,\n  \"page_count\": null\n}\n\nRules:\n- Use `null` for unknown numbers  \n- Strings MUST be plain strings (never wrapped in extra quotes)  \n- Do NOT invent ISBNs, years, or page counts  \n- Summary must be factual, not fictional  \n- No trailing commas  \n- No additional fields  \n\n-----------------------------\nFINAL INSTRUCTION\n-----------------------------\nIf you require external information → you MUST call WEB SEARCH before producing the final JSON.\n\nWhen you generate your final answer → it MUST be ONLY the JSON object and nothing else."
+              }
+            ]
+          },
+          "builtInTools": {
+            "webSearch": {
+              "searchContextSize": "medium"
+            }
+          },
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 2,
+        "position": [
+          -288,
+          32
+        ],
+        "id": "b88fc6a1-d596-4cf0-a349-d09c963842a5",
+        "name": "Enrich Book",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// INPUT: Full response from the \"Message A Model\" node\n// GOAL: Extract the inner JSON string and return a parsed JSON object\n\n// 1. Get raw model output safely\nlet raw = \"\";\n\ntry {\n  raw =\n    $json.output?.[0]?.content?.[0]?.text ||\n    $json.output?.[0]?.content?.[0]?.output_text ||\n    $json.data ||\n    \"\";\n} catch (e) {\n  raw = \"\";\n}\n\nif (!raw) {\n  throw new Error(\"No content found in model output\");\n}\n\n// 2. Normalize: trim, remove accidental markdown, remove code fences\nraw = raw.trim()\n  .replace(/^```json/i, \"\")\n  .replace(/^```/, \"\")\n  .replace(/```$/, \"\")\n  .trim();\n\n// 3. Sometimes the model wraps JSON in extra quotes → unwrap if needed\nif (\n  (raw.startsWith('\"') && raw.endsWith('\"')) ||\n  (raw.startsWith(\"'\") && raw.endsWith(\"'\"))\n) {\n  try {\n    raw = JSON.parse(raw);\n  } catch (err) {\n    // leave it as-is if parse fails\n  }\n}\n\n// 4. Extract the FIRST \"{\" and LAST \"}\" to isolate JSON cleanly\nconst start = raw.indexOf(\"{\");\nconst end = raw.lastIndexOf(\"}\");\n\nif (start === -1 || end === -1) {\n  throw new Error(\"JSON braces not found in model output\");\n}\n\n// slice out the JSON substring\nconst jsonString = raw.slice(start, end + 1);\n\n// 5. Parse JSON safely\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonString);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON: \" + err.message + \"\\nRaw: \" + jsonString);\n}\n\n// 6. Return parsed metadata as the output item\nreturn [\n  {\n    json: parsed\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          64,
+          32
+        ],
+        "id": "5b894a57-e395-4ba3-87f0-dcb52ea8f9e5",
+        "name": "Parse JSON"
+      }
+    ],
+    "connections": {
+      "Read Book from Disk": {
+        "main": [
+          [
+            {
+              "node": "Upsert Book",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Extract Title/Author from Filename",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Title/Author from Filename": {
+        "main": [
+          [
+            {
+              "node": "Enrich Book",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upsert Book": {
+        "main": [
+          []
+        ]
+      },
+      "Enrich Book": {
+        "main": [
+          [
+            {
+              "node": "Parse JSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse JSON": {
+        "main": [
+          [
+            {
+              "node": "Read Book from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
