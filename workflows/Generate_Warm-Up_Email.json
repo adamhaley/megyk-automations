@@ -3,7 +3,7 @@
   "createdAt": "2025-11-16T19:43:46.512Z",
   "id": "xke0OqHvSY3GQDAc",
   "name": "Generate Warm-Up Email",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -172,7 +172,7 @@
     ]
   },
   "versionId": "cfc5ff68-21b4-4471-9e88-46f8374c1183",
-  "activeVersionId": null,
+  "activeVersionId": "cfc5ff68-21b4-4471-9e88-46f8374c1183",
   "triggerCount": 0,
   "shared": [
     {
@@ -183,6 +183,161 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "cfc5ff68-21b4-4471-9e88-46f8374c1183",
+    "workflowId": "xke0OqHvSY3GQDAc",
+    "nodes": [
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "options": {
+            "temperature": 0.9
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          816,
+          272
+        ],
+        "id": "07f36abe-0ff9-49ce-957d-c462db616c3a",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Write a short email to {{ $json.first_name }} about {{ $json.topic }}.\n\nGoal: a warm, natural touchpoint that feels handcrafted and contextually relevant.\n\nInclude:\n• A natural opening (compliment, question, or observation depending on {{ $json.structure }}).\n• A single, subtle value statement (no more than one sentence).\n• A closing line inspired by {{ $json.cta }}, rewritten to match tone.\n\nSign off using the provided signature below.\n\n{{ $json.signature }}\n\n",
+          "options": {
+            "systemMessage": "=You are an email outreach assistant helping craft highly natural, low-volume warm-up emails designed to build reputation and inbox trust.\n\nYour priorities:\n• Sound human — not like marketing automation.\n• Write in plain, conversational language.\n• Keep messages under 120 words.\n• Maintain authentic rhythm: vary sentence length, punctuation, and paragraph structure.\n• Use natural transitions and small talk when fitting.\n• Include the provided {{ $json.cta }} near the end, but rephrase it to fit tone and flow.\n• Avoid repeating the same phrasing across different emails.\n• Use light personalization from the context — never placeholders like {first_name}.\n• Do not use emojis, spammy formatting, or marketing clichés (“game-changer,” “synergy,” “innovative,” etc.).\n\nWriting style:  {{ $json.tone }}\nStructure guideline: {{ $json.structure }}\nClosing phrase to reinterpret: {{ $json.cta }}\n\nreturn the email formatted as JSON in the following structure:\n{ \"subject\": \"Quick question about your recent project\",  \n  \"body\": \"Hi there,\nI came across your latest article on sustainable design and found some insights really thought-provoking. Would love to hear more about what inspired your approach, if you have a moment.\nBest,\nTatjana Haufler\"}\n  }"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3,
+        "position": [
+          848,
+          48
+        ],
+        "id": "0dac16ec-1a15-4d96-b37c-383add226e94",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "65ba10ec-2d96-448b-8d85-139f71670a6d",
+                "name": "subject",
+                "value": "Question about {company} ",
+                "type": "string"
+              },
+              {
+                "id": "2d9ef907-93a6-47c8-a47a-a03a205e14c5",
+                "name": "body",
+                "value": "Hi {first_name}, I came across your name on{Linked In | Facebook | Reddit } and was impressed with your work in [mention a specific project or accomplishment]. I help companies like yours solve {industry_problem} and was wondering if you could point me in the right direction. Who would be the best person to discuss this with at {company}? Thanks for your time, {signature}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          208,
+          0
+        ],
+        "id": "8272a72e-1290-47a4-bd7c-29aca98db06a",
+        "name": "Seed Email",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "29bc8c07-b1e7-40aa-81d1-0480e8059bac",
+        "typeVersion": 1.1,
+        "name": "Start",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const tones = [\n  \"friendly and conversational\",\n  \"concise and professional\",\n  \"enthusiastic and curious\",\n  \"casual and personal\",\n  \"warm and sincere\",\n  \"playfully bold\",\n  \"analytical and thoughtful\"\n];\n\nconst structures = [\n  \"Start with a personal compliment, then offer value, then invite a reply.\",\n  \"Begin with a question, then share a quick insight, then close with a short CTA.\",\n  \"Open with context or relevance, explain briefly what you do, and end with curiosity.\",\n  \"Start with appreciation, ask something engaging, and finish with a low-pressure invitation.\",\n  \"Open directly with value, then show credibility, then close with humor or authenticity.\"\n];\n\nconst ctas = [\n  \"Would you be open to exploring this further?\",\n  \"Worth a quick chat?\",\n  \"Happy to send more details if it’s relevant.\",\n  \"No rush, but I thought it might be up your alley.\",\n  \"If not a fit, no worries — just wanted to reach out.\",\n  \"Open to connecting sometime this week?\",\n  \"I’d love to hear your take on this.\"\n];\n\nconst signatures = [\n  `Best,\\nTatjana Haufler`,\n  `Cheers,\\nT. Haufler`,\n  `Thanks,\\nTatjana`,\n  `Warm regards,\\nTatjana Haufler`,\n  \"- Tatjana\"\n];\n\nconst fakeNames = [\"Lukas\", \"Anja\", \"Felix\", \"Paul\", \"Anna\"];\n\nconst fakeTopics = [\n  \"Green Tech\",\n  \"Sustainable Packaging\",\n  \"Startup growth tactics\",\n  \"AI-powered workflows\",\n  \"Project Management\",\n  \"marketing data cleanup\",\n  \"client onboarding automation\"\n];\n\n\nreturn [\n  {\n    json: {\n      tone: tones[Math.floor(Math.random() * tones.length)],\n      structure: structures[Math.floor(Math.random() * structures.length)],\n      cta: ctas[Math.floor(Math.random() * ctas.length)],\n      signature: signatures[Math.floor(Math.random() * signatures.length)],\n      first_name: fakeNames[Math.floor(Math.random() * fakeNames.length)],\n    topic: fakeTopics[Math.floor(Math.random() * fakeTopics.length)]\n  \n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          416,
+          0
+        ],
+        "id": "79e4cc6c-3ef2-40a2-b5ea-0b6d07fb47b9",
+        "name": "Generate Email Token Seed Variations"
+      }
+    ],
+    "connections": {
+      "Seed Email": {
+        "main": [
+          [
+            {
+              "node": "Generate Email Token Seed Variations",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start": {
+        "main": [
+          [
+            {
+              "node": "Seed Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Email Token Seed Variations": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
