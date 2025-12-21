@@ -1,0 +1,3253 @@
+{
+  "updatedAt": "2025-12-14T17:18:30.711Z",
+  "createdAt": "2025-11-15T18:59:05.100Z",
+  "id": "dqgaIgweJFg4mAJo",
+  "name": "Pitch Paul Campaign Automation",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "amount": "={{ Math.floor(Math.random() * 180) }}",
+        "unit": "minutes"
+      },
+      "id": "5469e437-9c84-4e52-87d6-38eb769a6179",
+      "name": "Wait Random Start",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        432,
+        480
+      ],
+      "webhookId": "8b0fc8c4-0db2-43dd-8b56-8c81e5150be3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1776,
+        480
+      ],
+      "id": "1aa779ea-2c61-48ec-a128-f1b66f2d23f9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": "={{Math.floor(Math.random() * 60)}}",
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4480,
+        1040
+      ],
+      "id": "91465f0a-a119-4cd3-9501-f7adaa67e34c",
+      "name": "Wait",
+      "webhookId": "539d6b8e-6727-4bfe-91c5-90a92746800b"
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from }} <tatjana.h@deutsches-edelsteinhaus.co> ",
+        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2656,
+        112
+      ],
+      "id": "d32e77b9-1af4-46ff-9d5c-be2f16556f11",
+      "name": "Send email",
+      "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+      "credentials": {
+        "smtp": {
+          "id": "Jq3TLYprdcX6NXNS",
+          "name": "tatjana.h@deutsches-edelsteinhaus.co"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "# PITCH PAUL",
+        "height": 1120,
+        "width": 1584,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "838b1270-0105-4e6a-b6e7-f98cde18b795",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "rightValue": "tatjana.h@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9e0eefd6-5aa4-4ca5-8797-d6466a40ad87"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "343f9be3-7f2d-4fcb-be42-d549d3c36434",
+                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "rightValue": "haufler@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ba01f1f2-b820-4e6b-9897-a0c9f991aaa1",
+                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "rightValue": "t.haufler@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_3"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "18d80fd2-eca7-496b-b991-ebd35d6b9990",
+                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "rightValue": "tatjana@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_4"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6e69e218-0f85-4c63-aa5e-54c4e59ab001",
+                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "rightValue": "thaufler@deutsches-edelsteinhaus.co",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mailbox_5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2432,
+        448
+      ],
+      "id": "128fec4f-e063-4b6c-aa75-a2f875e5fa5a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3168,
+        464
+      ],
+      "id": "8848dfa6-3d72-4f60-923c-8838877075ad",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2208,
+        192
+      ],
+      "id": "6b5d877e-d159-4c5b-a951-29c8a2724540",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PQKE2hMgsVaO08Cz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/PQKE2hMgsVaO08Cz",
+          "cachedResultName": "Generate Pitch Paul Email"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $('Clean Emails').item.json.email }}",
+            "company": "={{ $('Clean Emails').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2064,
+        576
+      ],
+      "id": "59251260-82f3-4e35-828b-b84913bdef57",
+      "name": "Call 'Generate Pitch Paul Email'",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "incr",
+        "key": "pitch_paul_incrementor"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        464,
+        752
+      ],
+      "id": "0ea93ba5-c182-4cd9-aba6-3d512bd625e3",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "YhGZ2V2NRW4flPo5",
+          "name": "Redis account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ee7r4w0YHVDsGcRK",
+          "mode": "list",
+          "cachedResultName": "pitch-paul-mailboxes",
+          "cachedResultUrl": "/projects/B7QJE85HA2Vij1it/datatables/ee7r4w0YHVDsGcRK"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "address",
+              "condition": "like",
+              "keyValue": ".co"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        656,
+        480
+      ],
+      "id": "923d6a88-a2d6-4998-8b3a-1d38fda38cfe",
+      "name": "Get Mailboxes",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from }} <haufler@deutsches-edelsteinhaus.co>",
+        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2656,
+        320
+      ],
+      "id": "c518e13a-5712-41dd-a2b7-06747023a843",
+      "name": "Send email1",
+      "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+      "executeOnce": false,
+      "credentials": {
+        "smtp": {
+          "id": "UBjHJGCSMB0OEhGp",
+          "name": "haufler@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from }} <t.haufler@deutsches-edelsteinhaus.co>",
+        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2656,
+        496
+      ],
+      "id": "a62a62a7-2778-44a9-81c8-2c26e77e812e",
+      "name": "Send email2",
+      "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+      "credentials": {
+        "smtp": {
+          "id": "e4fCj2Z1fiBIJ0H2",
+          "name": "t.haufler@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from }} <tatjana@deutsches-edelsteinhaus.co> ",
+        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2656,
+        688
+      ],
+      "id": "3576421a-2c26-4ac1-aced-22c1c0a134d9",
+      "name": "Send email3",
+      "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+      "credentials": {
+        "smtp": {
+          "id": "qlxsPygHLHyxpZTP",
+          "name": "tatjana@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "= {{ $json.from }} <thaufler@deutsches-edelsteinhaus.co>",
+        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2656,
+        880
+      ],
+      "id": "e7127027-436d-4e4d-99a9-d9042d5c66e1",
+      "name": "Send email4",
+      "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+      "credentials": {
+        "smtp": {
+          "id": "nZRv6uyByqxgJsz5",
+          "name": "thaufler@deutsches-edelsteinhaus.co"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "german_companies",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Clean Emails').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "first_contact_sent",
+              "fieldValue": "true"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3392,
+        512
+      ],
+      "id": "a734e0a6-f028-42a4-8f68-e5f3a62c4f04",
+      "name": "Set First Contact",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get arrays of incoming items\nconst companies = $input.first().json.body;\n//const mailboxes = \n\nconst output = [];\n\n// Loop through companies (assume equal length)\nfor (let i = 0; i < companies.length; i++) {\n  const company = companies[i];\n  const mailbox = $('Get Mailboxes').all()[i].json; // index-aligned record\n\n  // --- Clean email ---\n  let email = company.email;\n\n  if (email && typeof email === \"string\") {\n    const parts = email\n      .split(/[,;]+/)\n      .map(e => e.trim())\n      .filter(Boolean);\n\n    company.email = parts.length > 0 ? parts[0] : \"\";\n  }\n\n  // --- Add from_box ---\n  company.from_box = mailbox?.address || \"\";\n\n  // add to the output items\n  output.push({ json: company });\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        480
+      ],
+      "id": "22c9c808-9fa7-4806-a183-d327555f3515",
+      "name": "Clean Emails"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+            "from": "={{ $('Send email').item.json.envelope.from }}",
+            "to": "={{ $('Send email').item.json.envelope.to[0] }}",
+            "subject": "={{ $('Switch').item.json.subject }}",
+            "body": "={{ $('Switch').item.json.body }}",
+            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2864,
+        112
+      ],
+      "id": "efdfe8a5-83b3-42a9-856e-8275b9e94f6a",
+      "name": "Update Send Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+            "from": "={{ $('Send email1').item.json.envelope.from }}",
+            "to": "={{ $('Send email1').item.json.envelope.to[0] }}",
+            "subject": "={{ $('Switch').item.json.subject }}",
+            "body": "={{ $('Switch').item.json.body }}",
+            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2864,
+        320
+      ],
+      "id": "78cc723d-60ca-48d8-93da-6145258256c7",
+      "name": "Update Send Log1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+            "from": "={{ $('Send email2').item.json.envelope.from }}",
+            "to": "={{ $('Send email2').item.json.envelope.to[0] }}",
+            "subject": "={{ $('Switch').item.json.subject }}",
+            "body": "={{ $('Switch').item.json.body }}",
+            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2864,
+        496
+      ],
+      "id": "c456bc5c-9cbc-4421-8265-8219c1623a2b",
+      "name": "Update Send Log2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+            "from": "={{ $('Send email3').item.json.envelope.from }}",
+            "to": "={{ $('Send email3').item.json.envelope.to[0] }}",
+            "subject": "={{ $('Switch').item.json.subject }}",
+            "body": "={{ $('Switch').item.json.body }}",
+            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2864,
+        688
+      ],
+      "id": "f2d451bd-1638-4f2e-aed4-27886d432a3a",
+      "name": "Update Send Log3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+            "from": "={{ $('Send email4').item.json.envelope.from }}",
+            "to": "={{ $('Send email4').item.json.envelope.to[0] }}",
+            "subject": "={{ $('Switch').item.json.subject }}",
+            "body": "={{ $('Switch').item.json.body }}",
+            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2864,
+        880
+      ],
+      "id": "b0a581b4-e00c-44c4-b9ac-5b19b6aae347",
+      "name": "Update Send Log4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://supabase.megyk.com/rest/v1/rpc/get_leads_ready_to_send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            },
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "limit_count",
+              "value": "={{ ( $json.pitch_paul_incrementor || 1 ) * $('Get Mailboxes').all().length }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        480
+      ],
+      "id": "034dfa70-ba2a-416c-83c0-5499a6dcf432",
+      "name": "Supabase RPC Retrieval - Get Leads",
+      "alwaysOutputData": false,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1286351979,
+          "mode": "list",
+          "cachedResultName": "Replies tracking (Atilia)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=1286351979"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('M/d/y') }}",
+            "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) | 0}}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email sent (total)",
+              "displayName": "Email sent (total)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email replies (total)",
+              "displayName": "Email replies (total)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Forwarded to Tatjana",
+              "displayName": "Forwarded to Tatjana",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3968,
+        512
+      ],
+      "id": "fadcd92d-dd5e-4897-b018-ef6b574bb9c0",
+      "name": "Increment Send count",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1286351979,
+          "mode": "list",
+          "cachedResultName": "Replies tracking (Atilia)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=1286351979"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $now.format('D') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3696,
+        512
+      ],
+      "id": "75fc06a2-d5ae-46d7-b155-734279986985",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 7 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        480
+      ],
+      "id": "5cb3085e-a721-49b4-ab7d-38511873bee4",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "Wait Random Start": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'Generate Pitch Paul Email'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Update Send Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send email4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Set First Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Generate Pitch Paul Email'": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Get Mailboxes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Mailboxes": {
+      "main": [
+        [
+          {
+            "node": "Supabase RPC Retrieval - Get Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email1": {
+      "main": [
+        [
+          {
+            "node": "Update Send Log1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email2": {
+      "main": [
+        [
+          {
+            "node": "Update Send Log2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email3": {
+      "main": [
+        [
+          {
+            "node": "Update Send Log3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email4": {
+      "main": [
+        [
+          {
+            "node": "Update Send Log4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set First Contact": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Emails": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Send Log": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Send Log1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Update Send Log2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Update Send Log3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Update Send Log4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Supabase RPC Retrieval - Get Leads": {
+      "main": [
+        [
+          {
+            "node": "Clean Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Increment Send count": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Increment Send count",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait Random Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "WbISMAIlclQfzorG"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-12-09T10:00:42.010+01:00",
+          "Readable date": "December 9th 2025, 10:00:42 am",
+          "Readable time": "10:00:42 am",
+          "Day of week": "Tuesday",
+          "Year": "2025",
+          "Month": "December",
+          "Day of month": "09",
+          "Hour": "10",
+          "Minute": "00",
+          "Second": "42",
+          "Timezone": "Europe/Berlin (UTC+01:00)"
+        }
+      }
+    ]
+  },
+  "versionId": "bed9097d-e4ad-4b60-8c43-2a511428c173",
+  "activeVersionId": "bed9097d-e4ad-4b60-8c43-2a511428c173",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-15T18:59:05.113Z",
+      "createdAt": "2025-11-15T18:59:05.113Z",
+      "role": "workflow:owner",
+      "workflowId": "dqgaIgweJFg4mAJo",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-14T17:18:30.713Z",
+    "createdAt": "2025-12-14T17:18:30.713Z",
+    "versionId": "bed9097d-e4ad-4b60-8c43-2a511428c173",
+    "workflowId": "dqgaIgweJFg4mAJo",
+    "nodes": [
+      {
+        "parameters": {
+          "amount": "={{ Math.floor(Math.random() * 180) }}",
+          "unit": "minutes"
+        },
+        "id": "5469e437-9c84-4e52-87d6-38eb769a6179",
+        "name": "Wait Random Start",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          432,
+          480
+        ],
+        "webhookId": "8b0fc8c4-0db2-43dd-8b56-8c81e5150be3"
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1776,
+          480
+        ],
+        "id": "1aa779ea-2c61-48ec-a128-f1b66f2d23f9",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "amount": "={{Math.floor(Math.random() * 60)}}",
+          "unit": "minutes"
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          4480,
+          1040
+        ],
+        "id": "91465f0a-a119-4cd3-9501-f7adaa67e34c",
+        "name": "Wait",
+        "webhookId": "539d6b8e-6727-4bfe-91c5-90a92746800b"
+      },
+      {
+        "parameters": {
+          "fromEmail": "={{ $json.from }} <tatjana.h@deutsches-edelsteinhaus.co> ",
+          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "subject": "={{ $json.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2656,
+          112
+        ],
+        "id": "d32e77b9-1af4-46ff-9d5c-be2f16556f11",
+        "name": "Send email",
+        "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+        "credentials": {
+          "smtp": {
+            "id": "Jq3TLYprdcX6NXNS",
+            "name": "tatjana.h@deutsches-edelsteinhaus.co"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "content": "# PITCH PAUL",
+          "height": 1120,
+          "width": 1584,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "838b1270-0105-4e6a-b6e7-f98cde18b795",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "rightValue": "tatjana.h@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "9e0eefd6-5aa4-4ca5-8797-d6466a40ad87"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_1"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "343f9be3-7f2d-4fcb-be42-d549d3c36434",
+                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "rightValue": "haufler@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_2"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "ba01f1f2-b820-4e6b-9897-a0c9f991aaa1",
+                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "rightValue": "t.haufler@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_3"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "18d80fd2-eca7-496b-b991-ebd35d6b9990",
+                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "rightValue": "tatjana@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_4"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "6e69e218-0f85-4c63-aa5e-54c4e59ab001",
+                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "rightValue": "thaufler@deutsches-edelsteinhaus.co",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mailbox_5"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          2432,
+          448
+        ],
+        "id": "128fec4f-e063-4b6c-aa75-a2f875e5fa5a",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "numberInputs": 5
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          3168,
+          464
+        ],
+        "id": "8848dfa6-3d72-4f60-923c-8838877075ad",
+        "name": "Merge"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2208,
+          192
+        ],
+        "id": "6b5d877e-d159-4c5b-a951-29c8a2724540",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "PQKE2hMgsVaO08Cz",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/PQKE2hMgsVaO08Cz",
+            "cachedResultName": "Generate Pitch Paul Email"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "email": "={{ $('Clean Emails').item.json.email }}",
+              "company": "={{ $('Clean Emails').item.json.company }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "company",
+                "displayName": "company",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          2064,
+          576
+        ],
+        "id": "59251260-82f3-4e35-828b-b84913bdef57",
+        "name": "Call 'Generate Pitch Paul Email'",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "operation": "incr",
+          "key": "pitch_paul_incrementor"
+        },
+        "type": "n8n-nodes-base.redis",
+        "typeVersion": 1,
+        "position": [
+          464,
+          752
+        ],
+        "id": "0ea93ba5-c182-4cd9-aba6-3d512bd625e3",
+        "name": "Redis",
+        "credentials": {
+          "redis": {
+            "id": "YhGZ2V2NRW4flPo5",
+            "name": "Redis account"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ee7r4w0YHVDsGcRK",
+            "mode": "list",
+            "cachedResultName": "pitch-paul-mailboxes",
+            "cachedResultUrl": "/projects/B7QJE85HA2Vij1it/datatables/ee7r4w0YHVDsGcRK"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "address",
+                "condition": "like",
+                "keyValue": ".co"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1,
+        "position": [
+          656,
+          480
+        ],
+        "id": "923d6a88-a2d6-4998-8b3a-1d38fda38cfe",
+        "name": "Get Mailboxes",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "fromEmail": "={{ $json.from }} <haufler@deutsches-edelsteinhaus.co>",
+          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "subject": "={{ $json.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2656,
+          320
+        ],
+        "id": "c518e13a-5712-41dd-a2b7-06747023a843",
+        "name": "Send email1",
+        "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+        "executeOnce": false,
+        "credentials": {
+          "smtp": {
+            "id": "UBjHJGCSMB0OEhGp",
+            "name": "haufler@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "={{ $json.from }} <t.haufler@deutsches-edelsteinhaus.co>",
+          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "subject": "={{ $json.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2656,
+          496
+        ],
+        "id": "a62a62a7-2778-44a9-81c8-2c26e77e812e",
+        "name": "Send email2",
+        "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+        "credentials": {
+          "smtp": {
+            "id": "e4fCj2Z1fiBIJ0H2",
+            "name": "t.haufler@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "={{ $json.from }} <tatjana@deutsches-edelsteinhaus.co> ",
+          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "subject": "={{ $json.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2656,
+          688
+        ],
+        "id": "3576421a-2c26-4ac1-aced-22c1c0a134d9",
+        "name": "Send email3",
+        "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+        "credentials": {
+          "smtp": {
+            "id": "qlxsPygHLHyxpZTP",
+            "name": "tatjana@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "= {{ $json.from }} <thaufler@deutsches-edelsteinhaus.co>",
+          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "subject": "={{ $json.subject }}",
+          "emailFormat": "text",
+          "text": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2656,
+          880
+        ],
+        "id": "e7127027-436d-4e4d-99a9-d9042d5c66e1",
+        "name": "Send email4",
+        "webhookId": "2cce652f-e313-4d7b-ae15-2de834812346",
+        "credentials": {
+          "smtp": {
+            "id": "nZRv6uyByqxgJsz5",
+            "name": "thaufler@deutsches-edelsteinhaus.co"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "german_companies",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $('Clean Emails').item.json.id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "first_contact_sent",
+                "fieldValue": "true"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          3392,
+          512
+        ],
+        "id": "a734e0a6-f028-42a4-8f68-e5f3a62c4f04",
+        "name": "Set First Contact",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get arrays of incoming items\nconst companies = $input.first().json.body;\n//const mailboxes = \n\nconst output = [];\n\n// Loop through companies (assume equal length)\nfor (let i = 0; i < companies.length; i++) {\n  const company = companies[i];\n  const mailbox = $('Get Mailboxes').all()[i].json; // index-aligned record\n\n  // --- Clean email ---\n  let email = company.email;\n\n  if (email && typeof email === \"string\") {\n    const parts = email\n      .split(/[,;]+/)\n      .map(e => e.trim())\n      .filter(Boolean);\n\n    company.email = parts.length > 0 ? parts[0] : \"\";\n  }\n\n  // --- Add from_box ---\n  company.from_box = mailbox?.address || \"\";\n\n  // add to the output items\n  output.push({ json: company });\n}\n\nreturn output;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1408,
+          480
+        ],
+        "id": "22c9c808-9fa7-4806-a183-d327555f3515",
+        "name": "Clean Emails"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+              "from": "={{ $('Send email').item.json.envelope.from }}",
+              "to": "={{ $('Send email').item.json.envelope.to[0] }}",
+              "subject": "={{ $('Switch').item.json.subject }}",
+              "body": "={{ $('Switch').item.json.body }}",
+              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Company Name",
+                "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2864,
+          112
+        ],
+        "id": "efdfe8a5-83b3-42a9-856e-8275b9e94f6a",
+        "name": "Update Send Log",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+              "from": "={{ $('Send email1').item.json.envelope.from }}",
+              "to": "={{ $('Send email1').item.json.envelope.to[0] }}",
+              "subject": "={{ $('Switch').item.json.subject }}",
+              "body": "={{ $('Switch').item.json.body }}",
+              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Company Name",
+                "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2864,
+          320
+        ],
+        "id": "78cc723d-60ca-48d8-93da-6145258256c7",
+        "name": "Update Send Log1",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+              "from": "={{ $('Send email2').item.json.envelope.from }}",
+              "to": "={{ $('Send email2').item.json.envelope.to[0] }}",
+              "subject": "={{ $('Switch').item.json.subject }}",
+              "body": "={{ $('Switch').item.json.body }}",
+              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Company Name",
+                "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2864,
+          496
+        ],
+        "id": "c456bc5c-9cbc-4421-8265-8219c1623a2b",
+        "name": "Update Send Log2",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+              "from": "={{ $('Send email3').item.json.envelope.from }}",
+              "to": "={{ $('Send email3').item.json.envelope.to[0] }}",
+              "subject": "={{ $('Switch').item.json.subject }}",
+              "body": "={{ $('Switch').item.json.body }}",
+              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Company Name",
+                "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2864,
+          688
+        ],
+        "id": "f2d451bd-1638-4f2e-aed4-27886d432a3a",
+        "name": "Update Send Log3",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
+              "from": "={{ $('Send email4').item.json.envelope.from }}",
+              "to": "={{ $('Send email4').item.json.envelope.to[0] }}",
+              "subject": "={{ $('Switch').item.json.subject }}",
+              "body": "={{ $('Switch').item.json.body }}",
+              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "to",
+                "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "subject",
+                "displayName": "subject",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "body",
+                "displayName": "body",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Company Name",
+                "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2864,
+          880
+        ],
+        "id": "b0a581b4-e00c-44c4-b9ac-5b19b6aae347",
+        "name": "Update Send Log4",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://supabase.megyk.com/rest/v1/rpc/get_leads_ready_to_send",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "limit_count",
+                "value": "={{ ( $json.pitch_paul_incrementor || 1 ) * $('Get Mailboxes').all().length }}"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1040,
+          480
+        ],
+        "id": "034dfa70-ba2a-416c-83c0-5499a6dcf432",
+        "name": "Supabase RPC Retrieval - Get Leads",
+        "alwaysOutputData": false,
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1286351979,
+            "mode": "list",
+            "cachedResultName": "Replies tracking (Atilia)",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=1286351979"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('M/d/y') }}",
+              "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) | 0}}"
+            },
+            "matchingColumns": [
+              "Date"
+            ],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Email sent (total)",
+                "displayName": "Email sent (total)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Email replies (total)",
+                "displayName": "Email replies (total)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Forwarded to Tatjana",
+                "displayName": "Forwarded to Tatjana",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          3968,
+          512
+        ],
+        "id": "fadcd92d-dd5e-4897-b018-ef6b574bb9c0",
+        "name": "Increment Send count",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1286351979,
+            "mode": "list",
+            "cachedResultName": "Replies tracking (Atilia)",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=1286351979"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "Date",
+                "lookupValue": "={{ $now.format('D') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          3696,
+          512
+        ],
+        "id": "75fc06a2-d5ae-46d7-b155-734279986985",
+        "name": "Get row(s) in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 0 7 * * 1-5"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          144,
+          480
+        ],
+        "id": "5cb3085e-a721-49b4-ab7d-38511873bee4",
+        "name": "Schedule Trigger"
+      }
+    ],
+    "connections": {
+      "Wait Random Start": {
+        "main": [
+          [
+            {
+              "node": "Redis",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Call 'Generate Pitch Paul Email'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email": {
+        "main": [
+          [
+            {
+              "node": "Update Send Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Send email",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email3",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send email4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Set First Contact",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call 'Generate Pitch Paul Email'": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Redis": {
+        "main": [
+          [
+            {
+              "node": "Get Mailboxes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Mailboxes": {
+        "main": [
+          [
+            {
+              "node": "Supabase RPC Retrieval - Get Leads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email1": {
+        "main": [
+          [
+            {
+              "node": "Update Send Log1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email2": {
+        "main": [
+          [
+            {
+              "node": "Update Send Log2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email3": {
+        "main": [
+          [
+            {
+              "node": "Update Send Log3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send email4": {
+        "main": [
+          [
+            {
+              "node": "Update Send Log4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set First Contact": {
+        "main": [
+          [
+            {
+              "node": "Get row(s) in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Clean Emails": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Send Log": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Send Log1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Update Send Log2": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Update Send Log3": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Update Send Log4": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 4
+            }
+          ]
+        ]
+      },
+      "Supabase RPC Retrieval - Get Leads": {
+        "main": [
+          [
+            {
+              "node": "Clean Emails",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Increment Send count": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "Increment Send count",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Wait Random Start",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
