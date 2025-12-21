@@ -1,0 +1,884 @@
+{
+  "updatedAt": "2025-12-13T01:55:52.329Z",
+  "createdAt": "2025-12-05T14:56:11.765Z",
+  "id": "zt2Pn3aOIpVbXuwC",
+  "name": "Get Summary PDF",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "narrative",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "narrative"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "bullet_points",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "bullet_points"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
+                    "leftValue": "={{ $('Config').item.json.style }}",
+                    "rightValue": "workbook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "workbook"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -128,
+        176
+      ],
+      "id": "11bd2b9e-8539-4aec-89c8-7b56646345a6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "/* UPDATED NARRATIVE LAYOUT GENERATOR — WORKS WITH NEW INPUT FORMAT */\n\nconst book = items[0].json;\n\n// --- New format fields ---\nconst title = book.title || \"\";\nconst author = book.author || \"\";\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst summary = book.complete_book_summary || \"\";\n\n// -----------------------------\n// Helpers\n// -----------------------------\nfunction escapeHTML(str = \"\") {\n  return String(str)\n    .replace(/&/g, \"&amp;\")\n    .replace(/</g, \"&lt;\")\n    .replace(/>/g, \"&gt;\");\n}\n\nfunction cleanTitle(ch, withNumber = false) {\n  let t = ch.title || \"\";\n  t = t.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n  return withNumber ? `Chapter ${ch.chapter_index + 1}: ${t}` : t;\n}\n\nconst accent = \"#000000\";\n\n// -----------------------------\n// HTML Layout\n// -----------------------------\nlet html = `\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>${escapeHTML(title)}</title>\n  <style>\n/* -------------------------------------------------------\n   ELEGANT LITERARY STYLE LAYOUT — Megyk Books Edition\n   Designed for WeasyPrint PDF engine\n---------------------------------------------------------*/\n\n\n\nbody {\n  font-family: \"Times New Roman\", \"Nimbus Roman\", serif;\n\n}\n\n\n\n\n/* ---------- Page Margins + Running Headers + Footer ---------- */\n\n@page {\n  size: A4;\n  margin: 0.85in 0.9in;\n\n  /* Running header — keep whatever you currently have */\n\n  @top-right {\n    content: string(chaptertitle);\n    font-size: 9pt;\n    font-style: italic;\n    color: #666;\n  }\n\n  /* NEW: Running footer disclaimer on every page */\n  @bottom-center {\n    content: \"AI-generated summary. Not affiliated with or endorsed by the original author or publisher.\";\n    font-size: 8.5pt;\n    font-style: italic;\n    color: #777;\n  }\n}\n\n/* First page (cover) — no headers or footers */\n@page:first {\n  @top-left { content: normal; }\n  @top-right { content: normal; }\n  @bottom-center { content: normal; }\n}\n\n/* -------------------------------------------------------\n   Global Typography\n---------------------------------------------------------*/\n\nbody {\n  font-family: \"Georgia\", \"Libre Baskerville\", serif;\n  font-size: 11.5pt;\n  line-height: 1.55;\n  color: #111;\n  text-align: justify;\n\n  /* center column for book-like reading experience */\n  max-width: 65ch;\n  margin: 0 auto;\n}\n\n/* -------------------------------------------------------\n   Headings\n---------------------------------------------------------*/\n\nh1, h2, h3 {\n  text-align: center;\n  color: #000;\n  font-weight: normal;\n  line-height: 1.2;\n  page-break-after: avoid;\n  page-break-inside: avoid;\n}\n\n/* Cover Title */\nh1 {\n  font-size: 2.4em;\n  margin-top: 2.5em;\n  margin-bottom: 0.3em;\n}\n\n/* Section headers */\nh2 {\n  font-size: 1.45em;\n  margin-top: 3em;\n  margin-bottom: 0.75em;\n  letter-spacing: 0.4px;\n}\n\n/* Chapter titles */\nh3 {\n  font-size: 1.25em;\n  margin-top: 2.8em;\n  margin-bottom: 0.55em;\n  letter-spacing: 0.2px;\n}\n\n/* -------------------------------------------------------\n   Paragraphs\n---------------------------------------------------------*/\n\np {\n  margin: 0.75em 0;\n  text-indent: 1.1em;\n}\n\nh2 + p,\nh3 + p,\n#overview p,\n#toc p {\n  text-indent: 0; /* Never indent immediately after a heading */\n}\n\n/* -------------------------------------------------------\n   Overview section — literary introduction style\n---------------------------------------------------------*/\n\n#overview {\n  page-break-before: always;\n}\n\n#overview p {\n  max-width: 60ch;\n  margin: 0 auto;\n  font-size: 11pt;\n  line-height: 1.6;\n  color: #222;\n}\n\n/* -------------------------------------------------------\n   Table of Contents\n---------------------------------------------------------*/\n\n#toc {\n  page-break-before: always;\n  border: 1px solid #000;\n  padding: 1.25em 2em;\n  width: 90%;\n  margin: 2.5em auto;\n  background: #fff;\n  page-break-inside: avoid;\n}\n\n#toc ol {\n  list-style-position: outside;\n  padding-left: 1.2em;\n  line-height: 1.45;\n}\n\n#toc li {\n  margin: 0.25em 0;\n  font-size: 10.8pt;\n}\n\n/* -------------------------------------------------------\n   Chapters Section + Per-Chapter Behavior\n---------------------------------------------------------*/\n\n#chapters {\n  page-break-before: always;\n}\n\narticle {\n  page-break-inside: avoid;\n  padding-top: 2em;\n  border-top: 1px solid #000;\n  margin-top: 3.5em;\n}\n\n/* Capture chapter title for running header */\nh3.chapter-title {\n  string-set: chaptertitle content();\n}\n\n/* -------------------------------------------------------\n   Footer Block (end of book)\n---------------------------------------------------------*/\n\nfooter {\n  text-align: center;\n  font-size: 9pt;\n  margin-top: 6em;\n  padding-top: 1.2em;\n  color: #666;\n  border-top: 1px solid #ccc;\n  page-break-before: always;\n}\n\n/* Capture book title for header on subsequent pages */\n#cover h1 {\n  string-set: booktitle content();\n}\n\n/* Make cover page uniquely styled */\n#cover {\n  text-align: center;\n  page-break-after: always;\n}\n\n#cover em {\n  display: block;\n  margin-top: 1em;\n  font-size: 10pt;\n  color: #666;\n}\n\n\n</style>\n\n</head>\n<body>\n\n  <section id=\"cover\">\n    <h1>${escapeHTML(title)}</h1>\n    <h3>${escapeHTML(author)}</h3>\n    <h3>Megyk Books Summary — Narrative Style</h3><br />\n    <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </section>\n\n  <section id=\"overview\">\n    <h2>Overview</h2>\n    <p>${escapeHTML(summary)}</p>\n  </section>\n\n  <section id=\"toc\">\n    <h2>Table of Contents</h2>\n    <ol>\n      ${chapters.map(ch => `<li>${escapeHTML(cleanTitle(ch, false))}</li>`).join(\"\")}\n    </ol>\n  </section>\n\n  <section id=\"chapters\">\n    <h2>Chapters</h2>\n`;\n\nfor (const ch of chapters) {\n  html += `\n    <article>\n      <h3>${escapeHTML(cleanTitle(ch, false))}</h3>\n      <p>${escapeHTML(ch.summary)}</p>\n    </article>\n  `;\n}\n\nhtml += `\n  </section>\n\n  <footer>\n    Generated by <strong>Megyk Books</strong> — ${new Date().toLocaleDateString()}\n    <br />\n          <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        0
+      ],
+      "id": "df9c1e53-43f4-4ef6-b8bd-9fe812158fce",
+      "name": "Generate Narrative Layout"
+    },
+    {
+      "parameters": {
+        "jsCode": "// UPDATED BULLET POINTS LAYOUT GENERATOR — Compatible with new book input format\n\nconst book = items[0].json;\n\n// -----------------------------\n// New input fields\n// -----------------------------\nconst prefs = {\n  style: book.style || \"bullet_points\",\n  length: book.length || \"medium\",\n};\n\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst summary = book.complete_book_summary || \"\";\nconst title = book.title || \"\";\nconst author = book.author || \"\";\n\n// -----------------------------\n// Helpers\n// -----------------------------\nfunction toList(content) {\n  if (!content) return \"\";\n\n  // Already an array of bullets?\n  if (Array.isArray(content)) {\n    return `<ul>${content.map(b => `<li>${b.trim()}</li>`).join(\"\\n\")}</ul>`;\n  }\n\n  // Otherwise → split full summary text into bullet sentences\n  const sentences = content\n    .split(/(?<=[.?!])\\s+/)\n    .map(s => s.trim())\n    .filter(Boolean);\n\n  return `<ul>${sentences.map(s => `<li>${s}</li>`).join(\"\\n\")}</ul>`;\n}\n\nfunction cleanTitle(ch, withNumber = false) {\n  let title = ch.title || \"\";\n  title = title.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n  return withNumber ? `Chapter ${ch.chapter_index + 1}: ${title}` : title;\n}\n\n// Accent color (kept but everything is black for now)\nfunction accentColor(length) {\n  return \"#000000\";\n}\nconst accent = accentColor(prefs.length);\n\n// -----------------------------\n// HTML Layout\n// -----------------------------\nlet html = `\n<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<title>${title}</title>\n<style>\n  body {\n    font-family: \"Helvetica Neue\", Arial, sans-serif;\n    margin: 1in;\n    line-height: 1.6;\n    color: #000000;\n    background: #FFFFFF;\n  }\n  h1, h2, h3 { color: #000000; }\n  h1 {\n    text-align: center;\n    border-bottom: 3px solid #000000;\n    padding-bottom: 10px;\n    margin-bottom: 30px;\n    font-size: 2.2em;\n  }\n  h2 {\n    border-bottom: 1px solid #000000;\n    padding-bottom: 4px;\n    margin-bottom: 0.6em;\n    margin-top: 2em;\n    font-size: 1.3em;\n  }\n  h3 {\n    margin-top: 1.5em;\n    font-size: 1.1em;\n  }\n  ul {\n    list-style-type: disc;\n    margin-left: 1.5em;\n    line-height: 1.5;\n  }\n  li { margin-bottom: 0.3em; }\n\n  .prefs {\n    border-left: 4px solid #000000;\n    padding: 1em;\n    margin-bottom: 2em;\n  }\n\n  #overall, #toc, article {\n    page-break-inside: avoid;\n  }\n\n  #overall {\n    border-left: 4px solid #000000;\n    padding: 1.2em;\n    margin-bottom: 2em;\n  }\n\n  #toc {\n    border: 1px solid #000000;\n    padding: 1em;\n    margin-bottom: 2em;\n  }\n\n  #toc h2 {\n    border: none;\n    margin-bottom: 0.5em;\n  }\n\n  #toc ol {\n    margin-left: 1.5em;\n    line-height: 1.5;\n  }\n\n  #chapters {\n    page-break-before: always;\n  }\n\n  article {\n    margin-top: 2em;\n    padding: 1em;\n    border-top: 2px solid #000000;\n  }\n\n  footer {\n    margin-top: 50px;\n    text-align: center;\n    font-size: 0.8em;\n    border-top: 1px solid #000000;\n    padding-top: 10px;\n  }\n\n  @page {\n    margin: 0.6in 0.7in;\n  }\n\n  @media print {\n    body { margin: 0; }\n    h1, h2, h3, li, p { color: #000000 !important; background: #FFFFFF !important; }\n    #overall, #toc, article { page-break-inside: avoid; }\n    #chapters { page-break-before: always; }\n  }\n</style>\n</head>\n<body>\n\n<h1>${title}</h1>\n<h2>${author}</h2>\n\n<div class=\"prefs\">\n  <p><strong>Style:</strong> ${prefs.style}</p>\n  <p><strong>Target Length:</strong> ${prefs.length}</p>\n   <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n</div>\n\n<section id=\"overall\">\n  <h2>Overall Summary</h2>\n  ${toList(summary)}\n</section>\n\n<section id=\"toc\">\n  <h2>Table of Contents</h2>\n  <ol>\n    ${chapters.map(ch => `<li>${cleanTitle(ch, false)}</li>`).join(\"\\n\")}\n  </ol>\n</section>\n\n<section id=\"chapters\">\n  <h2>Chapters</h2>\n`;\n\nfor (const ch of chapters) {\n  // New format → bullets come from plain text in ch.summary\n  const bullets = ch.summary;\n  html += `\n  <article>\n    <h3>${cleanTitle(ch, false)}</h3>\n    ${toList(bullets)}\n  </article>\n  `;\n}\n\nhtml += `\n</section>\n\n<footer>\n  <p>Generated by <strong>Megyk Books</strong> — ${new Date().toLocaleDateString()}</p>\n        <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n\n</footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        192
+      ],
+      "id": "1086babd-47fa-4b9f-be5a-c4b284aaa806",
+      "name": "Generate Bullet Points Layout"
+    },
+    {
+      "parameters": {
+        "jsCode": "// WORKBOOK LAYOUT GENERATOR — expects chapters with questions[] + answers[]\n\nconst book = items[0].json;\n\n// -----------------------------\n// Expected input structure\n// -----------------------------\n// {\n//   title: \"...\",\n//   author: \"...\",\n//   complete_book_summary: \"...\",\n//   summary: [\n//      {\n//         chapter_index: 0,\n//         title: \"...\",\n//         summary: \"...\",\n//         questions: [\"Q1\", \"Q2\", ...],\n//         answers: [\"A1\", \"A2\", ...]\n//      },\n//      ...\n//   ]\n// }\n\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst bookSummary = book.complete_book_summary || \"\";\nconst title = book.title || \"Study Workbook\";\nconst author = book.author || \"\";\nconst accent = \"#264653\";\n\n// Helper: remove numbering from chapter titles\nfunction cleanTitle(title = \"\") {\n  return title.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n}\n\n// Build Table of Contents\nconst toc = chapters\n  .map(ch => `<li>${cleanTitle(ch.title)}</li>`)\n  .join(\"\");\n\n// Will be used for the workbook index (global Q&A)\nconst indexEntries = [];\n\nlet html = `\n<html>\n<head>\n  <style>\n    :root { --accent: ${accent}; }\n\n    body {\n      font-family: \"Helvetica Neue\", Arial, sans-serif;\n      padding: 40px;\n      background: #FFFFFF;\n      color: #000000;\n      line-height: 1.6;\n    }\n\n    h1, h2, h3 { color: var(--accent); }\n\n    h1 {\n      text-align: center;\n      border-bottom: 3px solid var(--accent);\n      padding-bottom: 10px;\n      margin-bottom: 30px;\n    }\n\n    h2 {\n      border-bottom: 1px solid #000000;\n      padding-bottom: 4px;\n      margin-top: 40px;\n      color: #000000;\n    }\n\n    h3 {\n      margin-top: 25px;\n      color: #000000;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      margin-top: 15px;\n      font-size: 0.95em;\n      background: #FFFFFF;\n    }\n\n    td, th {\n      border: 1px solid #000000;\n      padding: 8px;\n      vertical-align: top;\n    }\n\n    th {\n      font-weight: bold;\n    }\n\n    .chapter {\n      page-break-before: always;\n      margin-top: 60px;\n    }\n\n    .summary {\n      margin-top: 10px;\n      margin-bottom: 20px;\n    }\n\n    .cover {\n      text-align: center;\n      page-break-after: always;\n      margin-top: 200px;\n    }\n\n    ol { margin-left: 25px; }\n\n    .answer-space {\n      border-bottom: 1px solid #000000;\n      height: 25px;\n      margin: 5px 0 15px;\n    }\n\n    footer {\n      margin-top: 50px;\n      text-align: center;\n      font-size: 0.8em;\n      border-top: 1px solid #000000;\n      padding-top: 10px;\n    }\n  </style>\n</head>\n\n<body>\n\n  <!-- Cover Page -->\n  <div class=\"cover\">\n    <h1>${title}</h1>\n    <h2>${author}</h2>\n    <p>Workbook Summary</p>\n    <p><em>Generated by Megyk Books</em>\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n    </p>\n  </div>\n\n  <!-- Table of Contents -->\n  <h2>Table of Contents</h2>\n  <ol>${toc}</ol>\n`;\n\n// -----------------------------\n// LOOP THROUGH CHAPTERS\n// -----------------------------\nfor (const ch of chapters) {\n  const chapterTitle = cleanTitle(ch.title);\n  const questions = Array.isArray(ch.questions) ? ch.questions : [];\n  const answers = Array.isArray(ch.answers) ? ch.answers : [];\n\n  // Add to global index\n  questions.forEach((q, i) => {\n    indexEntries.push({\n      chapter_index: ch.chapter_index,\n      chapter_title: chapterTitle,\n      question: q,\n      answer: answers[i] || \"\"\n    });\n  });\n\n  html += `\n  <div class=\"chapter\">\n    <h2>Chapter ${ch.chapter_index + 1}: ${chapterTitle}</h2>\n\n    ${ch.summary ? `<div class=\"summary\"><p>${ch.summary}</p></div>` : \"\"}\n\n    ${\n      questions.length\n        ? `\n      <h3>Questions for Reflection</h3>\n      <ol>\n        ${questions\n          .map(\n            (q, i) => `\n          <li>\n            <strong>${q}</strong><br/>\n            <div class=\"answer-space\"></div>\n            <div class=\"answer-space\"></div>\n          </li>\n        `\n          )\n          .join(\"\")}\n      </ol>`\n        : \"\"\n    }\n  </div>`;\n}\n\n// -----------------------------\n// COMPLETE BOOK SUMMARY\n// -----------------------------\nhtml += `\n  <div class=\"chapter\">\n    <h2>Complete Book Summary</h2>\n    <p>${bookSummary}</p>\n  </div>\n`;\n\n// -----------------------------\n// GLOBAL INDEX — All Q&A\n// -----------------------------\nif (indexEntries.length) {\n  html += `\n  <div class=\"chapter\">\n    <h2>Workbook Index — All Questions & Answers</h2>\n\n    <table>\n      <tr><th>Chapter</th><th>Question</th><th>Answer</th></tr>\n  `;\n\n  let lastChapter = \"\";\n\n  for (const entry of indexEntries) {\n    const chapterLabel =\n      entry.chapter_title !== lastChapter\n        ? `Chapter ${entry.chapter_index + 1}: ${entry.chapter_title}`\n        : \"\";\n\n    html += `\n      <tr>\n        <td>${chapterLabel}</td>\n        <td>${entry.question}</td>\n        <td>${entry.answer}</td>\n      </tr>\n    `;\n\n    lastChapter = entry.chapter_title;\n  }\n\n  html += `\n    </table>\n  </div>\n  `;\n}\n\n// -----------------------------\n// FOOTER\n// -----------------------------\nhtml += `\n  <footer>\n    Generated on ${new Date().toLocaleDateString()} by Megyk Books\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        384
+      ],
+      "id": "c5e125a6-5eb4-4415-84e1-e5f178c2b94a",
+      "name": "Generate Workbook Layout"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "get_summary_v2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -800,
+        192
+      ],
+      "id": "cb96f2df-6b9a-499b-a027-2b4b3d760dd8",
+      "name": "Webhook",
+      "webhookId": "d19c4499-2fcd-4326-b537-55b8b5e31d91"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "TFbZMklKeSxB7159",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/TFbZMklKeSxB7159",
+          "cachedResultName": "Load Book Summary"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        192
+      ],
+      "id": "f588c3fb-8cb7-43d5-92d5-04c5ecf38a44",
+      "name": "Call 'Load Book Summary'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c282fc30-4cc0-45da-90ae-23893d32d524",
+              "name": "book_id",
+              "value": "={{ $json.body.book_id }}",
+              "type": "string"
+            },
+            {
+              "id": "0e5aadd7-7c6c-4e08-980a-e58827a91d04",
+              "name": "style",
+              "value": "={{ $json.body.preferences.style }}",
+              "type": "string"
+            },
+            {
+              "id": "1aa41326-89d7-4960-9029-7f5d062395f7",
+              "name": "length",
+              "value": "={{ $json.body.preferences.length }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -576,
+        192
+      ],
+      "id": "7d323102-018e-48f5-8990-f8dfb4f82694",
+      "name": "Config"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://pdf.megyk.com/html-to-pdf",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "html",
+              "value": "={{ $json.html }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        544,
+        192
+      ],
+      "id": "5b54267c-57c9-4665-9193-454787b96229",
+      "name": "HTML 2 PDF Service",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "AK2nObMbf1AjgZti",
+          "name": "PDF Service API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "93bcaa67-5d39-4eee-96ce-900e357530cc",
+              "name": "html",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        192
+      ],
+      "id": "710e0dcf-7799-4a3e-bc18-c21f0936f920",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/pdf"
+              },
+              {
+                "name": "Content-Disposition",
+                "value": "attachment; filename=\"document.pdf\""
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        768,
+        192
+      ],
+      "id": "d79fe852-adb1-447f-a539-b4c811cada35",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Generate Narrative Layout",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Bullet Points Layout",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Workbook Layout",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Load Book Summary'": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Call 'Load Book Summary'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Narrative Layout": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML 2 PDF Service": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTML 2 PDF Service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Bullet Points Layout": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Workbook Layout": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.megyk.com",
+            "user-agent": "node",
+            "content-length": "195",
+            "accept": "*/*",
+            "accept-encoding": "br, gzip, deflate",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "sec-fetch-mode": "cors",
+            "via": "1.1 Caddy",
+            "x-forwarded-for": "209.160.254.18",
+            "x-forwarded-host": "n8n.megyk.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
+            "preferences": {
+              "style": "narrative",
+              "length": "long"
+            },
+            "user_id": "bfb1e2f2-353c-4cf7-807e-4be63ed7cfff",
+            "timestamp": "2025-12-05T15:59:48.835Z"
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook/get_summary_v2",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
+  "activeVersionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-05T14:56:11.790Z",
+      "createdAt": "2025-12-05T14:56:11.790Z",
+      "role": "workflow:owner",
+      "workflowId": "zt2Pn3aOIpVbXuwC",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-13T01:55:52.330Z",
+    "createdAt": "2025-12-13T01:55:52.330Z",
+    "versionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
+    "workflowId": "zt2Pn3aOIpVbXuwC",
+    "nodes": [
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Config').item.json.style }}",
+                      "rightValue": "narrative",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "0ff6c730-c043-4123-8327-1245fcdd660e"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "narrative"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2e6ee585-d2ec-41a7-812b-3463922f8cb5",
+                      "leftValue": "={{ $('Config').item.json.style }}",
+                      "rightValue": "bullet_points",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "bullet_points"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "eb912f9d-250d-4352-9127-e830f90b2dce",
+                      "leftValue": "={{ $('Config').item.json.style }}",
+                      "rightValue": "workbook",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "workbook"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          -128,
+          176
+        ],
+        "id": "11bd2b9e-8539-4aec-89c8-7b56646345a6",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "jsCode": "/* UPDATED NARRATIVE LAYOUT GENERATOR — WORKS WITH NEW INPUT FORMAT */\n\nconst book = items[0].json;\n\n// --- New format fields ---\nconst title = book.title || \"\";\nconst author = book.author || \"\";\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst summary = book.complete_book_summary || \"\";\n\n// -----------------------------\n// Helpers\n// -----------------------------\nfunction escapeHTML(str = \"\") {\n  return String(str)\n    .replace(/&/g, \"&amp;\")\n    .replace(/</g, \"&lt;\")\n    .replace(/>/g, \"&gt;\");\n}\n\nfunction cleanTitle(ch, withNumber = false) {\n  let t = ch.title || \"\";\n  t = t.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n  return withNumber ? `Chapter ${ch.chapter_index + 1}: ${t}` : t;\n}\n\nconst accent = \"#000000\";\n\n// -----------------------------\n// HTML Layout\n// -----------------------------\nlet html = `\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>${escapeHTML(title)}</title>\n  <style>\n/* -------------------------------------------------------\n   ELEGANT LITERARY STYLE LAYOUT — Megyk Books Edition\n   Designed for WeasyPrint PDF engine\n---------------------------------------------------------*/\n\n\n\nbody {\n  font-family: \"Times New Roman\", \"Nimbus Roman\", serif;\n\n}\n\n\n\n\n/* ---------- Page Margins + Running Headers + Footer ---------- */\n\n@page {\n  size: A4;\n  margin: 0.85in 0.9in;\n\n  /* Running header — keep whatever you currently have */\n\n  @top-right {\n    content: string(chaptertitle);\n    font-size: 9pt;\n    font-style: italic;\n    color: #666;\n  }\n\n  /* NEW: Running footer disclaimer on every page */\n  @bottom-center {\n    content: \"AI-generated summary. Not affiliated with or endorsed by the original author or publisher.\";\n    font-size: 8.5pt;\n    font-style: italic;\n    color: #777;\n  }\n}\n\n/* First page (cover) — no headers or footers */\n@page:first {\n  @top-left { content: normal; }\n  @top-right { content: normal; }\n  @bottom-center { content: normal; }\n}\n\n/* -------------------------------------------------------\n   Global Typography\n---------------------------------------------------------*/\n\nbody {\n  font-family: \"Georgia\", \"Libre Baskerville\", serif;\n  font-size: 11.5pt;\n  line-height: 1.55;\n  color: #111;\n  text-align: justify;\n\n  /* center column for book-like reading experience */\n  max-width: 65ch;\n  margin: 0 auto;\n}\n\n/* -------------------------------------------------------\n   Headings\n---------------------------------------------------------*/\n\nh1, h2, h3 {\n  text-align: center;\n  color: #000;\n  font-weight: normal;\n  line-height: 1.2;\n  page-break-after: avoid;\n  page-break-inside: avoid;\n}\n\n/* Cover Title */\nh1 {\n  font-size: 2.4em;\n  margin-top: 2.5em;\n  margin-bottom: 0.3em;\n}\n\n/* Section headers */\nh2 {\n  font-size: 1.45em;\n  margin-top: 3em;\n  margin-bottom: 0.75em;\n  letter-spacing: 0.4px;\n}\n\n/* Chapter titles */\nh3 {\n  font-size: 1.25em;\n  margin-top: 2.8em;\n  margin-bottom: 0.55em;\n  letter-spacing: 0.2px;\n}\n\n/* -------------------------------------------------------\n   Paragraphs\n---------------------------------------------------------*/\n\np {\n  margin: 0.75em 0;\n  text-indent: 1.1em;\n}\n\nh2 + p,\nh3 + p,\n#overview p,\n#toc p {\n  text-indent: 0; /* Never indent immediately after a heading */\n}\n\n/* -------------------------------------------------------\n   Overview section — literary introduction style\n---------------------------------------------------------*/\n\n#overview {\n  page-break-before: always;\n}\n\n#overview p {\n  max-width: 60ch;\n  margin: 0 auto;\n  font-size: 11pt;\n  line-height: 1.6;\n  color: #222;\n}\n\n/* -------------------------------------------------------\n   Table of Contents\n---------------------------------------------------------*/\n\n#toc {\n  page-break-before: always;\n  border: 1px solid #000;\n  padding: 1.25em 2em;\n  width: 90%;\n  margin: 2.5em auto;\n  background: #fff;\n  page-break-inside: avoid;\n}\n\n#toc ol {\n  list-style-position: outside;\n  padding-left: 1.2em;\n  line-height: 1.45;\n}\n\n#toc li {\n  margin: 0.25em 0;\n  font-size: 10.8pt;\n}\n\n/* -------------------------------------------------------\n   Chapters Section + Per-Chapter Behavior\n---------------------------------------------------------*/\n\n#chapters {\n  page-break-before: always;\n}\n\narticle {\n  page-break-inside: avoid;\n  padding-top: 2em;\n  border-top: 1px solid #000;\n  margin-top: 3.5em;\n}\n\n/* Capture chapter title for running header */\nh3.chapter-title {\n  string-set: chaptertitle content();\n}\n\n/* -------------------------------------------------------\n   Footer Block (end of book)\n---------------------------------------------------------*/\n\nfooter {\n  text-align: center;\n  font-size: 9pt;\n  margin-top: 6em;\n  padding-top: 1.2em;\n  color: #666;\n  border-top: 1px solid #ccc;\n  page-break-before: always;\n}\n\n/* Capture book title for header on subsequent pages */\n#cover h1 {\n  string-set: booktitle content();\n}\n\n/* Make cover page uniquely styled */\n#cover {\n  text-align: center;\n  page-break-after: always;\n}\n\n#cover em {\n  display: block;\n  margin-top: 1em;\n  font-size: 10pt;\n  color: #666;\n}\n\n\n</style>\n\n</head>\n<body>\n\n  <section id=\"cover\">\n    <h1>${escapeHTML(title)}</h1>\n    <h3>${escapeHTML(author)}</h3>\n    <h3>Megyk Books Summary — Narrative Style</h3><br />\n    <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </section>\n\n  <section id=\"overview\">\n    <h2>Overview</h2>\n    <p>${escapeHTML(summary)}</p>\n  </section>\n\n  <section id=\"toc\">\n    <h2>Table of Contents</h2>\n    <ol>\n      ${chapters.map(ch => `<li>${escapeHTML(cleanTitle(ch, false))}</li>`).join(\"\")}\n    </ol>\n  </section>\n\n  <section id=\"chapters\">\n    <h2>Chapters</h2>\n`;\n\nfor (const ch of chapters) {\n  html += `\n    <article>\n      <h3>${escapeHTML(cleanTitle(ch, false))}</h3>\n      <p>${escapeHTML(ch.summary)}</p>\n    </article>\n  `;\n}\n\nhtml += `\n  </section>\n\n  <footer>\n    Generated by <strong>Megyk Books</strong> — ${new Date().toLocaleDateString()}\n    <br />\n          <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          96,
+          0
+        ],
+        "id": "df9c1e53-43f4-4ef6-b8bd-9fe812158fce",
+        "name": "Generate Narrative Layout"
+      },
+      {
+        "parameters": {
+          "jsCode": "// UPDATED BULLET POINTS LAYOUT GENERATOR — Compatible with new book input format\n\nconst book = items[0].json;\n\n// -----------------------------\n// New input fields\n// -----------------------------\nconst prefs = {\n  style: book.style || \"bullet_points\",\n  length: book.length || \"medium\",\n};\n\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst summary = book.complete_book_summary || \"\";\nconst title = book.title || \"\";\nconst author = book.author || \"\";\n\n// -----------------------------\n// Helpers\n// -----------------------------\nfunction toList(content) {\n  if (!content) return \"\";\n\n  // Already an array of bullets?\n  if (Array.isArray(content)) {\n    return `<ul>${content.map(b => `<li>${b.trim()}</li>`).join(\"\\n\")}</ul>`;\n  }\n\n  // Otherwise → split full summary text into bullet sentences\n  const sentences = content\n    .split(/(?<=[.?!])\\s+/)\n    .map(s => s.trim())\n    .filter(Boolean);\n\n  return `<ul>${sentences.map(s => `<li>${s}</li>`).join(\"\\n\")}</ul>`;\n}\n\nfunction cleanTitle(ch, withNumber = false) {\n  let title = ch.title || \"\";\n  title = title.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n  return withNumber ? `Chapter ${ch.chapter_index + 1}: ${title}` : title;\n}\n\n// Accent color (kept but everything is black for now)\nfunction accentColor(length) {\n  return \"#000000\";\n}\nconst accent = accentColor(prefs.length);\n\n// -----------------------------\n// HTML Layout\n// -----------------------------\nlet html = `\n<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<title>${title}</title>\n<style>\n  body {\n    font-family: \"Helvetica Neue\", Arial, sans-serif;\n    margin: 1in;\n    line-height: 1.6;\n    color: #000000;\n    background: #FFFFFF;\n  }\n  h1, h2, h3 { color: #000000; }\n  h1 {\n    text-align: center;\n    border-bottom: 3px solid #000000;\n    padding-bottom: 10px;\n    margin-bottom: 30px;\n    font-size: 2.2em;\n  }\n  h2 {\n    border-bottom: 1px solid #000000;\n    padding-bottom: 4px;\n    margin-bottom: 0.6em;\n    margin-top: 2em;\n    font-size: 1.3em;\n  }\n  h3 {\n    margin-top: 1.5em;\n    font-size: 1.1em;\n  }\n  ul {\n    list-style-type: disc;\n    margin-left: 1.5em;\n    line-height: 1.5;\n  }\n  li { margin-bottom: 0.3em; }\n\n  .prefs {\n    border-left: 4px solid #000000;\n    padding: 1em;\n    margin-bottom: 2em;\n  }\n\n  #overall, #toc, article {\n    page-break-inside: avoid;\n  }\n\n  #overall {\n    border-left: 4px solid #000000;\n    padding: 1.2em;\n    margin-bottom: 2em;\n  }\n\n  #toc {\n    border: 1px solid #000000;\n    padding: 1em;\n    margin-bottom: 2em;\n  }\n\n  #toc h2 {\n    border: none;\n    margin-bottom: 0.5em;\n  }\n\n  #toc ol {\n    margin-left: 1.5em;\n    line-height: 1.5;\n  }\n\n  #chapters {\n    page-break-before: always;\n  }\n\n  article {\n    margin-top: 2em;\n    padding: 1em;\n    border-top: 2px solid #000000;\n  }\n\n  footer {\n    margin-top: 50px;\n    text-align: center;\n    font-size: 0.8em;\n    border-top: 1px solid #000000;\n    padding-top: 10px;\n  }\n\n  @page {\n    margin: 0.6in 0.7in;\n  }\n\n  @media print {\n    body { margin: 0; }\n    h1, h2, h3, li, p { color: #000000 !important; background: #FFFFFF !important; }\n    #overall, #toc, article { page-break-inside: avoid; }\n    #chapters { page-break-before: always; }\n  }\n</style>\n</head>\n<body>\n\n<h1>${title}</h1>\n<h2>${author}</h2>\n\n<div class=\"prefs\">\n  <p><strong>Style:</strong> ${prefs.style}</p>\n  <p><strong>Target Length:</strong> ${prefs.length}</p>\n   <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n</div>\n\n<section id=\"overall\">\n  <h2>Overall Summary</h2>\n  ${toList(summary)}\n</section>\n\n<section id=\"toc\">\n  <h2>Table of Contents</h2>\n  <ol>\n    ${chapters.map(ch => `<li>${cleanTitle(ch, false)}</li>`).join(\"\\n\")}\n  </ol>\n</section>\n\n<section id=\"chapters\">\n  <h2>Chapters</h2>\n`;\n\nfor (const ch of chapters) {\n  // New format → bullets come from plain text in ch.summary\n  const bullets = ch.summary;\n  html += `\n  <article>\n    <h3>${cleanTitle(ch, false)}</h3>\n    ${toList(bullets)}\n  </article>\n  `;\n}\n\nhtml += `\n</section>\n\n<footer>\n  <p>Generated by <strong>Megyk Books</strong> — ${new Date().toLocaleDateString()}</p>\n        <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n\n</footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          96,
+          192
+        ],
+        "id": "1086babd-47fa-4b9f-be5a-c4b284aaa806",
+        "name": "Generate Bullet Points Layout"
+      },
+      {
+        "parameters": {
+          "jsCode": "// WORKBOOK LAYOUT GENERATOR — expects chapters with questions[] + answers[]\n\nconst book = items[0].json;\n\n// -----------------------------\n// Expected input structure\n// -----------------------------\n// {\n//   title: \"...\",\n//   author: \"...\",\n//   complete_book_summary: \"...\",\n//   summary: [\n//      {\n//         chapter_index: 0,\n//         title: \"...\",\n//         summary: \"...\",\n//         questions: [\"Q1\", \"Q2\", ...],\n//         answers: [\"A1\", \"A2\", ...]\n//      },\n//      ...\n//   ]\n// }\n\nconst chapters = Array.isArray(book.summary) ? book.summary : [];\nconst bookSummary = book.complete_book_summary || \"\";\nconst title = book.title || \"Study Workbook\";\nconst author = book.author || \"\";\nconst accent = \"#264653\";\n\n// Helper: remove numbering from chapter titles\nfunction cleanTitle(title = \"\") {\n  return title.replace(/^(Chapter\\s*\\d+[:.\\-]?\\s*|[0-9IVXLCDM]+\\s+)/i, \"\").trim();\n}\n\n// Build Table of Contents\nconst toc = chapters\n  .map(ch => `<li>${cleanTitle(ch.title)}</li>`)\n  .join(\"\");\n\n// Will be used for the workbook index (global Q&A)\nconst indexEntries = [];\n\nlet html = `\n<html>\n<head>\n  <style>\n    :root { --accent: ${accent}; }\n\n    body {\n      font-family: \"Helvetica Neue\", Arial, sans-serif;\n      padding: 40px;\n      background: #FFFFFF;\n      color: #000000;\n      line-height: 1.6;\n    }\n\n    h1, h2, h3 { color: var(--accent); }\n\n    h1 {\n      text-align: center;\n      border-bottom: 3px solid var(--accent);\n      padding-bottom: 10px;\n      margin-bottom: 30px;\n    }\n\n    h2 {\n      border-bottom: 1px solid #000000;\n      padding-bottom: 4px;\n      margin-top: 40px;\n      color: #000000;\n    }\n\n    h3 {\n      margin-top: 25px;\n      color: #000000;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      margin-top: 15px;\n      font-size: 0.95em;\n      background: #FFFFFF;\n    }\n\n    td, th {\n      border: 1px solid #000000;\n      padding: 8px;\n      vertical-align: top;\n    }\n\n    th {\n      font-weight: bold;\n    }\n\n    .chapter {\n      page-break-before: always;\n      margin-top: 60px;\n    }\n\n    .summary {\n      margin-top: 10px;\n      margin-bottom: 20px;\n    }\n\n    .cover {\n      text-align: center;\n      page-break-after: always;\n      margin-top: 200px;\n    }\n\n    ol { margin-left: 25px; }\n\n    .answer-space {\n      border-bottom: 1px solid #000000;\n      height: 25px;\n      margin: 5px 0 15px;\n    }\n\n    footer {\n      margin-top: 50px;\n      text-align: center;\n      font-size: 0.8em;\n      border-top: 1px solid #000000;\n      padding-top: 10px;\n    }\n  </style>\n</head>\n\n<body>\n\n  <!-- Cover Page -->\n  <div class=\"cover\">\n    <h1>${title}</h1>\n    <h2>${author}</h2>\n    <p>Workbook Summary</p>\n    <p><em>Generated by Megyk Books</em>\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n    </p>\n  </div>\n\n  <!-- Table of Contents -->\n  <h2>Table of Contents</h2>\n  <ol>${toc}</ol>\n`;\n\n// -----------------------------\n// LOOP THROUGH CHAPTERS\n// -----------------------------\nfor (const ch of chapters) {\n  const chapterTitle = cleanTitle(ch.title);\n  const questions = Array.isArray(ch.questions) ? ch.questions : [];\n  const answers = Array.isArray(ch.answers) ? ch.answers : [];\n\n  // Add to global index\n  questions.forEach((q, i) => {\n    indexEntries.push({\n      chapter_index: ch.chapter_index,\n      chapter_title: chapterTitle,\n      question: q,\n      answer: answers[i] || \"\"\n    });\n  });\n\n  html += `\n  <div class=\"chapter\">\n    <h2>Chapter ${ch.chapter_index + 1}: ${chapterTitle}</h2>\n\n    ${ch.summary ? `<div class=\"summary\"><p>${ch.summary}</p></div>` : \"\"}\n\n    ${\n      questions.length\n        ? `\n      <h3>Questions for Reflection</h3>\n      <ol>\n        ${questions\n          .map(\n            (q, i) => `\n          <li>\n            <strong>${q}</strong><br/>\n            <div class=\"answer-space\"></div>\n            <div class=\"answer-space\"></div>\n          </li>\n        `\n          )\n          .join(\"\")}\n      </ol>`\n        : \"\"\n    }\n  </div>`;\n}\n\n// -----------------------------\n// COMPLETE BOOK SUMMARY\n// -----------------------------\nhtml += `\n  <div class=\"chapter\">\n    <h2>Complete Book Summary</h2>\n    <p>${bookSummary}</p>\n  </div>\n`;\n\n// -----------------------------\n// GLOBAL INDEX — All Q&A\n// -----------------------------\nif (indexEntries.length) {\n  html += `\n  <div class=\"chapter\">\n    <h2>Workbook Index — All Questions & Answers</h2>\n\n    <table>\n      <tr><th>Chapter</th><th>Question</th><th>Answer</th></tr>\n  `;\n\n  let lastChapter = \"\";\n\n  for (const entry of indexEntries) {\n    const chapterLabel =\n      entry.chapter_title !== lastChapter\n        ? `Chapter ${entry.chapter_index + 1}: ${entry.chapter_title}`\n        : \"\";\n\n    html += `\n      <tr>\n        <td>${chapterLabel}</td>\n        <td>${entry.question}</td>\n        <td>${entry.answer}</td>\n      </tr>\n    `;\n\n    lastChapter = entry.chapter_title;\n  }\n\n  html += `\n    </table>\n  </div>\n  `;\n}\n\n// -----------------------------\n// FOOTER\n// -----------------------------\nhtml += `\n  <footer>\n    Generated on ${new Date().toLocaleDateString()} by Megyk Books\n     <em>AI-generated summary. Not affiliated with or endorsed by the original author or publisher.</em>\n  </footer>\n\n</body>\n</html>\n`;\n\nreturn [{ json: { html } }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          96,
+          384
+        ],
+        "id": "c5e125a6-5eb4-4415-84e1-e5f178c2b94a",
+        "name": "Generate Workbook Layout"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "get_summary_v2",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -800,
+          192
+        ],
+        "id": "cb96f2df-6b9a-499b-a027-2b4b3d760dd8",
+        "name": "Webhook",
+        "webhookId": "d19c4499-2fcd-4326-b537-55b8b5e31d91"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "TFbZMklKeSxB7159",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/TFbZMklKeSxB7159",
+            "cachedResultName": "Load Book Summary"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          -352,
+          192
+        ],
+        "id": "f588c3fb-8cb7-43d5-92d5-04c5ecf38a44",
+        "name": "Call 'Load Book Summary'"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c282fc30-4cc0-45da-90ae-23893d32d524",
+                "name": "book_id",
+                "value": "={{ $json.body.book_id }}",
+                "type": "string"
+              },
+              {
+                "id": "0e5aadd7-7c6c-4e08-980a-e58827a91d04",
+                "name": "style",
+                "value": "={{ $json.body.preferences.style }}",
+                "type": "string"
+              },
+              {
+                "id": "1aa41326-89d7-4960-9029-7f5d062395f7",
+                "name": "length",
+                "value": "={{ $json.body.preferences.length }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -576,
+          192
+        ],
+        "id": "7d323102-018e-48f5-8990-f8dfb4f82694",
+        "name": "Config"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://pdf.megyk.com/html-to-pdf",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "html",
+                "value": "={{ $json.html }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          544,
+          192
+        ],
+        "id": "5b54267c-57c9-4665-9193-454787b96229",
+        "name": "HTML 2 PDF Service",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "AK2nObMbf1AjgZti",
+            "name": "PDF Service API Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "93bcaa67-5d39-4eee-96ce-900e357530cc",
+                "name": "html",
+                "value": "={{ $json.html }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          320,
+          192
+        ],
+        "id": "710e0dcf-7799-4a3e-bc18-c21f0936f920",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "respondWith": "binary",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/pdf"
+                },
+                {
+                  "name": "Content-Disposition",
+                  "value": "attachment; filename=\"document.pdf\""
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          768,
+          192
+        ],
+        "id": "d79fe852-adb1-447f-a539-b4c811cada35",
+        "name": "Respond to Webhook"
+      }
+    ],
+    "connections": {
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Generate Narrative Layout",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Generate Bullet Points Layout",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Generate Workbook Layout",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call 'Load Book Summary'": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Config": {
+        "main": [
+          [
+            {
+              "node": "Call 'Load Book Summary'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Narrative Layout": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTML 2 PDF Service": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "HTML 2 PDF Service",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Bullet Points Layout": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Workbook Layout": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
