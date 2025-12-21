@@ -1,22 +1,11 @@
 {
-  "updatedAt": "2025-12-05T15:39:08.000Z",
+  "updatedAt": "2025-12-18T00:11:06.544Z",
   "createdAt": "2025-12-05T14:39:39.243Z",
   "id": "TFbZMklKeSxB7159",
   "name": "Load Book Summary",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -816,
-        176
-      ],
-      "id": "7cc909e6-0c89-4b4a-af7b-247adc3934d3",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "assignments": {
@@ -138,20 +127,34 @@
       ],
       "id": "fe470076-0312-433e-81bd-d4458ddc526e",
       "name": "Merge"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "book_id"
+            },
+            {
+              "name": "style"
+            },
+            {
+              "name": "length"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -848,
+        176
+      ],
+      "id": "b70af487-3793-4a60-aac0-b8e80c7e3fb5",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Config",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Config": {
       "main": [
         [
@@ -194,6 +197,17 @@
       "main": [
         []
       ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -204,18 +218,21 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "When clicking ‘Execute workflow’": [
+    "When Executed by Another Workflow": [
       {
         "json": {
-          "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
-          "style": "narrative",
-          "length": "medium"
+          "book_id": "6277c22d-4c0b-47c5-ba3b-e5001112932a",
+          "style": "bullet_points",
+          "length": "short"
+        },
+        "pairedItem": {
+          "item": 0
         }
       }
     ]
   },
-  "versionId": "ac46c9bd-0e3c-48c8-ab28-ea9739c9514a",
-  "activeVersionId": null,
+  "versionId": "5f5ded53-1423-4f0b-84b4-c52165709bf2",
+  "activeVersionId": "5f5ded53-1423-4f0b-84b4-c52165709bf2",
   "triggerCount": 0,
   "shared": [
     {
@@ -226,6 +243,219 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-12-17T23:34:09.000Z",
+    "createdAt": "2025-12-17T18:58:30.368Z",
+    "versionId": "5f5ded53-1423-4f0b-84b4-c52165709bf2",
+    "workflowId": "TFbZMklKeSxB7159",
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "d614d04f-24f0-4b18-93d2-d1b3564c6432",
+                "name": "book_id",
+                "value": "={{ $json.book_id }}",
+                "type": "string"
+              },
+              {
+                "id": "20851b51-a402-4876-a8dd-8514fb977d5a",
+                "name": "length",
+                "value": "={{ $json.length }}",
+                "type": "string"
+              },
+              {
+                "id": "1aa8e8ae-72a8-488b-b27a-06cc7f3a7376",
+                "name": "style",
+                "value": "={{ $json.style }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -592,
+          176
+        ],
+        "id": "1aa74593-b09b-480a-aa4c-d3738226c394",
+        "name": "Config"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "books",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "keyValue": "={{ $json.book_id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -368,
+          80
+        ],
+        "id": "85866cef-1a32-45f3-8c9a-b4b079647aa8",
+        "name": "Load Book",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "summaries_v2",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "book_id",
+                "keyValue": "={{ $json.book_id }}"
+              },
+              {
+                "keyName": "style",
+                "keyValue": "={{ $('Config').item.json.style }}"
+              },
+              {
+                "keyName": "length",
+                "keyValue": "={{ $('Config').item.json.length }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -368,
+          272
+        ],
+        "id": "c4685d73-b904-4f9f-868e-d10c0d88b271",
+        "name": "Load Summary",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "advanced": true,
+          "mergeByFields": {
+            "values": [
+              {
+                "field1": "id",
+                "field2": "book_id"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -144,
+          176
+        ],
+        "id": "fe470076-0312-433e-81bd-d4458ddc526e",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "book_id"
+              },
+              {
+                "name": "style"
+              },
+              {
+                "name": "length"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -848,
+          176
+        ],
+        "id": "b70af487-3793-4a60-aac0-b8e80c7e3fb5",
+        "name": "When Executed by Another Workflow"
+      }
+    ],
+    "connections": {
+      "Config": {
+        "main": [
+          [
+            {
+              "node": "Load Book",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Load Summary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Load Book": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Load Summary": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          []
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 5f5ded53",
+    "description": ""
+  },
   "tags": []
 }
