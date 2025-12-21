@@ -3,7 +3,7 @@
   "createdAt": "2025-10-23T23:05:24.016Z",
   "id": "0BYKJHTyr9yFaaXh",
   "name": "Ingest Ebook",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -1061,7 +1061,7 @@
   },
   "pinData": {},
   "versionId": "3b1a41b2-4ec8-4ea7-b6b6-809593981a17",
-  "activeVersionId": null,
+  "activeVersionId": "3b1a41b2-4ec8-4ea7-b6b6-809593981a17",
   "triggerCount": 0,
   "shared": [
     {
@@ -1072,6 +1072,1061 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-11-29T08:52:21.676Z",
+    "createdAt": "2025-11-29T08:52:21.676Z",
+    "versionId": "3b1a41b2-4ec8-4ea7-b6b6-809593981a17",
+    "workflowId": "0BYKJHTyr9yFaaXh",
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "let text = '';\n\n// -----------------------------\n// 1. Collect text from prior nodes\n// -----------------------------\ntry { text = $('PDF to Text').first().json.text || ''; } catch (e) {}\nif (!text) {\n  try { text = $('Extract Text').first().json.data || ''; } catch (e) {}\n}\nif (!text) {\n  try { text = $('Extract Text1').first().json.data || ''; } catch (e) {}\n}\nif (!text && $json.text) text = $json.text;\nif (!text && $json.data) text = $json.data;\nif (!text) throw new Error('No text found.');\n\n// -----------------------------\n// 2. Normalize text\n// -----------------------------\nlet cleaned = text\n  .replace(/\\r/g, '')\n  .replace(/\\n{3,}/g, '\\n\\n')\n  .trim();\n\n// -----------------------------\n// 3. Skip front matter (preface, TOC, copyright, etc.)\n// -----------------------------\n\n// We search for the FIRST chapter-like match, regardless of format\nconst frontRegex = /(Model\\s+\\d+|CHAPTER\\s+1|Chapter\\s+1|PART\\s+1|Part\\s+1|\\n1[\\s\\n])/m;\nconst fm = cleaned.search(frontRegex);\n\nif (fm > 1000) {\n  console.log(`⏩ Skipping front matter (first match @ index ${fm})`);\n  cleaned = cleaned.slice(fm);\n}\n\n// -----------------------------\n// 4. Chapter detection patterns\n// -----------------------------\n\n// NEW: \"Model X: Title\"\nconst modelRegex = /^Model\\s+\\d+\\s*:[^\\n]+/gm;\n\n// Classic book formats\nconst chapterRegex =\n  /^((?:PART|Part|CHAPTER|Chapter)\\s+\\d+[^\\n]*)/\n  + `|^(\\\\d+\\\\s+[A-Z][^\\\\n]{0,80})`\n  + `|^(\\\\d+)\\\\s*\\\\n+[A-Z][^\\\\n]{2,80}/gm`;\n\n// -----------------------------\n// 5. Find chapter boundaries\n// -----------------------------\nlet starts = [];\nlet match;\n\n// Priority 1: Model chapters\nwhile ((match = modelRegex.exec(cleaned)) !== null) {\n  starts.push(match.index);\n}\n\nif (starts.length === 0) {\n  // Priority 2: Classic chapter formats\n  while ((match = chapterRegex.exec(cleaned)) !== null) {\n    starts.push(match.index);\n  }\n}\n\nif (starts.length === 0) {\n  // Priority 3: fallback heuristic — blocks of ALL CAPS headings\n  const guessRegex = /\\n(?=[A-Z][A-Z\\s]{6,}\\n)/g;\n  while ((match = guessRegex.exec(cleaned)) !== null) {\n    starts.push(match.index);\n  }\n}\n\nif (starts.length === 0) {\n  throw new Error(\"❌ No chapter boundaries detected.\");\n}\n\nconsole.log(`📘 Found ${starts.length} potential chapter starts.`);\n\n// Sort just in case\nstarts.sort((a, b) => a - b);\n\n// -----------------------------\n// 6. Slice into chapters\n// -----------------------------\nlet parts = [];\nfor (let i = 0; i < starts.length; i++) {\n  const start = starts[i];\n  const end = starts[i + 1] || cleaned.length;\n  const chunk = cleaned.slice(start, end).trim();\n\n  // Avoid garbage sections\n  if (chunk.split(/\\s+/).length > 40) {\n    parts.push(chunk);\n  }\n}\n\nconsole.log(`✅ Kept ${parts.length} chapter-like sections.`);\n\n// -----------------------------\n// 7. Parse each chapter\n// -----------------------------\nconst chapters = parts.map((chapter, i) => {\n  const lines = chapter.split(/\\n+/).map(l => l.trim()).filter(Boolean);\n\n  let rawTitleLine = lines[0] || \"\";\n  let title = rawTitleLine;\n  let contentStartIndex = 1;\n  let chapterIndex = i + 1;\n\n  // --------- FORMAT A: \"Model X: Title\" ---------\n  let modelMatch = rawTitleLine.match(/^Model\\s+(\\d+)\\s*:\\s*(.+)$/i);\n  if (modelMatch) {\n    chapterIndex = parseInt(modelMatch[1], 10);\n    title = modelMatch[2].trim();\n    contentStartIndex = 1;\n  }\n\n  // --------- FORMAT B: \"Chapter X: Title\" ---------\n  let stdMatch = rawTitleLine.match(/^(?:CHAPTER|Chapter|PART|Part)\\s+(\\d+)[:.\\-]?\\s*(.*)$/);\n  if (stdMatch) {\n    chapterIndex = parseInt(stdMatch[1], 10);\n    title = stdMatch[2].trim() || `Chapter ${chapterIndex}`;\n    contentStartIndex = 1;\n  }\n\n  // --------- FORMAT C: \"X\\nTitle\" ---------\n  let numMatch = rawTitleLine.match(/^(\\d+)$/);\n  if (numMatch && lines[1]) {\n    chapterIndex = parseInt(numMatch[1], 10);\n    title = lines[1];\n    contentStartIndex = 2;\n  }\n\n  // --------- FORMAT D: \"X Title\" ---------\n  let inlineMatch = rawTitleLine.match(/^(\\d+)\\s+(.+)$/);\n  if (inlineMatch) {\n    chapterIndex = parseInt(inlineMatch[1], 10);\n    title = inlineMatch[2].trim();\n    contentStartIndex = 1;\n  }\n\n  // -----------------------------\n  // 7b. Extract content\n  // -----------------------------\n  const content = lines.slice(contentStartIndex).join(\"\\n\").trim();\n  const wc = content.split(/\\s+/).length;\n\n  console.log(`📖 Parsed chapter ${chapterIndex}: \"${title}\" (${wc} words)`);\n\n  return {\n    json: {\n      chapter_index: chapterIndex,\n      chapter_title: title,\n      content: content,\n      word_count: wc,\n    },\n  };\n});\n\n// -----------------------------\n// 8. Return structured chapters\n// -----------------------------\nconsole.log(`🎉 Finished parsing ${chapters.length} total chapters.`);\nreturn chapters;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2752,
+          32
+        ],
+        "id": "00aecf9d-d3fd-4388-bcde-8ffee7e6d308",
+        "name": "Split Book by Chapters"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Input: each item with chapter_index, chapter_title, and content\n// Output: cleaned text + extracted citations + structured metadata\n\nconst raw = $json.content || '';\nconst title = $json.chapter_title || 'Untitled Chapter';\nconst index = $json.chapter_index ?? null;\n\n// 1️⃣ Clean the main text\nlet cleaned = raw\n  // Remove internal note/link artifacts\n  .replace(/GO TO NOTE REFERENCE IN TEXT/gi, '')\n  // Remove hyphenated line breaks (PDF artifact)\n  .replace(/-\\n/g, '')\n  // Merge broken lines into full sentences\n  .replace(/\\n(?!\\n)/g, ' ')\n  // Collapse multiple newlines\n  .replace(/\\n+/g, '\\n')\n  // Remove excessive spaces\n  .replace(/\\s{2,}/g, ' ')\n  .trim();\n\n// 2️⃣ Extract URLs (citations)\nconst urlRegex = /(https?:\\/\\/[^\\s)]+)/g;\nconst citations = [];\nlet match;\nwhile ((match = urlRegex.exec(raw)) !== null) {\n  citations.push(match[0]);\n}\n\n// Optionally remove URLs from cleaned text for tighter embeddings\ncleaned = cleaned.replace(urlRegex, '').trim();\n\n// 3️⃣ Build metadata structure\nconst metadata = {\n  chapter_index: index,\n  chapter_title: title,\n  citations,\n  source: $('Save Book Record to Supabase').item.json.title,\n  author: $('Save Book Record to Supabase').item.json.author,\n  extractor: 'PDF→Text n8n v1.0',\n  cleaned_at: new Date().toISOString(),\n};\n\n// 4️⃣ Return cleaned + structured output\nreturn {\n  json: {\n    chapter_index: index,\n    chapter_title: title,\n    content: cleaned,\n    metadata,\n  }\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -448,
+          784
+        ],
+        "id": "1fc5d077-775e-48fc-92eb-2d3f6b75747b",
+        "name": "Clean Chapters"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://ollama.megyk.com/api/embeddings",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"nomic-embed-text\",\n  \"prompt\": \"{{ $json.chunks.content }}\"\n}\n",
+          "options": {
+            "batching": {
+              "batch": {
+                "batchSize": 10
+              }
+            },
+            "timeout": 900000
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          448,
+          784
+        ],
+        "id": "10572038-b349-40ba-9b0d-dcf020b783ad",
+        "name": "Generate Embeddings",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "useCustomSchema": true,
+          "tableId": "chapters",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "book_id",
+                "fieldValue": "={{ $('Save Book Record to Supabase').item.json.id }}"
+              },
+              {
+                "fieldId": "title",
+                "fieldValue": "={{ $('Clean Chapters').item.json.chapter_title }}"
+              },
+              {
+                "fieldId": "content",
+                "fieldValue": "={{ $('Clean Chapters').item.json.content }}"
+              },
+              {
+                "fieldId": "metadata",
+                "fieldValue": "={{ $('Clean Chapters').item.json.metadata }}"
+              },
+              {
+                "fieldId": "chapter_index",
+                "fieldValue": "={{ $itemIndex }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -224,
+          784
+        ],
+        "id": "f3378076-66a9-4a21-9000-d674748c2cc2",
+        "name": "Store Chapter",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// INPUT: 1 item per chapter with fields: chapter_index, chapter_title, content\n// OUTPUT: 1 item per chapter, with a `chunks` array containing chunked text\n\nconst text = $json.content || '';\nconst chapterIndex = $json.chapter_index;\nconst chapterTitle = $json.chapter_title;\n\nconst chunkSize = 1500; // adjust as needed (~1k tokens)\nconst overlap = 100; // overlapping context between chunks\nconst chunks = [];\n\nfor (let i = 0; i < text.length; i += chunkSize - overlap) {\n  const chunkText = text.slice(i, i + chunkSize).trim();\n  if (!chunkText) continue;\n\n  chunks.push({\n    chunk_index: chunks.length + 1,\n    start: i,\n    end: i + chunkText.length,\n    content: chunkText,\n  });\n}\n\nreturn {\n  json: {\n    chapter_index: chapterIndex,\n    chapter_id: $json.id,\n    chapter_title: chapterTitle,\n    total_chunks: chunks.length,\n    chunks,\n  },\n};\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          0,
+          784
+        ],
+        "id": "49f17884-1edb-403a-ac80-4cbafcad8bb4",
+        "name": "Chunk Chapter"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://supabase.megyk.com/rest/v1/chapter_chunks",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "on_conflict",
+                "value": "chapter_id,chunk_index"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "Prefer",
+                "value": "resolution=merge-duplicates, return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "chapter_id",
+                "value": "={{ $('Split Out Chunks').item.json.chapter_id}}"
+              },
+              {
+                "name": "embedding",
+                "value": "={{ $json.embedding }}"
+              },
+              {
+                "name": "chunk_index",
+                "value": "={{  $itemIndex }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          672,
+          784
+        ],
+        "id": "9fffe58f-acf7-4bd0-9cc5-ca78ce01bb98",
+        "name": "Upsert Chapter Chunks"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "chunks",
+          "include": "selectedOtherFields",
+          "fieldsToInclude": "chapter_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          224,
+          784
+        ],
+        "id": "a0fa56d5-b966-449b-b714-8ced7c5e627e",
+        "name": "Split Out Chunks"
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          1680,
+          32
+        ],
+        "id": "4409b798-6434-457a-9f08-99eb3db42f34",
+        "name": "Extract Text"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Extract Title/Author from Filename').item.json.originalFilename }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          656,
+          32
+        ],
+        "id": "f0135c36-8891-4b9f-868d-75bc6b79d357",
+        "name": "Read Book from Disk",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "tableId": "books",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "=title",
+                "fieldValue": "={{ $('Basic LLM Chain').item.json.output.title }}"
+              },
+              {
+                "fieldId": "=author",
+                "fieldValue": "={{ $('Extract Title/Author from Filename').item.json.author }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          2496,
+          32
+        ],
+        "id": "4f6b2913-8dcf-4817-98f3-8a1e72af380a",
+        "name": "Save Book Record to Supabase",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "application/pdf",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "dae5a7d7-4c1d-475a-a730-d05a534dea0f"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "pdf"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "9a55ed5a-ca44-412c-9543-f3fd83332384",
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "application/epub+zip",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "epub"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "fecb5e9f-2a6f-45b3-89dd-686663afd69c",
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "text/plain",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "txt"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "1c7fa4f9-22bc-4ce7-b263-0f232fe8e922",
+                      "leftValue": "={{ $json.mimeType }}",
+                      "rightValue": "application/x-mobipocket-ebook",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "mobi"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          960,
+          0
+        ],
+        "id": "afe51e68-8eb8-40e1-9b58-84a8ccadb375",
+        "name": "Detect Filetype"
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          1184,
+          -272
+        ],
+        "id": "c1d2f5c3-83bb-479b-a2bf-044aa7d9ea96",
+        "name": "PDF to Text"
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "ac67efce-07d3-43b0-81d8-3adf6620c8b1",
+        "typeVersion": 1.1,
+        "name": "Start",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          -976,
+          32
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Ingest Ebook\n\nFormats Supported: \n- PDF\n- txt\n- Mobi\n- Epub",
+          "height": 592,
+          "width": 1408,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -816,
+          -336
+        ],
+        "id": "422e8624-d812-4a8e-afbf-b1467891445c",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.fileName.replace('.mobi', '.epub') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          1440,
+          320
+        ],
+        "id": "30e8b3f7-abe3-44c5-a28b-bdaa02808cdc",
+        "name": "Read/Write Files from Disk"
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          1744,
+          320
+        ],
+        "id": "83c107ae-f60f-4024-9e38-5eb0f90c32f0",
+        "name": "Extract Text1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Input: { \"fileName\": \"80 Fundamental Models for Busin - Alberto Scappini.txt\" }\n// Output: { title, author, baseName, ext }\n\nconst fileName = $('Read/Write Files from Disk').first().json.fileName || '';\nconst cleanName = fileName.replace(/\\.[^.]+$/, ''); // strip extension\n\nlet title = '';\nlet author = '';\n\n// Split on the last \" - \" (handles titles that contain hyphens)\nconst match = cleanName.match(/^(.*)\\s-\\s([^-.]+)$/);\n\nif (match) {\n  title = match[1].trim();\n  author = match[2].trim();\n} else {\n  // fallback if pattern not matched\n  title = cleanName.trim();\n}\n\nreturn [{\n  title,\n  author,\n  baseName: cleanName,\n  ext: fileName.split('.').pop(),\n}];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2288,
+          320
+        ],
+        "id": "a929018e-3743-4b19-80bc-86fa8952f69e",
+        "name": "Extract Title/Author from MOBI"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get all items from previous node (each chunk)\nconst chunks = items.map(i => i.json);\n\n// Collect unique chapter_ids\nconst chapterIds = [...new Set(chunks.map(c => c.chapter_id).filter(Boolean))];\n\n// Return one item per chapter_id for Supabase updates\nreturn chapterIds.map(id => ({\n  json: { chapter_id: id }\n}));\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          896,
+          784
+        ],
+        "id": "e5ce7ef4-a595-44a9-b64d-845ed7d2520f",
+        "name": "Fan In Chunks"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "chapters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $json.chapter_id }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "chunk_embedding_complete"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1120,
+          784
+        ],
+        "id": "0607ddfe-f559-40e9-8d5a-5fbfcc9e29c1",
+        "name": "Update Chapter Status",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "44e588ef-ab9b-460c-909c-84ea218957f2",
+                "leftValue": "={{ $json.filename }}",
+                "rightValue": "mobi",
+                "operator": {
+                  "type": "string",
+                  "operation": "endsWith"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          -752,
+          32
+        ],
+        "id": "8a9a9240-782d-4381-a09c-c842a3a3f736",
+        "name": "Filter",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "content": "## Embed Chapters",
+          "height": 656,
+          "width": 1888,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -816,
+          368
+        ],
+        "id": "41757009-4400-40c6-8c82-8de72065d045",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [\n  {\n    json: {\n      filename: \"80 Fundamental Models for Busin - Alberto Scappini.txt\"\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -544,
+          32
+        ],
+        "id": "77d359c4-6ef3-469f-864a-305c46d73ba3",
+        "name": "Code in JavaScript",
+        "executeOnce": true
+      },
+      {
+        "parameters": {
+          "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  bash -c 'ebook-convert \"/data/{{ $json.fileName }}\" \"/data/{{ $json.fileName.replace(\".epub\", \".txt\") }}\" && cat \"/data/{{ $json.fileName.replace(\".epub\", \".txt\") }}\"'\n"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1184,
+          -64
+        ],
+        "id": "6b6139c2-ada2-4e3f-9474-d9f1142aceaf",
+        "name": "Execute Command"
+      },
+      {
+        "parameters": {
+          "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.fileName.replace('.epub', '.txt') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1,
+        "position": [
+          1408,
+          -64
+        ],
+        "id": "4395b28f-b769-4d27-b0ae-cf5e4949b934",
+        "name": "Read/Write Files from Disk1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Unified text source detection\nlet text = '';\n\ntry { text = $('PDF to Text').first().json.text || ''; } catch (e) {}\nif (!text) {\n  try { text = $('Extract Text').first().json.data || ''; } catch (e) {}\n}\nif (!text) {\n  try { text = $('Extract Text1').first().json.data || ''; } catch (e) {}\n}\nif (!text && $json.text) text = $json.text;\nif (!text && $json.data) text = $json.data;\nif (!text) throw new Error('No text found.');\n\n// 🧹 Normalize spacing and invisible characters\nlet cleaned = text\n  .replace(/\\r/g, '')\n  .replace(/\\t+/g, ' ')\n  .replace(/\\u00A0/g, ' ')   // non-breaking spaces\n  .replace(/[ ]{2,}/g, ' ')\n  .trim();\n\n// 🧱 Remove likely headers/footers/page numbers generically\n// Detects lines that repeat every few pages (common headers/footers)\nconst lines = cleaned.split('\\n');\nconst freq = {};\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (trimmed.length > 0 && trimmed.length < 80) {\n    freq[trimmed] = (freq[trimmed] || 0) + 1;\n  }\n}\n// Remove lines that repeat more than 3 times (probable headers/footers)\nconst repeats = new Set(Object.keys(freq).filter(k => freq[k] > 3));\ncleaned = lines\n  .filter(line => !repeats.has(line.trim()))\n  .join('\\n');\n\n// Remove standalone page numbers\ncleaned = cleaned.replace(/^\\s*\\d{1,4}\\s*$/gm, '');\n\n// 🧩 Merge broken lines intelligently\ncleaned = cleaned\n  // join hyphenated words across lines\n  .replace(/([a-z])-\\n([a-z])/gi, '$1$2')\n  // join single newlines within a paragraph\n  .replace(/([a-z0-9,;:'”])\\n(?!\\n)/gi, '$1 ')\n  // normalize paragraph breaks\n  .replace(/\\n{2,}/g, '\\n\\n')\n  // fix excessive spaces\n  .replace(/ {2,}/g, ' ')\n  .trim();\n\n// ✅ Output normalized text for next node\nreturn { text: cleaned };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1888,
+          32
+        ],
+        "id": "8afe0ca6-e7f7-4666-a676-0f600cfda49a",
+        "name": "Normalize Extracted Text (Universal)"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Unified text source detection\nlet text = '';\n\ntry { text = $('PDF to Text').first().json.text || ''; } catch (e) {}\nif (!text) {\n  try { text = $('Extract Text').first().json.data || ''; } catch (e) {}\n}\nif (!text) {\n  try { text = $('Extract Text1').first().json.data || ''; } catch (e) {}\n}\nif (!text && $json.text) text = $json.text;\nif (!text && $json.data) text = $json.data;\nif (!text) throw new Error('No text found.');\n\n// 🧹 Normalize spacing and invisible characters\nlet cleaned = text\n  .replace(/\\r/g, '')\n  .replace(/\\t+/g, ' ')\n  .replace(/\\u00A0/g, ' ')   // non-breaking spaces\n  .replace(/[ ]{2,}/g, ' ')\n  .trim();\n\n// 🧱 Remove likely headers/footers/page numbers generically\n// Detects lines that repeat every few pages (common headers/footers)\nconst lines = cleaned.split('\\n');\nconst freq = {};\nfor (const line of lines) {\n  const trimmed = line.trim();\n  if (trimmed.length > 0 && trimmed.length < 80) {\n    freq[trimmed] = (freq[trimmed] || 0) + 1;\n  }\n}\n// Remove lines that repeat more than 3 times (probable headers/footers)\nconst repeats = new Set(Object.keys(freq).filter(k => freq[k] > 3));\ncleaned = lines\n  .filter(line => !repeats.has(line.trim()))\n  .join('\\n');\n\n// Remove standalone page numbers\ncleaned = cleaned.replace(/^\\s*\\d{1,4}\\s*$/gm, '');\n\n// 🧩 Merge broken lines intelligently\ncleaned = cleaned\n  // join hyphenated words across lines\n  .replace(/([a-z])-\\n([a-z])/gi, '$1$2')\n  // join single newlines within a paragraph\n  .replace(/([a-z0-9,;:'”])\\n(?!\\n)/gi, '$1 ')\n  // normalize paragraph breaks\n  .replace(/\\n{2,}/g, '\\n\\n')\n  // fix excessive spaces\n  .replace(/ {2,}/g, ' ')\n  .trim();\n\n// ✅ Output normalized text for next node\nreturn { text: cleaned };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2000,
+          320
+        ],
+        "id": "927f6cf2-2d82-47e2-820c-a8f76d4d98fc",
+        "name": "Normalize Extracted Text (Universal)1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get filename from input\nconst fileName = $json.filename || \"\";\n\n// Remove extension\nconst ext = fileName.includes(\".\")\n  ? fileName.split(\".\").pop().trim()\n  : null;\n\nconst nameWithoutExt = fileName.replace(/\\.[^.]+$/, \"\").trim();\n\n// Pattern: \"Title - Author\"\nlet title = null;\nlet author = null;\n\nconst match = nameWithoutExt.match(/^(.*?)\\s*-\\s*(.*)$/);\n\nif (match) {\n  title = match[1].trim() || null;\n  author = match[2].trim() || null;\n} else {\n  // Fallback if no \" - \" separator\n  title = nameWithoutExt.trim();\n  author = null;\n}\n\nreturn [\n  {\n    json: {\n      title,\n      author,\n      baseName: nameWithoutExt,\n      ext,\n      originalFilename: fileName,\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -64,
+          32
+        ],
+        "id": "b4b40a00-cc77-4ac7-9d1d-a11e2b8edd94",
+        "name": "Extract Title/Author from Filename"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Partial Title: \"{{ $json.title }}\"\nAuthor: \"{{ $json.author }}\"\n\n",
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH.   When needed, you MUST call the WEB SEARCH tool using the query: \"{{ $json.title }} {{ $json.author }} complete book title\"  After receiving the WEB SEARCH results, you MUST:  1. Read and interpret the search results. 2. Extract or infer the MOST WIDELY KNOWN, MOST LIKELY, or MOST PUBLISHED full title. 3. Output ONLY the corrected full book title, nothing else.  If the tool output includes multiple possibilities, choose the majority or top-ranked title.  If the tool output is empty, fall back to a reasonable inference but still output ONLY the title.  You MUST NOT output the tool call or the search transcript — only the final corrected book title."
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          192,
+          32
+        ],
+        "id": "8c8623bb-8719-4f92-a006-08cfc679e66c",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1"
+          },
+          "responsesApiEnabled": false,
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          80,
+          240
+        ],
+        "id": "0393703b-a8c3-4a02-b3f7-9131ae132092",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"title\": \"Lorem Ipsum Dolor Samet\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          336,
+          240
+        ],
+        "id": "3cb7766c-8f38-4cdb-9fb2-18f85844cdc8",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "command": "=docker run --rm \\\n  -v /opt/n8n-docker-caddy/local_files/books:/data \\\n  book-converter \\\n  ebook-convert \"/data/{{ $json.fileName }}\" \"/data/{{ $json.fileName.replace('.mobi', '.txt') }}\"\n"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1184,
+          320
+        ],
+        "id": "00663695-f4b9-4956-a4fb-76032d7bb3ce",
+        "name": "Convert MOBI to EPUB"
+      }
+    ],
+    "connections": {
+      "PDF to Text": {
+        "main": [
+          [
+            {
+              "node": "Save Book Record to Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read Book from Disk": {
+        "main": [
+          [
+            {
+              "node": "Detect Filetype",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save Book Record to Supabase": {
+        "main": [
+          [
+            {
+              "node": "Split Book by Chapters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Book by Chapters": {
+        "main": [
+          [
+            {
+              "node": "Clean Chapters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Clean Chapters": {
+        "main": [
+          [
+            {
+              "node": "Store Chapter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Embeddings": {
+        "main": [
+          [
+            {
+              "node": "Upsert Chapter Chunks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Store Chapter": {
+        "main": [
+          [
+            {
+              "node": "Chunk Chapter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Detect Filetype": {
+        "main": [
+          [
+            {
+              "node": "PDF to Text",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Execute Command",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Extract Text",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Convert MOBI to EPUB",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Text": {
+        "main": [
+          [
+            {
+              "node": "Normalize Extracted Text (Universal)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chunk Chapter": {
+        "main": [
+          [
+            {
+              "node": "Split Out Chunks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out Chunks": {
+        "main": [
+          [
+            {
+              "node": "Generate Embeddings",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upsert Chapter Chunks": {
+        "main": [
+          [
+            {
+              "node": "Fan In Chunks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk": {
+        "main": [
+          [
+            {
+              "node": "Extract Text1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Text1": {
+        "main": [
+          [
+            {
+              "node": "Normalize Extracted Text (Universal)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Title/Author from MOBI": {
+        "main": [
+          [
+            {
+              "node": "Save Book Record to Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fan In Chunks": {
+        "main": [
+          [
+            {
+              "node": "Update Chapter Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Extract Title/Author from Filename",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute Command": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk1": {
+        "main": [
+          [
+            {
+              "node": "Extract Text",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Extracted Text (Universal)": {
+        "main": [
+          [
+            {
+              "node": "Save Book Record to Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Extracted Text (Universal)1": {
+        "main": [
+          [
+            {
+              "node": "Extract Title/Author from MOBI",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Title/Author from Filename": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain": {
+        "main": [
+          [
+            {
+              "node": "Read Book from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Convert MOBI to EPUB": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
