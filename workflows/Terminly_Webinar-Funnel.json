@@ -1,0 +1,400 @@
+{
+  "updatedAt": "2025-09-29T10:08:36.000Z",
+  "createdAt": "2025-09-18T07:09:02.634Z",
+  "id": "j3yPDFyXTPfsW2Od",
+  "name": "Terminly Webinar-Funnel",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webinaris/register",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "95733451-26a7-4758-b1de-a039b274e451",
+      "name": "Webinaris Registration",
+      "webhookId": "ff33b74f-0c3d-4677-8861-e4292bd99131"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webinaris/attended",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        176
+      ],
+      "id": "2b03a39d-d2f2-450d-8ad1-bef9d659792e",
+      "name": "Webinar Attended",
+      "webhookId": "4f9ff381-0d3c-48c5-bf9c-0fe9532163b0"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/c35b2bb0-d021-4b40-ba0d-3eb051f49d21",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"email\": \"philippleirich+test299@gmail.com\",\n  \"firstName\": \"Philipp Test\",\n  \"lastName\": \"\",\n  \"phone\": \"\",\n  \"webinar_id\": \"https://21603.webinaris.co/customer/lg/21603/29569/philippleirich+test299@gmail.com/0GuEE/autologin/login.html?s=v1&v=4\",\n  \"date\": \"2025-09-29\",\n  \"time\": \"11:00\",\n  \"tags\": [\"Webinar Registered\"]\n}\n",
+        "options": {
+          "lowercaseHeaders": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "27e02e22-5136-4c07-8a61-e785487cb298",
+      "name": "Transfer Lead"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/uaHoSxqFdP0JuYwsLsw4",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{$json.body.email}}"
+            },
+            {
+              "name": "firstname",
+              "value": "={{ $json.body.firstname }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.body.phone }}"
+            },
+            {
+              "name": "time",
+              "value": "={{ $json.body.time }}"
+            },
+            {
+              "name": "attended_at",
+              "value": "={{ $json.body.attended_at }}"
+            },
+            {
+              "name": "lastname",
+              "value": "={{ $json.body.lastname }}"
+            }
+          ]
+        },
+        "options": {
+          "lowercaseHeaders": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        176
+      ],
+      "id": "773d7144-55b4-4b3f-8118-5de2f83456f1",
+      "name": "Transfer Attendence"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45651965-2a7a-49a7-830e-923f91013c93",
+              "name": "body.webinar_date",
+              "value": "={{ $json.body.webinar_date }}",
+              "type": "string"
+            },
+            {
+              "id": "56c8e149-9ed0-4bf3-b2bd-716d62d095f9",
+              "name": "body.webinar_date_new",
+              "value": "={{ (() => { \n  const s = ($json.body.webinar_date || ''); \n  const [dd, mm, yyyy] = s.split('.');\n  if (!dd || !mm || !yyyy) return s; \n  return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;\n})() }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "1824bb15-7de1-4bbb-9882-1e85b83e12c3",
+      "name": "Change Date Format"
+    }
+  ],
+  "connections": {
+    "Webinaris Registration": {
+      "main": [
+        [
+          {
+            "node": "Change Date Format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webinar Attended": {
+      "main": [
+        [
+          {
+            "node": "Transfer Attendence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Change Date Format": {
+      "main": [
+        [
+          {
+            "node": "Transfer Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "51400409-1a78-4041-a54f-a5c59b7dc8a4",
+  "activeVersionId": "51400409-1a78-4041-a54f-a5c59b7dc8a4",
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2025-09-18T07:09:02.644Z",
+      "createdAt": "2025-09-18T07:09:02.644Z",
+      "role": "workflow:owner",
+      "workflowId": "j3yPDFyXTPfsW2Od",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "51400409-1a78-4041-a54f-a5c59b7dc8a4",
+    "workflowId": "j3yPDFyXTPfsW2Od",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "webinaris/register",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "95733451-26a7-4758-b1de-a039b274e451",
+        "name": "Webinaris Registration",
+        "webhookId": "ff33b74f-0c3d-4677-8861-e4292bd99131"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "webinaris/attended",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          176
+        ],
+        "id": "2b03a39d-d2f2-450d-8ad1-bef9d659792e",
+        "name": "Webinar Attended",
+        "webhookId": "4f9ff381-0d3c-48c5-bf9c-0fe9532163b0"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/c35b2bb0-d021-4b40-ba0d-3eb051f49d21",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\n  \"email\": \"philippleirich+test299@gmail.com\",\n  \"firstName\": \"Philipp Test\",\n  \"lastName\": \"\",\n  \"phone\": \"\",\n  \"webinar_id\": \"https://21603.webinaris.co/customer/lg/21603/29569/philippleirich+test299@gmail.com/0GuEE/autologin/login.html?s=v1&v=4\",\n  \"date\": \"2025-09-29\",\n  \"time\": \"11:00\",\n  \"tags\": [\"Webinar Registered\"]\n}\n",
+          "options": {
+            "lowercaseHeaders": true
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          432,
+          0
+        ],
+        "id": "27e02e22-5136-4c07-8a61-e785487cb298",
+        "name": "Transfer Lead"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/uaHoSxqFdP0JuYwsLsw4",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "email",
+                "value": "={{$json.body.email}}"
+              },
+              {
+                "name": "firstname",
+                "value": "={{ $json.body.firstname }}"
+              },
+              {
+                "name": "phone",
+                "value": "={{ $json.body.phone }}"
+              },
+              {
+                "name": "time",
+                "value": "={{ $json.body.time }}"
+              },
+              {
+                "name": "attended_at",
+                "value": "={{ $json.body.attended_at }}"
+              },
+              {
+                "name": "lastname",
+                "value": "={{ $json.body.lastname }}"
+              }
+            ]
+          },
+          "options": {
+            "lowercaseHeaders": true
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          208,
+          176
+        ],
+        "id": "773d7144-55b4-4b3f-8118-5de2f83456f1",
+        "name": "Transfer Attendence"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "45651965-2a7a-49a7-830e-923f91013c93",
+                "name": "body.webinar_date",
+                "value": "={{ $json.body.webinar_date }}",
+                "type": "string"
+              },
+              {
+                "id": "56c8e149-9ed0-4bf3-b2bd-716d62d095f9",
+                "name": "body.webinar_date_new",
+                "value": "={{ (() => { \n  const s = ($json.body.webinar_date || ''); \n  const [dd, mm, yyyy] = s.split('.');\n  if (!dd || !mm || !yyyy) return s; \n  return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;\n})() }}\n",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          0
+        ],
+        "id": "1824bb15-7de1-4bbb-9882-1e85b83e12c3",
+        "name": "Change Date Format"
+      }
+    ],
+    "connections": {
+      "Webinaris Registration": {
+        "main": [
+          [
+            {
+              "node": "Change Date Format",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webinar Attended": {
+        "main": [
+          [
+            {
+              "node": "Transfer Attendence",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Change Date Format": {
+        "main": [
+          [
+            {
+              "node": "Transfer Lead",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
