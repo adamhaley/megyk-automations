@@ -3,7 +3,7 @@
   "createdAt": "2025-08-28T21:42:34.372Z",
   "id": "qgMo7FWNCJAPUVzM",
   "name": "Finder Felix (Google Maps)",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -1108,8 +1108,8 @@
     ]
   },
   "versionId": "d0aa8af0-db6c-4a40-bc20-3261a72b5ca3",
-  "activeVersionId": null,
-  "triggerCount": 1,
+  "activeVersionId": "d0aa8af0-db6c-4a40-bc20-3261a72b5ca3",
+  "triggerCount": 0,
   "shared": [
     {
       "updatedAt": "2025-08-28T21:42:34.381Z",
@@ -1119,6 +1119,1094 @@
       "projectId": "B7QJE85HA2Vij1it"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2025-11-26T20:39:59.471Z",
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "versionId": "d0aa8af0-db6c-4a40-bc20-3261a72b5ca3",
+    "workflowId": "qgMo7FWNCJAPUVzM",
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          496,
+          336
+        ],
+        "id": "5ca44288-7112-460e-bddd-6d4a0ea1a4a3",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "tableId": "german_companies",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "company",
+                "fieldValue": "={{ $json.company }}"
+              },
+              {
+                "fieldId": "industry",
+                "fieldValue": "={{ $json.industry }}"
+              },
+              {
+                "fieldId": "phone",
+                "fieldValue": "={{ $json.phone }}"
+              },
+              {
+                "fieldId": "website",
+                "fieldValue": "={{ $json.website || '' }}"
+              },
+              {
+                "fieldId": "address",
+                "fieldValue": "={{ $json.address }}"
+              },
+              {
+                "fieldId": "populated_by",
+                "fieldValue": "={{ $json.id }}"
+              },
+              {
+                "fieldId": "location_link",
+                "fieldValue": "={{ $json.location_link }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1728,
+          768
+        ],
+        "id": "d552b461-3a61-4b93-8d52-5610dcb5dd00",
+        "name": "Add Company",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f31926ac-a9ad-44b9-8875-0d661987bcdf",
+                "leftValue": "={{$json.data[0][0] }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1072,
+          432
+        ],
+        "id": "1ed1ed68-683e-4dd5-a86b-1ae52710a164",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "compare": "selectedFields",
+          "fieldsToCompare": "phone",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.removeDuplicates",
+        "typeVersion": 2,
+        "position": [
+          896,
+          752
+        ],
+        "id": "6a58f617-e76b-4a92-84f4-fbb19db89543",
+        "name": "Remove Duplicates"
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $json.message.chat.id }}1"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          -480,
+          848
+        ],
+        "id": "b38d87cb-b14b-4689-80da-950fe1a66eeb",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.message.text }}",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "=Rolle\n\nDu bist FinderFelix – digitaler Recherche-Praktikant mit Köpfchen. Locker, schnell, direkt.\nDein Job: rausfinden, was (Branche) und wo (PLZ oder Stadt) gesucht wird, damit passende Firmen auf Gelbe Seiten gefunden werden können.\n\nWas du brauchst\n\nEine Postleitzahl (PLZ) oder eine Stadt\n\nEine Branche (z. B. Zahnärzte, Steuerberater)\n\nRegeln\n\nWenn eine PLZ im Input vorkommt (\\b\\d{5}\\b):\n\nSpeichere sie als postalCode\n\nSetze lookupType = \"postal_code\"\n\nStadt/District nicht ableiten\n\nWenn eine Stadt vorkommt (keine PLZ):\n\nSpeichere sie als city\n\nSetze lookupType = \"city\"\n\nWenn Branche oder Ort fehlt:\n\nStelle eine kurze Rückfrage (max. 1 Satz)\n\nStartsignal:\n\nstartScraping = true, wenn Branche und (PLZ oder Stadt) eindeutig vorliegen\n\nAntwortstil\n\nKurz, frech, freundlich\n\nDu sprichst den User als „Boss“ oder „Chef“ an\n\nKein Gelaber, keine Floskeln\n\nImmer direkt: „Zahnärzte in 35633 – läuft, Boss!“\n\nAusgabeformat\n\nAntworte ausschließlich mit einem gültigen JSON-Objekt in folgendem Format:\n\n{\n  \"userMessage\": \"\",\n  \"finderFelixAnswer\": \"\",\n  \"industry\": \"\",\n  \"postalCode\": \"\",\n  \"city\": \"\",\n  \"lookupType\": \"\",\n  \"startScraping\": false\n}\n\nBeispiel Outputs\nA) PLZ vorhanden\n{\n  \"userMessage\": \"Bitte alle Zahnärzte in 35633 finden.\",\n  \"finderFelixAnswer\": \"Zahnärzte in 35633 – läuft, Boss!\",\n  \"industry\": \"Zahnärzte\",\n  \"postalCode\": \"35633\",\n  \"city\": \"\",\n  \"lookupType\": \"postal_code\",\n  \"startScraping\": true\n}\n\nB) Stadt vorhanden\n{\n  \"userMessage\": \"Suche Steuerberater in Wetzlar\",\n  \"finderFelixAnswer\": \"Steuerberater in Wetzlar – läuft, Boss!\",\n  \"industry\": \"Steuerberater\",\n  \"postalCode\": \"\",\n  \"city\": \"Wetzlar\",\n  \"lookupType\": \"city\",\n  \"startScraping\": true\n}\n\nC) Rückfrage nötig\n{\n  \"userMessage\": \"35633\",\n  \"finderFelixAnswer\": \"Welche Branche soll ich in 35633 suchen, Boss?\",\n  \"industry\": \"\",\n  \"postalCode\": \"35633\",\n  \"city\": \"\",\n  \"lookupType\": \"postal_code\",\n  \"startScraping\": false\n}\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          -320,
+          576
+        ],
+        "id": "2bb8814c-a128-4b8f-8940-0e75e45809d5",
+        "name": "Finder Felix"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "german_cities",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "state",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          -336,
+          848
+        ],
+        "id": "809dca34-5192-464b-a28f-322cf0eaa507",
+        "name": "Check_State",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "german_cities",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "city",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          -192,
+          848
+        ],
+        "id": "b00c9f59-0668-40c9-9467-a0706ed50d6c",
+        "name": "Check_City",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "german_districts",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "district",
+                "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabaseTool",
+        "typeVersion": 1,
+        "position": [
+          -48,
+          848
+        ],
+        "id": "bbe2ed75-5edf-4978-af96-71e6ff59d51e",
+        "name": "Check_District",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "4d17cc19-9718-4ca8-8a95-71655e348f07",
+                "leftValue": "={{ $json.industry }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "fc028b7e-c3fe-4730-93e7-46a4f7030dfa",
+                "leftValue": "={{ $json.lookupType }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "664fa3e0-b57a-4f48-abe2-abed4edb9fdf",
+                "leftValue": "={{ $json.startScraping }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -464,
+          352
+        ],
+        "id": "4f7dba05-3017-4d76-a1b7-e0fa04a6fe4f",
+        "name": "Start Scraping"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "51746dd0-2087-430b-aef5-76424ac07607",
+                "name": "supabaseProjectID",
+                "value": "sbbaxnrkennoyqxcpxmq",
+                "type": "string"
+              }
+            ]
+          },
+          "includeOtherFields": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -992,
+          352
+        ],
+        "id": "025ef605-84d6-4f8f-b149-9bd5f70eb07b",
+        "name": "ENV"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Pull structured output once\nconst out = $('Loop Over Items').first().json.output || {};\n\n// Back-compat shim (if some nodes still send locationType)\nout.lookupType = $input.first().json.lookupType;\n// --- helpers ---\nconst slug = (s) => String(s || '')\n  .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')\n  .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')\n  .replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue')\n  .replace(/ß/g,'ss')\n  .toLowerCase()\n  .trim()\n  .replace(/[^a-z0-9]+/g,'-')\n  .replace(/^-+|-+$/g,'');\n\n// Minimal industry → slug map (extend as needed)\nconst industryMap = {\n  'zahnärzte': 'zahnarzt',\n  'zahnarzt': 'zahnarzt',\n  'dentists': 'zahnarzt',\n  'steuerberater': 'steuerberater',\n  'anwalt': 'rechtsanwalt',\n};\nconst rawIndustry = String(out.industry || '').toLowerCase().trim();\nconst categorySlug = industryMap[rawIndustry] || slug(rawIndustry) || 'zahnarzt';\n\n// Resolve location from lookupType\nlet locationSegment = '';\nif (out.lookupType === 'postal_code') {\n  locationSegment = String(  $input.first().json.postalCode || '').trim();\n} else if (out.lookupType === 'city') {\n  locationSegment = slug(out.city);\n} else {\n  throw new Error('lookupType must be \"postal_code\" or \"city\".');\n}\nif (!locationSegment) throw new Error('Missing location (postalCode or city).');\n\n// Build URLs\nconst sucheUrl = `https://www.gelbeseiten.de/suche/${categorySlug}/${encodeURIComponent(locationSegment)}`;\n// Optional alternate:\n// const branchenUrl = `https://www.gelbeseiten.de/branchen/${categorySlug}/${encodeURIComponent(locationSegment)}`;\n\nreturn [\n  {\n    json: {\n      url: sucheUrl,\n      // altUrl: branchenUrl,   // uncomment if you want a fallback candidate\n      parts: {\n        lookupType: out.lookupType,\n        categorySlug,\n        locationSegment\n      },\n      debug: {\n        industryInput: out.industry,\n        cityInput: out.city || '',\n        postalCodeInput: out.postalCode || ''\n      }\n    }\n  }\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          432
+        ],
+        "id": "f60e0674-2615-4386-8ec2-dba0f8592040",
+        "name": "Build URL"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Just needed to run Once for all items in order to prevent multiple Telegram messages\n\nreturn $input.first();"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          256
+        ],
+        "id": "e1341be6-2b33-4fcd-9c49-e3c2d0bbb7eb",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "userMessage"
+              },
+              {
+                "name": "postal_code"
+              },
+              {
+                "name": "industry"
+              },
+              {
+                "name": "district"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1600,
+          208
+        ],
+        "id": "4f8c91ae-4765-4e9d-bc72-15cd9691f852",
+        "name": "Team Leader"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -640,
+          848
+        ],
+        "id": "d740009b-dd7b-4171-9393-2750c22b9118",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "RMCgUrxutvJgFiK9",
+            "name": "Adams Test OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"userMessage\": \"Bitte alle Zahnärzte in 35633 finden.\",\n  \"finderFelixAnswer\": \"Zahnärzte in 35633 – läuft, Boss!\",\n  \"industry\": \"Zahnärzte\",\n  \"postalCode\": \"35633\",\n  \"city\": \"\",\n  \"lookupType\": \"postal_code\",\n  \"startScraping\": true\n}\n"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.2,
+        "position": [
+          80,
+          848
+        ],
+        "id": "5d205535-ea22-4b18-8c83-57c89f495ece",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "content": "## Finder Felix\n",
+          "height": 1088,
+          "width": 1936,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1664,
+          -32
+        ],
+        "id": "d995a6b2-4b35-4651-a8bb-4627d935cbf7",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals",
+            "mode": "list",
+            "cachedResultName": "Companies - AI Sales Team",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 233130169,
+            "mode": "list",
+            "cachedResultName": "Google Test Results",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/167pvvSqPMJdFm9r-aJRDDTXlWd_N7IwzvY1oz_7gals/edit#gid=233130169"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "company": "={{ $json.name }}",
+              "phone": "={{ $json.phone }}",
+              "website": "={{ $json.site }}",
+              "address": "={{ $json.full_address }}",
+              "industry": "={{ $json.category }}",
+              "state": "=",
+              "city": "=",
+              "district": "=",
+              "location_link": "={{ $json.location_link }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "company",
+                "displayName": "company",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "industry",
+                "displayName": "industry",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "phone",
+                "displayName": "phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "website",
+                "displayName": "website",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "address",
+                "displayName": "address",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "state",
+                "displayName": "state",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "city",
+                "displayName": "city",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "district",
+                "displayName": "district",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "ceo_name",
+                "displayName": "ceo_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "analysis",
+                "displayName": "analysis",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "location_link",
+                "displayName": "location_link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.6,
+        "position": [
+          1072,
+          752
+        ],
+        "id": "9c937afc-e162-456f-8691-69d41d571c5e",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "let message = '';\nif($prevNode.name === 'Team Leader'){\n  \n  message = { \n    text: $input.first().json.userMessage,\n    postal_code: $input.first().json.postal_code,\n    district: $input.first().json.district\n  };\n}else if($prevNode.name === 'Message Felix'){\n  message = $input.first().json.message;\n}\n\nreturn {\n  message: message\n}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1264,
+          352
+        ],
+        "id": "5c3cd4a6-b67d-490c-824e-dce709bc4fcf",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "tableId": "finder_felix_executions",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "execution",
+                "fieldValue": "={{ $execution.id }}"
+              },
+              {
+                "fieldId": "postal_code",
+                "fieldValue": "={{ $('Loop Over Items').item.json.output.postalCode }}"
+              },
+              {
+                "fieldId": "num_results",
+                "fieldValue": "={{ $input.all().length }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1280,
+          848
+        ],
+        "id": "3b38825f-dbcb-41c0-a348-76738a49778c",
+        "name": "Create a row",
+        "executeOnce": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineAll",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1488,
+          768
+        ],
+        "id": "19270bdf-6110-412a-904d-310ebe57f365",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data[0]",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1728,
+          416
+        ],
+        "id": "12400b1d-0398-4fc2-bc36-7bacc2237871",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2e172538-efa3-4997-aad9-0c522cd607b7",
+                "name": "name",
+                "value": "={{ $json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "790182be-f054-464f-bf08-0e67374e062e",
+                "name": "site",
+                "value": "={{ $json.site }}",
+                "type": "string"
+              },
+              {
+                "id": "0f573acd-c2fc-469d-ad13-441c5a6a4b09",
+                "name": "full_address",
+                "value": "={{ $json.full_address }}",
+                "type": "string"
+              },
+              {
+                "id": "7e04ba70-0506-43ef-9f22-6c55e809bf7f",
+                "name": "phone",
+                "value": "=<tel:{{ $json.phone }}|{{ $json.phone }}>",
+                "type": "string"
+              },
+              {
+                "id": "edb48b22-8a72-4783-bdf0-5e9f628f91a5",
+                "name": "category",
+                "value": "={{ $json.category }}",
+                "type": "string"
+              },
+              {
+                "id": "1de435de-4dd1-450e-ba57-e2c5b0a0b2a4",
+                "name": "subtypes",
+                "value": "={{ $json.subtypes }}",
+                "type": "string"
+              },
+              {
+                "id": "03592a77-8a4f-4ee8-b23d-811ac0b7165e",
+                "name": "location_link",
+                "value": "={{ $json.location_link }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          720,
+          752
+        ],
+        "id": "ab7018a1-b281-4a88-a9d5-13a358c00cfe",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "url": "https://api.outscraper.cloud/maps/search-v3",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "=query",
+                "value": "={{ $json.parts.categorySlug }} {{ $json.parts.locationSegment }} Germany"
+              },
+              {
+                "name": "async",
+                "value": "false"
+              },
+              {
+                "name": "limit",
+                "value": "1000"
+              },
+              {
+                "name": "domains_service",
+                "value": "true"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"limit\": 1000,\n  \"language\": \"de\",\n  \"region\": \"de\",\n  \"async\": false,\n  \"domains_service\": true\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          880,
+          432
+        ],
+        "id": "6a01c1dd-ce61-4b0e-a903-a7735a126f10",
+        "name": "Outscraper",
+        "retryOnFail": true,
+        "waitBetweenTries": 5000,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "4ODXujeyZRYbAL8D",
+            "name": "Outscraper Auth"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "",
+          "height": 896,
+          "width": 1536,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          384,
+          160
+        ],
+        "id": "cea7de01-492b-4efa-ae2e-45e1844dbb76",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "jsCode": "return {\n  \"industry\": $('Team Leader').first().json.industry,\n  \"postalCode\":$input.first().json.message.postal_code,\n  \"city\": \"\",\n  \"lookupType\": \"postal_code\",\n  \"startScraping\": true\n}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -720,
+          352
+        ],
+        "id": "69d13d82-5e52-4084-a507-fb282a21e80a",
+        "name": "Code2"
+      }
+    ],
+    "connections": {
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Build URL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Company": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Remove Duplicates": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "Finder Felix",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Finder Felix": {
+        "main": [
+          []
+        ]
+      },
+      "Check_State": {
+        "ai_tool": [
+          [
+            {
+              "node": "Finder Felix",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check_City": {
+        "ai_tool": [
+          [
+            {
+              "node": "Finder Felix",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check_District": {
+        "ai_tool": [
+          [
+            {
+              "node": "Finder Felix",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start Scraping": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ENV": {
+        "main": [
+          [
+            {
+              "node": "Code2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build URL": {
+        "main": [
+          [
+            {
+              "node": "Outscraper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      },
+      "Team Leader": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Finder Felix",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Finder Felix",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Create a row",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "ENV",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create a row": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Add Company",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Outscraper": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Remove Duplicates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code2": {
+        "main": [
+          [
+            {
+              "node": "Start Scraping",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
   "tags": []
 }
