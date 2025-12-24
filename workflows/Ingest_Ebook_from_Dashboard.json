@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-03T05:01:57.000Z",
+  "updatedAt": "2025-12-24T20:05:54.731Z",
   "createdAt": "2025-11-30T19:24:49.314Z",
   "id": "25cNh3Ffp4T7BQSn",
   "name": "Ingest Ebook from Dashboard",
@@ -179,7 +179,24 @@
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
-          "value": {}
+          "value": {},
+          "matchingColumns": [
+            "filename"
+          ],
+          "schema": [
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
         },
         "options": {}
       },
@@ -382,7 +399,7 @@
       }
     ]
   },
-  "versionId": "ae870cc1-5754-4f36-b759-6b5718ae45ea",
+  "versionId": "92ec106e-296f-4551-baa6-2a762d46c5ba",
   "activeVersionId": "ae870cc1-5754-4f36-b759-6b5718ae45ea",
   "triggerCount": 1,
   "shared": [
