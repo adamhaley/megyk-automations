@@ -134,7 +134,7 @@
     ]
   },
   "versionId": "344c1d4c-38ff-486d-8335-0be0186bf45e",
-  "activeVersionId": "0b043e35-02a0-47c9-b001-7e147f5f8f72",
+  "activeVersionId": "344c1d4c-38ff-486d-8335-0be0186bf45e",
   "triggerCount": 1,
   "shared": [
     {
@@ -146,9 +146,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-23T00:34:32.000Z",
-    "createdAt": "2025-12-23T00:34:28.479Z",
-    "versionId": "0b043e35-02a0-47c9-b001-7e147f5f8f72",
+    "updatedAt": "2025-12-24T19:41:17.000Z",
+    "createdAt": "2025-12-23T01:27:48.464Z",
+    "versionId": "344c1d4c-38ff-486d-8335-0be0186bf45e",
     "workflowId": "CMKnjjcqhsVEcxaV",
     "nodes": [
       {
@@ -186,7 +186,9 @@
             "convertFieldsToString": true
           },
           "mode": "each",
-          "options": {}
+          "options": {
+            "waitForSubWorkflow": true
+          }
         },
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.3,
@@ -236,7 +238,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 0b043e35",
+    "name": "Version 344c1d4c",
     "description": "",
     "autosaved": false
   },
