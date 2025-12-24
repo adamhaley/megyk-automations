@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-20T02:56:45.219Z",
+  "updatedAt": "2025-12-24T19:24:25.547Z",
   "createdAt": "2025-12-20T02:45:16.977Z",
   "id": "DY9WaEz6iavgmQvY",
   "name": "OnQuizCompletion",
@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "operation": "appendOrUpdate",
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo",
@@ -42,7 +42,10 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "email": "={{ $json.body['user[email]'] }}"
+            "email": "={{ $json.body.email_address }}",
+            "name": "={{ $json.body.first_name }} {{ $json.body.last_name }}",
+            "date": "={{ $now.format('yyyy-MM-dd h:m a') }}",
+            "utm_source": "={{ $json.body.utm_source }}"
           },
           "matchingColumns": [
             "email"
@@ -134,7 +137,7 @@
         0
       ],
       "id": "c2043359-b4be-4a90-9e61-da593a38072b",
-      "name": "Append or update row in sheet",
+      "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "qJ5ck4AVx9Jx37Fr",
@@ -148,7 +151,7 @@
       "main": [
         [
           {
-            "node": "Append or update row in sheet",
+            "node": "Append row in sheet",
             "type": "main",
             "index": 0
           }
@@ -170,8 +173,8 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "WordPress/6.9; https://thenew.gold",
-            "content-length": "173",
-            "accept": "*/*",
+            "content-length": "304",
+            "accept": "application/json",
             "accept-encoding": "deflate, gzip",
             "content-type": "application/x-www-form-urlencoded",
             "via": "1.1 Caddy",
@@ -180,12 +183,15 @@
             "x-forwarded-proto": "https"
           },
           "params": {},
-          "query": {},
+          "query": {
+            "utm_source": "test"
+          },
           "body": {
-            "quiz[Name]": "IN: NewGold Wealth Discovery Survey Emerging Markets",
-            "user[result]": "5",
-            "user[email]": "adamhaley@gmail.com",
-            "user[date_started]": "2025-12-20 02:52:51"
+            "first_name": "{{385:TQB_QUIZ_COMPLETED:TQB_USER_FIRST_NAME}}",
+            "last_name": "{{385:TQB_QUIZ_COMPLETED:TQB_USER_LAST_NAME}}",
+            "quiz_result": "{{385:TQB_QUIZ_COMPLETED:TQB_QUIZ_RESULT}}",
+            "email_address": "{{385:TQB_QUIZ_COMPLETED:TQB_USER_EMAIL}}",
+            "utm_source": "{{site_url}}"
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/newgold-quiz-complete",
           "executionMode": "production"
@@ -196,8 +202,8 @@
       }
     ]
   },
-  "versionId": "b0e86982-a857-46d6-b061-ebf3addd03ee",
-  "activeVersionId": "f6ccd4c7-f9c3-47d4-ac0d-5c8ee64f2978",
+  "versionId": "ba99751b-058f-445f-9dc4-e132857a70ca",
+  "activeVersionId": "ba99751b-058f-445f-9dc4-e132857a70ca",
   "triggerCount": 1,
   "shared": [
     {
@@ -209,9 +215,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-20T02:52:37.000Z",
-    "createdAt": "2025-12-20T02:52:34.344Z",
-    "versionId": "f6ccd4c7-f9c3-47d4-ac0d-5c8ee64f2978",
+    "updatedAt": "2025-12-24T19:13:39.000Z",
+    "createdAt": "2025-12-24T19:13:36.465Z",
+    "versionId": "ba99751b-058f-445f-9dc4-e132857a70ca",
     "workflowId": "DY9WaEz6iavgmQvY",
     "nodes": [
       {
@@ -229,11 +235,146 @@
         "id": "265e5713-0ab3-42ae-a00e-3fa04270cfaa",
         "name": "Webhook",
         "webhookId": "43131d2a-a1f1-4f2a-a94c-0f35824ba69e"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo",
+            "mode": "list",
+            "cachedResultName": "TheNew Gold Campaign",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uTdCfpis3k2dsB5I_-6A3NT_PISeSPPOn4rKQ1o2wpo/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "email": "={{ $json.body.email_address }}",
+              "name": "={{ $json.body.first_name }} {{ $json.body.last_name }}",
+              "date": "={{ $now.format('yyyy-MM-dd h:m a') }}",
+              "utm_source": "={{ $json.body.utm_source }}"
+            },
+            "matchingColumns": [
+              "email"
+            ],
+            "schema": [
+              {
+                "id": "name",
+                "displayName": "name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "date",
+                "displayName": "date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_source",
+                "displayName": "utm_source",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_medium",
+                "displayName": "utm_medium",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_campaign",
+                "displayName": "utm_campaign",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_content",
+                "displayName": "utm_content",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_term",
+                "displayName": "utm_term",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          208,
+          0
+        ],
+        "id": "c2043359-b4be-4a90-9e61-da593a38072b",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
       }
     ],
-    "connections": {},
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
     "authors": "Gordan Kljajic",
-    "name": "Version f6ccd4c7",
+    "name": "Version ba99751b",
     "description": "",
     "autosaved": false
   },
