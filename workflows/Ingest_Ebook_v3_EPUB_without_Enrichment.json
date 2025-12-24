@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-11T01:41:11.252Z",
+  "updatedAt": "2025-12-24T20:07:18.635Z",
   "createdAt": "2025-12-01T03:12:48.978Z",
   "id": "Pug5aBaVAObe9dkO",
   "name": "Ingest Ebook v3 EPUB without Enrichment",
@@ -581,11 +581,11 @@
         "responses": {
           "values": [
             {
-              "content": "=Analyze the following chapter and determine if it is a real chapter.\n\nTITLE:\n{{ $json.title }}\n\nCONTENT:\n{{ $json.content }}\n\nReturn ONLY JSON, with NO explanation.\n"
+              "content": "=Analyze the following book section and determine whether it is a REAL CONTENT CHAPTER\naccording to the rules you were given.\n\nTITLE:\n{{ $json.title }}\n\nCONTENT:\n{{ $json.content }}\n\nReturn ONLY the JSON object.\n"
             },
             {
               "role": "system",
-              "content": "You must output ONLY valid JSON.\n\nOutput must NOT be inside quotes.\nOutput must NOT have code fences.\nOutput must NOT have markdown.\n\nOutput MUST be a raw JSON object matching exactly:\n\n{\n  \"is_real_chapter\": boolean,\n  \"clean_title\": string,\n  \"reason\": string\n}\n"
+              "content": "You are classifying book sections during ingestion.\n\nYour job is to determine whether the provided section is a REAL CONTENT CHAPTER\nthat advances the book’s core ideas, arguments, narrative, or instruction.\n\nA REAL CHAPTER:\n- Contains substantive explanatory, narrative, instructional, or analytical content\n- Develops ideas, arguments, stories, or lessons\n- Would reasonably be summarized as part of the book’s main content\n- Is typically numbered or titled like a chapter (but numbering alone is NOT sufficient)\n\nNOT a real chapter (these must return is_real_chapter = false):\n- Table of Contents\n- Preface\n- Foreword\n- Introduction (unless it clearly functions as a full chapter with substantial content)\n- Acknowledgements\n- Dedication\n- About the Author\n- Copyright or publishing information\n- Index\n- Glossary\n- Bibliography / References\n- Appendix / Appendices (unless explicitly instructional and chapter-like)\n- Blank, fragmentary, or placeholder text\n- Lists of names, terms, or page numbers without explanatory prose\n\nDecision rules:\n- Use BOTH the title AND the content to decide\n- Length alone is NOT sufficient — focus on substance\n- If the content primarily describes the book itself (rather than delivering content),\n  it is NOT a real chapter\n- When in doubt, prefer false over true (avoid false positives)\n\nTitle cleanup:\n- clean_title should remove leading words like:\n  \"Chapter 1\", \"CHAPTER I\", \"Section 3\", roman numerals, or numbering\n- Preserve the meaningful title text\n- If no meaningful title exists, return an empty string\n\nOutput MUST be a raw JSON object matching exactly:\n\n{\n  \"is_real_chapter\": boolean,\n  \"clean_title\": string,\n  \"reason\": string\n}\n"
             }
           ]
         },
@@ -886,8 +886,8 @@
       }
     ]
   },
-  "versionId": "e20aa027-63dc-4d2a-886c-3e06160d5c82",
-  "activeVersionId": "e20aa027-63dc-4d2a-886c-3e06160d5c82",
+  "versionId": "d9ddd973-7052-462c-ad87-e7de5855ab59",
+  "activeVersionId": "d9ddd973-7052-462c-ad87-e7de5855ab59",
   "triggerCount": 0,
   "shared": [
     {
@@ -899,9 +899,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-11T01:41:11.253Z",
-    "createdAt": "2025-12-11T01:41:11.253Z",
-    "versionId": "e20aa027-63dc-4d2a-886c-3e06160d5c82",
+    "updatedAt": "2025-12-24T20:07:22.000Z",
+    "createdAt": "2025-12-24T20:07:18.638Z",
+    "versionId": "d9ddd973-7052-462c-ad87-e7de5855ab59",
     "workflowId": "Pug5aBaVAObe9dkO",
     "nodes": [
       {
@@ -1479,11 +1479,11 @@
           "responses": {
             "values": [
               {
-                "content": "=Analyze the following chapter and determine if it is a real chapter.\n\nTITLE:\n{{ $json.title }}\n\nCONTENT:\n{{ $json.content }}\n\nReturn ONLY JSON, with NO explanation.\n"
+                "content": "=Analyze the following book section and determine whether it is a REAL CONTENT CHAPTER\naccording to the rules you were given.\n\nTITLE:\n{{ $json.title }}\n\nCONTENT:\n{{ $json.content }}\n\nReturn ONLY the JSON object.\n"
               },
               {
                 "role": "system",
-                "content": "You must output ONLY valid JSON.\n\nOutput must NOT be inside quotes.\nOutput must NOT have code fences.\nOutput must NOT have markdown.\n\nOutput MUST be a raw JSON object matching exactly:\n\n{\n  \"is_real_chapter\": boolean,\n  \"clean_title\": string,\n  \"reason\": string\n}\n"
+                "content": "You are classifying book sections during ingestion.\n\nYour job is to determine whether the provided section is a REAL CONTENT CHAPTER\nthat advances the book’s core ideas, arguments, narrative, or instruction.\n\nA REAL CHAPTER:\n- Contains substantive explanatory, narrative, instructional, or analytical content\n- Develops ideas, arguments, stories, or lessons\n- Would reasonably be summarized as part of the book’s main content\n- Is typically numbered or titled like a chapter (but numbering alone is NOT sufficient)\n\nNOT a real chapter (these must return is_real_chapter = false):\n- Table of Contents\n- Preface\n- Foreword\n- Introduction (unless it clearly functions as a full chapter with substantial content)\n- Acknowledgements\n- Dedication\n- About the Author\n- Copyright or publishing information\n- Index\n- Glossary\n- Bibliography / References\n- Appendix / Appendices (unless explicitly instructional and chapter-like)\n- Blank, fragmentary, or placeholder text\n- Lists of names, terms, or page numbers without explanatory prose\n\nDecision rules:\n- Use BOTH the title AND the content to decide\n- Length alone is NOT sufficient — focus on substance\n- If the content primarily describes the book itself (rather than delivering content),\n  it is NOT a real chapter\n- When in doubt, prefer false over true (avoid false positives)\n\nTitle cleanup:\n- clean_title should remove leading words like:\n  \"Chapter 1\", \"CHAPTER I\", \"Section 3\", roman numerals, or numbering\n- Preserve the meaningful title text\n- If no meaningful title exists, return an empty string\n\nOutput MUST be a raw JSON object matching exactly:\n\n{\n  \"is_real_chapter\": boolean,\n  \"clean_title\": string,\n  \"reason\": string\n}\n"
               }
             ]
           },
@@ -1767,8 +1767,8 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
+    "name": "Version d9ddd973",
+    "description": "",
     "autosaved": false
   },
   "tags": []
