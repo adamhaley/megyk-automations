@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-24T19:24:25.547Z",
+  "updatedAt": "2025-12-25T01:25:50.756Z",
   "createdAt": "2025-12-20T02:45:16.977Z",
   "id": "DY9WaEz6iavgmQvY",
   "name": "OnQuizCompletion",
@@ -42,10 +42,14 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "email": "={{ $json.body.email_address }}",
-            "name": "={{ $json.body.first_name }} {{ $json.body.last_name }}",
+            "email": "={{ $json.body.email }}",
+            "name": "={{ $json.body.name }}",
             "date": "={{ $now.format('yyyy-MM-dd h:m a') }}",
-            "utm_source": "={{ $json.body.utm_source }}"
+            "utm_source": "={{ $json.body.utm_source }}",
+            "utm_medium": "={{ $json.body.utm_medium }}",
+            "utm_campaign": "={{ $json.body.utm_campaign }}",
+            "utm_content": "={{ $json.body.utm_content }}",
+            "utm_term": "={{ $json.body.utm_term }}"
           },
           "matchingColumns": [
             "email"
@@ -173,8 +177,8 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "WordPress/6.9; https://thenew.gold",
-            "content-length": "304",
-            "accept": "application/json",
+            "content-length": "124",
+            "accept": "*/*",
             "accept-encoding": "deflate, gzip",
             "content-type": "application/x-www-form-urlencoded",
             "via": "1.1 Caddy",
@@ -183,15 +187,15 @@
             "x-forwarded-proto": "https"
           },
           "params": {},
-          "query": {
-            "utm_source": "test"
-          },
+          "query": {},
           "body": {
-            "first_name": "{{385:TQB_QUIZ_COMPLETED:TQB_USER_FIRST_NAME}}",
-            "last_name": "{{385:TQB_QUIZ_COMPLETED:TQB_USER_LAST_NAME}}",
-            "quiz_result": "{{385:TQB_QUIZ_COMPLETED:TQB_QUIZ_RESULT}}",
-            "email_address": "{{385:TQB_QUIZ_COMPLETED:TQB_USER_EMAIL}}",
-            "utm_source": "{{site_url}}"
+            "name": "En Test",
+            "email": "adamhaley@gmail.com",
+            "utm_source": "facebook",
+            "utm_campaign": "69",
+            "utm_content": "lorem",
+            "utm_medium": "web",
+            "utm_term": "ipsum"
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/newgold-quiz-complete",
           "executionMode": "production"
@@ -202,8 +206,8 @@
       }
     ]
   },
-  "versionId": "ba99751b-058f-445f-9dc4-e132857a70ca",
-  "activeVersionId": "ba99751b-058f-445f-9dc4-e132857a70ca",
+  "versionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
+  "activeVersionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
   "triggerCount": 1,
   "shared": [
     {
@@ -215,9 +219,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-24T19:13:39.000Z",
-    "createdAt": "2025-12-24T19:13:36.465Z",
-    "versionId": "ba99751b-058f-445f-9dc4-e132857a70ca",
+    "updatedAt": "2025-12-25T01:25:54.000Z",
+    "createdAt": "2025-12-25T01:25:50.758Z",
+    "versionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
     "workflowId": "DY9WaEz6iavgmQvY",
     "nodes": [
       {
@@ -256,10 +260,14 @@
           "columns": {
             "mappingMode": "defineBelow",
             "value": {
-              "email": "={{ $json.body.email_address }}",
-              "name": "={{ $json.body.first_name }} {{ $json.body.last_name }}",
+              "email": "={{ $json.body.email }}",
+              "name": "={{ $json.body.name }}",
               "date": "={{ $now.format('yyyy-MM-dd h:m a') }}",
-              "utm_source": "={{ $json.body.utm_source }}"
+              "utm_source": "={{ $json.body.utm_source }}",
+              "utm_medium": "={{ $json.body.utm_medium }}",
+              "utm_campaign": "={{ $json.body.utm_campaign }}",
+              "utm_content": "={{ $json.body.utm_content }}",
+              "utm_term": "={{ $json.body.utm_term }}"
             },
             "matchingColumns": [
               "email"
@@ -374,7 +382,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version ba99751b",
+    "name": "Version fbe10f36",
     "description": "",
     "autosaved": false
   },
