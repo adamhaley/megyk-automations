@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-14T17:18:30.711Z",
+  "updatedAt": "2025-12-26T22:25:31.841Z",
   "createdAt": "2025-11-15T18:59:05.100Z",
   "id": "dqgaIgweJFg4mAJo",
   "name": "Pitch Paul Campaign Automation",
@@ -30,7 +30,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1776,
+        1984,
         480
       ],
       "id": "1aa779ea-2c61-48ec-a128-f1b66f2d23f9",
@@ -38,13 +38,12 @@
     },
     {
       "parameters": {
-        "amount": "={{Math.floor(Math.random() * 60)}}",
-        "unit": "minutes"
+        "amount": "={{Math.floor(Math.random() * 60)}}"
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        4480,
+        4688,
         1040
       ],
       "id": "91465f0a-a119-4cd3-9501-f7adaa67e34c",
@@ -54,7 +53,7 @@
     {
       "parameters": {
         "fromEmail": "={{ $json.from }} <tatjana.h@deutsches-edelsteinhaus.co> ",
-        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
         "subject": "={{ $json.subject }}",
         "emailFormat": "text",
         "text": "={{ $json.body }}",
@@ -65,7 +64,7 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2656,
+        2864,
         112
       ],
       "id": "d32e77b9-1af4-46ff-9d5c-be2f16556f11",
@@ -81,7 +80,7 @@
     },
     {
       "parameters": {
-        "content": "# PITCH PAUL",
+        "content": "## PITCH PAUL",
         "height": 1120,
         "width": 1584,
         "color": 6
@@ -109,7 +108,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                     "rightValue": "tatjana.h@deutsches-edelsteinhaus.co",
                     "operator": {
                       "type": "string",
@@ -134,7 +133,7 @@
                 "conditions": [
                   {
                     "id": "343f9be3-7f2d-4fcb-be42-d549d3c36434",
-                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                     "rightValue": "haufler@deutsches-edelsteinhaus.co",
                     "operator": {
                       "type": "string",
@@ -159,7 +158,7 @@
                 "conditions": [
                   {
                     "id": "ba01f1f2-b820-4e6b-9897-a0c9f991aaa1",
-                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                     "rightValue": "t.haufler@deutsches-edelsteinhaus.co",
                     "operator": {
                       "type": "string",
@@ -184,7 +183,7 @@
                 "conditions": [
                   {
                     "id": "18d80fd2-eca7-496b-b991-ebd35d6b9990",
-                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                     "rightValue": "tatjana@deutsches-edelsteinhaus.co",
                     "operator": {
                       "type": "string",
@@ -209,7 +208,7 @@
                 "conditions": [
                   {
                     "id": "6e69e218-0f85-4c63-aa5e-54c4e59ab001",
-                    "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                    "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                     "rightValue": "thaufler@deutsches-edelsteinhaus.co",
                     "operator": {
                       "type": "string",
@@ -230,7 +229,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        2432,
+        2640,
         448
       ],
       "id": "128fec4f-e063-4b6c-aa75-a2f875e5fa5a",
@@ -243,7 +242,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3168,
+        3376,
         464
       ],
       "id": "8848dfa6-3d72-4f60-923c-8838877075ad",
@@ -254,7 +253,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        2208,
+        2416,
         192
       ],
       "id": "6b5d877e-d159-4c5b-a951-29c8a2724540",
@@ -272,8 +271,8 @@
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "email": "={{ $('Clean Emails').item.json.email }}",
-            "company": "={{ $('Clean Emails').item.json.company }}"
+            "email": "={{ $json.email }}",
+            "company": "={{ $json.company }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -308,7 +307,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        2064,
+        2272,
         576
       ],
       "id": "59251260-82f3-4e35-828b-b84913bdef57",
@@ -317,8 +316,10 @@
     },
     {
       "parameters": {
-        "operation": "incr",
-        "key": "pitch_paul_incrementor"
+        "operation": "get",
+        "propertyName": "increment",
+        "key": "pitch_paul_incrementor",
+        "options": {}
       },
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
@@ -333,8 +334,7 @@
           "id": "YhGZ2V2NRW4flPo5",
           "name": "Redis account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -359,7 +359,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        656,
+        1392,
         480
       ],
       "id": "923d6a88-a2d6-4998-8b3a-1d38fda38cfe",
@@ -369,7 +369,7 @@
     {
       "parameters": {
         "fromEmail": "={{ $json.from }} <haufler@deutsches-edelsteinhaus.co>",
-        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
         "subject": "={{ $json.subject }}",
         "emailFormat": "text",
         "text": "={{ $json.body }}",
@@ -380,7 +380,7 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2656,
+        2864,
         320
       ],
       "id": "c518e13a-5712-41dd-a2b7-06747023a843",
@@ -397,7 +397,7 @@
     {
       "parameters": {
         "fromEmail": "={{ $json.from }} <t.haufler@deutsches-edelsteinhaus.co>",
-        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
         "subject": "={{ $json.subject }}",
         "emailFormat": "text",
         "text": "={{ $json.body }}",
@@ -408,7 +408,7 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2656,
+        2864,
         496
       ],
       "id": "a62a62a7-2778-44a9-81c8-2c26e77e812e",
@@ -424,7 +424,7 @@
     {
       "parameters": {
         "fromEmail": "={{ $json.from }} <tatjana@deutsches-edelsteinhaus.co> ",
-        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
         "subject": "={{ $json.subject }}",
         "emailFormat": "text",
         "text": "={{ $json.body }}",
@@ -435,7 +435,7 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2656,
+        2864,
         688
       ],
       "id": "3576421a-2c26-4ac1-aced-22c1c0a134d9",
@@ -451,7 +451,7 @@
     {
       "parameters": {
         "fromEmail": "= {{ $json.from }} <thaufler@deutsches-edelsteinhaus.co>",
-        "toEmail": "={{ $('Clean Emails').item.json.email }}",
+        "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
         "subject": "={{ $json.subject }}",
         "emailFormat": "text",
         "text": "={{ $json.body }}",
@@ -462,7 +462,7 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2656,
+        2864,
         880
       ],
       "id": "e7127027-436d-4e4d-99a9-d9042d5c66e1",
@@ -484,7 +484,7 @@
             {
               "keyName": "id",
               "condition": "eq",
-              "keyValue": "={{ $('Clean Emails').item.json.id }}"
+              "keyValue": "={{ $('Assign Mailboxes (from)').item.json.id }}"
             }
           ]
         },
@@ -500,7 +500,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3392,
+        3600,
         512
       ],
       "id": "a734e0a6-f028-42a4-8f68-e5f3a62c4f04",
@@ -514,12 +514,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// Get arrays of incoming items\nconst companies = $input.first().json.body;\n//const mailboxes = \n\nconst output = [];\n\n// Loop through companies (assume equal length)\nfor (let i = 0; i < companies.length; i++) {\n  const company = companies[i];\n  const mailbox = $('Get Mailboxes').all()[i].json; // index-aligned record\n\n  // --- Clean email ---\n  let email = company.email;\n\n  if (email && typeof email === \"string\") {\n    const parts = email\n      .split(/[,;]+/)\n      .map(e => e.trim())\n      .filter(Boolean);\n\n    company.email = parts.length > 0 ? parts[0] : \"\";\n  }\n\n  // --- Add from_box ---\n  company.from_box = mailbox?.address || \"\";\n\n  // add to the output items\n  output.push({ json: company });\n}\n\nreturn output;\n"
+        "jsCode": "// Get arrays of incoming items\nconst companies = $input.first().json.body;\n//const mailboxes = \n\nconst output = [];\n\n// Loop through companies (assume equal length)\nfor (let i = 0; i < companies.length; i++) {\n  const company = companies[i];\n\n  // --- Clean email ---\n  let email = company.email;\n\n  if (email && typeof email === \"string\") {\n    const parts = email\n      .split(/[,;]+/)\n      .map(e => e.trim())\n      .filter(Boolean);\n\n    company.email = parts.length > 0 ? parts[0] : \"\";\n  }\n\n\n\n  // add to the output items\n  output.push({ json: company });\n}\n\nreturn output;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1408,
+        1120,
         480
       ],
       "id": "22c9c808-9fa7-4806-a183-d327555f3515",
@@ -627,7 +627,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2864,
+        3072,
         112
       ],
       "id": "efdfe8a5-83b3-42a9-856e-8275b9e94f6a",
@@ -741,7 +741,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2864,
+        3072,
         320
       ],
       "id": "78cc723d-60ca-48d8-93da-6145258256c7",
@@ -855,7 +855,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2864,
+        3072,
         496
       ],
       "id": "c456bc5c-9cbc-4421-8265-8219c1623a2b",
@@ -969,7 +969,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2864,
+        3072,
         688
       ],
       "id": "f2d451bd-1638-4f2e-aed4-27886d432a3a",
@@ -1083,7 +1083,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2864,
+        3072,
         880
       ],
       "id": "b0a581b4-e00c-44c4-b9ac-5b19b6aae347",
@@ -1117,7 +1117,7 @@
           "parameters": [
             {
               "name": "limit_count",
-              "value": "={{ ( $json.pitch_paul_incrementor || 1 ) * $('Get Mailboxes').all().length }}"
+              "value": "={{ $json.increment || 1 }}"
             }
           ]
         },
@@ -1133,7 +1133,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1040,
+        848,
         480
       ],
       "id": "034dfa70-ba2a-416c-83c0-5499a6dcf432",
@@ -1225,7 +1225,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3968,
+        4176,
         512
       ],
       "id": "fadcd92d-dd5e-4897-b018-ef6b574bb9c0",
@@ -1266,7 +1266,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3696,
+        3904,
         512
       ],
       "id": "75fc06a2-d5ae-46d7-b155-734279986985",
@@ -1297,6 +1297,19 @@
       ],
       "id": "5cb3085e-a721-49b4-ab7d-38511873bee4",
       "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input assumptions:\n// Input 0 = leads\n// Input 1 = mailboxes\n\nconst leads = $('Clean Emails').all();\nconst mailboxes = $input.all();\n\nif (!leads.length) {\n  throw new Error(\"No leads provided\");\n}\n\nif (!mailboxes.length) {\n  throw new Error(\"No mailboxes provided\");\n}\n\nconst mailboxCount = mailboxes.length;\n\n// Assign mailboxes round-robin\nconst output = leads.map((lead, index) => {\n  const mailboxIndex = index % mailboxCount;\n  const mailbox = mailboxes[mailboxIndex];\n\n  return {\n    json: {\n      ...lead.json,\n\n      // attach mailbox info directly to the lead\n      assigned_mailbox: mailbox.json,\n      assigned_mailbox_index: mailboxIndex,\n    }\n  };\n});\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        480
+      ],
+      "id": "18436b69-f15e-451f-837c-f21c99e31dd3",
+      "name": "Assign Mailboxes (from)"
     }
   ],
   "connections": {
@@ -1416,7 +1429,7 @@
       "main": [
         [
           {
-            "node": "Get Mailboxes",
+            "node": "Supabase RPC Retrieval - Get Leads",
             "type": "main",
             "index": 0
           }
@@ -1427,7 +1440,7 @@
       "main": [
         [
           {
-            "node": "Supabase RPC Retrieval - Get Leads",
+            "node": "Assign Mailboxes (from)",
             "type": "main",
             "index": 0
           }
@@ -1493,7 +1506,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Get Mailboxes",
             "type": "main",
             "index": 0
           }
@@ -1598,6 +1611,17 @@
           }
         ]
       ]
+    },
+    "Assign Mailboxes (from)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1633,8 +1657,8 @@
       }
     ]
   },
-  "versionId": "bed9097d-e4ad-4b60-8c43-2a511428c173",
-  "activeVersionId": "bed9097d-e4ad-4b60-8c43-2a511428c173",
+  "versionId": "205c747d-2648-4947-8d18-64f14e678de9",
+  "activeVersionId": "10fa93ae-3e14-40d3-986f-2be6f36987bf",
   "triggerCount": 1,
   "shared": [
     {
@@ -1646,9 +1670,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-14T17:18:30.713Z",
-    "createdAt": "2025-12-14T17:18:30.713Z",
-    "versionId": "bed9097d-e4ad-4b60-8c43-2a511428c173",
+    "updatedAt": "2025-12-26T22:22:34.000Z",
+    "createdAt": "2025-12-26T22:22:31.871Z",
+    "versionId": "10fa93ae-3e14-40d3-986f-2be6f36987bf",
     "workflowId": "dqgaIgweJFg4mAJo",
     "nodes": [
       {
@@ -1675,7 +1699,7 @@
         "type": "n8n-nodes-base.splitInBatches",
         "typeVersion": 3,
         "position": [
-          1776,
+          1984,
           480
         ],
         "id": "1aa779ea-2c61-48ec-a128-f1b66f2d23f9",
@@ -1683,13 +1707,12 @@
       },
       {
         "parameters": {
-          "amount": "={{Math.floor(Math.random() * 60)}}",
-          "unit": "minutes"
+          "amount": "={{Math.floor(Math.random() * 60)}}"
         },
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1.1,
         "position": [
-          4480,
+          4688,
           1040
         ],
         "id": "91465f0a-a119-4cd3-9501-f7adaa67e34c",
@@ -1699,7 +1722,7 @@
       {
         "parameters": {
           "fromEmail": "={{ $json.from }} <tatjana.h@deutsches-edelsteinhaus.co> ",
-          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
           "subject": "={{ $json.subject }}",
           "emailFormat": "text",
           "text": "={{ $json.body }}",
@@ -1710,7 +1733,7 @@
         "type": "n8n-nodes-base.emailSend",
         "typeVersion": 2.1,
         "position": [
-          2656,
+          2864,
           112
         ],
         "id": "d32e77b9-1af4-46ff-9d5c-be2f16556f11",
@@ -1754,7 +1777,7 @@
                   },
                   "conditions": [
                     {
-                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                       "rightValue": "tatjana.h@deutsches-edelsteinhaus.co",
                       "operator": {
                         "type": "string",
@@ -1779,7 +1802,7 @@
                   "conditions": [
                     {
                       "id": "343f9be3-7f2d-4fcb-be42-d549d3c36434",
-                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                       "rightValue": "haufler@deutsches-edelsteinhaus.co",
                       "operator": {
                         "type": "string",
@@ -1804,7 +1827,7 @@
                   "conditions": [
                     {
                       "id": "ba01f1f2-b820-4e6b-9897-a0c9f991aaa1",
-                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                       "rightValue": "t.haufler@deutsches-edelsteinhaus.co",
                       "operator": {
                         "type": "string",
@@ -1829,7 +1852,7 @@
                   "conditions": [
                     {
                       "id": "18d80fd2-eca7-496b-b991-ebd35d6b9990",
-                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                       "rightValue": "tatjana@deutsches-edelsteinhaus.co",
                       "operator": {
                         "type": "string",
@@ -1854,7 +1877,7 @@
                   "conditions": [
                     {
                       "id": "6e69e218-0f85-4c63-aa5e-54c4e59ab001",
-                      "leftValue": "={{ $('Clean Emails').item.json.from_box }}",
+                      "leftValue": "={{ $('Assign Mailboxes (from)').item.json.assigned_mailbox.address }}",
                       "rightValue": "thaufler@deutsches-edelsteinhaus.co",
                       "operator": {
                         "type": "string",
@@ -1875,7 +1898,7 @@
         "type": "n8n-nodes-base.switch",
         "typeVersion": 3.3,
         "position": [
-          2432,
+          2640,
           448
         ],
         "id": "128fec4f-e063-4b6c-aa75-a2f875e5fa5a",
@@ -1888,7 +1911,7 @@
         "type": "n8n-nodes-base.merge",
         "typeVersion": 3.2,
         "position": [
-          3168,
+          3376,
           464
         ],
         "id": "8848dfa6-3d72-4f60-923c-8838877075ad",
@@ -1899,7 +1922,7 @@
         "type": "n8n-nodes-base.noOp",
         "typeVersion": 1,
         "position": [
-          2208,
+          2416,
           192
         ],
         "id": "6b5d877e-d159-4c5b-a951-29c8a2724540",
@@ -1917,8 +1940,8 @@
           "workflowInputs": {
             "mappingMode": "defineBelow",
             "value": {
-              "email": "={{ $('Clean Emails').item.json.email }}",
-              "company": "={{ $('Clean Emails').item.json.company }}"
+              "email": "={{ $json.email }}",
+              "company": "={{ $json.company }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -1953,7 +1976,7 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.3,
         "position": [
-          2064,
+          2272,
           576
         ],
         "id": "59251260-82f3-4e35-828b-b84913bdef57",
@@ -1962,8 +1985,10 @@
       },
       {
         "parameters": {
-          "operation": "incr",
-          "key": "pitch_paul_incrementor"
+          "operation": "get",
+          "propertyName": "increment",
+          "key": "pitch_paul_incrementor",
+          "options": {}
         },
         "type": "n8n-nodes-base.redis",
         "typeVersion": 1,
@@ -1978,8 +2003,7 @@
             "id": "YhGZ2V2NRW4flPo5",
             "name": "Redis account"
           }
-        },
-        "disabled": true
+        }
       },
       {
         "parameters": {
@@ -2004,7 +2028,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1,
         "position": [
-          656,
+          1392,
           480
         ],
         "id": "923d6a88-a2d6-4998-8b3a-1d38fda38cfe",
@@ -2014,7 +2038,7 @@
       {
         "parameters": {
           "fromEmail": "={{ $json.from }} <haufler@deutsches-edelsteinhaus.co>",
-          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
           "subject": "={{ $json.subject }}",
           "emailFormat": "text",
           "text": "={{ $json.body }}",
@@ -2025,7 +2049,7 @@
         "type": "n8n-nodes-base.emailSend",
         "typeVersion": 2.1,
         "position": [
-          2656,
+          2864,
           320
         ],
         "id": "c518e13a-5712-41dd-a2b7-06747023a843",
@@ -2042,7 +2066,7 @@
       {
         "parameters": {
           "fromEmail": "={{ $json.from }} <t.haufler@deutsches-edelsteinhaus.co>",
-          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
           "subject": "={{ $json.subject }}",
           "emailFormat": "text",
           "text": "={{ $json.body }}",
@@ -2053,7 +2077,7 @@
         "type": "n8n-nodes-base.emailSend",
         "typeVersion": 2.1,
         "position": [
-          2656,
+          2864,
           496
         ],
         "id": "a62a62a7-2778-44a9-81c8-2c26e77e812e",
@@ -2069,7 +2093,7 @@
       {
         "parameters": {
           "fromEmail": "={{ $json.from }} <tatjana@deutsches-edelsteinhaus.co> ",
-          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
           "subject": "={{ $json.subject }}",
           "emailFormat": "text",
           "text": "={{ $json.body }}",
@@ -2080,7 +2104,7 @@
         "type": "n8n-nodes-base.emailSend",
         "typeVersion": 2.1,
         "position": [
-          2656,
+          2864,
           688
         ],
         "id": "3576421a-2c26-4ac1-aced-22c1c0a134d9",
@@ -2096,7 +2120,7 @@
       {
         "parameters": {
           "fromEmail": "= {{ $json.from }} <thaufler@deutsches-edelsteinhaus.co>",
-          "toEmail": "={{ $('Clean Emails').item.json.email }}",
+          "toEmail": "={{ $('Assign Mailboxes (from)').item.json.email }}",
           "subject": "={{ $json.subject }}",
           "emailFormat": "text",
           "text": "={{ $json.body }}",
@@ -2107,7 +2131,7 @@
         "type": "n8n-nodes-base.emailSend",
         "typeVersion": 2.1,
         "position": [
-          2656,
+          2864,
           880
         ],
         "id": "e7127027-436d-4e4d-99a9-d9042d5c66e1",
@@ -2129,7 +2153,7 @@
               {
                 "keyName": "id",
                 "condition": "eq",
-                "keyValue": "={{ $('Clean Emails').item.json.id }}"
+                "keyValue": "={{ $('Assign Mailboxes (from)').item.json.id }}"
               }
             ]
           },
@@ -2145,7 +2169,7 @@
         "type": "n8n-nodes-base.supabase",
         "typeVersion": 1,
         "position": [
-          3392,
+          3600,
           512
         ],
         "id": "a734e0a6-f028-42a4-8f68-e5f3a62c4f04",
@@ -2159,12 +2183,12 @@
       },
       {
         "parameters": {
-          "jsCode": "// Get arrays of incoming items\nconst companies = $input.first().json.body;\n//const mailboxes = \n\nconst output = [];\n\n// Loop through companies (assume equal length)\nfor (let i = 0; i < companies.length; i++) {\n  const company = companies[i];\n  const mailbox = $('Get Mailboxes').all()[i].json; // index-aligned record\n\n  // --- Clean email ---\n  let email = company.email;\n\n  if (email && typeof email === \"string\") {\n    const parts = email\n      .split(/[,;]+/)\n      .map(e => e.trim())\n      .filter(Boolean);\n\n    company.email = parts.length > 0 ? parts[0] : \"\";\n  }\n\n  // --- Add from_box ---\n  company.from_box = mailbox?.address || \"\";\n\n  // add to the output items\n  output.push({ json: company });\n}\n\nreturn output;\n"
+          "jsCode": "// Get arrays of incoming items\nconst companies = $input.first().json.body;\n//const mailboxes = \n\nconst output = [];\n\n// Loop through companies (assume equal length)\nfor (let i = 0; i < companies.length; i++) {\n  const company = companies[i];\n\n  // --- Clean email ---\n  let email = company.email;\n\n  if (email && typeof email === \"string\") {\n    const parts = email\n      .split(/[,;]+/)\n      .map(e => e.trim())\n      .filter(Boolean);\n\n    company.email = parts.length > 0 ? parts[0] : \"\";\n  }\n\n\n\n  // add to the output items\n  output.push({ json: company });\n}\n\nreturn output;\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1408,
+          1120,
           480
         ],
         "id": "22c9c808-9fa7-4806-a183-d327555f3515",
@@ -2272,7 +2296,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          2864,
+          3072,
           112
         ],
         "id": "efdfe8a5-83b3-42a9-856e-8275b9e94f6a",
@@ -2386,7 +2410,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          2864,
+          3072,
           320
         ],
         "id": "78cc723d-60ca-48d8-93da-6145258256c7",
@@ -2500,7 +2524,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          2864,
+          3072,
           496
         ],
         "id": "c456bc5c-9cbc-4421-8265-8219c1623a2b",
@@ -2614,7 +2638,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          2864,
+          3072,
           688
         ],
         "id": "f2d451bd-1638-4f2e-aed4-27886d432a3a",
@@ -2728,7 +2752,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          2864,
+          3072,
           880
         ],
         "id": "b0a581b4-e00c-44c4-b9ac-5b19b6aae347",
@@ -2762,7 +2786,7 @@
             "parameters": [
               {
                 "name": "limit_count",
-                "value": "={{ ( $json.pitch_paul_incrementor || 1 ) * $('Get Mailboxes').all().length }}"
+                "value": "={{ $json.increment || 1 }}"
               }
             ]
           },
@@ -2778,7 +2802,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          1040,
+          848,
           480
         ],
         "id": "034dfa70-ba2a-416c-83c0-5499a6dcf432",
@@ -2870,7 +2894,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          3968,
+          4176,
           512
         ],
         "id": "fadcd92d-dd5e-4897-b018-ef6b574bb9c0",
@@ -2911,7 +2935,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          3696,
+          3904,
           512
         ],
         "id": "75fc06a2-d5ae-46d7-b155-734279986985",
@@ -2942,6 +2966,19 @@
         ],
         "id": "5cb3085e-a721-49b4-ab7d-38511873bee4",
         "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Input assumptions:\n// Input 0 = leads\n// Input 1 = mailboxes\n\nconst leads = $('Clean Emails').all();\nconst mailboxes = $input.all();\n\nif (!leads.length) {\n  throw new Error(\"No leads provided\");\n}\n\nif (!mailboxes.length) {\n  throw new Error(\"No mailboxes provided\");\n}\n\nconst mailboxCount = mailboxes.length;\n\n// Assign mailboxes round-robin\nconst output = leads.map((lead, index) => {\n  const mailboxIndex = index % mailboxCount;\n  const mailbox = mailboxes[mailboxIndex];\n\n  return {\n    json: {\n      ...lead.json,\n\n      // attach mailbox info directly to the lead\n      assigned_mailbox: mailbox.json,\n      assigned_mailbox_index: mailboxIndex,\n    }\n  };\n});\n\nreturn output;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1680,
+          480
+        ],
+        "id": "18436b69-f15e-451f-837c-f21c99e31dd3",
+        "name": "Assign Mailboxes (from)"
       }
     ],
     "connections": {
@@ -3061,7 +3098,7 @@
         "main": [
           [
             {
-              "node": "Get Mailboxes",
+              "node": "Supabase RPC Retrieval - Get Leads",
               "type": "main",
               "index": 0
             }
@@ -3072,7 +3109,7 @@
         "main": [
           [
             {
-              "node": "Supabase RPC Retrieval - Get Leads",
+              "node": "Assign Mailboxes (from)",
               "type": "main",
               "index": 0
             }
@@ -3138,7 +3175,7 @@
         "main": [
           [
             {
-              "node": "Loop Over Items",
+              "node": "Get Mailboxes",
               "type": "main",
               "index": 0
             }
@@ -3243,11 +3280,22 @@
             }
           ]
         ]
+      },
+      "Assign Mailboxes (from)": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
+    "name": "Version 10fa93ae",
+    "description": "",
     "autosaved": false
   },
   "tags": []
