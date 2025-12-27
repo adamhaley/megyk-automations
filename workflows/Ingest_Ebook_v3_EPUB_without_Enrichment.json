@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-24T20:07:18.635Z",
+  "updatedAt": "2025-12-27T18:40:46.769Z",
   "createdAt": "2025-12-01T03:12:48.978Z",
   "id": "Pug5aBaVAObe9dkO",
   "name": "Ingest Ebook v3 EPUB without Enrichment",
@@ -8,7 +8,7 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "/**\n * UPDATED CLEANER FOR NEW INPUT FORMAT\n * Receives ONE item:\n *   { json: { chapters: [ {id, title, html, order}, ... ] } }\n */\n\nconst chapters = $json.chapters || [];\n\n// HTML stripper\nfunction stripHtml(html) {\n  if (!html) return \"\";\n\n  let text = String(html)\n\n    .replace(/<(script|style|noscript)[^>]*>[\\s\\S]*?<\\/\\1>/gi, \"\")\n    .replace(/<!--[\\s\\S]*?-->/g, \"\")\n    .replace(/<[^>]+>/g, \" \")\n\n    .replace(/&nbsp;/gi, \" \")\n    .replace(/&amp;/gi, \"&\")\n    .replace(/&lt;/gi, \"<\")\n    .replace(/&gt;/gi, \">\")\n    .replace(/&quot;/gi, '\"')\n    .replace(/&#39;/gi, \"'\")\n    .replace(/&#x2019;/gi, \"'\")\n    .replace(/&#x2014;/gi, \"—\")\n    .replace(/&#x2013;/gi, \"–\")\n\n    .replace(/\\s+/g, \" \");\n\n  return text.trim();\n}\n\nconst cleaned = chapters.map((ch, idx) => ({\n  chapter_index: ch.order ?? idx,\n  title: ch.title || ch.id || \"\",\n  content: stripHtml(ch.html)\n}));\n\n// Output as multiple items\nreturn cleaned.map(c => ({ json: c }));\n"
+        "jsCode": "/**\n * CLEANER FOR NEW INPUT FORMAT\n * Mode: Run Once for All Items\n */\n\nconst chapters = $input.first().json.chapters || [];\n\n// HTML stripper\nfunction stripHtml(html) {\n  if (!html) return \"\";\n\n  let text = String(html)\n    .replace(/<(script|style|noscript)[^>]*>[\\s\\S]*?<\\/\\1>/gi, \"\")\n    .replace(/<!--[\\s\\S]*?-->/g, \"\")\n    .replace(/<[^>]+>/g, \" \")\n    .replace(/&nbsp;/gi, \" \")\n    .replace(/&amp;/gi, \"&\")\n    .replace(/&lt;/gi, \"<\")\n    .replace(/&gt;/gi, \">\")\n    .replace(/&quot;/gi, '\"')\n    .replace(/&#39;/gi, \"'\")\n    .replace(/&#x2019;/gi, \"'\")\n    .replace(/&#x2014;/gi, \"—\")\n    .replace(/&#x2013;/gi, \"–\")\n    .replace(/\\s+/g, \" \");\n\n  return text.trim();\n}\n\nconst cleaned = chapters.map((ch, idx) => ({\n  chapter_index: ch.order ?? idx,\n  title: ch.title, // untouched — proven good\n  content: stripHtml(ch.html)\n}));\n\nreturn cleaned.map(c => ({ json: c }));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -272,20 +272,6 @@
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const EPub = require(\"epub\");\nconst fs = require(\"fs\");\n\nconst binary = $input.item.binary.data;\nconst filePath = $input.item.json.fileName;\n\nfs.writeFileSync(filePath, Buffer.from(binary.data, \"base64\"));\n\nconst epub = new EPub(filePath);\n\nawait new Promise((resolve, reject) => {\n  epub.on(\"error\", reject);\n  epub.on(\"end\", resolve);\n  epub.parse();\n});\n\nconst chapters = [];\n\nfor (const item of epub.flow) {\n  const chapterText = await new Promise((resolve, reject) => {\n    epub.getChapter(item.id, (err, text) => {\n      if (err) reject(err);\n      else resolve(text || \"\");\n    });\n  });\n\n  chapters.push({\n    id: item.id,\n    title: item.title || item.id,\n    order: item.order,\n    html: chapterText\n  });\n}\n\nreturn {\n  json: {\n    chapters\n  }\n};\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        368,
-        32
-      ],
-      "id": "d0a08881-6398-4b69-a2f7-5e5990a29538",
-      "name": "Extract from EPUB"
-    },
-    {
-      "parameters": {
         "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.filename.replace('.mobi', '.epub') }}",
         "options": {}
       },
@@ -410,7 +396,8 @@
         32
       ],
       "id": "4ee07832-d2fa-452b-bcec-3548cfea42f5",
-      "name": "Filter1"
+      "name": "Filter1",
+      "disabled": true
     },
     {
       "parameters": {
@@ -424,7 +411,8 @@
         32
       ],
       "id": "384e8aea-3185-4fab-8777-76a783250ca3",
-      "name": "Parse Output"
+      "name": "Parse Output",
+      "disabled": true
     },
     {
       "parameters": {
@@ -433,7 +421,7 @@
             {
               "id": "2e6b5bad-311f-4ae6-8334-8a67d35eba36",
               "name": "title",
-              "value": "={{ $('Filter1').item.json.clean_title }}",
+              "value": "={{ $('Clean Chapters').item.json.title }}",
               "type": "string"
             },
             {
@@ -612,7 +600,8 @@
           "id": "BRRf66J5aSwt4UDP",
           "name": "OpenAi account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -625,7 +614,7 @@
         "responses": {
           "values": [
             {
-              "content": "=Summarize the following chapter according to the system prompt.\n\nTitle:\n{{ $json.clean_title }}\n\nContent:\n{{$('Clean Chapters').item.json.content  }}"
+              "content": "=Summarize the following chapter according to the system prompt.\n\nTitle:\n{{ $json.title }}\n\nContent:\n{{$('Clean Chapters').item.json.content  }}"
             },
             {
               "role": "system",
@@ -650,6 +639,38 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://epub-service:8000/parse-epub",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        384,
+        32
+      ],
+      "id": "446ea9de-551a-4d3a-92f1-1a874839af11",
+      "name": "HTTP Request"
     }
   ],
   "connections": {
@@ -717,22 +738,11 @@
         ]
       ]
     },
-    "Extract from EPUB": {
-      "main": [
-        [
-          {
-            "node": "Clean Chapters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Read/Write Files from Disk": {
       "main": [
         [
           {
-            "node": "Extract from EPUB",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -743,7 +753,7 @@
       "main": [
         [
           {
-            "node": "Extract from EPUB",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -866,6 +876,17 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Clean Chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -879,15 +900,15 @@
     "Start": [
       {
         "json": {
-          "filename": "Zero to One - Peter Thiel.epub",
-          "book_id": "4a5e7099-c5b7-4ea0-b586-0a5b0cc5b33a",
+          "filename": "Inner Engineering_ A Yogi's Gui - Sadhguru.epub",
+          "book_id": "179cd608-e110-4e18-9d58-540f0deaa987",
           "mime_type": "application/epub+zip"
         }
       }
     ]
   },
-  "versionId": "d9ddd973-7052-462c-ad87-e7de5855ab59",
-  "activeVersionId": "d9ddd973-7052-462c-ad87-e7de5855ab59",
+  "versionId": "547b0f73-2145-44da-8f95-bcc75558692a",
+  "activeVersionId": "547b0f73-2145-44da-8f95-bcc75558692a",
   "triggerCount": 0,
   "shared": [
     {
@@ -899,14 +920,14 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-24T20:07:22.000Z",
-    "createdAt": "2025-12-24T20:07:18.638Z",
-    "versionId": "d9ddd973-7052-462c-ad87-e7de5855ab59",
+    "updatedAt": "2025-12-27T18:41:22.000Z",
+    "createdAt": "2025-12-27T18:40:46.772Z",
+    "versionId": "547b0f73-2145-44da-8f95-bcc75558692a",
     "workflowId": "Pug5aBaVAObe9dkO",
     "nodes": [
       {
         "parameters": {
-          "jsCode": "/**\n * UPDATED CLEANER FOR NEW INPUT FORMAT\n * Receives ONE item:\n *   { json: { chapters: [ {id, title, html, order}, ... ] } }\n */\n\nconst chapters = $json.chapters || [];\n\n// HTML stripper\nfunction stripHtml(html) {\n  if (!html) return \"\";\n\n  let text = String(html)\n\n    .replace(/<(script|style|noscript)[^>]*>[\\s\\S]*?<\\/\\1>/gi, \"\")\n    .replace(/<!--[\\s\\S]*?-->/g, \"\")\n    .replace(/<[^>]+>/g, \" \")\n\n    .replace(/&nbsp;/gi, \" \")\n    .replace(/&amp;/gi, \"&\")\n    .replace(/&lt;/gi, \"<\")\n    .replace(/&gt;/gi, \">\")\n    .replace(/&quot;/gi, '\"')\n    .replace(/&#39;/gi, \"'\")\n    .replace(/&#x2019;/gi, \"'\")\n    .replace(/&#x2014;/gi, \"—\")\n    .replace(/&#x2013;/gi, \"–\")\n\n    .replace(/\\s+/g, \" \");\n\n  return text.trim();\n}\n\nconst cleaned = chapters.map((ch, idx) => ({\n  chapter_index: ch.order ?? idx,\n  title: ch.title || ch.id || \"\",\n  content: stripHtml(ch.html)\n}));\n\n// Output as multiple items\nreturn cleaned.map(c => ({ json: c }));\n"
+          "jsCode": "/**\n * CLEANER FOR NEW INPUT FORMAT\n * Mode: Run Once for All Items\n */\n\nconst chapters = $input.first().json.chapters || [];\n\n// HTML stripper\nfunction stripHtml(html) {\n  if (!html) return \"\";\n\n  let text = String(html)\n    .replace(/<(script|style|noscript)[^>]*>[\\s\\S]*?<\\/\\1>/gi, \"\")\n    .replace(/<!--[\\s\\S]*?-->/g, \"\")\n    .replace(/<[^>]+>/g, \" \")\n    .replace(/&nbsp;/gi, \" \")\n    .replace(/&amp;/gi, \"&\")\n    .replace(/&lt;/gi, \"<\")\n    .replace(/&gt;/gi, \">\")\n    .replace(/&quot;/gi, '\"')\n    .replace(/&#39;/gi, \"'\")\n    .replace(/&#x2019;/gi, \"'\")\n    .replace(/&#x2014;/gi, \"—\")\n    .replace(/&#x2013;/gi, \"–\")\n    .replace(/\\s+/g, \" \");\n\n  return text.trim();\n}\n\nconst cleaned = chapters.map((ch, idx) => ({\n  chapter_index: ch.order ?? idx,\n  title: ch.title, // untouched — proven good\n  content: stripHtml(ch.html)\n}));\n\nreturn cleaned.map(c => ({ json: c }));\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -1170,20 +1191,6 @@
       },
       {
         "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const EPub = require(\"epub\");\nconst fs = require(\"fs\");\n\nconst binary = $input.item.binary.data;\nconst filePath = $input.item.json.fileName;\n\nfs.writeFileSync(filePath, Buffer.from(binary.data, \"base64\"));\n\nconst epub = new EPub(filePath);\n\nawait new Promise((resolve, reject) => {\n  epub.on(\"error\", reject);\n  epub.on(\"end\", resolve);\n  epub.parse();\n});\n\nconst chapters = [];\n\nfor (const item of epub.flow) {\n  const chapterText = await new Promise((resolve, reject) => {\n    epub.getChapter(item.id, (err, text) => {\n      if (err) reject(err);\n      else resolve(text || \"\");\n    });\n  });\n\n  chapters.push({\n    id: item.id,\n    title: item.title || item.id,\n    order: item.order,\n    html: chapterText\n  });\n}\n\nreturn {\n  json: {\n    chapters\n  }\n};\n"
-        },
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          368,
-          32
-        ],
-        "id": "d0a08881-6398-4b69-a2f7-5e5990a29538",
-        "name": "Extract from EPUB"
-      },
-      {
-        "parameters": {
           "fileSelector": "=/files/books/{{ $('Detect Filetype').item.json.filename.replace('.mobi', '.epub') }}",
           "options": {}
         },
@@ -1308,7 +1315,8 @@
           32
         ],
         "id": "4ee07832-d2fa-452b-bcec-3548cfea42f5",
-        "name": "Filter1"
+        "name": "Filter1",
+        "disabled": true
       },
       {
         "parameters": {
@@ -1322,7 +1330,8 @@
           32
         ],
         "id": "384e8aea-3185-4fab-8777-76a783250ca3",
-        "name": "Parse Output"
+        "name": "Parse Output",
+        "disabled": true
       },
       {
         "parameters": {
@@ -1331,7 +1340,7 @@
               {
                 "id": "2e6b5bad-311f-4ae6-8334-8a67d35eba36",
                 "name": "title",
-                "value": "={{ $('Filter1').item.json.clean_title }}",
+                "value": "={{ $('Clean Chapters').item.json.title }}",
                 "type": "string"
               },
               {
@@ -1510,7 +1519,8 @@
             "id": "BRRf66J5aSwt4UDP",
             "name": "OpenAi account"
           }
-        }
+        },
+        "disabled": true
       },
       {
         "parameters": {
@@ -1523,7 +1533,7 @@
           "responses": {
             "values": [
               {
-                "content": "=Summarize the following chapter according to the system prompt.\n\nTitle:\n{{ $json.clean_title }}\n\nContent:\n{{$('Clean Chapters').item.json.content  }}"
+                "content": "=Summarize the following chapter according to the system prompt.\n\nTitle:\n{{ $json.title }}\n\nContent:\n{{$('Clean Chapters').item.json.content  }}"
               },
               {
                 "role": "system",
@@ -1548,6 +1558,38 @@
             "name": "OpenAi account"
           }
         }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://epub-service:8000/parse-epub",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendBody": true,
+          "contentType": "multipart-form-data",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "parameterType": "formBinaryData",
+                "name": "file",
+                "inputDataFieldName": "data"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          384,
+          32
+        ],
+        "id": "446ea9de-551a-4d3a-92f1-1a874839af11",
+        "name": "HTTP Request"
       }
     ],
     "connections": {
@@ -1615,22 +1657,11 @@
           ]
         ]
       },
-      "Extract from EPUB": {
-        "main": [
-          [
-            {
-              "node": "Clean Chapters",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Read/Write Files from Disk": {
         "main": [
           [
             {
-              "node": "Extract from EPUB",
+              "node": "HTTP Request",
               "type": "main",
               "index": 0
             }
@@ -1641,7 +1672,7 @@
         "main": [
           [
             {
-              "node": "Extract from EPUB",
+              "node": "HTTP Request",
               "type": "main",
               "index": 0
             }
@@ -1764,10 +1795,21 @@
             }
           ]
         ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Clean Chapters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version d9ddd973",
+    "name": "Version 547b0f73",
     "description": "",
     "autosaved": false
   },
