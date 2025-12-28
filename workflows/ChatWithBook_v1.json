@@ -1,0 +1,592 @@
+{
+  "updatedAt": "2025-12-28T21:20:38.684Z",
+  "createdAt": "2025-12-28T20:15:17.185Z",
+  "id": "efImToWAhg0kbiK1",
+  "name": "ChatWithBook v1",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "book_chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "0d663c8e-16d8-41cc-93c3-fec2d7e75fda",
+      "name": "Webhook",
+      "webhookId": "67a1319a-45d3-4188-91f2-a4fa261b2359"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user_message }}",
+        "options": {
+          "systemMessage": "You are an empowering executive business coach with deep knowledge of personal development, leadership, strategy, and execution.\n\nYou help users understand, apply, and act on ideas from the current book they are exploring. Users may ask about concepts, principles, examples, or how to apply ideas to their life or business.\n\nWhen answering questions about the book’s content, you must first retrieve relevant chapters using the provided vector store tool. Use the retrieved passages as your primary grounding source.\n\nSynthesize insights clearly and practically. Explain ideas in plain language, then translate them into concrete actions, reflections, or next steps appropriate for a thoughtful professional or business leader.\n\nIf a question is conceptual or reflective, connect the book’s ideas to real-world execution, decision-making, habits, or strategy.\n\nDo not invent content that is not supported by the retrieved chapters. If the book does not address a topic directly, say so and offer a thoughtful, adjacent interpretation without claiming it comes from the book.\n\nMaintain a supportive, confident, and encouraging tone. Your goal is to help the user gain clarity, confidence, and momentum."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Searches the vector database for semantically relevant chapters from the current book only.\nUse this tool when the user asks questions about the book’s content, concepts, arguments, examples, or explanations.\nResults are authoritative excerpts from the book and should be used as grounding context for answers.\nDo not use this tool for general knowledge or questions unrelated to the book.",
+        "tableName": {
+          "__rl": true,
+          "value": "chapters",
+          "mode": "list",
+          "cachedResultName": "chapters"
+        },
+        "options": {
+          "queryName": "match_documents",
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "book_id",
+                "value": "={{ $json.book_id }}"
+              },
+              {
+                "name": "embedding",
+                "value": "={{ $json.user_message }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        592,
+        224
+      ],
+      "id": "5bbf97e9-2242-4e01-8af9-bc1822386d40",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        672,
+        432
+      ],
+      "id": "b8e193e4-957f-49a7-8ed6-ddea0ef7f29c",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "If6EFTDovzwlnUyy",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        960,
+        0
+      ],
+      "id": "43361dd5-86fd-408d-82c5-4e0c90d8442b",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "969e803a-9544-491b-8a8c-a2c6e7865e25",
+              "name": "book_id",
+              "value": "={{ $json.body.book_id }}",
+              "type": "string"
+            },
+            {
+              "id": "1ccb5de0-437f-46d4-8cab-39c8c41551d0",
+              "name": "user_message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "96f138f6-c85c-48f1-814d-c20bf4da4e2b",
+              "name": "user_id",
+              "value": "={{ $json.body.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "15f0e56b-e594-4274-941a-828d4a6c2cca",
+              "name": "sessionId",
+              "value": "={{ $json.body.book_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        112,
+        0
+      ],
+      "id": "13a3afd3-7bef-49d3-a924-95a2aee058ac",
+      "name": "Config"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        336,
+        224
+      ],
+      "id": "f667e8ae-27cb-472f-b475-2b164b3ce40d",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        224
+      ],
+      "id": "b7cd6471-a09c-4deb-a9f6-4c91d25209c9",
+      "name": "Memory"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.megyk.com",
+            "user-agent": "node",
+            "content-length": "145",
+            "accept": "*/*",
+            "accept-encoding": "br, gzip, deflate",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "sec-fetch-mode": "cors",
+            "via": "1.1 Caddy",
+            "x-forwarded-for": "98.153.119.146",
+            "x-forwarded-host": "n8n.megyk.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "user_id": "bfb1e2f2-353c-4cf7-807e-4be63ed7cfff",
+            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
+            "message": "what is the premise of this book?"
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook/book_chat",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "086b97aa-fbe1-4395-893c-acb4f2cec81b",
+  "activeVersionId": "10d7344e-829f-4f06-8121-2bc1d03e8bc4",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-28T20:15:17.196Z",
+      "createdAt": "2025-12-28T20:15:17.196Z",
+      "role": "workflow:owner",
+      "workflowId": "efImToWAhg0kbiK1",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-28T20:56:39.000Z",
+    "createdAt": "2025-12-28T20:56:36.883Z",
+    "versionId": "10d7344e-829f-4f06-8121-2bc1d03e8bc4",
+    "workflowId": "efImToWAhg0kbiK1",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "book_chat",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -112,
+          0
+        ],
+        "id": "0d663c8e-16d8-41cc-93c3-fec2d7e75fda",
+        "name": "Webhook",
+        "webhookId": "67a1319a-45d3-4188-91f2-a4fa261b2359"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.user_message }}",
+          "options": {
+            "systemMessage": "You are an empowering executive business coach with deep knowledge of personal development, leadership, strategy, and execution.\n\nYou help users understand, apply, and act on ideas from the current book they are exploring. Users may ask about concepts, principles, examples, or how to apply ideas to their life or business.\n\nWhen answering questions about the book’s content, you must first retrieve relevant chapters using the provided vector store tool. Use the retrieved passages as your primary grounding source.\n\nSynthesize insights clearly and practically. Explain ideas in plain language, then translate them into concrete actions, reflections, or next steps appropriate for a thoughtful professional or business leader.\n\nIf a question is conceptual or reflective, connect the book’s ideas to real-world execution, decision-making, habits, or strategy.\n\nDo not invent content that is not supported by the retrieved chapters. If the book does not address a topic directly, say so and offer a thoughtful, adjacent interpretation without claiming it comes from the book.\n\nMaintain a supportive, confident, and encouraging tone. Your goal is to help the user gain clarity, confidence, and momentum."
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          400,
+          0
+        ],
+        "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "mode": "retrieve-as-tool",
+          "toolDescription": "Searches the vector database for semantically relevant chapters from the current book only.\nUse this tool when the user asks questions about the book’s content, concepts, arguments, examples, or explanations.\nResults are authoritative excerpts from the book and should be used as grounding context for answers.\nDo not use this tool for general knowledge or questions unrelated to the book.",
+          "tableName": {
+            "__rl": true,
+            "value": "chapters",
+            "mode": "list",
+            "cachedResultName": "chapters"
+          },
+          "options": {
+            "metadata": {
+              "metadataValues": [
+                {
+                  "name": "book_id",
+                  "value": "={{ $json.book_id }}"
+                }
+              ]
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+        "typeVersion": 1.3,
+        "position": [
+          592,
+          224
+        ],
+        "id": "5bbf97e9-2242-4e01-8af9-bc1822386d40",
+        "name": "Supabase Vector Store",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": "nomic-embed-text:latest"
+        },
+        "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+        "typeVersion": 1,
+        "position": [
+          672,
+          432
+        ],
+        "id": "b8e193e4-957f-49a7-8ed6-ddea0ef7f29c",
+        "name": "Embeddings Ollama",
+        "credentials": {
+          "ollamaApi": {
+            "id": "If6EFTDovzwlnUyy",
+            "name": "Ollama account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          960,
+          0
+        ],
+        "id": "43361dd5-86fd-408d-82c5-4e0c90d8442b",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "969e803a-9544-491b-8a8c-a2c6e7865e25",
+                "name": "book_id",
+                "value": "={{ $json.body.book_id }}",
+                "type": "string"
+              },
+              {
+                "id": "1ccb5de0-437f-46d4-8cab-39c8c41551d0",
+                "name": "user_message",
+                "value": "={{ $json.body.message }}",
+                "type": "string"
+              },
+              {
+                "id": "96f138f6-c85c-48f1-814d-c20bf4da4e2b",
+                "name": "user_id",
+                "value": "={{ $json.body.user_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          112,
+          0
+        ],
+        "id": "13a3afd3-7bef-49d3-a924-95a2aee058ac",
+        "name": "Config"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          336,
+          224
+        ],
+        "id": "f667e8ae-27cb-472f-b475-2b164b3ce40d",
+        "name": "OpenAI",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          464,
+          224
+        ],
+        "id": "b7cd6471-a09c-4deb-a9f6-4c91d25209c9",
+        "name": "Memory"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Supabase Vector Store": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Embeddings Ollama": {
+        "ai_embedding": [
+          [
+            {
+              "node": "Supabase Vector Store",
+              "type": "ai_embedding",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Config": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 10d7344e",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
