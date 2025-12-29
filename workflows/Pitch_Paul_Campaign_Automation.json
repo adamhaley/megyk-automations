@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-26T22:25:31.841Z",
+  "updatedAt": "2025-12-29T20:14:33.817Z",
   "createdAt": "2025-11-15T18:59:05.100Z",
   "id": "dqgaIgweJFg4mAJo",
   "name": "Pitch Paul Campaign Automation",
@@ -546,8 +546,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "Date": "={{ $now.format('yyyy-MM-dd h:mm a') }}",
-            "from": "={{ $('Send email').item.json.envelope.from }}",
-            "to": "={{ $('Send email').item.json.envelope.to[0] }}",
+            "from": "={{ $('Loop Over Items').item.json.assigned_mailbox.address }}",
+            "to": "={{ $('Loop Over Items').item.json.email }}",
             "subject": "={{ $('Switch').item.json.subject }}",
             "body": "={{ $('Switch').item.json.body }}",
             "Company Name": "={{ $('Clean Emails').item.json.company }}"
@@ -1642,22 +1642,25 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2025-12-09T10:00:42.010+01:00",
-          "Readable date": "December 9th 2025, 10:00:42 am",
-          "Readable time": "10:00:42 am",
-          "Day of week": "Tuesday",
+          "timestamp": "2025-12-29T07:00:00.037+01:00",
+          "Readable date": "December 29th 2025, 7:00:00 am",
+          "Readable time": "7:00:00 am",
+          "Day of week": "Monday",
           "Year": "2025",
           "Month": "December",
-          "Day of month": "09",
-          "Hour": "10",
+          "Day of month": "29",
+          "Hour": "07",
           "Minute": "00",
-          "Second": "42",
+          "Second": "00",
           "Timezone": "Europe/Berlin (UTC+01:00)"
+        },
+        "pairedItem": {
+          "item": 0
         }
       }
     ]
   },
-  "versionId": "205c747d-2648-4947-8d18-64f14e678de9",
+  "versionId": "3d28d8c5-df5b-4501-a08c-ce9920a77c72",
   "activeVersionId": "10fa93ae-3e14-40d3-986f-2be6f36987bf",
   "triggerCount": 1,
   "shared": [
