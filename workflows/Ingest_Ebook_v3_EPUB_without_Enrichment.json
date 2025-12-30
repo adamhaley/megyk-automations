@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-27T22:41:19.544Z",
+  "updatedAt": "2025-12-30T20:13:33.016Z",
   "createdAt": "2025-12-01T03:12:48.978Z",
   "id": "Pug5aBaVAObe9dkO",
   "name": "Ingest Ebook v3 EPUB without Enrichment",
@@ -350,6 +350,10 @@
             {
               "name": "embedding",
               "value": "={{ $json.embedding }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.summary }}"
             }
           ]
         },
@@ -945,8 +949,8 @@
       }
     ]
   },
-  "versionId": "bd197aa4-a575-4d5b-9268-9ab607fdd05c",
-  "activeVersionId": "bd197aa4-a575-4d5b-9268-9ab607fdd05c",
+  "versionId": "8e93c6b1-e85a-4df9-a040-0caca83e896c",
+  "activeVersionId": "8e93c6b1-e85a-4df9-a040-0caca83e896c",
   "triggerCount": 0,
   "shared": [
     {
@@ -958,9 +962,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-27T22:41:23.000Z",
-    "createdAt": "2025-12-27T22:41:19.557Z",
-    "versionId": "bd197aa4-a575-4d5b-9268-9ab607fdd05c",
+    "updatedAt": "2025-12-30T20:13:36.000Z",
+    "createdAt": "2025-12-30T20:13:33.018Z",
+    "versionId": "8e93c6b1-e85a-4df9-a040-0caca83e896c",
     "workflowId": "Pug5aBaVAObe9dkO",
     "nodes": [
       {
@@ -1307,6 +1311,10 @@
               {
                 "name": "embedding",
                 "value": "={{ $json.embedding }}"
+              },
+              {
+                "name": "content",
+                "value": "={{ $json.summary }}"
               }
             ]
           },
@@ -1885,7 +1893,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version bd197aa4",
+    "name": "Version 8e93c6b1",
     "description": "",
     "autosaved": false
   },
