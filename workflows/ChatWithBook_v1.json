@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-28T23:43:08.440Z",
+  "updatedAt": "2025-12-30T02:43:53.292Z",
   "createdAt": "2025-12-28T20:15:17.185Z",
   "id": "efImToWAhg0kbiK1",
   "name": "ChatWithBook v1",
@@ -16,7 +16,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1152,
+        -288,
         0
       ],
       "id": "0d663c8e-16d8-41cc-93c3-fec2d7e75fda",
@@ -28,13 +28,13 @@
         "promptType": "define",
         "text": "={{ $json.user_message }}",
         "options": {
-          "systemMessage": "You are an empowering executive business coach with deep knowledge of personal development, leadership, strategy, and execution.\n\nYou help users understand, apply, and act on ideas from the current book they are exploring. Users may ask about concepts, principles, examples, or how to apply ideas to their life or business.\n\nWhen answering questions about the book’s content, you must first retrieve relevant chapters using the provided vector store tool. Use the retrieved passages as your primary grounding source.\n\nSynthesize insights clearly and practically. Explain ideas in plain language, then translate them into concrete actions, reflections, or next steps appropriate for a thoughtful professional or business leader.\n\nIf a question is conceptual or reflective, connect the book’s ideas to real-world execution, decision-making, habits, or strategy.\n\nDo not invent content that is not supported by the retrieved chapters. If the book does not address a topic directly, say so and offer a thoughtful, adjacent interpretation without claiming it comes from the book.\n\nMaintain a supportive, confident, and encouraging tone. Your goal is to help the user gain clarity, confidence, and momentum."
+          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -648,
+        216,
         0
       ],
       "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -46,9 +46,9 @@
         "toolDescription": "Searches the vector database for semantically relevant chapters from the current book only.\nUse this tool when the user asks questions about the book’s content, concepts, arguments, examples, or explanations.\nResults are authoritative excerpts from the book and should be used as grounding context for answers.\nDo not use this tool for general knowledge or questions unrelated to the book.",
         "tableName": {
           "__rl": true,
-          "value": "chapters_for_vector",
+          "value": "chapters",
           "mode": "list",
-          "cachedResultName": "chapters_for_vector"
+          "cachedResultName": "chapters"
         },
         "options": {
           "queryName": "match_documents",
@@ -69,7 +69,7 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1.3,
       "position": [
-        -448,
+        416,
         224
       ],
       "id": "5bbf97e9-2242-4e01-8af9-bc1822386d40",
@@ -88,7 +88,7 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
       "typeVersion": 1,
       "position": [
-        -368,
+        496,
         432
       ],
       "id": "b8e193e4-957f-49a7-8ed6-ddea0ef7f29c",
@@ -107,7 +107,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -80,
+        784,
         0
       ],
       "id": "43361dd5-86fd-408d-82c5-4e0c90d8442b",
@@ -148,7 +148,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -928,
+        -64,
         0
       ],
       "id": "13a3afd3-7bef-49d3-a924-95a2aee058ac",
@@ -167,7 +167,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -704,
+        160,
         224
       ],
       "id": "f667e8ae-27cb-472f-b475-2b164b3ce40d",
@@ -184,7 +184,7 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -576,
+        288,
         224
       ],
       "id": "b7cd6471-a09c-4deb-a9f6-4c91d25209c9",
@@ -312,8 +312,8 @@
       }
     ]
   },
-  "versionId": "b9d299c0-f971-48e9-ba26-22852b5e9aff",
-  "activeVersionId": "b9d299c0-f971-48e9-ba26-22852b5e9aff",
+  "versionId": "59dd6093-79fb-48c1-9b64-d8467ae66828",
+  "activeVersionId": "59dd6093-79fb-48c1-9b64-d8467ae66828",
   "triggerCount": 1,
   "shared": [
     {
@@ -325,9 +325,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-28T23:43:10.000Z",
-    "createdAt": "2025-12-28T23:43:08.442Z",
-    "versionId": "b9d299c0-f971-48e9-ba26-22852b5e9aff",
+    "updatedAt": "2025-12-30T02:43:56.000Z",
+    "createdAt": "2025-12-30T02:43:53.295Z",
+    "versionId": "59dd6093-79fb-48c1-9b64-d8467ae66828",
     "workflowId": "efImToWAhg0kbiK1",
     "nodes": [
       {
@@ -340,7 +340,7 @@
         "type": "n8n-nodes-base.webhook",
         "typeVersion": 2.1,
         "position": [
-          -1152,
+          -288,
           0
         ],
         "id": "0d663c8e-16d8-41cc-93c3-fec2d7e75fda",
@@ -352,13 +352,13 @@
           "promptType": "define",
           "text": "={{ $json.user_message }}",
           "options": {
-            "systemMessage": "You are an empowering executive business coach with deep knowledge of personal development, leadership, strategy, and execution.\n\nYou help users understand, apply, and act on ideas from the current book they are exploring. Users may ask about concepts, principles, examples, or how to apply ideas to their life or business.\n\nWhen answering questions about the book’s content, you must first retrieve relevant chapters using the provided vector store tool. Use the retrieved passages as your primary grounding source.\n\nSynthesize insights clearly and practically. Explain ideas in plain language, then translate them into concrete actions, reflections, or next steps appropriate for a thoughtful professional or business leader.\n\nIf a question is conceptual or reflective, connect the book’s ideas to real-world execution, decision-making, habits, or strategy.\n\nDo not invent content that is not supported by the retrieved chapters. If the book does not address a topic directly, say so and offer a thoughtful, adjacent interpretation without claiming it comes from the book.\n\nMaintain a supportive, confident, and encouraging tone. Your goal is to help the user gain clarity, confidence, and momentum."
+            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
           }
         },
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
         "position": [
-          -648,
+          216,
           0
         ],
         "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -370,9 +370,9 @@
           "toolDescription": "Searches the vector database for semantically relevant chapters from the current book only.\nUse this tool when the user asks questions about the book’s content, concepts, arguments, examples, or explanations.\nResults are authoritative excerpts from the book and should be used as grounding context for answers.\nDo not use this tool for general knowledge or questions unrelated to the book.",
           "tableName": {
             "__rl": true,
-            "value": "chapters_for_vector",
+            "value": "chapters",
             "mode": "list",
-            "cachedResultName": "chapters_for_vector"
+            "cachedResultName": "chapters"
           },
           "options": {
             "queryName": "match_documents",
@@ -393,7 +393,7 @@
         "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
         "typeVersion": 1.3,
         "position": [
-          -448,
+          416,
           224
         ],
         "id": "5bbf97e9-2242-4e01-8af9-bc1822386d40",
@@ -412,7 +412,7 @@
         "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
         "typeVersion": 1,
         "position": [
-          -368,
+          496,
           432
         ],
         "id": "b8e193e4-957f-49a7-8ed6-ddea0ef7f29c",
@@ -431,7 +431,7 @@
         "type": "n8n-nodes-base.respondToWebhook",
         "typeVersion": 1.5,
         "position": [
-          -80,
+          784,
           0
         ],
         "id": "43361dd5-86fd-408d-82c5-4e0c90d8442b",
@@ -472,7 +472,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -928,
+          -64,
           0
         ],
         "id": "13a3afd3-7bef-49d3-a924-95a2aee058ac",
@@ -491,7 +491,7 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.3,
         "position": [
-          -704,
+          160,
           224
         ],
         "id": "f667e8ae-27cb-472f-b475-2b164b3ce40d",
@@ -508,7 +508,7 @@
         "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
         "typeVersion": 1.3,
         "position": [
-          -576,
+          288,
           224
         ],
         "id": "b7cd6471-a09c-4deb-a9f6-4c91d25209c9",
@@ -595,7 +595,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version b9d299c0",
+    "name": "Version 59dd6093",
     "description": "",
     "autosaved": false
   },
