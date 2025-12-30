@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-30T19:48:54.968Z",
+  "updatedAt": "2025-12-30T23:23:14.085Z",
   "createdAt": "2025-12-17T23:52:47.951Z",
   "id": "e8gHgjRrX19DKYO5",
   "name": "Generate 3 X 3 Summaries V3",
@@ -638,7 +638,7 @@
         "responses": {
           "values": [
             {
-              "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n\n~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
+              "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($('Parse Chapters').item.json.chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n\n~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
             },
             {
               "role": "system",
@@ -676,7 +676,7 @@
         "responses": {
           "values": [
             {
-              "content": "=length: {{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{$('When Executed by Another Workflow').item.json.book_id  }}.\n2. For each chapter in canonical_chapters, find the best matching extracted chapter text using the available data returned by Get Chapters.\n3. Summarize each chapter strictly in bullet-point form (array of strings), grounded in the “summary_md” field.\n4. Follow length rules for short, medium, and long.\n5. After chapter summaries, produce a complete-book bullet-point summary.\n6. Output ONLY valid JSON matching the schema defined in the system prompt.\n"
+              "content": "=length: {{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\ncanonical_chapters:\n{{ JSON.stringify($('Parse Chapters').item.json.chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{$('When Executed by Another Workflow').item.json.book_id  }}.\n2. For each chapter in canonical_chapters, find the best matching extracted chapter text using the available data returned by Get Chapters.\n3. Summarize each chapter strictly in bullet-point form (array of strings), grounded in the “summary_md” field.\n4. Follow length rules for short, medium, and long.\n5. After chapter summaries, produce a complete-book bullet-point summary.\n6. Output ONLY valid JSON matching the schema defined in the system prompt.\n"
             },
             {
               "role": "system",
@@ -1694,11 +1694,11 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "book_id": "2234271d-9f31-4123-9a5a-b32379a1927c",
-          "length": "short",
-          "style": "narrative",
-          "title": "The 48 Laws of Power",
-          "author": "Robert Greene",
+          "book_id": "a994407c-649b-4a6d-80fa-3232e066686f",
+          "length": "long",
+          "style": "bullet_points",
+          "title": "Influence: The Psychology of Persuasion",
+          "author": "Robert B. Cialdini",
           "canonical_chapters": null
         },
         "pairedItem": {
@@ -1707,8 +1707,8 @@
       }
     ]
   },
-  "versionId": "4ea368c2-ffa3-4e92-b6a8-074df39a5c0d",
-  "activeVersionId": "4ea368c2-ffa3-4e92-b6a8-074df39a5c0d",
+  "versionId": "6c21599b-73e1-4fd0-a2ad-059d1e43e557",
+  "activeVersionId": "6c21599b-73e1-4fd0-a2ad-059d1e43e557",
   "triggerCount": 0,
   "shared": [
     {
@@ -1720,9 +1720,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-30T19:49:00.000Z",
-    "createdAt": "2025-12-30T19:48:54.971Z",
-    "versionId": "4ea368c2-ffa3-4e92-b6a8-074df39a5c0d",
+    "updatedAt": "2025-12-30T23:17:45.000Z",
+    "createdAt": "2025-12-30T23:17:41.521Z",
+    "versionId": "6c21599b-73e1-4fd0-a2ad-059d1e43e557",
     "workflowId": "e8gHgjRrX19DKYO5",
     "nodes": [
       {
@@ -2357,7 +2357,7 @@
           "responses": {
             "values": [
               {
-                "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n\n~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
+                "content": "=length:{{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\n\ncanonical_chapters:\n{{ JSON.stringify($('Parse Chapters').item.json.chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{ $('When Executed by Another Workflow').item.json.book_id }}\n2. For each item in canonical_chapters, align it to the best-matching extracted chapter(s) returned by Get Chapters. Use only the \"summary_md\" field as the authoritative source text for summarization.\n3. Summarize each canonical chapter as immersive, flowing narrative prose (not meta commentary, not analysis, not “this chapter discusses...”).\n4. Maintain the order provided in canonical_chapters. If an extracted chapter is missing for a canonical chapter, write the most faithful summary possible using context from the surrounding chapters without inventing unsupported details.\n5. At the end, write a cohesive full-book narrative summary that reflects the entire work.\n\n~1 page per chapter; multi-paragraph in-depth final summary.\n\n7. Output ONLY structured JSON matching the schema defined in the system prompt.\n"
               },
               {
                 "role": "system",
@@ -2395,7 +2395,7 @@
           "responses": {
             "values": [
               {
-                "content": "=length: {{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\ncanonical_chapters:\n{{ JSON.stringify($json.canonical_chapters, null, 2) }}\n\nbook_id: {{ $json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{$('When Executed by Another Workflow').item.json.book_id  }}.\n2. For each chapter in canonical_chapters, find the best matching extracted chapter text using the available data returned by Get Chapters.\n3. Summarize each chapter strictly in bullet-point form (array of strings), grounded in the “summary_md” field.\n4. Follow length rules for short, medium, and long.\n5. After chapter summaries, produce a complete-book bullet-point summary.\n6. Output ONLY valid JSON matching the schema defined in the system prompt.\n"
+                "content": "=length: {{ $('When Executed by Another Workflow').item.json.length }}\nstyle: {{ $('When Executed by Another Workflow').item.json.style }}\ncanonical_chapters:\n{{ JSON.stringify($('Parse Chapters').item.json.chapters, null, 2) }}\n\nbook_id: {{ $('When Executed by Another Workflow').item.json.book_id }}\n\n1. Call Get Chapters to fetch all extracted chapters where book_id = {{$('When Executed by Another Workflow').item.json.book_id  }}.\n2. For each chapter in canonical_chapters, find the best matching extracted chapter text using the available data returned by Get Chapters.\n3. Summarize each chapter strictly in bullet-point form (array of strings), grounded in the “summary_md” field.\n4. Follow length rules for short, medium, and long.\n5. After chapter summaries, produce a complete-book bullet-point summary.\n6. Output ONLY valid JSON matching the schema defined in the system prompt.\n"
               },
               {
                 "role": "system",
@@ -3403,7 +3403,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 4ea368c2",
+    "name": "Version 6c21599b",
     "description": "",
     "autosaved": false
   },
