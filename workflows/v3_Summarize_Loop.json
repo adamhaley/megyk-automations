@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-24T19:29:01.320Z",
+  "updatedAt": "2025-12-31T23:41:42.272Z",
   "createdAt": "2025-12-02T21:06:00.144Z",
   "id": "3r45bGjleYIz8OiW",
   "name": "v3 Summarize Loop",
@@ -398,7 +398,15 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "isArtificialRecoveredEventItem": true
+        }
+      }
+    ]
+  },
   "versionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
   "activeVersionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
   "triggerCount": 1,
@@ -412,7 +420,7 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-30T23:35:22.000Z",
+    "updatedAt": "2026-01-01T03:19:11.000Z",
     "createdAt": "2025-12-20T23:32:03.304Z",
     "versionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
     "workflowId": "3r45bGjleYIz8OiW",
