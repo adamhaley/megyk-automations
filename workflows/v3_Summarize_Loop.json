@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-31T23:41:42.272Z",
+  "updatedAt": "2026-01-01T04:06:06.559Z",
   "createdAt": "2025-12-02T21:06:00.144Z",
   "id": "3r45bGjleYIz8OiW",
   "name": "v3 Summarize Loop",
@@ -170,7 +170,8 @@
         "rule": {
           "interval": [
             {
-              "field": "hours"
+              "field": "hours",
+              "hoursInterval": 6
             }
           ]
         }
@@ -392,7 +393,9 @@
   },
   "staticData": {
     "node:Schedule Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        0
+      ]
     }
   },
   "meta": {
@@ -407,8 +410,8 @@
       }
     ]
   },
-  "versionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
-  "activeVersionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
+  "versionId": "9569e58b-5cd5-467b-b37d-4b763c17f978",
+  "activeVersionId": "9569e58b-5cd5-467b-b37d-4b763c17f978",
   "triggerCount": 1,
   "shared": [
     {
@@ -420,9 +423,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-01T03:19:11.000Z",
-    "createdAt": "2025-12-20T23:32:03.304Z",
-    "versionId": "69a8f6a8-7d5f-4b74-8738-599c3364f97a",
+    "updatedAt": "2026-01-01T04:06:10.000Z",
+    "createdAt": "2026-01-01T04:06:06.561Z",
+    "versionId": "9569e58b-5cd5-467b-b37d-4b763c17f978",
     "workflowId": "3r45bGjleYIz8OiW",
     "nodes": [
       {
@@ -589,7 +592,8 @@
           "rule": {
             "interval": [
               {
-                "field": "hours"
+                "field": "hours",
+                "hoursInterval": 6
               }
             ]
           }
@@ -807,7 +811,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 69a8f6a8",
+    "name": "Version 9569e58b",
     "description": "",
     "autosaved": false
   },
