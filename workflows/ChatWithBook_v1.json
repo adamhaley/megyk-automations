@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-30T02:43:53.292Z",
+  "updatedAt": "2026-01-02T20:41:50.920Z",
   "createdAt": "2025-12-28T20:15:17.185Z",
   "id": "efImToWAhg0kbiK1",
   "name": "ChatWithBook v1",
@@ -28,13 +28,13 @@
         "promptType": "define",
         "text": "={{ $json.user_message }}",
         "options": {
-          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
+          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        216,
+        224,
         0
       ],
       "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -285,14 +285,14 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "node",
-            "content-length": "145",
+            "content-length": "178",
             "accept": "*/*",
             "accept-encoding": "br, gzip, deflate",
             "accept-language": "*",
             "content-type": "application/json",
             "sec-fetch-mode": "cors",
             "via": "1.1 Caddy",
-            "x-forwarded-for": "98.153.119.146",
+            "x-forwarded-for": "4.43.180.94",
             "x-forwarded-host": "n8n.megyk.com",
             "x-forwarded-proto": "https"
           },
@@ -300,8 +300,8 @@
           "query": {},
           "body": {
             "user_id": "bfb1e2f2-353c-4cf7-807e-4be63ed7cfff",
-            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
-            "message": "what is the premise of this book?"
+            "book_id": "ecbc7f84-6a40-474e-8ef7-93c5f0aca074",
+            "message": "what are a few of the 80 fundamental models for business analysts?"
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/book_chat",
           "executionMode": "production"
@@ -312,8 +312,8 @@
       }
     ]
   },
-  "versionId": "59dd6093-79fb-48c1-9b64-d8467ae66828",
-  "activeVersionId": "59dd6093-79fb-48c1-9b64-d8467ae66828",
+  "versionId": "cd812b4c-62dd-4c46-b9e8-d478f2a7bdd5",
+  "activeVersionId": "cd812b4c-62dd-4c46-b9e8-d478f2a7bdd5",
   "triggerCount": 1,
   "shared": [
     {
@@ -325,9 +325,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-30T02:43:56.000Z",
-    "createdAt": "2025-12-30T02:43:53.295Z",
-    "versionId": "59dd6093-79fb-48c1-9b64-d8467ae66828",
+    "updatedAt": "2026-01-02T20:42:22.000Z",
+    "createdAt": "2026-01-02T20:41:50.922Z",
+    "versionId": "cd812b4c-62dd-4c46-b9e8-d478f2a7bdd5",
     "workflowId": "efImToWAhg0kbiK1",
     "nodes": [
       {
@@ -352,13 +352,13 @@
           "promptType": "define",
           "text": "={{ $json.user_message }}",
           "options": {
-            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
+            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
           }
         },
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
         "position": [
-          216,
+          224,
           0
         ],
         "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -595,7 +595,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 59dd6093",
+    "name": "Version cd812b4c",
     "description": "",
     "autosaved": false
   },
