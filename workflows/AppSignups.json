@@ -1,0 +1,392 @@
+{
+  "updatedAt": "2026-01-04T20:03:03.165Z",
+  "createdAt": "2026-01-04T00:37:36.306Z",
+  "id": "ZIqLGdvpuQRGveHM",
+  "name": "AppSignups",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "app_signups",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "243d0681-9ad7-4e8a-8444-39f334ac59d2",
+      "name": "Webhook",
+      "webhookId": "60f5c04f-4e0c-4da9-86f7-095cc2ba5449"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MeJFGNBPFgkfg5kIZg1q1fNL-iC3gKPHoWRowWwJcls",
+          "mode": "list",
+          "cachedResultName": "Megyk App Signups",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MeJFGNBPFgkfg5kIZg1q1fNL-iC3gKPHoWRowWwJcls/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MeJFGNBPFgkfg5kIZg1q1fNL-iC3gKPHoWRowWwJcls/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.body.email }}",
+            "event": "={{ $json.body.event }}",
+            "date_signed_up": "={{ $now.format('y-MM-dd hh:mm a') }}",
+            "utm_source": "={{ $json.body.utm.utm_source || '' }}",
+            "utm_medium": "={{ $json.body.utm.utm_medium || '' }}",
+            "utm_campaign": "={{ $json.body.utm.utm_campaign|| ''  }}",
+            "utm_content": "={{ $json.body.utm.utm_content || '' }}",
+            "utm_term": "={{ $json.body.utm.utm_term || '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "event",
+              "displayName": "event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_term",
+              "displayName": "utm_term",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_campaign",
+              "displayName": "utm_campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_signed_up",
+              "displayName": "date_signed_up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c8cd1d45-31f2-47fb-a9a2-f7a29febc553",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.megyk.com",
+            "user-agent": "node",
+            "content-length": "209",
+            "accept": "*/*",
+            "accept-encoding": "br, gzip, deflate",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "sec-fetch-mode": "cors",
+            "via": "1.1 Caddy",
+            "x-forwarded-for": "172.19.0.1",
+            "x-forwarded-host": "n8n.megyk.com",
+            "x-forwarded-proto": "https",
+            "x-idempotency-key": "b1bf5a9e-e742-4cc6-ab24-ce9608fe1316"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "user_signup",
+            "email": "adam.haley+18@gmail.com",
+            "user_id": "b1bf5a9e-e742-4cc6-ab24-ce9608fe1316",
+            "utm": {
+              "utm_source": "test",
+              "utm_medium": "web",
+              "utm_campaign": "megyk utmterm=14",
+              "utm_content": "lorem"
+            }
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook/app_signups",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "4c539b6e-b926-4a8e-af1b-62fc24d567ae",
+  "activeVersionId": "4c539b6e-b926-4a8e-af1b-62fc24d567ae",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-01-04T00:37:36.319Z",
+      "createdAt": "2026-01-04T00:37:36.319Z",
+      "role": "workflow:owner",
+      "workflowId": "ZIqLGdvpuQRGveHM",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-04T20:03:06.000Z",
+    "createdAt": "2026-01-04T20:03:03.168Z",
+    "versionId": "4c539b6e-b926-4a8e-af1b-62fc24d567ae",
+    "workflowId": "ZIqLGdvpuQRGveHM",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "app_signups",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "243d0681-9ad7-4e8a-8444-39f334ac59d2",
+        "name": "Webhook",
+        "webhookId": "60f5c04f-4e0c-4da9-86f7-095cc2ba5449"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1MeJFGNBPFgkfg5kIZg1q1fNL-iC3gKPHoWRowWwJcls",
+            "mode": "list",
+            "cachedResultName": "Megyk App Signups",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MeJFGNBPFgkfg5kIZg1q1fNL-iC3gKPHoWRowWwJcls/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MeJFGNBPFgkfg5kIZg1q1fNL-iC3gKPHoWRowWwJcls/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "email": "={{ $json.body.email }}",
+              "event": "={{ $json.body.event }}",
+              "date_signed_up": "={{ $now.format('y-MM-dd hh:mm a') }}",
+              "utm_source": "={{ $json.body.utm.utm_source || '' }}",
+              "utm_medium": "={{ $json.body.utm.utm_medium || '' }}",
+              "utm_campaign": "={{ $json.body.utm.utm_campaign|| ''  }}",
+              "utm_content": "={{ $json.body.utm.utm_content || '' }}",
+              "utm_term": "={{ $json.body.utm.utm_term || '' }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "event",
+                "displayName": "event",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "utm_source",
+                "displayName": "utm_source",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_medium",
+                "displayName": "utm_medium",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_content",
+                "displayName": "utm_content",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_term",
+                "displayName": "utm_term",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "utm_campaign",
+                "displayName": "utm_campaign",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "date_signed_up",
+                "displayName": "date_signed_up",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          208,
+          0
+        ],
+        "id": "c8cd1d45-31f2-47fb-a9a2-f7a29febc553",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 4c539b6e",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
