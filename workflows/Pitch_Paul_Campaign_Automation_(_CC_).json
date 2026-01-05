@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-14T17:17:10.654Z",
+  "updatedAt": "2026-01-05T17:42:26.462Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -1162,7 +1162,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "Date": "={{ $now.format('M/d/y') }}",
-            "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) | 0}}"
+            "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) || 1}}"
           },
           "matchingColumns": [
             "Date"
@@ -1271,6 +1271,7 @@
       ],
       "id": "199e5567-b9eb-4a64-ab37-e9c32a986344",
       "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "qJ5ck4AVx9Jx37Fr",
@@ -1642,16 +1643,16 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2025-12-12T19:00:37.032+01:00",
-          "Readable date": "December 12th 2025, 7:00:37 pm",
-          "Readable time": "7:00:37 pm",
-          "Day of week": "Friday",
-          "Year": "2025",
-          "Month": "December",
-          "Day of month": "12",
-          "Hour": "19",
+          "timestamp": "2026-01-05T00:00:00.011+01:00",
+          "Readable date": "January 5th 2026, 12:00:00 am",
+          "Readable time": "12:00:00 am",
+          "Day of week": "Monday",
+          "Year": "2026",
+          "Month": "January",
+          "Day of month": "05",
+          "Hour": "00",
           "Minute": "00",
-          "Second": "37",
+          "Second": "00",
           "Timezone": "Europe/Berlin (UTC+01:00)"
         },
         "pairedItem": {
@@ -1660,8 +1661,8 @@
       }
     ]
   },
-  "versionId": "22577185-c909-40ba-8cf1-04d7cfff862b",
-  "activeVersionId": "22577185-c909-40ba-8cf1-04d7cfff862b",
+  "versionId": "d938c929-a7f8-4295-886f-ad20f00b045e",
+  "activeVersionId": "d938c929-a7f8-4295-886f-ad20f00b045e",
   "triggerCount": 1,
   "shared": [
     {
@@ -1673,9 +1674,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-14T17:16:36.597Z",
-    "createdAt": "2025-12-14T17:16:36.597Z",
-    "versionId": "22577185-c909-40ba-8cf1-04d7cfff862b",
+    "updatedAt": "2026-01-05T17:45:24.000Z",
+    "createdAt": "2026-01-05T17:42:26.464Z",
+    "versionId": "d938c929-a7f8-4295-886f-ad20f00b045e",
     "workflowId": "eT2zOo08WfGn5Gbt",
     "nodes": [
       {
@@ -2834,7 +2835,7 @@
             "mappingMode": "defineBelow",
             "value": {
               "Date": "={{ $now.format('M/d/y') }}",
-              "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) | 0}}"
+              "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) || 1}}"
             },
             "matchingColumns": [
               "Date"
@@ -2943,6 +2944,7 @@
         ],
         "id": "199e5567-b9eb-4a64-ab37-e9c32a986344",
         "name": "Get row(s) in sheet",
+        "alwaysOutputData": true,
         "credentials": {
           "googleSheetsOAuth2Api": {
             "id": "qJ5ck4AVx9Jx37Fr",
@@ -3297,8 +3299,8 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
+    "name": "Version d938c929",
+    "description": "",
     "autosaved": false
   },
   "tags": []
