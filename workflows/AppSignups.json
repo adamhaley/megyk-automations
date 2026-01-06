@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-04T20:03:03.165Z",
+  "updatedAt": "2026-01-06T22:16:28.096Z",
   "createdAt": "2026-01-04T00:37:36.306Z",
   "id": "ZIqLGdvpuQRGveHM",
   "name": "AppSignups",
@@ -146,6 +146,47 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "qjvsvAd7YcchJ1eF",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/qjvsvAd7YcchJ1eF",
+          "cachedResultName": "EmailDrip"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "email"
+          ],
+          "schema": [
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d940cbc0-d9cc-437a-b34c-093911778888",
+      "name": "Call 'EmailDrip'"
     }
   ],
   "connections": {
@@ -154,6 +195,17 @@
         [
           {
             "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Call 'EmailDrip'",
             "type": "main",
             "index": 0
           }
@@ -210,8 +262,8 @@
       }
     ]
   },
-  "versionId": "4c539b6e-b926-4a8e-af1b-62fc24d567ae",
-  "activeVersionId": "4c539b6e-b926-4a8e-af1b-62fc24d567ae",
+  "versionId": "f86ca589-d9f5-4c47-a45f-78d00f2056fe",
+  "activeVersionId": "f86ca589-d9f5-4c47-a45f-78d00f2056fe",
   "triggerCount": 1,
   "shared": [
     {
@@ -223,9 +275,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-04T20:03:06.000Z",
-    "createdAt": "2026-01-04T20:03:03.168Z",
-    "versionId": "4c539b6e-b926-4a8e-af1b-62fc24d567ae",
+    "updatedAt": "2026-01-06T22:16:30.000Z",
+    "createdAt": "2026-01-06T22:16:28.097Z",
+    "versionId": "f86ca589-d9f5-4c47-a45f-78d00f2056fe",
     "workflowId": "ZIqLGdvpuQRGveHM",
     "nodes": [
       {
@@ -368,6 +420,47 @@
             "name": "Google Sheets account"
           }
         }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "qjvsvAd7YcchJ1eF",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/qjvsvAd7YcchJ1eF",
+            "cachedResultName": "EmailDrip"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [
+              "email"
+            ],
+            "schema": [
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          416,
+          0
+        ],
+        "id": "d940cbc0-d9cc-437a-b34c-093911778888",
+        "name": "Call 'EmailDrip'"
       }
     ],
     "connections": {
@@ -381,10 +474,21 @@
             }
           ]
         ]
+      },
+      "Append row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Call 'EmailDrip'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 4c539b6e",
+    "name": "Version f86ca589",
     "description": "",
     "autosaved": false
   },
