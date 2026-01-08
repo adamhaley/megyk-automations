@@ -1,0 +1,499 @@
+{
+  "updatedAt": "2026-01-08T22:59:35.028Z",
+  "createdAt": "2026-01-08T22:54:43.062Z",
+  "id": "DqqdIlm1EQ5zrDAmf6vUr",
+  "name": "Chat Question Suggestions",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat_suggestions",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "081b9f9f-001e-4258-b1bd-f9cdfa055a86",
+      "name": "Webhook",
+      "webhookId": "d2e1a603-b459-4324-86c1-69c2c3d75c2d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7bdf57f2-c6ca-43ca-a584-60495cf70e2d",
+              "name": "book_id",
+              "value": "={{ $json.value }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "601249ff-3af0-4eb2-942b-2c689bf9d9ec",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user_message }}",
+        "options": {
+          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        504,
+        0
+      ],
+      "id": "636964a3-919b-4df1-901e-bc84cae75f1f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Searches the vector database for semantically relevant chapters from the current book only.\nUse this tool when the user asks questions about the book’s content, concepts, arguments, examples, or explanations.\nResults are authoritative excerpts from the book and should be used as grounding context for answers.\nDo not use this tool for general knowledge or questions unrelated to the book.",
+        "tableName": {
+          "__rl": true,
+          "value": "chapters",
+          "mode": "list",
+          "cachedResultName": "chapters"
+        },
+        "options": {
+          "queryName": "match_documents",
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "book_id",
+                "value": "={{ $json.book_id }}"
+              },
+              {
+                "name": "embedding",
+                "value": "={{ $json.user_message }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        224
+      ],
+      "id": "f2b0a4e8-0ae1-4c62-8dac-76fa10008bec",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        784,
+        432
+      ],
+      "id": "61c39fc8-fa46-4688-8581-3c4287511620",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "If6EFTDovzwlnUyy",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        224
+      ],
+      "id": "de93df62-5b78-4bbd-b32f-dd19c06a3f0b",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        864,
+        0
+      ],
+      "id": "18a6401a-7273-4240-b00a-bd9d7043a7dd",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "name": "book_id",
+          "value": "ef1d2056-8515-4fc1-a6c2-5e8e9fcef950"
+        }
+      }
+    ]
+  },
+  "versionId": "ea8cff5b-ca10-4a70-b2b2-e0d61f4586f3",
+  "activeVersionId": "ea8cff5b-ca10-4a70-b2b2-e0d61f4586f3",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-01-08T22:54:43.070Z",
+      "createdAt": "2026-01-08T22:54:43.070Z",
+      "role": "workflow:owner",
+      "workflowId": "DqqdIlm1EQ5zrDAmf6vUr",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-08T22:59:37.000Z",
+    "createdAt": "2026-01-08T22:59:35.031Z",
+    "versionId": "ea8cff5b-ca10-4a70-b2b2-e0d61f4586f3",
+    "workflowId": "DqqdIlm1EQ5zrDAmf6vUr",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "chat_suggestions",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "081b9f9f-001e-4258-b1bd-f9cdfa055a86",
+        "name": "Webhook",
+        "webhookId": "d2e1a603-b459-4324-86c1-69c2c3d75c2d"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "7bdf57f2-c6ca-43ca-a584-60495cf70e2d",
+                "name": "book_id",
+                "value": "={{ $json.value }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          224,
+          0
+        ],
+        "id": "601249ff-3af0-4eb2-942b-2c689bf9d9ec",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.user_message }}",
+          "options": {
+            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          504,
+          0
+        ],
+        "id": "636964a3-919b-4df1-901e-bc84cae75f1f",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "mode": "retrieve-as-tool",
+          "toolDescription": "Searches the vector database for semantically relevant chapters from the current book only.\nUse this tool when the user asks questions about the book’s content, concepts, arguments, examples, or explanations.\nResults are authoritative excerpts from the book and should be used as grounding context for answers.\nDo not use this tool for general knowledge or questions unrelated to the book.",
+          "tableName": {
+            "__rl": true,
+            "value": "chapters",
+            "mode": "list",
+            "cachedResultName": "chapters"
+          },
+          "options": {
+            "queryName": "match_documents",
+            "metadata": {
+              "metadataValues": [
+                {
+                  "name": "book_id",
+                  "value": "={{ $json.book_id }}"
+                },
+                {
+                  "name": "embedding",
+                  "value": "={{ $json.user_message }}"
+                }
+              ]
+            }
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+        "typeVersion": 1.3,
+        "position": [
+          704,
+          224
+        ],
+        "id": "f2b0a4e8-0ae1-4c62-8dac-76fa10008bec",
+        "name": "Supabase Vector Store",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": "nomic-embed-text:latest"
+        },
+        "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+        "typeVersion": 1,
+        "position": [
+          784,
+          432
+        ],
+        "id": "61c39fc8-fa46-4688-8581-3c4287511620",
+        "name": "Embeddings Ollama",
+        "credentials": {
+          "ollamaApi": {
+            "id": "If6EFTDovzwlnUyy",
+            "name": "Ollama account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          448,
+          224
+        ],
+        "id": "de93df62-5b78-4bbd-b32f-dd19c06a3f0b",
+        "name": "OpenAI",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          864,
+          0
+        ],
+        "id": "18a6401a-7273-4240-b00a-bd9d7043a7dd",
+        "name": "Respond to Webhook"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Supabase Vector Store": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Embeddings Ollama": {
+        "ai_embedding": [
+          [
+            {
+              "node": "Supabase Vector Store",
+              "type": "ai_embedding",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version ea8cff5b",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
