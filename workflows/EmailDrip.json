@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-06T22:22:37.191Z",
+  "updatedAt": "2026-01-08T02:02:33.451Z",
   "createdAt": "2026-01-06T21:53:12.032Z",
   "id": "qjvsvAd7YcchJ1eF",
   "name": "EmailDrip",
@@ -38,7 +38,7 @@
             {
               "id": "cc387681-366f-4cf9-8ff6-ca729ad602b3",
               "name": "body",
-              "value": "You’re in. Here’s how to get started fast: \n<br><br>\n1. Browse the library – explore our curated library inspired by books Fortune 500 leaders recommend. <br> \n2. Pick a book – Select your preferred title across leadership, strategy, management, and culture books. <br> \n3. Chat with book – ask how the book’s ideas apply to your team, goals, or current decision.  <br><br>\nMegyk is designed for leaders who think out loud - so start your first chat today and see what insights it reveals.  \n<br><br>\n<a href=\"https://app.megyk.com\">Start Exploring</a>",
+              "value": "You’re in. Here’s how to get started fast: \n<br><br>\n1. Browse the library – explore our curated library inspired by books Fortune 500 leaders recommend. <br> \n2. Pick a book – Select your preferred title across leadership, strategy, management, and culture books. <br> \n3. Chat with book – ask how the book’s ideas apply to your team, goals, or current decision.  <br><br>\nMegyk is designed for leaders who think out loud - so start your first chat today and see what insights it reveals.  \n<br><br>\n<a href=\"https://app.megyk.com/dashboard?utm_source=email&utm_medium=onboarding&utm_campaign=welcome_flow_1\">Start Exploring</a>",
               "type": "string"
             }
           ]
@@ -56,32 +56,6 @@
     },
     {
       "parameters": {
-        "fromEmail": "Book Summaries <admin@megyk.com>",
-        "toEmail": "={{ $('When Executed by Another Workflow').item.json.email }}",
-        "subject": "={{ $json.subject }}",
-        "html": "={{ $json.body }}",
-        "options": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        416,
-        0
-      ],
-      "id": "7a9ef3c7-0b69-4a34-9276-cfef97b2b637",
-      "name": "Send email",
-      "webhookId": "64c41c21-af43-416c-9027-f65b0afc3997",
-      "credentials": {
-        "smtp": {
-          "id": "BD2P6urNbpWVOtFy",
-          "name": "Resend.com SMTP"
-        }
-      }
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -93,7 +67,7 @@
             {
               "id": "db31a4ed-d741-4185-8221-010d881884d2",
               "name": "body",
-              "value": "Every book in Megyk has a built‑in chat -  it’s your space to explore, question, and apply insights.  \n<br><br>Ask things like: \n<ul>\n<li>How can I apply this as a CMO or CFO?</li>\n<li>What are the key actions I should take from this book?</li>\n<br> Discover how quickly a conversation can turn reading into a real‑world perspective.  \n<br><br>\n<a href=\"https://app.megyk.com\">Get Personalized Insights</a>",
+              "value": "Every book in Megyk has a built‑in chat -  it’s your space to explore, question, and apply insights.  \n<br><br>Ask things like: \n<ul>\n<li>How can I apply this as a CMO or CFO?</li>\n<li>What are the key actions I should take from this book?</li>\n<br> Discover how quickly a conversation can turn reading into a real‑world perspective.  \n<br><br>\n<a href=\"https://app.megyk.com/dashboard?utm_source=email&utm_medium=onboarding&utm_campaign=welcome_flow_2>Get Personalized Insights</a>",
               "type": "string"
             }
           ]
@@ -128,6 +102,32 @@
       "parameters": {
         "fromEmail": "Book Summaries <admin@megyk.com>",
         "toEmail": "={{ $('When Executed by Another Workflow').item.json.email }}",
+        "subject": "={{ $json.subject }}",
+        "html": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7a9ef3c7-0b69-4a34-9276-cfef97b2b637",
+      "name": "Send welcome email",
+      "webhookId": "64c41c21-af43-416c-9027-f65b0afc3997",
+      "credentials": {
+        "smtp": {
+          "id": "BD2P6urNbpWVOtFy",
+          "name": "Resend.com SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "Book Summaries <admin@megyk.com>",
+        "toEmail": "={{ $('When Executed by Another Workflow').item.json.email }}",
         "subject": "={{ $('Education / Feature Highlight Email').item.json.subject }}",
         "html": "={{ $('Education / Feature Highlight Email').item.json.body }}",
         "options": {
@@ -141,7 +141,7 @@
         0
       ],
       "id": "6e67b8b2-f683-47ab-bbb7-afd0a9bda7a5",
-      "name": "Send email1",
+      "name": "Send Feature Highlights email",
       "webhookId": "daa1626f-8a8e-4b98-a830-9855a4e8aa72",
       "credentials": {
         "smtp": {
@@ -167,18 +167,7 @@
       "main": [
         [
           {
-            "node": "Send email",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Send email": {
-      "main": [
-        [
-          {
-            "node": "Education / Feature Highlight Email",
+            "node": "Send welcome email",
             "type": "main",
             "index": 0
           }
@@ -200,7 +189,18 @@
       "main": [
         [
           {
-            "node": "Send email1",
+            "node": "Send Feature Highlights email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send welcome email": {
+      "main": [
+        [
+          {
+            "node": "Education / Feature Highlight Email",
             "type": "main",
             "index": 0
           }
@@ -228,8 +228,8 @@
       }
     ]
   },
-  "versionId": "99e34fe4-3082-4092-9979-bb8732bf30aa",
-  "activeVersionId": "99e34fe4-3082-4092-9979-bb8732bf30aa",
+  "versionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
+  "activeVersionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
   "triggerCount": 0,
   "shared": [
     {
@@ -241,9 +241,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-06T22:22:39.000Z",
-    "createdAt": "2026-01-06T22:22:37.194Z",
-    "versionId": "99e34fe4-3082-4092-9979-bb8732bf30aa",
+    "updatedAt": "2026-01-08T02:02:36.000Z",
+    "createdAt": "2026-01-08T02:02:33.452Z",
+    "versionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
     "workflowId": "qjvsvAd7YcchJ1eF",
     "nodes": [
       {
@@ -278,7 +278,7 @@
               {
                 "id": "cc387681-366f-4cf9-8ff6-ca729ad602b3",
                 "name": "body",
-                "value": "You’re in. Here’s how to get started fast: \n<br><br>\n1. Browse the library – explore our curated library inspired by books Fortune 500 leaders recommend. <br> \n2. Pick a book – Select your preferred title across leadership, strategy, management, and culture books. <br> \n3. Chat with book – ask how the book’s ideas apply to your team, goals, or current decision.  <br><br>\nMegyk is designed for leaders who think out loud - so start your first chat today and see what insights it reveals.  \n<br><br>\n<a href=\"https://app.megyk.com\">Start Exploring</a>",
+                "value": "You’re in. Here’s how to get started fast: \n<br><br>\n1. Browse the library – explore our curated library inspired by books Fortune 500 leaders recommend. <br> \n2. Pick a book – Select your preferred title across leadership, strategy, management, and culture books. <br> \n3. Chat with book – ask how the book’s ideas apply to your team, goals, or current decision.  <br><br>\nMegyk is designed for leaders who think out loud - so start your first chat today and see what insights it reveals.  \n<br><br>\n<a href=\"https://app.megyk.com/dashboard?utm_source=email&utm_medium=onboarding&utm_campaign=welcome_flow_1\">Start Exploring</a>",
                 "type": "string"
               }
             ]
@@ -296,32 +296,6 @@
       },
       {
         "parameters": {
-          "fromEmail": "Book Summaries <admin@megyk.com>",
-          "toEmail": "={{ $('When Executed by Another Workflow').item.json.email }}",
-          "subject": "={{ $json.subject }}",
-          "html": "={{ $json.body }}",
-          "options": {
-            "appendAttribution": false
-          }
-        },
-        "type": "n8n-nodes-base.emailSend",
-        "typeVersion": 2.1,
-        "position": [
-          416,
-          0
-        ],
-        "id": "7a9ef3c7-0b69-4a34-9276-cfef97b2b637",
-        "name": "Send email",
-        "webhookId": "64c41c21-af43-416c-9027-f65b0afc3997",
-        "credentials": {
-          "smtp": {
-            "id": "BD2P6urNbpWVOtFy",
-            "name": "Resend.com SMTP"
-          }
-        }
-      },
-      {
-        "parameters": {
           "assignments": {
             "assignments": [
               {
@@ -333,7 +307,7 @@
               {
                 "id": "db31a4ed-d741-4185-8221-010d881884d2",
                 "name": "body",
-                "value": "Every book in Megyk has a built‑in chat -  it’s your space to explore, question, and apply insights.  \n<br><br>Ask things like: \n<ul>\n<li>How can I apply this as a CMO or CFO?</li>\n<li>What are the key actions I should take from this book?</li>\n<br> Discover how quickly a conversation can turn reading into a real‑world perspective.  \n<br><br>\n<a href=\"https://app.megyk.com\">Get Personalized Insights</a>",
+                "value": "Every book in Megyk has a built‑in chat -  it’s your space to explore, question, and apply insights.  \n<br><br>Ask things like: \n<ul>\n<li>How can I apply this as a CMO or CFO?</li>\n<li>What are the key actions I should take from this book?</li>\n<br> Discover how quickly a conversation can turn reading into a real‑world perspective.  \n<br><br>\n<a href=\"https://app.megyk.com/dashboard?utm_source=email&utm_medium=onboarding&utm_campaign=welcome_flow_2>Get Personalized Insights</a>",
                 "type": "string"
               }
             ]
@@ -368,6 +342,32 @@
         "parameters": {
           "fromEmail": "Book Summaries <admin@megyk.com>",
           "toEmail": "={{ $('When Executed by Another Workflow').item.json.email }}",
+          "subject": "={{ $json.subject }}",
+          "html": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          416,
+          0
+        ],
+        "id": "7a9ef3c7-0b69-4a34-9276-cfef97b2b637",
+        "name": "Send welcome email",
+        "webhookId": "64c41c21-af43-416c-9027-f65b0afc3997",
+        "credentials": {
+          "smtp": {
+            "id": "BD2P6urNbpWVOtFy",
+            "name": "Resend.com SMTP"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "fromEmail": "Book Summaries <admin@megyk.com>",
+          "toEmail": "={{ $('When Executed by Another Workflow').item.json.email }}",
           "subject": "={{ $('Education / Feature Highlight Email').item.json.subject }}",
           "html": "={{ $('Education / Feature Highlight Email').item.json.body }}",
           "options": {
@@ -381,7 +381,7 @@
           0
         ],
         "id": "6e67b8b2-f683-47ab-bbb7-afd0a9bda7a5",
-        "name": "Send email1",
+        "name": "Send Feature Highlights email",
         "webhookId": "daa1626f-8a8e-4b98-a830-9855a4e8aa72",
         "credentials": {
           "smtp": {
@@ -407,18 +407,7 @@
         "main": [
           [
             {
-              "node": "Send email",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Send email": {
-        "main": [
-          [
-            {
-              "node": "Education / Feature Highlight Email",
+              "node": "Send welcome email",
               "type": "main",
               "index": 0
             }
@@ -440,7 +429,18 @@
         "main": [
           [
             {
-              "node": "Send email1",
+              "node": "Send Feature Highlights email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send welcome email": {
+        "main": [
+          [
+            {
+              "node": "Education / Feature Highlight Email",
               "type": "main",
               "index": 0
             }
@@ -449,7 +449,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 99e34fe4",
+    "name": "Version a5069dcf",
     "description": "",
     "autosaved": false
   },
