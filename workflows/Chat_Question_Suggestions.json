@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-09T01:19:01.514Z",
+  "updatedAt": "2026-01-09T23:29:50.636Z",
   "createdAt": "2026-01-08T22:54:43.062Z",
   "id": "DqqdIlm1EQ5zrDAmf6vUr",
   "name": "Chat Question Suggestions",
@@ -9,7 +9,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "chat_suggestions",
+        "path": "chat_suggestions_v1",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -227,8 +227,8 @@
       }
     ]
   },
-  "versionId": "833bab84-982c-4299-ae4a-d252409fb6f5",
-  "activeVersionId": "833bab84-982c-4299-ae4a-d252409fb6f5",
+  "versionId": "0b13d81a-ddb4-491b-951c-3618cd333ada",
+  "activeVersionId": "0b13d81a-ddb4-491b-951c-3618cd333ada",
   "triggerCount": 1,
   "shared": [
     {
@@ -240,15 +240,15 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-09T01:19:04.000Z",
-    "createdAt": "2026-01-09T01:19:01.515Z",
-    "versionId": "833bab84-982c-4299-ae4a-d252409fb6f5",
+    "updatedAt": "2026-01-09T23:29:53.000Z",
+    "createdAt": "2026-01-09T23:29:50.637Z",
+    "versionId": "0b13d81a-ddb4-491b-951c-3618cd333ada",
     "workflowId": "DqqdIlm1EQ5zrDAmf6vUr",
     "nodes": [
       {
         "parameters": {
           "httpMethod": "POST",
-          "path": "chat_suggestions",
+          "path": "chat_suggestions_v1",
           "responseMode": "responseNode",
           "options": {}
         },
@@ -427,7 +427,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 833bab84",
+    "name": "Version 0b13d81a",
     "description": "",
     "autosaved": false
   },
