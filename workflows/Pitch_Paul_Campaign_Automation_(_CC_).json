@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-05T17:42:26.462Z",
+  "updatedAt": "2026-01-09T00:35:34.787Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -1661,8 +1661,8 @@
       }
     ]
   },
-  "versionId": "d938c929-a7f8-4295-886f-ad20f00b045e",
-  "activeVersionId": "d938c929-a7f8-4295-886f-ad20f00b045e",
+  "versionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
+  "activeVersionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
   "triggerCount": 1,
   "shared": [
     {
@@ -1674,9 +1674,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-05T17:45:24.000Z",
-    "createdAt": "2026-01-05T17:42:26.464Z",
-    "versionId": "d938c929-a7f8-4295-886f-ad20f00b045e",
+    "updatedAt": "2026-01-09T00:35:37.000Z",
+    "createdAt": "2026-01-09T00:35:34.799Z",
+    "versionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
     "workflowId": "eT2zOo08WfGn5Gbt",
     "nodes": [
       {
@@ -3299,7 +3299,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version d938c929",
+    "name": "Version 42210ed6",
     "description": "",
     "autosaved": false
   },
