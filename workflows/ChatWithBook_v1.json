@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-02T20:41:50.920Z",
+  "updatedAt": "2026-01-09T16:51:50.538Z",
   "createdAt": "2025-12-28T20:15:17.185Z",
   "id": "efImToWAhg0kbiK1",
   "name": "ChatWithBook v1",
@@ -34,7 +34,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        224,
+        216,
         0
       ],
       "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -189,6 +189,45 @@
       ],
       "id": "b7cd6471-a09c-4deb-a9f6-4c91d25209c9",
       "name": "Memory"
+    },
+    {
+      "parameters": {
+        "tableId": "chat_log",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{ $('Config').item.json.user_id }}"
+            },
+            {
+              "fieldId": "user_question",
+              "fieldValue": "={{ $('Config').item.json.user_message }}"
+            },
+            {
+              "fieldId": "megyk_response",
+              "fieldValue": "={{ $json.output }}"
+            },
+            {
+              "fieldId": "book_id",
+              "fieldValue": "={{ $('Config').item.json.book_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        0
+      ],
+      "id": "040e2f88-31ae-48e4-b45b-bc1d1a9a730a",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
     }
   ],
   "connections": {
@@ -268,6 +307,17 @@
           }
         ]
       ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -312,8 +362,8 @@
       }
     ]
   },
-  "versionId": "cd812b4c-62dd-4c46-b9e8-d478f2a7bdd5",
-  "activeVersionId": "cd812b4c-62dd-4c46-b9e8-d478f2a7bdd5",
+  "versionId": "1433929c-27dc-4210-8e0b-3ad7209c008b",
+  "activeVersionId": "1433929c-27dc-4210-8e0b-3ad7209c008b",
   "triggerCount": 1,
   "shared": [
     {
@@ -325,9 +375,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-02T20:42:22.000Z",
-    "createdAt": "2026-01-02T20:41:50.922Z",
-    "versionId": "cd812b4c-62dd-4c46-b9e8-d478f2a7bdd5",
+    "updatedAt": "2026-01-09T16:51:54.000Z",
+    "createdAt": "2026-01-09T16:51:50.539Z",
+    "versionId": "1433929c-27dc-4210-8e0b-3ad7209c008b",
     "workflowId": "efImToWAhg0kbiK1",
     "nodes": [
       {
@@ -358,7 +408,7 @@
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
         "position": [
-          224,
+          216,
           0
         ],
         "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -513,6 +563,45 @@
         ],
         "id": "b7cd6471-a09c-4deb-a9f6-4c91d25209c9",
         "name": "Memory"
+      },
+      {
+        "parameters": {
+          "tableId": "chat_log",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "user_id",
+                "fieldValue": "={{ $('Config').item.json.user_id }}"
+              },
+              {
+                "fieldId": "user_question",
+                "fieldValue": "={{ $('Config').item.json.user_message }}"
+              },
+              {
+                "fieldId": "megyk_response",
+                "fieldValue": "={{ $json.output }}"
+              },
+              {
+                "fieldId": "book_id",
+                "fieldValue": "={{ $('Config').item.json.book_id }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1008,
+          0
+        ],
+        "id": "040e2f88-31ae-48e4-b45b-bc1d1a9a730a",
+        "name": "Create a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
       }
     ],
     "connections": {
@@ -592,10 +681,21 @@
             }
           ]
         ]
+      },
+      "Respond to Webhook": {
+        "main": [
+          [
+            {
+              "node": "Create a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version cd812b4c",
+    "name": "Version 1433929c",
     "description": "",
     "autosaved": false
   },
