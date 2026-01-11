@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-30T20:13:33.016Z",
+  "updatedAt": "2026-01-11T19:13:01.233Z",
   "createdAt": "2025-12-01T03:12:48.978Z",
   "id": "Pug5aBaVAObe9dkO",
   "name": "Ingest Ebook v3 EPUB without Enrichment",
@@ -942,9 +942,12 @@
     "Start": [
       {
         "json": {
-          "filename": "Authority Content_ The Simple S - David Jenyns.epub",
-          "book_id": "5ea2cd5b-9ddc-436d-aa77-4ebccd788563",
+          "filename": "The Subtle Art of Not Giving a Fuck - Mark Manson.epub",
+          "book_id": "aec7b13d-f038-4af6-9d05-01edcd8f7f05",
           "mime_type": "application/epub+zip"
+        },
+        "pairedItem": {
+          "item": 0
         }
       }
     ]
