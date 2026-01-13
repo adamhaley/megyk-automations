@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-05T17:32:53.940Z",
+  "updatedAt": "2026-01-13T19:58:44.401Z",
   "createdAt": "2025-11-15T18:59:05.100Z",
   "id": "dqgaIgweJFg4mAJo",
   "name": "Pitch Paul Campaign Automation",
@@ -1640,13 +1640,13 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2026-01-05T07:00:00.013+01:00",
-          "Readable date": "January 5th 2026, 7:00:00 am",
+          "timestamp": "2026-01-08T07:00:00.015+01:00",
+          "Readable date": "January 8th 2026, 7:00:00 am",
           "Readable time": "7:00:00 am",
-          "Day of week": "Monday",
+          "Day of week": "Thursday",
           "Year": "2026",
           "Month": "January",
-          "Day of month": "05",
+          "Day of month": "08",
           "Hour": "07",
           "Minute": "00",
           "Second": "00",
