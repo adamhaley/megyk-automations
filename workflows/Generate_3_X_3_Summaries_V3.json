@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-03T19:15:05.168Z",
+  "updatedAt": "2026-01-15T23:37:02.884Z",
   "createdAt": "2025-12-17T23:52:47.951Z",
   "id": "e8gHgjRrX19DKYO5",
   "name": "Generate 3 X 3 Summaries V3",
@@ -823,7 +823,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is usually inside one of:\n// - $input.item.json.output\n// - or directly $input.item.json\n// and then nested like:\n//   [ { output: [ { content: [ { text: \"{...json...}\" } ] } ] } ]\n// or:\n//   [ { content: [ { text: \"{...json...}\" } ] } ]\n// or already a JSON string/object.\n//\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array → iteratively unwrap until we reach a string or object\nif (Array.isArray(raw)) {\n  // Keep unwrapping layers like:\n  // [ { output: [...] } ]  →  [...]  →  { content: [...] }  →  text\n  while (Array.isArray(raw)) {\n    const first = raw[0];\n    if (!first) break;\n\n    // Case: { output: [ { ... } ] }\n    if (first.output && Array.isArray(first.output)) {\n      raw = first.output;\n      continue;\n    }\n\n    // Case: { content: [ { text: \"...\" } ] }\n    if (\n      first.content &&\n      Array.isArray(first.content) &&\n      first.content[0] &&\n      typeof first.content[0].text === \"string\"\n    ) {\n      raw = first.content[0].text;\n      break;\n    }\n\n    // Unknown array shape, stop unwrapping\n    break;\n  }\n}\n\n// If still a string → parse it as JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw should look like:\n// {\n//   user_preferences: { style, length },\n//   chapters_summary: [...],\n//   complete_book_summary: \"...\",\n//   index: [...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (questions, etc.)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
+        "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// Handle output.output nesting\nif (raw && raw.output) raw = raw.output;\n\n// Iteratively unwrap arrays\nwhile (Array.isArray(raw)) {\n  const first = raw[0];\n  if (!first) break;\n\n  // Case: { output: [...] }\n  if (first.output && Array.isArray(first.output)) {\n    raw = first.output;\n    continue;\n  }\n\n  // Case: { content: [ { text: STRING | OBJECT } ] }\n  if (\n    first.content &&\n    Array.isArray(first.content) &&\n    first.content[0] &&\n    first.content[0].text !== undefined\n  ) {\n    raw = first.content[0].text;\n    break;\n  }\n\n  break;\n}\n\n// If string → parse JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// Guardrail: ensure object\nif (typeof raw !== \"object\" || raw === null) {\n  throw new Error(\"Unwrapped workbook output is not an object\");\n}\n\n// -------------------------------------------\n// 2. Build summaries_v2 payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style ?? \"workbook\",\n    length: raw.user_preferences?.length ?? null,\n    chapters_summary: raw.chapters_summary ?? [],\n    complete_book_summary: raw.complete_book_summary ?? \"\",\n    index: raw.index ?? []\n  }\n};\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1700,12 +1700,37 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "book_id": "4936638b-5d0b-4ec0-98d3-d3c780247879",
+          "book_id": "ecbc7f84-6a40-474e-8ef7-93c5f0aca074",
           "length": "medium",
           "style": "narrative",
-          "title": "The Millionaire Fastlane: Crack the Code to Wealth and Live Rich for a Lifetime",
-          "author": "MJ DeMarco",
+          "title": "80 Fundamental Models for Business Analysts",
+          "author": "Alberto Scappini",
           "canonical_chapters": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Generate Chapters Summary": [
+      {
+        "json": {
+          "output": [
+            {
+              "id": "msg_0fc1c451219f9f1400696979dacd4881a18dd0e0413f14879a",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "{\n  \"user_preferences\": {\n    \"length\": \"medium\",\n    \"style\": \"narrative\"\n  },\n  \"chapters_summary\": [\n    {\n      \"chapter_index\": 1,\n      \"title\": \"Introduction\",\n      \"summary\": \"Forecasting revolves around predicting future demand or sales through analysis of historical data combined with assumptions about key drivers. Simple approaches may rely on direct historical comparisons or fixed increases, but advanced methods incorporate trend or causal models to better account for influencing factors. Accurate forecasting is achieved by blending quantitative models with qualitative insights and domain expertise, integrating concepts like price elasticity through regression analysis. The selection of forecasting techniques depends on product life cycle stage, data availability, accuracy needs, and forecast scope. Models fall mainly into qualitative expert-based, time series with projection, and causal categories such as regressions and customer analytics. Evaluating forecast accuracy using metrics like MSE or MAPE and validating results on holdout data are best practices.\"\n    },\n    {\n      \"chapter_index\": 2,\n      \"title\": \"Descriptive Analytics Models\",\n      \"summary\": \"Descriptive analytics focuses on summarizing past data to understand patterns and relationships within business contexts. Tools range from correlation methods like Pearson and Spearman's rank to matrix analyses such as the Boston Matrix, Importance-Performance Matrix, and Diversification (G.E.) Matrix. The Pearson correlation identifies linear relationships, aiding variable selection for predictive modeling, while Spearman's rank handles ordinal or non-linear monotonic relationships flexibly. Strategic matrices enable businesses to evaluate market positions, customer values, and performance priorities, guiding resource allocation and strategic decision-making. These models form the foundation for understanding current states and framing future analysis.\"\n    },\n    {\n      \"chapter_index\": 3,\n      \"title\": \"Predictive Analytics Models\",\n      \"summary\": \"Predictive analytics delves into forecasting future outcomes based on relationships observed in historical data. Regression techniques—from simple linear to multivariate and non-linear—serve as fundamental tools for modeling quantitative outcomes from predictor variables. Logistic regression extends prediction to binary outcomes, while survival and customer probability models forecast durations or lifetime behaviors. Classification methods, including clustering and factor analyses, group data to reveal latent variables and segment characteristics. Advanced methods like Monte Carlo simulations estimate probable outcomes considering uncertainty and complex interactions. Throughout, model validation and assumptions checking are emphasized to ensure reliability and insightful predictions.\"\n    },\n    {\n      \"chapter_index\": 4,\n      \"title\": \"Prescriptive Analytics Models\",\n      \"summary\": \"Prescriptive analytics provides frameworks to optimize decision-making by suggesting the best actions under given constraints. Optimization techniques adjust variables to maximize desired outputs, such as profits, considering stage-wise processes like sales funnels influenced by advertising, communication, and pricing. Structural equation modeling and path analysis unravel both direct and indirect causal relationships among variables, offering granular insight into complex dependencies. Statistical hypothesis testing methods—including t-tests, A/B testing, chi-square, McNemar, Mann–Whitney U, and Bayesian approaches—support evaluating differences, changes, and probabilities under uncertainty. Non-parametric tests add robustness when traditional assumptions fail. These models guide actionable decisions, aligning statistical rigor with practical business aims.\"\n    },\n    {\n      \"chapter_index\": 5,\n      \"title\": \"Ready-to-Use Excel Templates\",\n      \"summary\": \"The resource provides numerous Excel templates accompanying the analytical methods discussed throughout the book. These templates support practical application of statistical tests (e.g., t-tests, chi-square, McNemar), regression models (linear, logistic, multivariate), forecasting techniques (moving averages, exponential smoothing, time series analysis), and strategic frameworks (Boston Matrix, SWOT, VMOST). Ready access to these tools enables users to analyze data effectively, validate assumptions, and generate insights efficiently. Supplementary templates include Monte Carlo simulations and advanced customer analytics models. This hands-on toolkit complements theoretical understanding, empowering businesses and analysts to implement data-driven decision-making with confidence.\"\n    }\n  ],\n  \"complete_book_summary\": \"This comprehensive guide weaves together forecasting and analytics to enable data-driven decision-making across business landscapes. It begins by grounding readers in forecasting fundamentals, highlighting the integration of historical data, causal influences, and appropriate methodologies tailored to different product stages and data availability. Moving into descriptive analytics, the focus shifts to understanding existing data via correlation measures and strategic matrices that illuminate market positioning, customer value segmentation, and performance priorities. Predictive analytics build upon this foundation with regression, classification, simulation, and lifetime value models, intricately forecasting quantitative and probabilistic outcomes for both customers and markets. Prescriptive analytics then supplies robust mathematical and statistical tools—including optimization, structural equation modeling, and hypothesis testing—to prescribe optimal actions and validate strategic hypotheses amid uncertainty. Throughout, an array of ready-to-use Excel templates supports immediate application, bridging theory with practice. Together, these elements empower organizations to harness data for forecasting accuracy, strategic insight, and decisive action.\"\n}"
+                }
+              ],
+              "role": "assistant"
+            }
+          ]
         },
         "pairedItem": {
           "item": 0
@@ -1713,8 +1738,8 @@
       }
     ]
   },
-  "versionId": "af610d69-59e8-49c7-9c43-9669086973e4",
-  "activeVersionId": "af610d69-59e8-49c7-9c43-9669086973e4",
+  "versionId": "e1ceb376-f8ba-402f-85f4-5d79792d569c",
+  "activeVersionId": "e1ceb376-f8ba-402f-85f4-5d79792d569c",
   "triggerCount": 0,
   "shared": [
     {
@@ -1726,9 +1751,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-03T19:15:08.000Z",
-    "createdAt": "2026-01-03T19:15:05.181Z",
-    "versionId": "af610d69-59e8-49c7-9c43-9669086973e4",
+    "updatedAt": "2026-01-15T23:17:33.000Z",
+    "createdAt": "2026-01-15T23:17:30.778Z",
+    "versionId": "e1ceb376-f8ba-402f-85f4-5d79792d569c",
     "workflowId": "e8gHgjRrX19DKYO5",
     "nodes": [
       {
@@ -2548,7 +2573,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\n// The AI Agent output is usually inside one of:\n// - $input.item.json.output\n// - or directly $input.item.json\n// and then nested like:\n//   [ { output: [ { content: [ { text: \"{...json...}\" } ] } ] } ]\n// or:\n//   [ { content: [ { text: \"{...json...}\" } ] } ]\n// or already a JSON string/object.\n//\n// So we defensively unwrap all forms.\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// If the agent wrapped it inside output.output:\nif (raw && raw.output) raw = raw.output;\n\n// If it's an array → iteratively unwrap until we reach a string or object\nif (Array.isArray(raw)) {\n  // Keep unwrapping layers like:\n  // [ { output: [...] } ]  →  [...]  →  { content: [...] }  →  text\n  while (Array.isArray(raw)) {\n    const first = raw[0];\n    if (!first) break;\n\n    // Case: { output: [ { ... } ] }\n    if (first.output && Array.isArray(first.output)) {\n      raw = first.output;\n      continue;\n    }\n\n    // Case: { content: [ { text: \"...\" } ] }\n    if (\n      first.content &&\n      Array.isArray(first.content) &&\n      first.content[0] &&\n      typeof first.content[0].text === \"string\"\n    ) {\n      raw = first.content[0].text;\n      break;\n    }\n\n    // Unknown array shape, stop unwrapping\n    break;\n  }\n}\n\n// If still a string → parse it as JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// At this point, raw should look like:\n// {\n//   user_preferences: { style, length },\n//   chapters_summary: [...],\n//   complete_book_summary: \"...\",\n//   index: [...]\n// }\n\n// -------------------------------------------\n// 2. Build summaries_v2 record payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style || \"workbook\",\n    length: raw.user_preferences?.length || null,\n\n    // The actual workbook chapter output (questions, etc.)\n    chapters_summary: raw.chapters_summary || [],\n\n    // Full-book summary\n    complete_book_summary: raw.complete_book_summary || \"\",\n\n    // Optional index if you want to store it\n    index: raw.index || []\n  }\n};\n"
+          "jsCode": "// -------------------------------------------\n// 1. Extract workbook output safely\n// -------------------------------------------\n\nlet raw = $input.item.json.output ?? $input.item.json;\n\n// Handle output.output nesting\nif (raw && raw.output) raw = raw.output;\n\n// Iteratively unwrap arrays\nwhile (Array.isArray(raw)) {\n  const first = raw[0];\n  if (!first) break;\n\n  // Case: { output: [...] }\n  if (first.output && Array.isArray(first.output)) {\n    raw = first.output;\n    continue;\n  }\n\n  // Case: { content: [ { text: STRING | OBJECT } ] }\n  if (\n    first.content &&\n    Array.isArray(first.content) &&\n    first.content[0] &&\n    first.content[0].text !== undefined\n  ) {\n    raw = first.content[0].text;\n    break;\n  }\n\n  break;\n}\n\n// If string → parse JSON\nif (typeof raw === \"string\") {\n  try {\n    raw = JSON.parse(raw);\n  } catch (e) {\n    throw new Error(\"Workbook output is not valid JSON:\\n\" + raw);\n  }\n}\n\n// Guardrail: ensure object\nif (typeof raw !== \"object\" || raw === null) {\n  throw new Error(\"Unwrapped workbook output is not an object\");\n}\n\n// -------------------------------------------\n// 2. Build summaries_v2 payload\n// -------------------------------------------\n\nreturn {\n  json: {\n    style: raw.user_preferences?.style ?? \"workbook\",\n    length: raw.user_preferences?.length ?? null,\n    chapters_summary: raw.chapters_summary ?? [],\n    complete_book_summary: raw.complete_book_summary ?? \"\",\n    index: raw.index ?? []\n  }\n};\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -3415,7 +3440,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version af610d69",
+    "name": "Version e1ceb376",
     "description": "",
     "autosaved": false
   },
