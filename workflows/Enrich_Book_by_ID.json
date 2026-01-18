@@ -1,28 +1,11 @@
 {
-  "updatedAt": "2025-12-03T05:01:19.000Z",
+  "updatedAt": "2026-01-18T19:26:33.483Z",
   "createdAt": "2025-12-02T18:46:42.377Z",
   "id": "ZQp61SzkePFnnurz",
   "name": "Enrich Book by ID",
   "active": true,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "fileSelector": "=/files/books/{{ $('Start').item.json.filename }}",
-        "options": {
-          "dataPropertyName": "data"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        64,
-        16
-      ],
-      "id": "1381f985-d8ee-4f97-af4f-6327d5f3ab2c",
-      "name": "Read Book from Disk",
-      "alwaysOutputData": true
-    },
     {
       "parameters": {
         "workflowInputs": {
@@ -57,7 +40,7 @@
             },
             {
               "role": "system",
-              "content": "=You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH. You will be retrieving the data for the following fields:\n\n- title\n- author\n- summary\n- isbn\n- publication_year\n- page_count\n\n\n-----------------------------\nTOOL USE — VERY IMPORTANT\n-----------------------------\nYou have access to a WEB SEARCH tool.\n\nYou MUST call the WEB SEARCH tool to find:\n- complete title if it appears incomplete or uncertain  \n- author  \n- isbn\n- publication_year  \n- page_count  \n- summary\n\nYour WEB SEARCH query MUST be:\n\n\"{{ $json.title }} {{ $json.author }} book metadata\"\n\nAfter receiving search results:\n1. Interpret all results — prioritize authoritative or majority consensus.  \n2. Extract canonical metadata:\n   - **title** → complete, widely recognized title  \n   - **author** → correct full author name  \n   - **isbn** → prefer ISBN-13; do NOT invent one  \n   - **publication_year** → first edition year unless majority reference a specific edition  \n   - **page_count** → choose the most common count across sources  \n   - **summary** → write an 80–150 word objective summary based on real sources  \n3. If results contain multiple possibilities → choose the most widely published  \n4. If the search returns nothing → leave uncertain fields as `null` (except title, which MUST have your best inference)\n\n-----------------------------\nSTRICT OUTPUT FORMAT RULES\n-----------------------------\nYou MUST output ONLY a **single JSON object**.  \nABSOLUTELY NO:\n- markdown  \n- backticks  \n- code fences  \n- prose  \n- explanations  \n- tool call artifacts  \n- \"Here is your JSON:\" prefixes  \n\nThe ONLY valid output is a compact JSON object like this:\n\n{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"summary\": \"\",\n  \"isbn\": \"\",\n  \"publication_year\": null,\n  \"page_count\": null\n}\n\nRules:\n- Use `null` for unknown numbers  \n- Strings MUST be plain strings (never wrapped in extra quotes)  \n- Do NOT invent ISBNs, years, or page counts  \n- Summary must be factual, not fictional  \n- No trailing commas  \n- No additional fields  \n\n-----------------------------\nFINAL INSTRUCTION\n-----------------------------\nIf you require external information → you MUST call WEB SEARCH before producing the final JSON.\n\nWhen you generate your final answer → it MUST be ONLY the JSON object and nothing else."
+              "content": "=You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH. You will be retrieving the data for the following fields:\n\n- title\n- author\n- summary\n- isbn\n- publication_year\n- page_count\n\n\n-----------------------------\nTOOL USE — VERY IMPORTANT\n-----------------------------\nYou have access to a WEB SEARCH tool.\n\nYou MUST call the WEB SEARCH tool to find:\n- complete title if it appears incomplete or uncertain  \n- author  \n- isbn\n- publication_year  \n- page_count  \n- summary\n\nYour WEB SEARCH query MUST be:\n\n\"{{ $json.title }} {{ $json.author }} book metadata\"\n\nAfter receiving search results:\n1. Interpret all results — prioritize authoritative or majority consensus.  \n2. Extract canonical metadata:\n   - **title** → complete, widely recognized title  \n   - **author** → correct full author name  \n   - **isbn** → prefer ISBN-13; do NOT invent one  \n   - **publication_year** → first edition year unless majority reference a specific edition  \n   - **page_count** → choose the most common count across sources  \n   - **summary** → write an objective summary - should be no more than 50 words long. Reference the book by its title, not generic phrases like \"this book\" or \"this self-help book\"\n3. If results contain multiple possibilities → choose the most widely published  \n4. If the search returns nothing → leave uncertain fields as `null` (except title, which MUST have your best inference)\n\n-----------------------------\nSTRICT OUTPUT FORMAT RULES\n-----------------------------\nYou MUST output ONLY a **single JSON object**.  \nABSOLUTELY NO:\n- markdown  \n- backticks  \n- code fences  \n- prose  \n- explanations  \n- tool call artifacts  \n- \"Here is your JSON:\" prefixes  \n\nThe ONLY valid output is a compact JSON object like this:\n\n{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"summary\": \"\",\n  \"isbn\": \"\",\n  \"publication_year\": null,\n  \"page_count\": null\n}\n\nRules:\n- Use `null` for unknown numbers  \n- Strings MUST be plain strings (never wrapped in extra quotes)  \n- Do NOT invent ISBNs, years, or page counts  \n- Summary must be factual, not fictional  \n- No trailing commas  \n- No additional fields  \n\n-----------------------------\nFINAL INSTRUCTION\n-----------------------------\nIf you require external information → you MUST call WEB SEARCH before producing the final JSON.\n\nWhen you generate your final answer → it MUST be ONLY the JSON object and nothing else."
             }
           ]
         },
@@ -143,7 +126,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        288,
+        64,
         16
       ],
       "id": "965704ac-2657-4cf0-a81b-872ebf3ab361",
@@ -193,25 +176,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1008,
-        -240
+        -992,
+        -304
       ],
       "id": "048c9d37-ac93-49b5-a419-c2a3b41b0dc0",
       "name": "Sticky Note"
     }
   ],
   "connections": {
-    "Read Book from Disk": {
-      "main": [
-        [
-          {
-            "node": "Update a row",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Start": {
       "main": [
         [
@@ -238,7 +210,7 @@
       "main": [
         [
           {
-            "node": "Read Book from Disk",
+            "node": "Update a row",
             "type": "main",
             "index": 0
           }
@@ -268,13 +240,13 @@
     "Start": [
       {
         "json": {
-          "id": "99df2b50-7fa0-4aa8-827c-886c8b710d14"
+          "id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22"
         }
       }
     ]
   },
-  "versionId": "e10431f6-a5d7-43ce-a309-06004e5fe054",
-  "activeVersionId": "e10431f6-a5d7-43ce-a309-06004e5fe054",
+  "versionId": "b063f825-0177-429b-881a-ffe20d6f68e7",
+  "activeVersionId": "37e3109c-c1bc-4cb1-a389-0e52ac834d57",
   "triggerCount": 0,
   "shared": [
     {
@@ -286,28 +258,11 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-02T18:57:19.309Z",
-    "createdAt": "2025-12-02T18:57:19.309Z",
-    "versionId": "e10431f6-a5d7-43ce-a309-06004e5fe054",
+    "updatedAt": "2026-01-18T17:38:36.000Z",
+    "createdAt": "2026-01-18T17:38:34.190Z",
+    "versionId": "37e3109c-c1bc-4cb1-a389-0e52ac834d57",
     "workflowId": "ZQp61SzkePFnnurz",
     "nodes": [
-      {
-        "parameters": {
-          "fileSelector": "=/files/books/{{ $('Start').item.json.filename }}",
-          "options": {
-            "dataPropertyName": "data"
-          }
-        },
-        "type": "n8n-nodes-base.readWriteFile",
-        "typeVersion": 1,
-        "position": [
-          64,
-          16
-        ],
-        "id": "1381f985-d8ee-4f97-af4f-6327d5f3ab2c",
-        "name": "Read Book from Disk",
-        "alwaysOutputData": true
-      },
       {
         "parameters": {
           "workflowInputs": {
@@ -342,7 +297,7 @@
               },
               {
                 "role": "system",
-                "content": "=You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH. You will be retrieving the data for the following fields:\n\n- title\n- author\n- summary\n- isbn\n- publication_year\n- page_count\n\n\n-----------------------------\nTOOL USE — VERY IMPORTANT\n-----------------------------\nYou have access to a WEB SEARCH tool.\n\nYou MUST call the WEB SEARCH tool to find:\n- complete title if it appears incomplete or uncertain  \n- author  \n- isbn\n- publication_year  \n- page_count  \n- summary\n\nYour WEB SEARCH query MUST be:\n\n\"{{ $json.title }} {{ $json.author }} book metadata\"\n\nAfter receiving search results:\n1. Interpret all results — prioritize authoritative or majority consensus.  \n2. Extract canonical metadata:\n   - **title** → complete, widely recognized title  \n   - **author** → correct full author name  \n   - **isbn** → prefer ISBN-13; do NOT invent one  \n   - **publication_year** → first edition year unless majority reference a specific edition  \n   - **page_count** → choose the most common count across sources  \n   - **summary** → write an 80–150 word objective summary based on real sources  \n3. If results contain multiple possibilities → choose the most widely published  \n4. If the search returns nothing → leave uncertain fields as `null` (except title, which MUST have your best inference)\n\n-----------------------------\nSTRICT OUTPUT FORMAT RULES\n-----------------------------\nYou MUST output ONLY a **single JSON object**.  \nABSOLUTELY NO:\n- markdown  \n- backticks  \n- code fences  \n- prose  \n- explanations  \n- tool call artifacts  \n- \"Here is your JSON:\" prefixes  \n\nThe ONLY valid output is a compact JSON object like this:\n\n{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"summary\": \"\",\n  \"isbn\": \"\",\n  \"publication_year\": null,\n  \"page_count\": null\n}\n\nRules:\n- Use `null` for unknown numbers  \n- Strings MUST be plain strings (never wrapped in extra quotes)  \n- Do NOT invent ISBNs, years, or page counts  \n- Summary must be factual, not fictional  \n- No trailing commas  \n- No additional fields  \n\n-----------------------------\nFINAL INSTRUCTION\n-----------------------------\nIf you require external information → you MUST call WEB SEARCH before producing the final JSON.\n\nWhen you generate your final answer → it MUST be ONLY the JSON object and nothing else."
+                "content": "=You are a book metadata recovery agent.  You receive a partial book title extracted from a filename.   You MUST retrieve the most likely complete and correct book title.  You have access to tools, including WEB SEARCH. You will be retrieving the data for the following fields:\n\n- title\n- author\n- summary\n- isbn\n- publication_year\n- page_count\n\n\n-----------------------------\nTOOL USE — VERY IMPORTANT\n-----------------------------\nYou have access to a WEB SEARCH tool.\n\nYou MUST call the WEB SEARCH tool to find:\n- complete title if it appears incomplete or uncertain  \n- author  \n- isbn\n- publication_year  \n- page_count  \n- summary\n\nYour WEB SEARCH query MUST be:\n\n\"{{ $json.title }} {{ $json.author }} book metadata\"\n\nAfter receiving search results:\n1. Interpret all results — prioritize authoritative or majority consensus.  \n2. Extract canonical metadata:\n   - **title** → complete, widely recognized title  \n   - **author** → correct full author name  \n   - **isbn** → prefer ISBN-13; do NOT invent one  \n   - **publication_year** → first edition year unless majority reference a specific edition  \n   - **page_count** → choose the most common count across sources  \n   - **summary** → write an objective summary - about 50 words long based on real sources. Reference the book by its title, not generic phrases like \"this book\" or \"this self-help book\"\n3. If results contain multiple possibilities → choose the most widely published  \n4. If the search returns nothing → leave uncertain fields as `null` (except title, which MUST have your best inference)\n\n-----------------------------\nSTRICT OUTPUT FORMAT RULES\n-----------------------------\nYou MUST output ONLY a **single JSON object**.  \nABSOLUTELY NO:\n- markdown  \n- backticks  \n- code fences  \n- prose  \n- explanations  \n- tool call artifacts  \n- \"Here is your JSON:\" prefixes  \n\nThe ONLY valid output is a compact JSON object like this:\n\n{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"summary\": \"\",\n  \"isbn\": \"\",\n  \"publication_year\": null,\n  \"page_count\": null\n}\n\nRules:\n- Use `null` for unknown numbers  \n- Strings MUST be plain strings (never wrapped in extra quotes)  \n- Do NOT invent ISBNs, years, or page counts  \n- Summary must be factual, not fictional  \n- No trailing commas  \n- No additional fields  \n\n-----------------------------\nFINAL INSTRUCTION\n-----------------------------\nIf you require external information → you MUST call WEB SEARCH before producing the final JSON.\n\nWhen you generate your final answer → it MUST be ONLY the JSON object and nothing else."
               }
             ]
           },
@@ -428,7 +383,7 @@
         "type": "n8n-nodes-base.supabase",
         "typeVersion": 1,
         "position": [
-          288,
+          64,
           16
         ],
         "id": "965704ac-2657-4cf0-a81b-872ebf3ab361",
@@ -478,25 +433,14 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -1008,
-          -240
+          -992,
+          -304
         ],
         "id": "048c9d37-ac93-49b5-a419-c2a3b41b0dc0",
         "name": "Sticky Note"
       }
     ],
     "connections": {
-      "Read Book from Disk": {
-        "main": [
-          [
-            {
-              "node": "Update a row",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Start": {
         "main": [
           [
@@ -523,7 +467,7 @@
         "main": [
           [
             {
-              "node": "Read Book from Disk",
+              "node": "Update a row",
               "type": "main",
               "index": 0
             }
@@ -543,8 +487,8 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
+    "name": "Version 37e3109c",
+    "description": "",
     "autosaved": false
   },
   "tags": []
