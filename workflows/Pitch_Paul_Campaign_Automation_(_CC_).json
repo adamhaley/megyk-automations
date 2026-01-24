@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-09T00:35:34.787Z",
+  "updatedAt": "2026-01-24T20:32:12.151Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -575,6 +575,15 @@
             {
               "id": "to",
               "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1301,7 +1310,7 @@
     },
     {
       "parameters": {
-        "maxItems": 4
+        "maxItems": 5
       },
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
@@ -1643,13 +1652,13 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2026-01-05T00:00:00.011+01:00",
-          "Readable date": "January 5th 2026, 12:00:00 am",
+          "timestamp": "2026-01-23T00:00:00.026+01:00",
+          "Readable date": "January 23rd 2026, 12:00:00 am",
           "Readable time": "12:00:00 am",
-          "Day of week": "Monday",
+          "Day of week": "Friday",
           "Year": "2026",
           "Month": "January",
-          "Day of month": "05",
+          "Day of month": "23",
           "Hour": "00",
           "Minute": "00",
           "Second": "00",
@@ -1661,7 +1670,7 @@
       }
     ]
   },
-  "versionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
+  "versionId": "6860ed91-a42d-4dd4-add1-fc464127c660",
   "activeVersionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
   "triggerCount": 1,
   "shared": [
