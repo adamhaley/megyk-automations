@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-13T19:58:44.401Z",
+  "updatedAt": "2026-01-24T20:34:23.179Z",
   "createdAt": "2025-11-15T18:59:05.100Z",
   "id": "dqgaIgweJFg4mAJo",
   "name": "Pitch Paul Campaign Automation",
@@ -332,7 +332,8 @@
           "id": "YhGZ2V2NRW4flPo5",
           "name": "Redis account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -1640,13 +1641,13 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2026-01-08T07:00:00.015+01:00",
-          "Readable date": "January 8th 2026, 7:00:00 am",
+          "timestamp": "2026-01-22T07:00:00.010+01:00",
+          "Readable date": "January 22nd 2026, 7:00:00 am",
           "Readable time": "7:00:00 am",
           "Day of week": "Thursday",
           "Year": "2026",
           "Month": "January",
-          "Day of month": "08",
+          "Day of month": "22",
           "Hour": "07",
           "Minute": "00",
           "Second": "00",
@@ -1658,8 +1659,8 @@
       }
     ]
   },
-  "versionId": "e70a311f-74b5-462d-a8bb-26962700c644",
-  "activeVersionId": "e70a311f-74b5-462d-a8bb-26962700c644",
+  "versionId": "2281c626-9323-4d8b-8249-c9019f131fa5",
+  "activeVersionId": "2281c626-9323-4d8b-8249-c9019f131fa5",
   "triggerCount": 1,
   "shared": [
     {
@@ -1671,9 +1672,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-05T17:32:56.000Z",
-    "createdAt": "2026-01-05T17:32:53.942Z",
-    "versionId": "e70a311f-74b5-462d-a8bb-26962700c644",
+    "updatedAt": "2026-01-24T20:34:25.000Z",
+    "createdAt": "2026-01-24T20:34:23.181Z",
+    "versionId": "2281c626-9323-4d8b-8249-c9019f131fa5",
     "workflowId": "dqgaIgweJFg4mAJo",
     "nodes": [
       {
@@ -2002,7 +2003,8 @@
             "id": "YhGZ2V2NRW4flPo5",
             "name": "Redis account"
           }
-        }
+        },
+        "disabled": true
       },
       {
         "parameters": {
@@ -3293,7 +3295,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version e70a311f",
+    "name": "Version 2281c626",
     "description": "",
     "autosaved": false
   },
