@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-09T16:51:50.538Z",
+  "updatedAt": "2026-01-25T21:13:57.281Z",
   "createdAt": "2025-12-28T20:15:17.185Z",
   "id": "efImToWAhg0kbiK1",
   "name": "ChatWithBook v1",
@@ -10,7 +10,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "book_chat",
-        "responseMode": "responseNode",
+        "responseMode": "streaming",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -28,13 +28,14 @@
         "promptType": "define",
         "text": "={{ $json.user_message }}",
         "options": {
-          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
+          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture.",
+          "enableStreaming": true
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        216,
+        224,
         0
       ],
       "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -102,7 +103,9 @@
     },
     {
       "parameters": {
-        "options": {}
+        "options": {
+          "enableStreaming": false
+        }
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
@@ -362,8 +365,8 @@
       }
     ]
   },
-  "versionId": "1433929c-27dc-4210-8e0b-3ad7209c008b",
-  "activeVersionId": "1433929c-27dc-4210-8e0b-3ad7209c008b",
+  "versionId": "bb6ef87c-85ea-4e5a-bb8e-9fe2d59c5d69",
+  "activeVersionId": "bb6ef87c-85ea-4e5a-bb8e-9fe2d59c5d69",
   "triggerCount": 1,
   "shared": [
     {
@@ -375,16 +378,16 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-09T16:51:54.000Z",
-    "createdAt": "2026-01-09T16:51:50.539Z",
-    "versionId": "1433929c-27dc-4210-8e0b-3ad7209c008b",
+    "updatedAt": "2026-01-25T21:13:59.000Z",
+    "createdAt": "2026-01-25T21:13:57.283Z",
+    "versionId": "bb6ef87c-85ea-4e5a-bb8e-9fe2d59c5d69",
     "workflowId": "efImToWAhg0kbiK1",
     "nodes": [
       {
         "parameters": {
           "httpMethod": "POST",
           "path": "book_chat",
-          "responseMode": "responseNode",
+          "responseMode": "streaming",
           "options": {}
         },
         "type": "n8n-nodes-base.webhook",
@@ -402,13 +405,14 @@
           "promptType": "define",
           "text": "={{ $json.user_message }}",
           "options": {
-            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture."
+            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nAfter answering, briefly encourage the user to explore the summary or chapters for deeper understanding. also encourage the user to continue the conversation with more questions if they want. (for example: “If you want to go deeper, feel free to ask more specific questions or download  the summary for this book to read more.”).\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture.",
+            "enableStreaming": true
           }
         },
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
         "position": [
-          216,
+          224,
           0
         ],
         "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -476,7 +480,9 @@
       },
       {
         "parameters": {
-          "options": {}
+          "options": {
+            "enableStreaming": false
+          }
         },
         "type": "n8n-nodes-base.respondToWebhook",
         "typeVersion": 1.5,
@@ -695,9 +701,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 1433929c",
+    "name": "Version bb6ef87c",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
