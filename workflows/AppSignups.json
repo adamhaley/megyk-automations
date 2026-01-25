@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-06T22:16:28.096Z",
+  "updatedAt": "2026-01-25T02:29:48.585Z",
   "createdAt": "2026-01-04T00:37:36.306Z",
   "id": "ZIqLGdvpuQRGveHM",
   "name": "AppSignups",
@@ -228,7 +228,7 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "node",
-            "content-length": "209",
+            "content-length": "256",
             "accept": "*/*",
             "accept-encoding": "br, gzip, deflate",
             "accept-language": "*",
@@ -238,19 +238,20 @@
             "x-forwarded-for": "172.19.0.1",
             "x-forwarded-host": "n8n.megyk.com",
             "x-forwarded-proto": "https",
-            "x-idempotency-key": "b1bf5a9e-e742-4cc6-ab24-ce9608fe1316"
+            "x-idempotency-key": "44c2ee7d-e54d-4573-845d-4f0f6bbc3ad5"
           },
           "params": {},
           "query": {},
           "body": {
-            "event": "user_signup",
-            "email": "adam.haley+18@gmail.com",
-            "user_id": "b1bf5a9e-e742-4cc6-ab24-ce9608fe1316",
+            "event": "user_verified",
+            "email": "iscalledf@gmail.com",
+            "user_id": "44c2ee7d-e54d-4573-845d-4f0f6bbc3ad5",
             "utm": {
-              "utm_source": "test",
-              "utm_medium": "web",
-              "utm_campaign": "megyk utmterm=14",
-              "utm_content": "lorem"
+              "utm_source": "PPCFB",
+              "utm_medium": "paid",
+              "utm_campaign": "120238133468260173",
+              "utm_term": "120238133468290173",
+              "utm_content": "120238133468210173"
             }
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/app_signups",
