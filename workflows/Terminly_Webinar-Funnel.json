@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-09-29T10:08:36.000Z",
+  "updatedAt": "2026-01-27T14:54:33.601Z",
   "createdAt": "2025-09-18T07:09:02.634Z",
   "id": "j3yPDFyXTPfsW2Od",
   "name": "Terminly Webinar-Funnel",
@@ -41,7 +41,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/c35b2bb0-d021-4b40-ba0d-3eb051f49d21",
+        "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/5737b34b-0b01-4011-bf12-61207b1d0c15",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -53,7 +53,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"email\": \"philippleirich+test299@gmail.com\",\n  \"firstName\": \"Philipp Test\",\n  \"lastName\": \"\",\n  \"phone\": \"\",\n  \"webinar_id\": \"https://21603.webinaris.co/customer/lg/21603/29569/philippleirich+test299@gmail.com/0GuEE/autologin/login.html?s=v1&v=4\",\n  \"date\": \"2025-09-29\",\n  \"time\": \"11:00\",\n  \"tags\": [\"Webinar Registered\"]\n}\n",
+        "jsonBody": "={\n  \"email\": \"{{ $json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"{{ $('Webinaris Registration').item.json.body.phone }}\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}, {{ $('Webinaris Registration').item.json.body.webinar_time }}\",\n  \"tags\": [\"Webinar-Reg-Gefahren\"]\n}\n",
         "options": {
           "lowercaseHeaders": true
         }
@@ -61,7 +61,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        432,
+        208,
         0
       ],
       "id": "27e02e22-5136-4c07-8a61-e785487cb298",
@@ -121,35 +121,6 @@
       ],
       "id": "773d7144-55b4-4b3f-8118-5de2f83456f1",
       "name": "Transfer Attendence"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "45651965-2a7a-49a7-830e-923f91013c93",
-              "name": "body.webinar_date",
-              "value": "={{ $json.body.webinar_date }}",
-              "type": "string"
-            },
-            {
-              "id": "56c8e149-9ed0-4bf3-b2bd-716d62d095f9",
-              "name": "body.webinar_date_new",
-              "value": "={{ (() => { \n  const s = ($json.body.webinar_date || ''); \n  const [dd, mm, yyyy] = s.split('.');\n  if (!dd || !mm || !yyyy) return s; \n  return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;\n})() }}\n",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        224,
-        0
-      ],
-      "id": "1824bb15-7de1-4bbb-9882-1e85b83e12c3",
-      "name": "Change Date Format"
     }
   ],
   "connections": {
@@ -157,7 +128,7 @@
       "main": [
         [
           {
-            "node": "Change Date Format",
+            "node": "Transfer Lead",
             "type": "main",
             "index": 0
           }
@@ -174,17 +145,6 @@
           }
         ]
       ]
-    },
-    "Change Date Format": {
-      "main": [
-        [
-          {
-            "node": "Transfer Lead",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "settings": {
@@ -193,8 +153,8 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "51400409-1a78-4041-a54f-a5c59b7dc8a4",
-  "activeVersionId": "51400409-1a78-4041-a54f-a5c59b7dc8a4",
+  "versionId": "7a0c96ee-a182-40e0-a509-e7eadadb4e09",
+  "activeVersionId": "7a0c96ee-a182-40e0-a509-e7eadadb4e09",
   "triggerCount": 2,
   "shared": [
     {
@@ -206,9 +166,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-26T20:39:59.471Z",
-    "createdAt": "2025-11-26T20:39:59.471Z",
-    "versionId": "51400409-1a78-4041-a54f-a5c59b7dc8a4",
+    "updatedAt": "2026-01-27T14:54:50.000Z",
+    "createdAt": "2026-01-27T14:54:33.617Z",
+    "versionId": "7a0c96ee-a182-40e0-a509-e7eadadb4e09",
     "workflowId": "j3yPDFyXTPfsW2Od",
     "nodes": [
       {
@@ -246,7 +206,7 @@
       {
         "parameters": {
           "method": "POST",
-          "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/c35b2bb0-d021-4b40-ba0d-3eb051f49d21",
+          "url": "https://services.leadconnectorhq.com/hooks/MIYPP8UL1HJQHGEmtzmm/webhook-trigger/5737b34b-0b01-4011-bf12-61207b1d0c15",
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
@@ -258,7 +218,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "{\n  \"email\": \"philippleirich+test299@gmail.com\",\n  \"firstName\": \"Philipp Test\",\n  \"lastName\": \"\",\n  \"phone\": \"\",\n  \"webinar_id\": \"https://21603.webinaris.co/customer/lg/21603/29569/philippleirich+test299@gmail.com/0GuEE/autologin/login.html?s=v1&v=4\",\n  \"date\": \"2025-09-29\",\n  \"time\": \"11:00\",\n  \"tags\": [\"Webinar Registered\"]\n}\n",
+          "jsonBody": "={\n  \"email\": \"{{ $json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"{{ $('Webinaris Registration').item.json.body.phone }}\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}, {{ $('Webinaris Registration').item.json.body.webinar_time }}\",\n  \"tags\": [\"Webinar-Reg-Gefahren\"]\n}\n",
           "options": {
             "lowercaseHeaders": true
           }
@@ -266,7 +226,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          432,
+          208,
           0
         ],
         "id": "27e02e22-5136-4c07-8a61-e785487cb298",
@@ -326,35 +286,6 @@
         ],
         "id": "773d7144-55b4-4b3f-8118-5de2f83456f1",
         "name": "Transfer Attendence"
-      },
-      {
-        "parameters": {
-          "assignments": {
-            "assignments": [
-              {
-                "id": "45651965-2a7a-49a7-830e-923f91013c93",
-                "name": "body.webinar_date",
-                "value": "={{ $json.body.webinar_date }}",
-                "type": "string"
-              },
-              {
-                "id": "56c8e149-9ed0-4bf3-b2bd-716d62d095f9",
-                "name": "body.webinar_date_new",
-                "value": "={{ (() => { \n  const s = ($json.body.webinar_date || ''); \n  const [dd, mm, yyyy] = s.split('.');\n  if (!dd || !mm || !yyyy) return s; \n  return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;\n})() }}\n",
-                "type": "string"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.4,
-        "position": [
-          224,
-          0
-        ],
-        "id": "1824bb15-7de1-4bbb-9882-1e85b83e12c3",
-        "name": "Change Date Format"
       }
     ],
     "connections": {
@@ -362,7 +293,7 @@
         "main": [
           [
             {
-              "node": "Change Date Format",
+              "node": "Transfer Lead",
               "type": "main",
               "index": 0
             }
@@ -379,23 +310,12 @@
             }
           ]
         ]
-      },
-      "Change Date Format": {
-        "main": [
-          [
-            {
-              "node": "Transfer Lead",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
       }
     },
-    "authors": "system migration",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "authors": "Gordan Kljajic",
+    "name": "Version 7a0c96ee",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
