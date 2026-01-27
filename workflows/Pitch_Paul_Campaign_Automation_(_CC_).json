@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-24T20:32:12.151Z",
+  "updatedAt": "2026-01-26T23:55:13.994Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -550,7 +550,8 @@
             "to": "={{ $('Send email').item.json.envelope.to[0] }}",
             "subject": "={{ $('Switch').item.json.subject }}",
             "body": "={{ $('Switch').item.json.body }}",
-            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            "Company Name": "={{ $('Clean Emails').item.json.company }}",
+            "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -620,6 +621,26 @@
             {
               "id": "Company Name",
               "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Katrin kommentar",
+              "displayName": "Katrin kommentar",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -673,7 +694,8 @@
             "to": "={{ $('Send email1').item.json.envelope.to[0] }}",
             "subject": "={{ $('Switch').item.json.subject }}",
             "body": "={{ $('Switch').item.json.body }}",
-            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            "Company Name": "={{ $('Clean Emails').item.json.company }}",
+            "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -698,6 +720,15 @@
             {
               "id": "to",
               "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -734,6 +765,26 @@
             {
               "id": "Company Name",
               "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Katrin kommentar",
+              "displayName": "Katrin kommentar",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -787,7 +838,8 @@
             "to": "={{ $('Send email2').item.json.envelope.to[0] }}",
             "subject": "={{ $('Switch').item.json.subject }}",
             "body": "={{ $('Switch').item.json.body }}",
-            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            "Company Name": "={{ $('Clean Emails').item.json.company }}",
+            "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -812,6 +864,15 @@
             {
               "id": "to",
               "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -848,6 +909,26 @@
             {
               "id": "Company Name",
               "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Katrin kommentar",
+              "displayName": "Katrin kommentar",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -901,7 +982,8 @@
             "to": "={{ $('Send email3').item.json.envelope.to[0] }}",
             "subject": "={{ $('Switch').item.json.subject }}",
             "body": "={{ $('Switch').item.json.body }}",
-            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            "Company Name": "={{ $('Clean Emails').item.json.company }}",
+            "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -926,6 +1008,15 @@
             {
               "id": "to",
               "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -962,6 +1053,26 @@
             {
               "id": "Company Name",
               "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Katrin kommentar",
+              "displayName": "Katrin kommentar",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1015,7 +1126,8 @@
             "to": "={{ $('Send email4').item.json.envelope.to[0] }}",
             "subject": "={{ $('Switch').item.json.subject }}",
             "body": "={{ $('Switch').item.json.body }}",
-            "Company Name": "={{ $('Clean Emails').item.json.company }}"
+            "Company Name": "={{ $('Clean Emails').item.json.company }}",
+            "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -1040,6 +1152,15 @@
             {
               "id": "to",
               "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1076,6 +1197,26 @@
             {
               "id": "Company Name",
               "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Katrin kommentar",
+              "displayName": "Katrin kommentar",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1652,13 +1793,13 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2026-01-23T00:00:00.026+01:00",
-          "Readable date": "January 23rd 2026, 12:00:00 am",
+          "timestamp": "2026-01-26T00:00:00.024+01:00",
+          "Readable date": "January 26th 2026, 12:00:00 am",
           "Readable time": "12:00:00 am",
-          "Day of week": "Friday",
+          "Day of week": "Monday",
           "Year": "2026",
           "Month": "January",
-          "Day of month": "23",
+          "Day of month": "26",
           "Hour": "00",
           "Minute": "00",
           "Second": "00",
@@ -1670,8 +1811,8 @@
       }
     ]
   },
-  "versionId": "6860ed91-a42d-4dd4-add1-fc464127c660",
-  "activeVersionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
+  "versionId": "b814cf57-4142-45c6-a25c-df37af461164",
+  "activeVersionId": "b814cf57-4142-45c6-a25c-df37af461164",
   "triggerCount": 1,
   "shared": [
     {
@@ -1683,9 +1824,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-09T00:35:37.000Z",
-    "createdAt": "2026-01-09T00:35:34.799Z",
-    "versionId": "42210ed6-e749-45d1-aa74-aa02a175db0b",
+    "updatedAt": "2026-01-26T23:55:18.000Z",
+    "createdAt": "2026-01-26T23:55:13.996Z",
+    "versionId": "b814cf57-4142-45c6-a25c-df37af461164",
     "workflowId": "eT2zOo08WfGn5Gbt",
     "nodes": [
       {
@@ -2232,7 +2373,8 @@
               "to": "={{ $('Send email').item.json.envelope.to[0] }}",
               "subject": "={{ $('Switch').item.json.subject }}",
               "body": "={{ $('Switch').item.json.body }}",
-              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+              "Company Name": "={{ $('Clean Emails').item.json.company }}",
+              "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -2257,6 +2399,15 @@
               {
                 "id": "to",
                 "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2293,6 +2444,26 @@
               {
                 "id": "Company Name",
                 "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Phone",
+                "displayName": "Phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Katrin kommentar",
+                "displayName": "Katrin kommentar",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2346,7 +2517,8 @@
               "to": "={{ $('Send email1').item.json.envelope.to[0] }}",
               "subject": "={{ $('Switch').item.json.subject }}",
               "body": "={{ $('Switch').item.json.body }}",
-              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+              "Company Name": "={{ $('Clean Emails').item.json.company }}",
+              "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -2371,6 +2543,15 @@
               {
                 "id": "to",
                 "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2407,6 +2588,26 @@
               {
                 "id": "Company Name",
                 "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Phone",
+                "displayName": "Phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Katrin kommentar",
+                "displayName": "Katrin kommentar",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2460,7 +2661,8 @@
               "to": "={{ $('Send email2').item.json.envelope.to[0] }}",
               "subject": "={{ $('Switch').item.json.subject }}",
               "body": "={{ $('Switch').item.json.body }}",
-              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+              "Company Name": "={{ $('Clean Emails').item.json.company }}",
+              "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -2485,6 +2687,15 @@
               {
                 "id": "to",
                 "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2521,6 +2732,26 @@
               {
                 "id": "Company Name",
                 "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Phone",
+                "displayName": "Phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Katrin kommentar",
+                "displayName": "Katrin kommentar",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2574,7 +2805,8 @@
               "to": "={{ $('Send email3').item.json.envelope.to[0] }}",
               "subject": "={{ $('Switch').item.json.subject }}",
               "body": "={{ $('Switch').item.json.body }}",
-              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+              "Company Name": "={{ $('Clean Emails').item.json.company }}",
+              "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -2599,6 +2831,15 @@
               {
                 "id": "to",
                 "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2635,6 +2876,26 @@
               {
                 "id": "Company Name",
                 "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Phone",
+                "displayName": "Phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Katrin kommentar",
+                "displayName": "Katrin kommentar",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2688,7 +2949,8 @@
               "to": "={{ $('Send email4').item.json.envelope.to[0] }}",
               "subject": "={{ $('Switch').item.json.subject }}",
               "body": "={{ $('Switch').item.json.body }}",
-              "Company Name": "={{ $('Clean Emails').item.json.company }}"
+              "Company Name": "={{ $('Clean Emails').item.json.company }}",
+              "Phone": "={{ $('Loop Over Items').item.json.phone.replace(/^<([^|]+)\\|.*>$/, '$1') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -2713,6 +2975,15 @@
               {
                 "id": "to",
                 "displayName": "to",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "from",
+                "displayName": "from",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2749,6 +3020,26 @@
               {
                 "id": "Company Name",
                 "displayName": "Company Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Phone",
+                "displayName": "Phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Katrin kommentar",
+                "displayName": "Katrin kommentar",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -2983,7 +3274,7 @@
       },
       {
         "parameters": {
-          "maxItems": 4
+          "maxItems": 5
         },
         "type": "n8n-nodes-base.limit",
         "typeVersion": 1,
@@ -3308,9 +3599,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 42210ed6",
+    "name": "Version b814cf57",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
