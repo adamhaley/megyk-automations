@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-24T20:34:23.179Z",
+  "updatedAt": "2026-01-26T23:49:25.468Z",
   "createdAt": "2025-11-15T18:59:05.100Z",
   "id": "dqgaIgweJFg4mAJo",
   "name": "Pitch Paul Campaign Automation",
@@ -581,6 +581,15 @@
               "canBeUsedToMatch": true
             },
             {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
               "id": "subject",
               "displayName": "subject",
               "required": false,
@@ -610,6 +619,26 @@
             {
               "id": "Company Name",
               "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Katrin kommentar",
+              "displayName": "Katrin kommentar",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1641,13 +1670,13 @@
     "Schedule Trigger": [
       {
         "json": {
-          "timestamp": "2026-01-22T07:00:00.010+01:00",
-          "Readable date": "January 22nd 2026, 7:00:00 am",
+          "timestamp": "2026-01-26T07:00:00.017+01:00",
+          "Readable date": "January 26th 2026, 7:00:00 am",
           "Readable time": "7:00:00 am",
-          "Day of week": "Thursday",
+          "Day of week": "Monday",
           "Year": "2026",
           "Month": "January",
-          "Day of month": "22",
+          "Day of month": "26",
           "Hour": "07",
           "Minute": "00",
           "Second": "00",
@@ -1659,7 +1688,7 @@
       }
     ]
   },
-  "versionId": "2281c626-9323-4d8b-8249-c9019f131fa5",
+  "versionId": "31408ace-1b9e-4b27-9c49-631b65a13c98",
   "activeVersionId": "2281c626-9323-4d8b-8249-c9019f131fa5",
   "triggerCount": 1,
   "shared": [
