@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-27T14:54:33.601Z",
+  "updatedAt": "2026-01-28T14:44:50.924Z",
   "createdAt": "2025-09-18T07:09:02.634Z",
   "id": "j3yPDFyXTPfsW2Od",
   "name": "Terminly Webinar-Funnel",
@@ -53,7 +53,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"email\": \"{{ $json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"{{ $('Webinaris Registration').item.json.body.phone }}\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}, {{ $('Webinaris Registration').item.json.body.webinar_time }}\",\n  \"tags\": [\"Webinar-Reg-Gefahren\"]\n}\n",
+        "jsonBody": "={\n  \"email\": \"{{ $('Webinaris Registration').item.json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"+35799978565\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $json.formatted_date }}\",\n  \"Day\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}\",\n  \"time\": \"{{ $('Webinaris Registration').item.json.body.webinar_time }}\"\n}",
         "options": {
           "lowercaseHeaders": true
         }
@@ -61,7 +61,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        208,
+        416,
         0
       ],
       "id": "27e02e22-5136-4c07-8a61-e785487cb298",
@@ -116,11 +116,34 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        208,
+        416,
         176
       ],
       "id": "773d7144-55b4-4b3f-8118-5de2f83456f1",
       "name": "Transfer Attendence"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a875d2a6-6544-4078-84a8-c7f61a590a25",
+              "name": "formatted_date",
+              "value": "={{ DateTime.fromFormat($json.body.webinar_date + ' ' + $json.body.webinar_time, 'dd.MM.yyyy HH:mm').toFormat('yyyy-MM-dd hh:mm') + ' ' + (DateTime.fromFormat($json.body.webinar_date + ' ' + $json.body.webinar_time, 'dd.MM.yyyy HH:mm').hour >= 12 ? 'PM' : 'AM') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "59daa6ae-896a-4d64-9d1b-190e998fd5ae",
+      "name": "Edit Fields"
     }
   ],
   "connections": {
@@ -128,7 +151,7 @@
       "main": [
         [
           {
-            "node": "Transfer Lead",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -145,6 +168,17 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Transfer Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -153,8 +187,8 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "7a0c96ee-a182-40e0-a509-e7eadadb4e09",
-  "activeVersionId": "7a0c96ee-a182-40e0-a509-e7eadadb4e09",
+  "versionId": "580cc0e5-5cca-4d15-9044-bd7141a9109a",
+  "activeVersionId": "8db0a3c9-4cb4-4152-b1c4-f4b90730748e",
   "triggerCount": 2,
   "shared": [
     {
@@ -166,9 +200,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-27T14:54:50.000Z",
-    "createdAt": "2026-01-27T14:54:33.617Z",
-    "versionId": "7a0c96ee-a182-40e0-a509-e7eadadb4e09",
+    "updatedAt": "2026-01-28T08:55:04.000Z",
+    "createdAt": "2026-01-28T08:42:36.118Z",
+    "versionId": "8db0a3c9-4cb4-4152-b1c4-f4b90730748e",
     "workflowId": "j3yPDFyXTPfsW2Od",
     "nodes": [
       {
@@ -218,7 +252,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n  \"email\": \"{{ $json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"{{ $('Webinaris Registration').item.json.body.phone }}\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}, {{ $('Webinaris Registration').item.json.body.webinar_time }}\",\n  \"tags\": [\"Webinar-Reg-Gefahren\"]\n}\n",
+          "jsonBody": "={\n  \"email\": \"{{ $('Webinaris Registration').item.json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"+4917655524643\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $json.formatted_date }}\",\n  \"Day\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}\",\n  \"time\": \"{{ $('Webinaris Registration').item.json.body.webinar_time }}\"\n}",
           "options": {
             "lowercaseHeaders": true
           }
@@ -226,7 +260,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          208,
+          416,
           0
         ],
         "id": "27e02e22-5136-4c07-8a61-e785487cb298",
@@ -281,11 +315,34 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          208,
+          416,
           176
         ],
         "id": "773d7144-55b4-4b3f-8118-5de2f83456f1",
         "name": "Transfer Attendence"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a875d2a6-6544-4078-84a8-c7f61a590a25",
+                "name": "formatted_date",
+                "value": "={{ DateTime.fromFormat($json.body.webinar_date + ' ' + $json.body.webinar_time, 'dd.MM.yyyy HH:mm').toFormat('yyyy-MM-dd hh:mm') + ' ' + (DateTime.fromFormat($json.body.webinar_date + ' ' + $json.body.webinar_time, 'dd.MM.yyyy HH:mm').hour >= 12 ? 'PM' : 'AM') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          208,
+          0
+        ],
+        "id": "59daa6ae-896a-4d64-9d1b-190e998fd5ae",
+        "name": "Edit Fields"
       }
     ],
     "connections": {
@@ -293,7 +350,7 @@
         "main": [
           [
             {
-              "node": "Transfer Lead",
+              "node": "Edit Fields",
               "type": "main",
               "index": 0
             }
@@ -310,10 +367,21 @@
             }
           ]
         ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Transfer Lead",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 7a0c96ee",
+    "name": "Version 8db0a3c9",
     "description": "",
     "autosaved": true
   },
