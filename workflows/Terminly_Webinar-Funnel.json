@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-28T14:44:50.924Z",
+  "updatedAt": "2026-01-29T06:51:20.743Z",
   "createdAt": "2025-09-18T07:09:02.634Z",
   "id": "j3yPDFyXTPfsW2Od",
   "name": "Terminly Webinar-Funnel",
@@ -53,7 +53,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"email\": \"{{ $('Webinaris Registration').item.json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"+35799978565\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $json.formatted_date }}\",\n  \"Day\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}\",\n  \"time\": \"{{ $('Webinaris Registration').item.json.body.webinar_time }}\"\n}",
+        "jsonBody": "={\n  \"email\": \"{{ $('Webinaris Registration').item.json.body.email }}\",\n  \"firstName\": \"{{ $('Webinaris Registration').item.json.body.first_name }}\",\n  \"lastName\": \"{{ $('Webinaris Registration').item.json.body.last_name }}\",\n  \"phone\": \"+4917655524643\",\n  \"webinar_link\": \"{{ $('Webinaris Registration').item.json.body.webinar_link }}\",\n  \"date\": \"{{ $json.formatted_date }}\",\n  \"Day\": \"{{ $('Webinaris Registration').item.json.body.webinar_date }}\",\n  \"time\": \"{{ $('Webinaris Registration').item.json.body.webinar_time }}\"\n}",
         "options": {
           "lowercaseHeaders": true
         }
@@ -187,8 +187,8 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "580cc0e5-5cca-4d15-9044-bd7141a9109a",
-  "activeVersionId": "8db0a3c9-4cb4-4152-b1c4-f4b90730748e",
+  "versionId": "b4f6402c-e414-488c-8004-7d58cdb05776",
+  "activeVersionId": "b4f6402c-e414-488c-8004-7d58cdb05776",
   "triggerCount": 2,
   "shared": [
     {
@@ -200,9 +200,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-28T08:55:04.000Z",
-    "createdAt": "2026-01-28T08:42:36.118Z",
-    "versionId": "8db0a3c9-4cb4-4152-b1c4-f4b90730748e",
+    "updatedAt": "2026-01-29T10:04:37.000Z",
+    "createdAt": "2026-01-29T06:51:20.745Z",
+    "versionId": "b4f6402c-e414-488c-8004-7d58cdb05776",
     "workflowId": "j3yPDFyXTPfsW2Od",
     "nodes": [
       {
@@ -381,7 +381,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 8db0a3c9",
+    "name": "Version b4f6402c",
     "description": "",
     "autosaved": true
   },
