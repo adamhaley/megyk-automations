@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-11T05:42:22.942Z",
+  "updatedAt": "2026-01-29T12:26:01.856Z",
   "createdAt": "2025-10-20T07:06:36.569Z",
   "id": "OuQszsYYC27GC7YO",
   "name": "Lead Transfer Fr. Elstner",
@@ -44,7 +44,7 @@
           "value": {
             "Vorname": "={{ $json.body.customData.first_name }}",
             "Nachname": "={{ $json.body.customData.last_name }}",
-            "Telefon": "={{ $json.body.customData.phone }}",
+            "Telefon": "='{{ $json.body.customData.phone }}",
             "Email": "={{ $json.body.customData['e-mail'] }}",
             "Erstellungsdatum": "={{ $json.body.date_created }}",
             "Source": "={{ $json.body['UTM Source'] }}"
@@ -170,8 +170,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "2d4e2ba6-7844-4c58-9093-e59e501dfc55",
-  "activeVersionId": "2d4e2ba6-7844-4c58-9093-e59e501dfc55",
+  "versionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
+  "activeVersionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
   "triggerCount": 1,
   "shared": [
     {
@@ -183,9 +183,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-11T05:42:22.945Z",
-    "createdAt": "2025-12-11T05:42:22.945Z",
-    "versionId": "2d4e2ba6-7844-4c58-9093-e59e501dfc55",
+    "updatedAt": "2026-01-29T12:26:06.000Z",
+    "createdAt": "2026-01-29T12:26:01.860Z",
+    "versionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
     "workflowId": "OuQszsYYC27GC7YO",
     "nodes": [
       {
@@ -226,7 +226,7 @@
             "value": {
               "Vorname": "={{ $json.body.customData.first_name }}",
               "Nachname": "={{ $json.body.customData.last_name }}",
-              "Telefon": "={{ $json.body.customData.phone }}",
+              "Telefon": "='{{ $json.body.customData.phone }}",
               "Email": "={{ $json.body.customData['e-mail'] }}",
               "Erstellungsdatum": "={{ $json.body.date_created }}",
               "Source": "={{ $json.body['UTM Source'] }}"
@@ -345,9 +345,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "name": "Version cef207cd",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
