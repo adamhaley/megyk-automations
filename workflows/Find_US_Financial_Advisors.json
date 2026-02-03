@@ -1,0 +1,1460 @@
+{
+  "updatedAt": "2026-02-02T23:36:36.285Z",
+  "createdAt": "2026-02-02T21:55:32.231Z",
+  "id": "XIvbFyZxc4UqFoKZ",
+  "name": "Find US Financial Advisors",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        496,
+        336
+      ],
+      "id": "1251341d-d33f-4996-b637-c758708a4437",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "tableId": "us_financial_advisors",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "company",
+              "fieldValue": "={{ $json.company || \"\"}}"
+            },
+            {
+              "fieldId": "industry",
+              "fieldValue": "={{ $json.industry || \"\"}}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $json.phone || \"\" }}"
+            },
+            {
+              "fieldId": "website",
+              "fieldValue": "={{ $json.website || \"\" }}"
+            },
+            {
+              "fieldId": "address",
+              "fieldValue": "={{ $json.address || \"\"}}"
+            },
+            {
+              "fieldId": "=city",
+              "fieldValue": "={{ $json.city || \"\"}}"
+            },
+            {
+              "fieldId": "state",
+              "fieldValue": "={{ $json.state || \"\"}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        768
+      ],
+      "id": "f3729736-640a-45c2-bfcb-b82f7e28087f",
+      "name": "Add Company",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f31926ac-a9ad-44b9-8875-0d661987bcdf",
+              "leftValue": "={{$json.data[0][0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        432
+      ],
+      "id": "2f7d0341-f6a3-4dda-9be8-3d038a850b9b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "phone",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        896,
+        752
+      ],
+      "id": "bd99b994-1e62-4849-a7ed-db7901f5c3a0",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d17cc19-9718-4ca8-8a95-71655e348f07",
+              "leftValue": "={{ $json.industry }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "fc028b7e-c3fe-4730-93e7-46a4f7030dfa",
+              "leftValue": "={{ $json.lookupType }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "664fa3e0-b57a-4f48-abe2-abed4edb9fdf",
+              "leftValue": "={{ $json.startScraping }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -464,
+        352
+      ],
+      "id": "6dff0c0c-c8a1-448c-ad25-a59c709339b9",
+      "name": "Start Scraping"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Just needed to run Once for all items in order to prevent multiple Telegram messages\n\nreturn $input.first();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        256
+      ],
+      "id": "cbca729d-96e9-4c4a-a71b-5c3f7b2fd90d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "## Finder Felix\n",
+        "height": 1088,
+        "width": 1936,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1664,
+        -32
+      ],
+      "id": "fcd7c524-1e14-4986-88ef-97f0ec2294fe",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM",
+          "mode": "list",
+          "cachedResultName": "US Financial Advisors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tabellenblatt1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company": "={{ $json.name }}",
+            "industry": "={{ $json.category }}",
+            "phone": "={{ $json.phone }}",
+            "website": "={{ $json.site }}",
+            "address": "={{ $json.full_address }}",
+            "state": "={{ $json.state }}",
+            "city": "={{ $json.city }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "district",
+              "displayName": "district",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ceo_name",
+              "displayName": "ceo_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "analysis",
+              "displayName": "analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1072,
+        752
+      ],
+      "id": "7cc4cc1f-d173-4685-b748-1165404596fb",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let message = '';\n\nreturn { \n    text: \"Financial Advisors\",\n    postal_code: $input.first().json.zip\n  };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        352
+      ],
+      "id": "36231f41-2123-4042-b2ec-bceeadaa019d",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data[0]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        416
+      ],
+      "id": "5179680c-de44-4a1f-afd5-68ad841a6bae",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e172538-efa3-4997-aad9-0c522cd607b7",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "790182be-f054-464f-bf08-0e67374e062e",
+              "name": "site",
+              "value": "={{ $json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "0f573acd-c2fc-469d-ad13-441c5a6a4b09",
+              "name": "full_address",
+              "value": "={{ $json.address }}",
+              "type": "string"
+            },
+            {
+              "id": "7e04ba70-0506-43ef-9f22-6c55e809bf7f",
+              "name": "phone",
+              "value": "=<tel:{{ $json.phone }}|{{ $json.phone }}>",
+              "type": "string"
+            },
+            {
+              "id": "edb48b22-8a72-4783-bdf0-5e9f628f91a5",
+              "name": "category",
+              "value": "={{ $json.category }}",
+              "type": "string"
+            },
+            {
+              "id": "1de435de-4dd1-450e-ba57-e2c5b0a0b2a4",
+              "name": "subtypes",
+              "value": "={{ $json.subtypes }}",
+              "type": "string"
+            },
+            {
+              "id": "03592a77-8a4f-4ee8-b23d-811ac0b7165e",
+              "name": "location_link",
+              "value": "={{ $json.location_link }}",
+              "type": "string"
+            },
+            {
+              "id": "2c37131e-bda0-4fa7-9a8c-1950bd6d7ae3",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            },
+            {
+              "id": "83b74578-3ca3-4598-8240-b40f4e8ff945",
+              "name": "state",
+              "value": "={{ $json.state }}",
+              "type": "string"
+            },
+            {
+              "id": "c8f84e1a-d6a6-41e6-b1e1-6e181b209b2b",
+              "name": "postal_code",
+              "value": "={{ $('Code2').item.json.postalCode }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        752
+      ],
+      "id": "d902e489-0b0a-40d2-be4e-54365e8cb7fb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://api.outscraper.cloud/maps/search-v3",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=query",
+              "value": "={{ $('Code2').item.json.industry }} {{ $('Code2').item.json.postalCode }}"
+            },
+            {
+              "name": "async",
+              "value": "false"
+            },
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "domains_service",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"limit\": 1000,\n  \"language\": \"en\",\n  \"region\": \"us\",\n  \"async\": false,\n  \"domains_service\": true\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        432
+      ],
+      "id": "a18e96e7-67d8-4ba2-8ca1-d7ef17af2df5",
+      "name": "Outscraper",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "4ODXujeyZRYbAL8D",
+          "name": "Outscraper Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 896,
+        "width": 1536,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        384,
+        160
+      ],
+      "id": "f1fb001e-e885-4e2e-a71e-6354fdaebc6e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return {\n  \"industry\": $json.text,\n  \"postalCode\": $json.postal_code,\n  \"city\": \"\",\n  \"lookupType\": \"postal_code\",\n  \"startScraping\": true\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        352
+      ],
+      "id": "ada264f5-8885-471f-8554-301db9d87f3b",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "zip"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1552,
+        352
+      ],
+      "id": "1283ed24-02b3-4b50-b158-888accf7b136",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Outscraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Company": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Scraping": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Add Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outscraper": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Start Scraping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "WbISMAIlclQfzorG",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "zip": "11385"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "f358f1ba-3343-49c2-9be0-7b09f98720dc",
+  "activeVersionId": "87dbb8c6-4f7f-4bcf-a821-5f5dd30cc1e5",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-02-02T21:55:32.240Z",
+      "createdAt": "2026-02-02T21:55:32.240Z",
+      "role": "workflow:owner",
+      "workflowId": "XIvbFyZxc4UqFoKZ",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-02T23:35:39.000Z",
+    "createdAt": "2026-02-02T23:32:36.845Z",
+    "versionId": "87dbb8c6-4f7f-4bcf-a821-5f5dd30cc1e5",
+    "workflowId": "XIvbFyZxc4UqFoKZ",
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          496,
+          336
+        ],
+        "id": "1251341d-d33f-4996-b637-c758708a4437",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "tableId": "us_financial_advisors",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "company",
+                "fieldValue": "={{ $json.company || \"\"}}"
+              },
+              {
+                "fieldId": "industry",
+                "fieldValue": "={{ $json.industry || \"\"}}"
+              },
+              {
+                "fieldId": "phone",
+                "fieldValue": "={{ $json.phone || \"\" }}"
+              },
+              {
+                "fieldId": "website",
+                "fieldValue": "={{ $json.website || \"\" }}"
+              },
+              {
+                "fieldId": "address",
+                "fieldValue": "={{ $json.address || \"\"}}"
+              },
+              {
+                "fieldId": "=city",
+                "fieldValue": "={{ $json.city || \"\"}}"
+              },
+              {
+                "fieldId": "state",
+                "fieldValue": "={{ $json.state || \"\"}}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1728,
+          768
+        ],
+        "id": "f3729736-640a-45c2-bfcb-b82f7e28087f",
+        "name": "Add Company",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f31926ac-a9ad-44b9-8875-0d661987bcdf",
+                "leftValue": "={{$json.data[0][0] }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1072,
+          432
+        ],
+        "id": "2f7d0341-f6a3-4dda-9be8-3d038a850b9b",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "compare": "selectedFields",
+          "fieldsToCompare": "phone",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.removeDuplicates",
+        "typeVersion": 2,
+        "position": [
+          896,
+          752
+        ],
+        "id": "bd99b994-1e62-4849-a7ed-db7901f5c3a0",
+        "name": "Remove Duplicates"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "4d17cc19-9718-4ca8-8a95-71655e348f07",
+                "leftValue": "={{ $json.industry }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "fc028b7e-c3fe-4730-93e7-46a4f7030dfa",
+                "leftValue": "={{ $json.lookupType }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "664fa3e0-b57a-4f48-abe2-abed4edb9fdf",
+                "leftValue": "={{ $json.startScraping }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -464,
+          352
+        ],
+        "id": "6dff0c0c-c8a1-448c-ad25-a59c709339b9",
+        "name": "Start Scraping"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Just needed to run Once for all items in order to prevent multiple Telegram messages\n\nreturn $input.first();"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          256
+        ],
+        "id": "cbca729d-96e9-4c4a-a71b-5c3f7b2fd90d",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "content": "## Finder Felix\n",
+          "height": 1088,
+          "width": 1936,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -1664,
+          -32
+        ],
+        "id": "fcd7c524-1e14-4986-88ef-97f0ec2294fe",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM",
+            "mode": "list",
+            "cachedResultName": "US Financial Advisors",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Tabellenblatt1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "company": "={{ $json.name }}",
+              "industry": "={{ $json.category }}",
+              "phone": "={{ $json.phone }}",
+              "website": "={{ $json.site }}",
+              "address": "={{ $json.full_address }}",
+              "state": "={{ $json.state }}",
+              "city": "={{ $json.city }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "company",
+                "displayName": "company",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "industry",
+                "displayName": "industry",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "phone",
+                "displayName": "phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "website",
+                "displayName": "website",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "address",
+                "displayName": "address",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "state",
+                "displayName": "state",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "city",
+                "displayName": "city",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "district",
+                "displayName": "district",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "ceo_name",
+                "displayName": "ceo_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "analysis",
+                "displayName": "analysis",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.6,
+        "position": [
+          1072,
+          752
+        ],
+        "id": "7cc4cc1f-d173-4685-b748-1165404596fb",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "let message = '';\n\nreturn { \n    text: \"Financial Advisors\",\n    postal_code: $input.first().json.zip\n  };\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1264,
+          352
+        ],
+        "id": "36231f41-2123-4042-b2ec-bceeadaa019d",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data[0]",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          1728,
+          416
+        ],
+        "id": "5179680c-de44-4a1f-afd5-68ad841a6bae",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "2e172538-efa3-4997-aad9-0c522cd607b7",
+                "name": "name",
+                "value": "={{ $json.name }}",
+                "type": "string"
+              },
+              {
+                "id": "790182be-f054-464f-bf08-0e67374e062e",
+                "name": "site",
+                "value": "={{ $json.website }}",
+                "type": "string"
+              },
+              {
+                "id": "0f573acd-c2fc-469d-ad13-441c5a6a4b09",
+                "name": "full_address",
+                "value": "={{ $json.address }}",
+                "type": "string"
+              },
+              {
+                "id": "7e04ba70-0506-43ef-9f22-6c55e809bf7f",
+                "name": "phone",
+                "value": "=<tel:{{ $json.phone }}|{{ $json.phone }}>",
+                "type": "string"
+              },
+              {
+                "id": "edb48b22-8a72-4783-bdf0-5e9f628f91a5",
+                "name": "category",
+                "value": "={{ $json.category }}",
+                "type": "string"
+              },
+              {
+                "id": "1de435de-4dd1-450e-ba57-e2c5b0a0b2a4",
+                "name": "subtypes",
+                "value": "={{ $json.subtypes }}",
+                "type": "string"
+              },
+              {
+                "id": "03592a77-8a4f-4ee8-b23d-811ac0b7165e",
+                "name": "location_link",
+                "value": "={{ $json.location_link }}",
+                "type": "string"
+              },
+              {
+                "id": "2c37131e-bda0-4fa7-9a8c-1950bd6d7ae3",
+                "name": "city",
+                "value": "={{ $json.city }}",
+                "type": "string"
+              },
+              {
+                "id": "83b74578-3ca3-4598-8240-b40f4e8ff945",
+                "name": "state",
+                "value": "={{ $json.state }}",
+                "type": "string"
+              },
+              {
+                "id": "c8f84e1a-d6a6-41e6-b1e1-6e181b209b2b",
+                "name": "postal_code",
+                "value": "={{ $('Code2').item.json.postalCode }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          720,
+          752
+        ],
+        "id": "d902e489-0b0a-40d2-be4e-54365e8cb7fb",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "url": "https://api.outscraper.cloud/maps/search-v3",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "=query",
+                "value": "={{ $('Code2').item.json.industry }} {{ $('Code2').item.json.postalCode }}"
+              },
+              {
+                "name": "async",
+                "value": "false"
+              },
+              {
+                "name": "limit",
+                "value": "1000"
+              },
+              {
+                "name": "domains_service",
+                "value": "true"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"limit\": 1000,\n  \"language\": \"en\",\n  \"region\": \"us\",\n  \"async\": false,\n  \"domains_service\": true\n}\n",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          880,
+          432
+        ],
+        "id": "a18e96e7-67d8-4ba2-8ca1-d7ef17af2df5",
+        "name": "Outscraper",
+        "retryOnFail": true,
+        "waitBetweenTries": 5000,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "4ODXujeyZRYbAL8D",
+            "name": "Outscraper Auth"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "",
+          "height": 896,
+          "width": 1536,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          384,
+          160
+        ],
+        "id": "f1fb001e-e885-4e2e-a71e-6354fdaebc6e",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return {\n  \"industry\": $json.text,\n  \"postalCode\": $json.postal_code,\n  \"city\": \"\",\n  \"lookupType\": \"postal_code\",\n  \"startScraping\": true\n}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -720,
+          352
+        ],
+        "id": "ada264f5-8885-471f-8554-301db9d87f3b",
+        "name": "Code2"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "zip"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1552,
+          352
+        ],
+        "id": "1283ed24-02b3-4b50-b158-888accf7b136",
+        "name": "When Executed by Another Workflow"
+      }
+    ],
+    "connections": {
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Outscraper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Company": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Remove Duplicates": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start Scraping": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          []
+        ]
+      },
+      "Append row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Add Company",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code1": {
+        "main": [
+          [
+            {
+              "node": "Code2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Outscraper": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Remove Duplicates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code2": {
+        "main": [
+          [
+            {
+              "node": "Start Scraping",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 87dbb8c6",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
