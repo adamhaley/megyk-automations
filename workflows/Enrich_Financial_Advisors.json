@@ -1,0 +1,844 @@
+{
+  "updatedAt": "2026-02-05T00:35:22.879Z",
+  "createdAt": "2026-02-04T23:05:56.896Z",
+  "id": "MshVZ02JHbNUnD6KqWGfF",
+  "name": "Enrich Financial Advisors",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.website }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": " text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Upgrade-Insecure-Requests",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "96338b8a-c55d-4c89-8b1e-ba976a4e241d",
+      "name": "Fetch Website",
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const EMAIL_REGEX =\n  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}/gi;\n\nreturn items.map(item => {\n  const html =\n    typeof item.json.data === 'string'\n      ? item.json.data\n      : item.json.body || '';\n\n  const matches = html.match(EMAIL_REGEX) || [];\n\n  // normalize + dedupe\n  const emails = [...new Set(\n    matches.map(e => e.toLowerCase())\n  )];\n  item.json.data = '';\n  item.json.emails = emails;\n  item.json.email_count = emails.length;\n  return item;\n});\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "224d8278-9394-4408-8ef4-9e4b1ac631f4",
+      "name": "Extract Emails"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "28cb2df7-937a-4b43-8767-65709f374581",
+              "leftValue": "={{ $json.emails }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        208
+      ],
+      "id": "925761ba-866c-4555-8844-0b4ce7ef5438",
+      "name": "Filter Emails Found"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM",
+          "mode": "list",
+          "cachedResultName": "US Financial Advisors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tabellenblatt1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.emails.length>1? $json.emails.join(',') : $json.emails.first() }}",
+            "row_number": "={{ Number($('When Executed by Another Workflow').item.json.row_number) }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "district",
+              "displayName": "district",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ceo_name",
+              "displayName": "ceo_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "analysis",
+              "displayName": "analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        208
+      ],
+      "id": "dc4b0bf8-986c-4249-b6f8-3b23ba282a6c",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4a7cf48c-9910-47dc-83e7-a2bc9156165e",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "us_financial_advisors",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.row_number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        432,
+        208
+      ],
+      "id": "5b226055-6fa5-4421-816c-eee3c53580e3",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Fetch Website": {
+      "main": [
+        [
+          {
+            "node": "Extract Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Emails": {
+      "main": [
+        [
+          {
+            "node": "Filter Emails Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Emails Found": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Fetch Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "row_number": 1,
+          "company": "MVM Advisors LLC",
+          "industry": "Financial planner",
+          "phone": "<tel:+1 281-810-2011|+1 281-810-2011>",
+          "website": "http://www.mvmadvisors.com/",
+          "address": "7043 Terrace Ridge, Katy, TX 77494",
+          "state": "Texas",
+          "city": "Katy",
+          "district": "",
+          "ceo_name": "",
+          "email": "info@wealthenhancement.com",
+          "analysis": ""
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "42bfe386-0636-4ed9-8ba1-4179374e6b70",
+  "activeVersionId": "42bfe386-0636-4ed9-8ba1-4179374e6b70",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-02-04T23:05:56.902Z",
+      "createdAt": "2026-02-04T23:05:56.902Z",
+      "role": "workflow:owner",
+      "workflowId": "MshVZ02JHbNUnD6KqWGfF",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-05T00:35:33.000Z",
+    "createdAt": "2026-02-05T00:35:22.880Z",
+    "versionId": "42bfe386-0636-4ed9-8ba1-4179374e6b70",
+    "workflowId": "MshVZ02JHbNUnD6KqWGfF",
+    "nodes": [
+      {
+        "parameters": {
+          "url": "={{ $json.website }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+              },
+              {
+                "name": "Accept",
+                "value": " text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+              },
+              {
+                "name": "Accept-Language",
+                "value": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": "gzip, deflate, br"
+              },
+              {
+                "name": "Connection",
+                "value": "keep-alive"
+              },
+              {
+                "name": "Upgrade-Insecure-Requests",
+                "value": "1"
+              }
+            ]
+          },
+          "options": {
+            "allowUnauthorizedCerts": true,
+            "redirect": {
+              "redirect": {}
+            },
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true,
+                "responseFormat": "text"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          672,
+          0
+        ],
+        "id": "96338b8a-c55d-4c89-8b1e-ba976a4e241d",
+        "name": "Fetch Website",
+        "retryOnFail": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const EMAIL_REGEX =\n  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}/gi;\n\nreturn items.map(item => {\n  const html =\n    typeof item.json.data === 'string'\n      ? item.json.data\n      : item.json.body || '';\n\n  const matches = html.match(EMAIL_REGEX) || [];\n\n  // normalize + dedupe\n  const emails = [...new Set(\n    matches.map(e => e.toLowerCase())\n  )];\n  item.json.data = '';\n  item.json.emails = emails;\n  item.json.email_count = emails.length;\n  return item;\n});\n\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          896,
+          0
+        ],
+        "id": "224d8278-9394-4408-8ef4-9e4b1ac631f4",
+        "name": "Extract Emails"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "28cb2df7-937a-4b43-8767-65709f374581",
+                "leftValue": "={{ $json.emails }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          0,
+          208
+        ],
+        "id": "925761ba-866c-4555-8844-0b4ce7ef5438",
+        "name": "Filter Emails Found"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM",
+            "mode": "list",
+            "cachedResultName": "US Financial Advisors",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Tabellenblatt1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qhYJZddcb7UaSJiwOed8vKKJQdePFN9C7MruYzSwMvM/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "email": "={{ $json.emails.length>1? $json.emails.join(',') : $json.emails.first() }}",
+              "row_number": "={{ Number($('When Executed by Another Workflow').item.json.row_number) }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "company",
+                "displayName": "company",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "industry",
+                "displayName": "industry",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "phone",
+                "displayName": "phone",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "website",
+                "displayName": "website",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "address",
+                "displayName": "address",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "state",
+                "displayName": "state",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "city",
+                "displayName": "city",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "district",
+                "displayName": "district",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "ceo_name",
+                "displayName": "ceo_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "email",
+                "displayName": "email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "analysis",
+                "displayName": "analysis",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          224,
+          208
+        ],
+        "id": "dc4b0bf8-986c-4249-b6f8-3b23ba282a6c",
+        "name": "Update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "4a7cf48c-9910-47dc-83e7-a2bc9156165e",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "us_financial_advisors",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "condition": "eq",
+                "keyValue": "={{ $json.row_number }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "email",
+                "fieldValue": "={{ $json.email }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          432,
+          208
+        ],
+        "id": "5b226055-6fa5-4421-816c-eee3c53580e3",
+        "name": "Update a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Fetch Website": {
+        "main": [
+          [
+            {
+              "node": "Extract Emails",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Emails": {
+        "main": [
+          [
+            {
+              "node": "Filter Emails Found",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter Emails Found": {
+        "main": [
+          [
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Fetch Website",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Update a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 42bfe386",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
