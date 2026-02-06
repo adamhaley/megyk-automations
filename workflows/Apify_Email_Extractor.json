@@ -1,0 +1,172 @@
+{
+  "updatedAt": "2026-02-06T00:18:29.652Z",
+  "createdAt": "2026-02-05T23:33:24.049Z",
+  "id": "6Lu5-_4vy87pyq2fNz2XR",
+  "name": "Apify Email Extractor",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3dc63c7f-9876-4d2e-baed-942bb654ad17",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorId": {
+          "__rl": true,
+          "value": "n7dPs8EUDLpaafyc6",
+          "mode": "list",
+          "cachedResultName": "Automae Email Extractor (automae-theo-jim/automae-email-extractor)",
+          "cachedResultUrl": "https://console.apify.com/actors/n7dPs8EUDLpaafyc6/input"
+        },
+        "customBody": "={\n    \"baseUrl\": \"{{ $json.website }}\",\n    \"stopOnFirstEmail\": true\n}"
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "76f69a48-9a45-42da-8422-3efd7bd6ac06",
+      "name": "Run an Actor and get dataset",
+      "credentials": {
+        "apifyApi": {
+          "id": "B1xZy36gghQzCr1U",
+          "name": "Apify account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Run an Actor and get dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "row_number": 2,
+          "company": "MVM Advisors LLC",
+          "industry": "Financial planner",
+          "phone": "<tel:+1 281-810-2011|+1 281-810-2011>",
+          "website": "http://www.mvmadvisors.com/",
+          "address": "7043 Terrace Ridge, Katy, TX 77494",
+          "state": "Texas",
+          "city": "Katy",
+          "district": "",
+          "ceo_name": "",
+          "email": "mvmadvisorsllc@mvmadvisorsllc.onmicrosoft.com,mvmadvisorsllc1@mvmadvisorsllc.onmicrosoft.com,dcae4577a85343dcb503ad32c198500a@mvmadvisors.com,info@rightdecision.life",
+          "analysis": ""
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "fd76d84b-12e1-4b10-a9fe-a487db4757e8",
+  "activeVersionId": "fd76d84b-12e1-4b10-a9fe-a487db4757e8",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-02-05T23:33:24.057Z",
+      "createdAt": "2026-02-05T23:33:24.057Z",
+      "role": "workflow:owner",
+      "workflowId": "6Lu5-_4vy87pyq2fNz2XR",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-06T00:18:42.000Z",
+    "createdAt": "2026-02-06T00:18:29.654Z",
+    "versionId": "fd76d84b-12e1-4b10-a9fe-a487db4757e8",
+    "workflowId": "6Lu5-_4vy87pyq2fNz2XR",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "3dc63c7f-9876-4d2e-baed-942bb654ad17",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "operation": "Run actor and get dataset",
+          "actorId": {
+            "__rl": true,
+            "value": "n7dPs8EUDLpaafyc6",
+            "mode": "list",
+            "cachedResultName": "Automae Email Extractor (automae-theo-jim/automae-email-extractor)",
+            "cachedResultUrl": "https://console.apify.com/actors/n7dPs8EUDLpaafyc6/input"
+          },
+          "customBody": "={\n    \"baseUrl\": \"{{ $json.website }}\",\n    \"stopOnFirstEmail\": true\n}"
+        },
+        "type": "@apify/n8n-nodes-apify.apify",
+        "typeVersion": 1,
+        "position": [
+          208,
+          0
+        ],
+        "id": "76f69a48-9a45-42da-8422-3efd7bd6ac06",
+        "name": "Run an Actor and get dataset",
+        "credentials": {
+          "apifyApi": {
+            "id": "B1xZy36gghQzCr1U",
+            "name": "Apify account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Run an Actor and get dataset",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version fd76d84b",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
