@@ -1,0 +1,398 @@
+{
+  "updatedAt": "2026-02-06T00:30:19.195Z",
+  "createdAt": "2026-02-02T21:57:20.555Z",
+  "id": "oLRhH4fkdHW0ykac",
+  "name": "Loop->Find Advisors",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Call Finder for each *High Value* Postal Code in USA",
+        "height": 688,
+        "width": 592,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -352
+      ],
+      "id": "d3f7499a-1dfc-4da8-bbbd-eb96fccef96b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        -176
+      ],
+      "id": "ed8cf8cf-d7ed-4449-aaa6-85b0225ff481",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "incr",
+        "key": "us_zip_codes"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        48,
+        16
+      ],
+      "id": "a18bedb6-5239-4d32-956c-c14deafd4d02",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "YhGZ2V2NRW4flPo5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "us_zip_codes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.us_zip_codes }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        256,
+        16
+      ],
+      "id": "9dcc0706-1d40-4d06-983d-44ea1037e9fe",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "XIvbFyZxc4UqFoKZ",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/XIvbFyZxc4UqFoKZ",
+          "cachedResultName": "Find US Financial Advisors"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "zip"
+          ],
+          "schema": [
+            {
+              "id": "zip",
+              "displayName": "zip",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        16
+      ],
+      "id": "5c5f037f-2274-4d9f-9c82-2df8e45d7026",
+      "name": "Call 'Find US Financial Advisors'"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Call 'Find US Financial Advisors'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "WbISMAIlclQfzorG",
+    "saveExecutionProgress": true,
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-02-06T01:29:44.003+01:00",
+          "Readable date": "February 6th 2026, 1:29:44 am",
+          "Readable time": "1:29:44 am",
+          "Day of week": "Friday",
+          "Year": "2026",
+          "Month": "February",
+          "Day of month": "06",
+          "Hour": "01",
+          "Minute": "29",
+          "Second": "44",
+          "Timezone": "Europe/Berlin (UTC+01:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "e9171985-e5e9-4a0c-83a3-cd27bef0b419",
+  "activeVersionId": "e9171985-e5e9-4a0c-83a3-cd27bef0b419",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-02-02T21:57:20.562Z",
+      "createdAt": "2026-02-02T21:57:20.562Z",
+      "role": "workflow:owner",
+      "workflowId": "oLRhH4fkdHW0ykac",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-06T00:32:38.000Z",
+    "createdAt": "2026-02-06T00:30:19.197Z",
+    "versionId": "e9171985-e5e9-4a0c-83a3-cd27bef0b419",
+    "workflowId": "oLRhH4fkdHW0ykac",
+    "nodes": [
+      {
+        "parameters": {
+          "content": "## Call Finder for each *High Value* Postal Code in USA",
+          "height": 688,
+          "width": 592,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -400,
+          -352
+        ],
+        "id": "d3f7499a-1dfc-4da8-bbbd-eb96fccef96b",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "minutes",
+                "minutesInterval": 1
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -352,
+          -176
+        ],
+        "id": "ed8cf8cf-d7ed-4449-aaa6-85b0225ff481",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "incr",
+          "key": "us_zip_codes"
+        },
+        "type": "n8n-nodes-base.redis",
+        "typeVersion": 1,
+        "position": [
+          48,
+          16
+        ],
+        "id": "a18bedb6-5239-4d32-956c-c14deafd4d02",
+        "name": "Redis",
+        "credentials": {
+          "redis": {
+            "id": "YhGZ2V2NRW4flPo5",
+            "name": "Redis account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "us_zip_codes",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "keyValue": "={{ $json.us_zip_codes }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          256,
+          16
+        ],
+        "id": "9dcc0706-1d40-4d06-983d-44ea1037e9fe",
+        "name": "Get a row",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "XIvbFyZxc4UqFoKZ",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/XIvbFyZxc4UqFoKZ",
+            "cachedResultName": "Find US Financial Advisors"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [
+              "zip"
+            ],
+            "schema": [
+              {
+                "id": "zip",
+                "displayName": "zip",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "mode": "each",
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          464,
+          16
+        ],
+        "id": "5c5f037f-2274-4d9f-9c82-2df8e45d7026",
+        "name": "Call 'Find US Financial Advisors'"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Redis",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Redis": {
+        "main": [
+          [
+            {
+              "node": "Get a row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get a row": {
+        "main": [
+          [
+            {
+              "node": "Call 'Find US Financial Advisors'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version e9171985",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
