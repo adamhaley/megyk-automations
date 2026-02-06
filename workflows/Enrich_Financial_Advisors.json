@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-05T00:35:22.879Z",
+  "updatedAt": "2026-02-06T16:47:16.439Z",
   "createdAt": "2026-02-04T23:05:56.896Z",
   "id": "MshVZ02JHbNUnD6KqWGfF",
   "name": "Enrich Financial Advisors",
@@ -408,17 +408,17 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "row_number": 1,
-          "company": "MVM Advisors LLC",
-          "industry": "Financial planner",
-          "phone": "<tel:+1 281-810-2011|+1 281-810-2011>",
-          "website": "http://www.mvmadvisors.com/",
-          "address": "7043 Terrace Ridge, Katy, TX 77494",
-          "state": "Texas",
-          "city": "Katy",
+          "row_number": "",
+          "company": "Goldberg Retirement Solutions",
+          "industry": "Financial consultant",
+          "phone": "<tel:+1 561-324-3826|+1 561-324-3826>",
+          "website": "https://goldbergrs.com/",
+          "address": "",
+          "state": "",
+          "city": "",
           "district": "",
           "ceo_name": "",
-          "email": "info@wealthenhancement.com",
+          "email": "",
           "analysis": ""
         },
         "pairedItem": {
@@ -427,8 +427,8 @@
       }
     ]
   },
-  "versionId": "42bfe386-0636-4ed9-8ba1-4179374e6b70",
-  "activeVersionId": "42bfe386-0636-4ed9-8ba1-4179374e6b70",
+  "versionId": "1eaf4e6a-a902-4df6-ab88-bf4fa2d30ca7",
+  "activeVersionId": "1eaf4e6a-a902-4df6-ab88-bf4fa2d30ca7",
   "triggerCount": 0,
   "shared": [
     {
@@ -440,9 +440,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-05T00:35:33.000Z",
-    "createdAt": "2026-02-05T00:35:22.880Z",
-    "versionId": "42bfe386-0636-4ed9-8ba1-4179374e6b70",
+    "updatedAt": "2026-02-06T16:53:09.000Z",
+    "createdAt": "2026-02-06T16:47:16.441Z",
+    "versionId": "1eaf4e6a-a902-4df6-ab88-bf4fa2d30ca7",
     "workflowId": "MshVZ02JHbNUnD6KqWGfF",
     "nodes": [
       {
@@ -836,7 +836,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 42bfe386",
+    "name": "Version 1eaf4e6a",
     "description": "",
     "autosaved": true
   },
