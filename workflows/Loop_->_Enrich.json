@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-05T00:24:40.817Z",
+  "updatedAt": "2026-02-06T16:30:12.920Z",
   "createdAt": "2026-02-04T23:33:18.762Z",
   "id": "MVZcq4nGbxJUmhdoCrUSm",
   "name": "Loop -> Enrich",
@@ -204,7 +204,28 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-02-06T17:27:30.004+01:00",
+          "Readable date": "February 6th 2026, 5:27:30 pm",
+          "Readable time": "5:27:30 pm",
+          "Day of week": "Friday",
+          "Year": "2026",
+          "Month": "February",
+          "Day of month": "06",
+          "Hour": "17",
+          "Minute": "27",
+          "Second": "30",
+          "Timezone": "Europe/Berlin (UTC+01:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "versionId": "ffb8f5b2-fe85-4752-8f6e-55f92625a336",
   "activeVersionId": "ffb8f5b2-fe85-4752-8f6e-55f92625a336",
   "triggerCount": 1,
