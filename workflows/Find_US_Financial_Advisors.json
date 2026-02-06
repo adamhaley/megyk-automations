@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-02T23:36:36.285Z",
+  "updatedAt": "2026-02-06T00:30:58.003Z",
   "createdAt": "2026-02-02T21:55:32.231Z",
   "id": "XIvbFyZxc4UqFoKZ",
   "name": "Find US Financial Advisors",
@@ -233,6 +233,16 @@
           },
           "matchingColumns": [],
           "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
             {
               "id": "company",
               "displayName": "company",
@@ -723,7 +733,7 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "zip": "11385"
+          "zip": "55901"
         },
         "pairedItem": {
           "item": 0
@@ -731,8 +741,8 @@
       }
     ]
   },
-  "versionId": "f358f1ba-3343-49c2-9be0-7b09f98720dc",
-  "activeVersionId": "87dbb8c6-4f7f-4bcf-a821-5f5dd30cc1e5",
+  "versionId": "fb0ee5ee-cc84-49ef-9f34-1962c79d77ca",
+  "activeVersionId": "fb0ee5ee-cc84-49ef-9f34-1962c79d77ca",
   "triggerCount": 0,
   "shared": [
     {
@@ -744,9 +754,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-02T23:35:39.000Z",
-    "createdAt": "2026-02-02T23:32:36.845Z",
-    "versionId": "87dbb8c6-4f7f-4bcf-a821-5f5dd30cc1e5",
+    "updatedAt": "2026-02-06T00:31:05.000Z",
+    "createdAt": "2026-02-06T00:30:58.004Z",
+    "versionId": "fb0ee5ee-cc84-49ef-9f34-1962c79d77ca",
     "workflowId": "XIvbFyZxc4UqFoKZ",
     "nodes": [
       {
@@ -976,6 +986,16 @@
             },
             "matchingColumns": [],
             "schema": [
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
               {
                 "id": "company",
                 "displayName": "company",
@@ -1452,7 +1472,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 87dbb8c6",
+    "name": "Version fb0ee5ee",
     "description": "",
     "autosaved": true
   },
