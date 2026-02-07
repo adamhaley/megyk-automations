@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-09T22:03:20.000Z",
+  "updatedAt": "2026-02-07T22:59:34.468Z",
   "createdAt": "2025-09-23T17:25:22.671Z",
   "id": "jPsJrGPMW87UyOV5",
   "name": "Validate Emails",
@@ -16,8 +16,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -560,
-        -368
+        -648,
+        -408
       ],
       "id": "1fb84adb-5dcd-4368-82c2-452707a867dd",
       "name": "Sticky Note"
@@ -25,7 +25,7 @@
     {
       "parameters": {
         "operation": "update",
-        "tableId": "german_companies",
+        "tableId": "us_financial_advisors",
         "filters": {
           "conditions": [
             {
@@ -47,7 +47,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        1856,
+        1744,
         -160
       ],
       "id": "2e28ab0b-b2fc-40e8-b5cc-d7cb8fa91f7a",
@@ -67,8 +67,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1648,
-        16
+        1296,
+        56
       ],
       "id": "1fbfcf25-29bc-4f1e-b49c-6bb10dfc60c9",
       "name": "Wait",
@@ -84,8 +84,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1008,
-        -64
+        848,
+        -40
       ],
       "id": "e6073b3b-faf6-46d7-8226-a46fdea21ffb",
       "name": "Check Batch Status",
@@ -102,12 +102,6 @@
         "url": "https://api.truelist.io/api/v1/batches",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {}
-          ]
-        },
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -122,8 +116,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        784,
-        -64
+        624,
+        -40
       ],
       "id": "13a72a6d-342b-4b3e-b618-97462fc522cb",
       "name": "Batch Validation Truelist.io",
@@ -171,8 +165,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1216,
-        -64
+        1072,
+        -112
       ],
       "id": "302262a5-c499-4c44-8af8-518b5ba1b4b3",
       "name": "If Completed"
@@ -185,8 +179,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        112,
-        -64
+        -48,
+        -40
       ],
       "id": "7ae2e47c-bafd-475a-b96b-98779f69c65f",
       "name": "Extract emails, one per company"
@@ -198,8 +192,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
-        -64
+        176,
+        -40
       ],
       "id": "86717836-0730-4e14-9d8f-ac27c62647d5",
       "name": "Format for Truelist.io"
@@ -211,7 +205,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1648,
+        1520,
         -160
       ],
       "id": "91e3080b-b6e2-46c4-9263-ebb2ea274617",
@@ -225,7 +219,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1424,
+        1280,
         -160
       ],
       "id": "284bcc40-e439-42d2-b647-762e0a82cfca",
@@ -234,7 +228,7 @@
     {
       "parameters": {
         "operation": "getAll",
-        "tableId": "german_companies",
+        "tableId": "us_financial_advisors",
         "limit": 100,
         "matchType": "allFilters",
         "filters": {
@@ -254,8 +248,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -256,
-        -64
+        -272,
+        -40
       ],
       "id": "6e465fb4-bd21-42ef-94ba-6c117ae1f478",
       "name": "Get first 100 rows that haven't been validated",
@@ -280,8 +274,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -592,
-        -64
+        -496,
+        -40
       ],
       "id": "66c1e726-2764-4079-8570-f60f51e8cc73",
       "name": "Schedule Trigger1"
@@ -293,8 +287,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
-        -64
+        400,
+        -40
       ],
       "id": "1e147bdb-e11a-45f2-9b8c-0c8e8f5528b9",
       "name": "Clean and Dedupe"
@@ -465,7 +459,7 @@
       }
     ]
   },
-  "versionId": "e021ce3d-6e51-4470-a954-06a3f363a012",
+  "versionId": "3e1b8652-2e94-40b5-ad4f-8308c0bd3d1c",
   "activeVersionId": "e021ce3d-6e51-4470-a954-06a3f363a012",
   "triggerCount": 1,
   "shared": [
