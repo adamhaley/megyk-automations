@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-07T21:26:07.075Z",
+  "updatedAt": "2026-02-09T19:21:20.420Z",
   "createdAt": "2026-01-04T00:37:36.306Z",
   "id": "ZIqLGdvpuQRGveHM",
   "name": "AppSignups",
@@ -135,7 +135,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        208,
+        416,
         0
       ],
       "id": "c8cd1d45-31f2-47fb-a9a2-f7a29febc553",
@@ -182,11 +182,24 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        416,
+        624,
         0
       ],
       "id": "d940cbc0-d9cc-437a-b34c-093911778888",
       "name": "Call 'EmailDrip'"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b58aa464-2ec4-48a6-8d68-3f77c4c29a16",
+      "name": "Edit Fields"
     }
   ],
   "connections": {
@@ -194,7 +207,7 @@
       "main": [
         [
           {
-            "node": "Append row in sheet",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -206,6 +219,17 @@
         [
           {
             "node": "Call 'EmailDrip'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
             "type": "main",
             "index": 0
           }
@@ -263,7 +287,7 @@
       }
     ]
   },
-  "versionId": "9dc58e0f-15ec-4e62-8931-468467b1aebd",
+  "versionId": "5d3d9419-d411-45e3-a4b4-38448b7b2949",
   "activeVersionId": "f86ca589-d9f5-4c47-a45f-78d00f2056fe",
   "triggerCount": 1,
   "shared": [
