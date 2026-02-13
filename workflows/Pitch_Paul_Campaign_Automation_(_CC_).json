@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-26T23:55:13.994Z",
+  "updatedAt": "2026-02-13T18:28:41.631Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -1375,17 +1375,19 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        4176,
-        512
+        4080,
+        192
       ],
       "id": "983e0b69-6b9a-4225-9dc6-7c22f1d4ebaa",
       "name": "Increment Send count",
+      "alwaysOutputData": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "qJ5ck4AVx9Jx37Fr",
           "name": "Google Sheets account"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -1416,12 +1418,12 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3904,
-        512
+        3808,
+        192
       ],
       "id": "199e5567-b9eb-4a64-ab37-e9c32a986344",
       "name": "Get row(s) in sheet",
-      "alwaysOutputData": true,
+      "alwaysOutputData": false,
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "qJ5ck4AVx9Jx37Fr",
@@ -1461,6 +1463,92 @@
       ],
       "id": "8b38994a-6de9-49a6-9741-5366505933c8",
       "name": "Limit"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+          "mode": "list",
+          "cachedResultName": "Pitch Paul Send Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1286351979,
+          "mode": "list",
+          "cachedResultName": "Replies tracking (Atilia)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=1286351979"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.format('D') }}",
+            "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) || 1}}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email sent (total)",
+              "displayName": "Email sent (total)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email replies (total)",
+              "displayName": "Email replies (total)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Forwarded to Tatjana",
+              "displayName": "Forwarded to Tatjana",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3808,
+        512
+      ],
+      "id": "7cda30d2-c43b-4767-9742-f4881e7331e0",
+      "name": "Append or update row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "connections": {
@@ -1646,7 +1734,7 @@
       "main": [
         [
           {
-            "node": "Get row(s) in sheet",
+            "node": "Append or update row in sheet",
             "type": "main",
             "index": 0
           }
@@ -1732,13 +1820,7 @@
     },
     "Increment Send count": {
       "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Get row(s) in sheet": {
@@ -1768,6 +1850,17 @@
         [
           {
             "node": "Supabase RPC Retrieval - Get Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
@@ -1809,10 +1902,39 @@
           "item": 0
         }
       }
+    ],
+    "Set First Contact": [
+      {
+        "json": {
+          "id": 7106,
+          "company": "Dipl.med.dent.Heike van Rennings",
+          "industry": "Dentists",
+          "ceo_name": null,
+          "phone": "<tel:+49 39089 3224|+49 39089 3224>",
+          "email": "info@zahnarztpraxis-vanrennings.de",
+          "website": "https://www.zahnarztpraxis-vanrennings.de/",
+          "address": "Str. d. Einheit 22A, 39629 Bismark (Altmark), Germany",
+          "district": null,
+          "city": null,
+          "state": null,
+          "created_at": "2025-08-30T09:42:02.302227+00:00",
+          "analysis": "Die Zahnarztpraxis van Rennings in Bismark bietet zahnärztliche Leistungen unter Leitung von Fachzahnärztin Heike van Rennings an. Die Zielgruppe sind Patienten aus der Region, die sowohl eine persönliche Betreuung als auch moderne Behandlungsmethoden erwarten. Neben allgemeinen zahnärztlichen Leistungen wird über Schwerpunktbereiche und ein Bonusprogramm für Patienten informiert. Eine Online-Terminvereinbarung erleichtert die Kontaktaufnahme.\n\nBesondere Stärken / Alleinstellungsmerkmale:  \n- Fachzahnarztpraxis mit persönlichem Team und regionalem Bezug  \n- Online-Terminvereinbarung für patientenfreundliche Terminvergabe  \n- Bonusprogramm mit attraktiven Prämien für Patientenbindung  \n- Einbindung nachhaltiger Hilfseinsätze („Zahnärzte ohne Grenzen“) als Vertrauens- und Imagefaktor  \n- Umfassende Patienteninformation über Schwerpunkte und Tipps via Website  \n\nDie Website präsentiert sich sachlich und einladend mit klarem, professionellem Tonfall. Die Struktur ist übersichtlich, der Fokus liegt auf Nutzerfreundlichkeit und Vertrauen durch ausführliche Praxis- und Teamvorstellung sowie leicht zugängliche Kontaktoptionen. Marketingseitig wird auf regionale Nähe, Patientenbindung und Serviceorientierung gesetzt.",
+          "populated_by": 128,
+          "location_link": "https://www.google.com/maps/place/Dipl.med.dent.Heike+van+Rennings/@52.6588086,11.552493,14z/data=!4m8!1m2!2m1!1sDipl.med.dent.Heike+van+Rennings!3m4!1s0x47af1a9ea58b9df7:0x9875e2ec07527019!8m2!3d52.6588086!4d11.552493",
+          "updated_at": "2026-02-13T17:48:53.501022+00:00",
+          "exported_to_instantly": false,
+          "email_status": "risky:is_role",
+          "first_contact_sent": true,
+          "is_duplicate": false
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
     ]
   },
-  "versionId": "b814cf57-4142-45c6-a25c-df37af461164",
-  "activeVersionId": "b814cf57-4142-45c6-a25c-df37af461164",
+  "versionId": "338019d0-921b-4b6f-85e0-9f182837d001",
+  "activeVersionId": "338019d0-921b-4b6f-85e0-9f182837d001",
   "triggerCount": 1,
   "shared": [
     {
@@ -1824,9 +1946,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-26T23:55:18.000Z",
-    "createdAt": "2026-01-26T23:55:13.996Z",
-    "versionId": "b814cf57-4142-45c6-a25c-df37af461164",
+    "updatedAt": "2026-02-13T18:28:43.000Z",
+    "createdAt": "2026-02-13T18:28:41.632Z",
+    "versionId": "338019d0-921b-4b6f-85e0-9f182837d001",
     "workflowId": "eT2zOo08WfGn5Gbt",
     "nodes": [
       {
@@ -3198,17 +3320,19 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          4176,
-          512
+          4080,
+          192
         ],
         "id": "983e0b69-6b9a-4225-9dc6-7c22f1d4ebaa",
         "name": "Increment Send count",
+        "alwaysOutputData": true,
         "credentials": {
           "googleSheetsOAuth2Api": {
             "id": "qJ5ck4AVx9Jx37Fr",
             "name": "Google Sheets account"
           }
-        }
+        },
+        "onError": "continueRegularOutput"
       },
       {
         "parameters": {
@@ -3239,12 +3363,12 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          3904,
-          512
+          3808,
+          192
         ],
         "id": "199e5567-b9eb-4a64-ab37-e9c32a986344",
         "name": "Get row(s) in sheet",
-        "alwaysOutputData": true,
+        "alwaysOutputData": false,
         "credentials": {
           "googleSheetsOAuth2Api": {
             "id": "qJ5ck4AVx9Jx37Fr",
@@ -3284,6 +3408,92 @@
         ],
         "id": "8b38994a-6de9-49a6-9741-5366505933c8",
         "name": "Limit"
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA",
+            "mode": "list",
+            "cachedResultName": "Pitch Paul Send Log",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1286351979,
+            "mode": "list",
+            "cachedResultName": "Replies tracking (Atilia)",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eXHnn15Z4pORuddXXUxjijKRm2Qwta4bKoPZ9yDieTA/edit#gid=1286351979"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Date": "={{ $now.format('D') }}",
+              "Email sent (total)": "={{ ($json['Email sent (total)'] + 1) || 1}}"
+            },
+            "matchingColumns": [
+              "Date"
+            ],
+            "schema": [
+              {
+                "id": "Date",
+                "displayName": "Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Email sent (total)",
+                "displayName": "Email sent (total)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Email replies (total)",
+                "displayName": "Email replies (total)",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Forwarded to Tatjana",
+                "displayName": "Forwarded to Tatjana",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          3808,
+          512
+        ],
+        "id": "7cda30d2-c43b-4767-9742-f4881e7331e0",
+        "name": "Append or update row in sheet",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
       }
     ],
     "connections": {
@@ -3469,7 +3679,7 @@
         "main": [
           [
             {
-              "node": "Get row(s) in sheet",
+              "node": "Append or update row in sheet",
               "type": "main",
               "index": 0
             }
@@ -3555,13 +3765,7 @@
       },
       "Increment Send count": {
         "main": [
-          [
-            {
-              "node": "Wait",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Get row(s) in sheet": {
@@ -3596,12 +3800,23 @@
             }
           ]
         ]
+      },
+      "Append or update row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version b814cf57",
+    "name": "Version 338019d0",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
   "tags": []
 }
