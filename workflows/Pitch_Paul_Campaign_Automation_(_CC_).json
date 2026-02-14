@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-13T18:28:41.631Z",
+  "updatedAt": "2026-02-14T18:54:27.862Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -1433,26 +1433,6 @@
     },
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "0 0 0 * * 1-5"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        144,
-        480
-      ],
-      "id": "c34b9b72-5228-439a-805b-70defc048d73",
-      "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
         "maxItems": 5
       },
       "type": "n8n-nodes-base.limit",
@@ -1549,6 +1529,23 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        480
+      ],
+      "id": "ce9cfaae-009f-42c5-91af-5bf076a4605f",
+      "name": "Schedule Trigger"
     }
   ],
   "connections": {
@@ -1834,17 +1831,6 @@
         ]
       ]
     },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Wait Random Start",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Limit": {
       "main": [
         [
@@ -1861,6 +1847,17 @@
         [
           {
             "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait Random Start",
             "type": "main",
             "index": 0
           }
@@ -1883,26 +1880,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Schedule Trigger": [
-      {
-        "json": {
-          "timestamp": "2026-01-26T00:00:00.024+01:00",
-          "Readable date": "January 26th 2026, 12:00:00 am",
-          "Readable time": "12:00:00 am",
-          "Day of week": "Monday",
-          "Year": "2026",
-          "Month": "January",
-          "Day of month": "26",
-          "Hour": "00",
-          "Minute": "00",
-          "Second": "00",
-          "Timezone": "Europe/Berlin (UTC+01:00)"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
     "Set First Contact": [
       {
         "json": {
@@ -1933,8 +1910,8 @@
       }
     ]
   },
-  "versionId": "338019d0-921b-4b6f-85e0-9f182837d001",
-  "activeVersionId": "338019d0-921b-4b6f-85e0-9f182837d001",
+  "versionId": "f560a469-5af6-4dd2-b2ab-e73b9bd965b1",
+  "activeVersionId": "f560a469-5af6-4dd2-b2ab-e73b9bd965b1",
   "triggerCount": 1,
   "shared": [
     {
@@ -1946,9 +1923,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-13T18:28:43.000Z",
-    "createdAt": "2026-02-13T18:28:41.632Z",
-    "versionId": "338019d0-921b-4b6f-85e0-9f182837d001",
+    "updatedAt": "2026-02-14T18:54:29.000Z",
+    "createdAt": "2026-02-14T18:54:27.864Z",
+    "versionId": "f560a469-5af6-4dd2-b2ab-e73b9bd965b1",
     "workflowId": "eT2zOo08WfGn5Gbt",
     "nodes": [
       {
@@ -3378,26 +3355,6 @@
       },
       {
         "parameters": {
-          "rule": {
-            "interval": [
-              {
-                "field": "cronExpression",
-                "expression": "0 0 0 * * 1-5"
-              }
-            ]
-          }
-        },
-        "type": "n8n-nodes-base.scheduleTrigger",
-        "typeVersion": 1.3,
-        "position": [
-          144,
-          480
-        ],
-        "id": "c34b9b72-5228-439a-805b-70defc048d73",
-        "name": "Schedule Trigger"
-      },
-      {
-        "parameters": {
           "maxItems": 5
         },
         "type": "n8n-nodes-base.limit",
@@ -3494,6 +3451,23 @@
             "name": "Google Sheets account"
           }
         }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {}
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          80,
+          480
+        ],
+        "id": "ce9cfaae-009f-42c5-91af-5bf076a4605f",
+        "name": "Schedule Trigger"
       }
     ],
     "connections": {
@@ -3779,17 +3753,6 @@
           ]
         ]
       },
-      "Schedule Trigger": {
-        "main": [
-          [
-            {
-              "node": "Wait Random Start",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Limit": {
         "main": [
           [
@@ -3811,10 +3774,21 @@
             }
           ]
         ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Wait Random Start",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 338019d0",
+    "name": "Version f560a469",
     "description": "",
     "autosaved": false
   },
