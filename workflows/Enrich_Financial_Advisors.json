@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-06T16:47:16.439Z",
+  "updatedAt": "2026-02-15T22:03:21.550Z",
   "createdAt": "2026-02-04T23:05:56.896Z",
   "id": "MshVZ02JHbNUnD6KqWGfF",
   "name": "Enrich Financial Advisors",
@@ -22,7 +22,7 @@
             },
             {
               "name": "Accept-Language",
-              "value": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+              "value": "q=0.9,en-US;q=0.8,en;q=0.7"
             },
             {
               "name": "Accept-Encoding",
@@ -255,17 +255,6 @@
               "type": "string",
               "canBeUsedToMatch": true,
               "removed": true
-            },
-            {
-              "id": "row_number",
-              "displayName": "row_number",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "readOnly": true,
-              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -409,13 +398,13 @@
       {
         "json": {
           "row_number": "",
-          "company": "Goldberg Retirement Solutions",
-          "industry": "Financial consultant",
-          "phone": "<tel:+1 561-324-3826|+1 561-324-3826>",
-          "website": "https://goldbergrs.com/",
-          "address": "",
-          "state": "",
-          "city": "",
+          "company": "Summit Wealth Management Group, Inc.",
+          "industry": "Financial planner",
+          "phone": "<tel:+1 805-384-1186|+1 805-384-1186>",
+          "website": "http://www.yoursummitwealth.com/",
+          "address": "400 Camarillo Ranch Rd STE 202, Camarillo, CA 93012",
+          "state": "California",
+          "city": "Camarillo",
           "district": "",
           "ceo_name": "",
           "email": "",
@@ -427,7 +416,7 @@
       }
     ]
   },
-  "versionId": "1eaf4e6a-a902-4df6-ab88-bf4fa2d30ca7",
+  "versionId": "f646910b-167e-4eee-9a9f-b52e74608d16",
   "activeVersionId": "1eaf4e6a-a902-4df6-ab88-bf4fa2d30ca7",
   "triggerCount": 0,
   "shared": [
