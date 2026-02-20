@@ -1,0 +1,315 @@
+{
+  "updatedAt": "2026-02-20T07:14:05.580Z",
+  "createdAt": "2026-02-19T08:47:37.550Z",
+  "id": "NuWp-BsWMEjznUFaWTjkQ",
+  "name": "WhatsApp Excel Eintragung",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ghl-formular",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "31db29c7-97da-4e88-bd5d-8c809c9df8f8",
+      "name": "Webhook",
+      "webhookId": "309cce6e-4148-4cb2-933b-8d271b153069"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0",
+          "mode": "list",
+          "cachedResultName": "DETAIL Statistics WEBIGG (Webinar Greatest Dangers) ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 842449146,
+          "mode": "list",
+          "cachedResultName": "WhatsApp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit#gid=842449146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.body.full_name }}",
+            "Email": "={{ $json.body.email }}",
+            "Telefonnummer": "='{{ $json.body.phone }}",
+            "Eintragungsdatum": "={{ $now.format('dd.MM.yyyy, HH:mm') }}",
+            "Webinar-Datum": "={{ $json.body['Webinar Date neu'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Telefonnummer",
+              "displayName": "Telefonnummer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Eintragungsdatum",
+              "displayName": "Eintragungsdatum",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Webinar-Datum",
+              "displayName": "Webinar-Datum",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Teilgenommen",
+              "displayName": "Teilgenommen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d5e2c903-6ca8-4907-b483-268bc15e2197",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
+  "activeVersionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-02-19T08:47:37.556Z",
+      "createdAt": "2026-02-19T08:47:37.556Z",
+      "role": "workflow:owner",
+      "workflowId": "NuWp-BsWMEjznUFaWTjkQ",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-20T07:14:08.000Z",
+    "createdAt": "2026-02-20T07:14:05.581Z",
+    "versionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
+    "workflowId": "NuWp-BsWMEjznUFaWTjkQ",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "ghl-formular",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "31db29c7-97da-4e88-bd5d-8c809c9df8f8",
+        "name": "Webhook",
+        "webhookId": "309cce6e-4148-4cb2-933b-8d271b153069"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0",
+            "mode": "list",
+            "cachedResultName": "DETAIL Statistics WEBIGG (Webinar Greatest Dangers) ",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 842449146,
+            "mode": "list",
+            "cachedResultName": "WhatsApp",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit#gid=842449146"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Name": "={{ $json.body.full_name }}",
+              "Email": "={{ $json.body.email }}",
+              "Telefonnummer": "='{{ $json.body.phone }}",
+              "Eintragungsdatum": "={{ $now.format('dd.MM.yyyy, HH:mm') }}",
+              "Webinar-Datum": "={{ $json.body['Webinar Date neu'] }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Name",
+                "displayName": "Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Email",
+                "displayName": "Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Telefonnummer",
+                "displayName": "Telefonnummer",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Eintragungsdatum",
+                "displayName": "Eintragungsdatum",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Webinar-Datum",
+                "displayName": "Webinar-Datum",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Teilgenommen",
+                "displayName": "Teilgenommen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          208,
+          0
+        ],
+        "id": "d5e2c903-6ca8-4907-b483-268bc15e2197",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version b5472bd8",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
