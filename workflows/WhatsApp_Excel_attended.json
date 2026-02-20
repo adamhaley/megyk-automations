@@ -1,0 +1,315 @@
+{
+  "updatedAt": "2026-02-20T07:09:48.049Z",
+  "createdAt": "2026-02-20T07:02:39.756Z",
+  "id": "vnHcS21lzo8FUPObpuY2I",
+  "name": "WhatsApp Excel attended",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ghl-tag-webinar",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "78ead9bc-5a65-41cb-a547-486e60d69cdd",
+      "name": "Webhook",
+      "webhookId": "8d2b09d5-8324-454e-b1cc-864cd9f64e7d"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0",
+          "mode": "list",
+          "cachedResultName": "DETAIL Statistics WEBIGG (Webinar Greatest Dangers) ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 842449146,
+          "mode": "list",
+          "cachedResultName": "WhatsApp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit#gid=842449146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Teilgenommen": "✅ Ja",
+            "Email": "={{ $json.body.email }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Telefonnummer",
+              "displayName": "Telefonnummer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Datum",
+              "displayName": "Datum",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Teilgenommen",
+              "displayName": "Teilgenommen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "19c6676a-0800-4114-b35a-f4222c1006db",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "c523913f-998a-40bf-8397-577a98679341",
+  "activeVersionId": "c523913f-998a-40bf-8397-577a98679341",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-02-20T07:02:39.766Z",
+      "createdAt": "2026-02-20T07:02:39.766Z",
+      "role": "workflow:owner",
+      "workflowId": "vnHcS21lzo8FUPObpuY2I",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-02-20T07:09:53.000Z",
+    "createdAt": "2026-02-20T07:09:48.050Z",
+    "versionId": "c523913f-998a-40bf-8397-577a98679341",
+    "workflowId": "vnHcS21lzo8FUPObpuY2I",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "ghl-tag-webinar",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "78ead9bc-5a65-41cb-a547-486e60d69cdd",
+        "name": "Webhook",
+        "webhookId": "8d2b09d5-8324-454e-b1cc-864cd9f64e7d"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0",
+            "mode": "list",
+            "cachedResultName": "DETAIL Statistics WEBIGG (Webinar Greatest Dangers) ",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 842449146,
+            "mode": "list",
+            "cachedResultName": "WhatsApp",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZQCZ6qHyYsVvbJ9mons7CHUnohszN-2qmb-LtZT5DC0/edit#gid=842449146"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Teilgenommen": "✅ Ja",
+              "Email": "={{ $json.body.email }}"
+            },
+            "matchingColumns": [
+              "Email"
+            ],
+            "schema": [
+              {
+                "id": "Name",
+                "displayName": "Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Email",
+                "displayName": "Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Telefonnummer",
+                "displayName": "Telefonnummer",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Datum",
+                "displayName": "Datum",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Teilgenommen",
+                "displayName": "Teilgenommen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          208,
+          0
+        ],
+        "id": "19c6676a-0800-4114-b35a-f4222c1006db",
+        "name": "Update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version c523913f",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
