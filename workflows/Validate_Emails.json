@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-08T19:37:02.831Z",
+  "updatedAt": "2026-03-14T18:46:29.323Z",
   "createdAt": "2025-09-23T17:25:22.671Z",
   "id": "jPsJrGPMW87UyOV5",
   "name": "Validate Emails",
@@ -441,8 +441,29 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "afbcd75c-eb9c-4d8e-abc1-140cf4787c23",
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-03-14T00:00:22.005+01:00",
+          "Readable date": "March 14th 2026, 12:00:22 am",
+          "Readable time": "12:00:22 am",
+          "Day of week": "Saturday",
+          "Year": "2026",
+          "Month": "March",
+          "Day of month": "14",
+          "Hour": "00",
+          "Minute": "00",
+          "Second": "22",
+          "Timezone": "Europe/Berlin (UTC+01:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "cbe495b4-07f9-4e33-9974-8f39d4651e17",
   "activeVersionId": "afbcd75c-eb9c-4d8e-abc1-140cf4787c23",
   "triggerCount": 1,
   "shared": [
