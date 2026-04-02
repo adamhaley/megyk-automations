@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-21T00:26:23.648Z",
+  "updatedAt": "2026-04-02T01:32:02.678Z",
   "createdAt": "2025-12-28T20:15:17.185Z",
   "id": "efImToWAhg0kbiK1",
   "name": "ChatWithBook v1",
@@ -35,7 +35,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        224,
+        216,
         0
       ],
       "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -327,7 +327,8 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -369,8 +370,8 @@
       }
     ]
   },
-  "versionId": "504829b1-9ffb-4be9-960b-4e4df5452763",
-  "activeVersionId": "504829b1-9ffb-4be9-960b-4e4df5452763",
+  "versionId": "12a9cff6-002f-41ff-9174-6207a056b740",
+  "activeVersionId": "12a9cff6-002f-41ff-9174-6207a056b740",
   "triggerCount": 1,
   "shared": [
     {
@@ -382,9 +383,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-21T00:26:26.000Z",
-    "createdAt": "2026-02-21T00:26:23.650Z",
-    "versionId": "504829b1-9ffb-4be9-960b-4e4df5452763",
+    "updatedAt": "2026-04-02T01:32:19.000Z",
+    "createdAt": "2026-04-02T01:32:02.679Z",
+    "versionId": "12a9cff6-002f-41ff-9174-6207a056b740",
     "workflowId": "efImToWAhg0kbiK1",
     "nodes": [
       {
@@ -416,7 +417,7 @@
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
         "position": [
-          224,
+          216,
           0
         ],
         "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -707,7 +708,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 504829b1",
+    "name": "Version 12a9cff6",
     "description": "",
     "autosaved": true
   },
