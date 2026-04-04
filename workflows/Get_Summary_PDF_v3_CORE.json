@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-12T23:49:16.513Z",
+  "updatedAt": "2026-04-04T22:50:46.471Z",
   "createdAt": "2025-12-13T01:35:08.272Z",
   "id": "icF28UmruuHgkDgd",
   "name": "Get Summary PDF v3 CORE",
@@ -26,6 +26,12 @@
               "id": "1aa41326-89d7-4960-9029-7f5d062395f7",
               "name": "length",
               "value": "={{ $json.body.preferences.length }}",
+              "type": "string"
+            },
+            {
+              "id": "a4e340eb-229c-41a5-8269-a37bdfb2993d",
+              "name": "locale",
+              "value": "={{ $json.body.locale }}",
               "type": "string"
             }
           ]
@@ -189,7 +195,8 @@
           "value": {
             "book_id": "={{ $json.book_id }}",
             "style": "={{ $json.style }}",
-            "length": "={{ $json.length }}"
+            "length": "={{ $json.length }}",
+            "locale": "={{ $json.locale }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -216,6 +223,16 @@
             {
               "id": "length",
               "displayName": "length",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -580,7 +597,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -593,11 +611,13 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "node",
-            "content-length": "108",
+            "content-length": "206",
             "accept": "*/*",
             "accept-encoding": "br, gzip, deflate",
             "accept-language": "*",
+            "cache-control": "no-cache",
             "content-type": "application/json",
+            "pragma": "no-cache",
             "sec-fetch-mode": "cors",
             "via": "1.1 Caddy",
             "x-forwarded-for": "172.19.0.1",
@@ -605,15 +625,20 @@
             "x-forwarded-proto": "https"
           },
           "params": {},
-          "query": {},
-          "body": {
-            "book_id": "19e6a3ff-6dd7-4b50-86c7-b6347502e639",
-            "preferences": {
-              "style": "bullet_points",
-              "length": "medium"
-            }
+          "query": {
+            "ts": "1775342799957"
           },
-          "webhookUrl": "https://n8n.megyk.com/webhook/get_summary_html",
+          "body": {
+            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
+            "preferences": {
+              "style": "narrative",
+              "length": "medium"
+            },
+            "user_id": "ed424ba5-1ccc-452d-b470-329a3e3b1b4b",
+            "timestamp": "2026-04-04T22:46:39.957Z",
+            "locale": "de"
+          },
+          "webhookUrl": "https://n8n.megyk.com/webhook/get_summary_v3",
           "executionMode": "production"
         },
         "pairedItem": {
@@ -622,8 +647,8 @@
       }
     ]
   },
-  "versionId": "dd16d2f9-fd01-4a1c-9559-b1992caf3e02",
-  "activeVersionId": "dd16d2f9-fd01-4a1c-9559-b1992caf3e02",
+  "versionId": "4a91d69f-c817-42a2-adde-8bc0e8da4180",
+  "activeVersionId": "4a91d69f-c817-42a2-adde-8bc0e8da4180",
   "triggerCount": 0,
   "shared": [
     {
@@ -635,9 +660,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-12T23:49:18.000Z",
-    "createdAt": "2026-01-12T23:49:16.521Z",
-    "versionId": "dd16d2f9-fd01-4a1c-9559-b1992caf3e02",
+    "updatedAt": "2026-04-04T22:54:28.000Z",
+    "createdAt": "2026-04-04T22:50:46.473Z",
+    "versionId": "4a91d69f-c817-42a2-adde-8bc0e8da4180",
     "workflowId": "icF28UmruuHgkDgd",
     "nodes": [
       {
@@ -660,6 +685,12 @@
                 "id": "1aa41326-89d7-4960-9029-7f5d062395f7",
                 "name": "length",
                 "value": "={{ $json.body.preferences.length }}",
+                "type": "string"
+              },
+              {
+                "id": "a4e340eb-229c-41a5-8269-a37bdfb2993d",
+                "name": "locale",
+                "value": "={{ $json.body.locale }}",
                 "type": "string"
               }
             ]
@@ -823,7 +854,8 @@
             "value": {
               "book_id": "={{ $json.book_id }}",
               "style": "={{ $json.style }}",
-              "length": "={{ $json.length }}"
+              "length": "={{ $json.length }}",
+              "locale": "={{ $json.locale }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -850,6 +882,16 @@
               {
                 "id": "length",
                 "displayName": "length",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "locale",
+                "displayName": "locale",
                 "required": false,
                 "defaultMatch": false,
                 "display": true,
@@ -1214,9 +1256,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version dd16d2f9",
+    "name": "Version 4a91d69f",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
