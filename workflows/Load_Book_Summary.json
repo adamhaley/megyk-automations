@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-18T00:11:06.544Z",
+  "updatedAt": "2026-04-04T22:53:55.304Z",
   "createdAt": "2025-12-05T14:39:39.243Z",
   "id": "TFbZMklKeSxB7159",
   "name": "Load Book Summary",
@@ -26,6 +26,12 @@
               "id": "1aa8e8ae-72a8-488b-b27a-06cc7f3a7376",
               "name": "style",
               "value": "={{ $json.style }}",
+              "type": "string"
+            },
+            {
+              "id": "599b0cdb-9ed9-42bb-911b-2ff6891c7530",
+              "name": "locale",
+              "value": "={{ $json.locale }}",
               "type": "string"
             }
           ]
@@ -86,6 +92,10 @@
             {
               "keyName": "length",
               "keyValue": "={{ $('Config').item.json.length }}"
+            },
+            {
+              "keyName": "locale",
+              "keyValue": "={{ $json.locale }}"
             }
           ]
         }
@@ -140,6 +150,9 @@
             },
             {
               "name": "length"
+            },
+            {
+              "name": "locale"
             }
           ]
         }
@@ -211,7 +224,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -221,9 +235,10 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "book_id": "6277c22d-4c0b-47c5-ba3b-e5001112932a",
-          "style": "bullet_points",
-          "length": "short"
+          "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
+          "style": "narrative",
+          "length": "medium",
+          "locale": "de"
         },
         "pairedItem": {
           "item": 0
@@ -231,8 +246,8 @@
       }
     ]
   },
-  "versionId": "5f5ded53-1423-4f0b-84b4-c52165709bf2",
-  "activeVersionId": "5f5ded53-1423-4f0b-84b4-c52165709bf2",
+  "versionId": "27d46bfd-cffd-40f7-9823-ec80c7f46329",
+  "activeVersionId": "27d46bfd-cffd-40f7-9823-ec80c7f46329",
   "triggerCount": 0,
   "shared": [
     {
@@ -244,9 +259,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-17T23:34:09.000Z",
-    "createdAt": "2025-12-17T18:58:30.368Z",
-    "versionId": "5f5ded53-1423-4f0b-84b4-c52165709bf2",
+    "updatedAt": "2026-04-04T22:54:08.000Z",
+    "createdAt": "2026-04-04T22:53:55.305Z",
+    "versionId": "27d46bfd-cffd-40f7-9823-ec80c7f46329",
     "workflowId": "TFbZMklKeSxB7159",
     "nodes": [
       {
@@ -269,6 +284,12 @@
                 "id": "1aa8e8ae-72a8-488b-b27a-06cc7f3a7376",
                 "name": "style",
                 "value": "={{ $json.style }}",
+                "type": "string"
+              },
+              {
+                "id": "599b0cdb-9ed9-42bb-911b-2ff6891c7530",
+                "name": "locale",
+                "value": "={{ $json.locale }}",
                 "type": "string"
               }
             ]
@@ -329,6 +350,10 @@
               {
                 "keyName": "length",
                 "keyValue": "={{ $('Config').item.json.length }}"
+              },
+              {
+                "keyName": "locale",
+                "keyValue": "={{ $json.locale }}"
               }
             ]
           }
@@ -383,6 +408,9 @@
               },
               {
                 "name": "length"
+              },
+              {
+                "name": "locale"
               }
             ]
           }
@@ -454,9 +482,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 5f5ded53",
+    "name": "Version 27d46bfd",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
