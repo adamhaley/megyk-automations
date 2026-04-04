@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-09T23:48:31.603Z",
+  "updatedAt": "2026-04-04T20:52:16.458Z",
   "createdAt": "2026-01-09T23:20:53.320Z",
   "id": "F9OWClEBtwYHjHTv",
   "name": "Chat Question Suggestions With Persistence",
@@ -32,6 +32,12 @@
               "name": "book_id",
               "value": "={{ $json.body.book_id }}",
               "type": "string"
+            },
+            {
+              "id": "316af802-b37f-4d88-89e5-69c167410869",
+              "name": "locale",
+              "value": "={{ $json.body.locale }}",
+              "type": "string"
             }
           ]
         },
@@ -49,9 +55,9 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=book title: {{  $('Load Book').item.json.title}}\n\nsummary: {{$('Load Book').item.json.summary }}",
+        "text": "=book title: {{  $('Load Book').item.json.title}}\n\nsummary: {{$('Load Book').item.json.summary }}\n\n",
         "options": {
-          "systemMessage": "You are an executive thinking partner.\n\nYour only input is a book title and summary.\n\nBased solely on the implications, themes, and promises suggested by the title and summary, generate 2–3 sharp questions that a high-performing individual would naturally ask. \n\nAssume the reader is:\n- Experienced\n- Time-constrained\n- Focused on leverage, clarity, and outcomes\n\nYour questions must:\n- Be short, direct, and high-signal\n\n\nDo NOT:\n- Explain the questions\n- Add preamble or commentary\n\nOutput format:\nReturn ONLY a JSON array of strings.\n\nExample output:\n[\n  \"What is meant by [key phrase in book title]?\",\n  \"What are the key takeaways from this book?\",\n  \"Where  could I apply the principles to my business?\"\n]\n"
+          "systemMessage": "=You are an executive thinking partner.\n You respond in the following language: {{$('Edit Fields').item.json.locale == 'de'? 'German' : 'English' }}\nYour only input is a book title and summary.\n\nBased solely on the implications, themes, and promises suggested by the title and summary, generate 2–3 sharp questions that a high-performing individual would naturally ask. \n\nAssume the reader is:\n- Experienced\n- Time-constrained\n- Focused on leverage, clarity, and outcomes\n\nYour questions must:\n- Be short, direct, and high-signal\n\n\nDo NOT:\n- Explain the questions\n- Add preamble or commentary\n\nOutput format:\nReturn ONLY a JSON array of strings.\n\nExample output:\n[\n  \"What is meant by [key phrase in book title]?\",\n  \"What are the key takeaways from this book?\",\n  \"Where  could I apply the principles to my business?\"\n]\n"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -133,12 +139,18 @@
       "parameters": {
         "operation": "getAll",
         "tableId": "chat_suggestions",
+        "matchType": "allFilters",
         "filters": {
           "conditions": [
             {
               "keyName": "book_id",
               "condition": "eq",
               "keyValue": "={{ $json.id }}"
+            },
+            {
+              "keyName": "locale",
+              "condition": "eq",
+              "keyValue": "={{ $('Edit Fields').item.json.locale }}"
             }
           ]
         }
@@ -218,6 +230,10 @@
             {
               "fieldId": "book_id",
               "fieldValue": "={{ $('Load Book').item.json.id }}"
+            },
+            {
+              "fieldId": "locale",
+              "fieldValue": "={{ $('Edit Fields').item.json.locale }}"
             }
           ]
         }
@@ -433,7 +449,8 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -446,21 +463,22 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "node",
-            "content-length": "50",
+            "content-length": "64",
             "accept": "*/*",
             "accept-encoding": "br, gzip, deflate",
             "accept-language": "*",
             "content-type": "application/json",
             "sec-fetch-mode": "cors",
             "via": "1.1 Caddy",
-            "x-forwarded-for": "98.153.119.146",
+            "x-forwarded-for": "172.19.0.1",
             "x-forwarded-host": "n8n.megyk.com",
             "x-forwarded-proto": "https"
           },
           "params": {},
           "query": {},
           "body": {
-            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22"
+            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
+            "locale": "de"
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/chat_suggestions",
           "executionMode": "production"
@@ -471,8 +489,8 @@
       }
     ]
   },
-  "versionId": "08c20808-2960-439a-981e-266f0b4e115a",
-  "activeVersionId": "08c20808-2960-439a-981e-266f0b4e115a",
+  "versionId": "9cd67fcc-c8bf-4f63-83b8-683e90caf6ef",
+  "activeVersionId": "9cd67fcc-c8bf-4f63-83b8-683e90caf6ef",
   "triggerCount": 1,
   "shared": [
     {
@@ -484,9 +502,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-09T23:48:34.000Z",
-    "createdAt": "2026-01-09T23:48:31.606Z",
-    "versionId": "08c20808-2960-439a-981e-266f0b4e115a",
+    "updatedAt": "2026-04-04T20:52:29.000Z",
+    "createdAt": "2026-04-04T20:52:16.460Z",
+    "versionId": "9cd67fcc-c8bf-4f63-83b8-683e90caf6ef",
     "workflowId": "F9OWClEBtwYHjHTv",
     "nodes": [
       {
@@ -515,6 +533,12 @@
                 "name": "book_id",
                 "value": "={{ $json.body.book_id }}",
                 "type": "string"
+              },
+              {
+                "id": "316af802-b37f-4d88-89e5-69c167410869",
+                "name": "locale",
+                "value": "={{ $json.body.locale }}",
+                "type": "string"
               }
             ]
           },
@@ -532,9 +556,9 @@
       {
         "parameters": {
           "promptType": "define",
-          "text": "=book title: {{  $('Load Book').item.json.title}}\n\nsummary: {{$('Load Book').item.json.summary }}",
+          "text": "=book title: {{  $('Load Book').item.json.title}}\n\nsummary: {{$('Load Book').item.json.summary }}\n\n",
           "options": {
-            "systemMessage": "You are an executive thinking partner.\n\nYour only input is a book title and summary.\n\nBased solely on the implications, themes, and promises suggested by the title and summary, generate 2–3 sharp questions that a high-performing individual would naturally ask. \n\nAssume the reader is:\n- Experienced\n- Time-constrained\n- Focused on leverage, clarity, and outcomes\n\nYour questions must:\n- Be short, direct, and high-signal\n\n\nDo NOT:\n- Explain the questions\n- Add preamble or commentary\n\nOutput format:\nReturn ONLY a JSON array of strings.\n\nExample output:\n[\n  \"What is meant by [key phrase in book title]?\",\n  \"What are the key takeaways from this book?\",\n  \"Where  could I apply the principles to my business?\"\n]\n"
+            "systemMessage": "=You are an executive thinking partner.\n You respond in the following language: {{$('Edit Fields').item.json.locale == 'de'? 'German' : 'English' }}\nYour only input is a book title and summary.\n\nBased solely on the implications, themes, and promises suggested by the title and summary, generate 2–3 sharp questions that a high-performing individual would naturally ask. \n\nAssume the reader is:\n- Experienced\n- Time-constrained\n- Focused on leverage, clarity, and outcomes\n\nYour questions must:\n- Be short, direct, and high-signal\n\n\nDo NOT:\n- Explain the questions\n- Add preamble or commentary\n\nOutput format:\nReturn ONLY a JSON array of strings.\n\nExample output:\n[\n  \"What is meant by [key phrase in book title]?\",\n  \"What are the key takeaways from this book?\",\n  \"Where  could I apply the principles to my business?\"\n]\n"
           }
         },
         "type": "@n8n/n8n-nodes-langchain.agent",
@@ -616,12 +640,18 @@
         "parameters": {
           "operation": "getAll",
           "tableId": "chat_suggestions",
+          "matchType": "allFilters",
           "filters": {
             "conditions": [
               {
                 "keyName": "book_id",
                 "condition": "eq",
                 "keyValue": "={{ $json.id }}"
+              },
+              {
+                "keyName": "locale",
+                "condition": "eq",
+                "keyValue": "={{ $('Edit Fields').item.json.locale }}"
               }
             ]
           }
@@ -701,6 +731,10 @@
               {
                 "fieldId": "book_id",
                 "fieldValue": "={{ $('Load Book').item.json.id }}"
+              },
+              {
+                "fieldId": "locale",
+                "fieldValue": "={{ $('Edit Fields').item.json.locale }}"
               }
             ]
           }
@@ -915,9 +949,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 08c20808",
+    "name": "Version 9cd67fcc",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
