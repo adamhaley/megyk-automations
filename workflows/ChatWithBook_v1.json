@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-02T01:32:02.678Z",
+  "updatedAt": "2026-04-04T19:02:34.353Z",
   "createdAt": "2025-12-28T20:15:17.185Z",
   "id": "efImToWAhg0kbiK1",
   "name": "ChatWithBook v1",
@@ -28,14 +28,14 @@
         "promptType": "define",
         "text": "={{ $json.user_message }}",
         "options": {
-          "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture.\n\n",
+          "systemMessage": "=You are an empowering executive business coach speaking as the voice of the current book itself. You respond in the following language: {{ $json.locale == 'de'? 'German' : 'English' }}\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture.\n\n {{ $json.locale }}",
           "enableStreaming": true
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        216,
+        224,
         0
       ],
       "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -142,6 +142,12 @@
               "id": "15f0e56b-e594-4274-941a-828d4a6c2cca",
               "name": "sessionId",
               "value": "={{$json.body.user_id}}_{{$json.body.book_id}} ",
+              "type": "string"
+            },
+            {
+              "id": "c130535f-565c-4f2c-ab25-8a44af997d39",
+              "name": "locale",
+              "value": "={{ $json.body.locale || 'en' }}",
               "type": "string"
             }
           ]
@@ -328,7 +334,10 @@
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false,
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "WbISMAIlclQfzorG",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
   "meta": {
@@ -341,25 +350,26 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "node",
-            "content-length": "192",
+            "content-length": "277",
             "accept": "*/*",
             "accept-encoding": "br, gzip, deflate",
             "accept-language": "*",
             "content-type": "application/json",
             "sec-fetch-mode": "cors",
             "via": "1.1 Caddy",
-            "x-forwarded-for": "4.43.180.94",
+            "x-forwarded-for": "172.19.0.1",
             "x-forwarded-host": "n8n.megyk.com",
             "x-forwarded-proto": "https"
           },
           "params": {},
           "query": {},
           "body": {
-            "user_id": "bfb1e2f2-353c-4cf7-807e-4be63ed7cfff",
-            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
-            "message": "Guide me to find my own answers",
-            "socratic_mode": true,
-            "socratic_exchange_count": 1
+            "user_id": "e4690fed-8093-40e6-8942-fd3602ec024f",
+            "book_id": "179cd608-e110-4e18-9d58-540f0deaa987",
+            "message": "What specific self-transformation practices in this book yield the fastest, most measurable outcomes?",
+            "socratic_mode": false,
+            "socratic_exchange_count": 0,
+            "locale": "en"
           },
           "webhookUrl": "https://n8n.megyk.com/webhook/book_chat",
           "executionMode": "production"
@@ -370,8 +380,8 @@
       }
     ]
   },
-  "versionId": "12a9cff6-002f-41ff-9174-6207a056b740",
-  "activeVersionId": "12a9cff6-002f-41ff-9174-6207a056b740",
+  "versionId": "4eefcf6e-0c7a-4b88-bec3-cda671c22ebb",
+  "activeVersionId": "4eefcf6e-0c7a-4b88-bec3-cda671c22ebb",
   "triggerCount": 1,
   "shared": [
     {
@@ -383,9 +393,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-04-02T01:32:19.000Z",
-    "createdAt": "2026-04-02T01:32:02.679Z",
-    "versionId": "12a9cff6-002f-41ff-9174-6207a056b740",
+    "updatedAt": "2026-04-04T19:02:50.000Z",
+    "createdAt": "2026-04-04T19:02:34.354Z",
+    "versionId": "4eefcf6e-0c7a-4b88-bec3-cda671c22ebb",
     "workflowId": "efImToWAhg0kbiK1",
     "nodes": [
       {
@@ -410,14 +420,14 @@
           "promptType": "define",
           "text": "={{ $json.user_message }}",
           "options": {
-            "systemMessage": "You are an empowering executive business coach speaking as the voice of the current book itself.\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture.\n\n",
+            "systemMessage": "=You are an empowering executive business coach speaking as the voice of the current book itself. You respond in the following language: {{ $json.locale == 'de'? 'German' : 'English' }}\n\nRespond directly to the user’s question using the book’s ideas as guidance, not by describing or summarizing the book.\n\nKeep answers compact and focused — typically 2–4 sentences maximum. Avoid long explanations or background context.\n\nWhen the user asks a question, give a clear, practical answer that applies the book’s principles directly to the user’s life or business, as if the book were advising them personally.\n\nUse retrieved chapters as your grounding source, but do not quote or reference chapters explicitly unless necessary. Integrate the ideas naturally.\nIf your answer includes a list - for instance a list of topics, or concepts, leave a line break between each item you list.\n\nDo not invent ideas not supported by the book. If the book does not directly address the question, say so briefly and offer the closest applicable principle without overexplaining.\n\nMaintain a confident, direct, and supportive tone. Your goal is to give the user clarity and momentum, not a lecture.\n\n {{ $json.locale }}",
             "enableStreaming": true
           }
         },
         "type": "@n8n/n8n-nodes-langchain.agent",
         "typeVersion": 3.1,
         "position": [
-          216,
+          224,
           0
         ],
         "id": "dd28cfd7-8076-4dbf-ba33-d239efe3f231",
@@ -524,6 +534,12 @@
                 "id": "15f0e56b-e594-4274-941a-828d4a6c2cca",
                 "name": "sessionId",
                 "value": "={{$json.body.user_id}}_{{$json.body.book_id}} ",
+                "type": "string"
+              },
+              {
+                "id": "c130535f-565c-4f2c-ab25-8a44af997d39",
+                "name": "locale",
+                "value": "={{ $json.body.locale || 'en' }}",
                 "type": "string"
               }
             ]
@@ -708,7 +724,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 12a9cff6",
+    "name": "Version 4eefcf6e",
     "description": "",
     "autosaved": true
   },
