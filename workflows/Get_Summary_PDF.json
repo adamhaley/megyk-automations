@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-13T01:55:52.329Z",
+  "updatedAt": "2026-04-05T18:26:26.517Z",
   "createdAt": "2025-12-05T14:56:11.765Z",
   "id": "zt2Pn3aOIpVbXuwC",
   "name": "Get Summary PDF",
@@ -164,7 +164,48 @@
           "mappingMode": "defineBelow",
           "value": {},
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "book_id",
+              "displayName": "book_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "style",
+              "displayName": "style",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "length",
+              "displayName": "length",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": true
         },
@@ -413,7 +454,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": null,
@@ -452,7 +494,7 @@
       }
     ]
   },
-  "versionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
+  "versionId": "e7b24536-f592-4adc-8d94-d507a0b7d678",
   "activeVersionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
   "triggerCount": 1,
   "shared": [
