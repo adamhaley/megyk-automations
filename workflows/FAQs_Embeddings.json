@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-27T02:26:37.461Z",
+  "updatedAt": "2026-05-07T13:28:39.272Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "FAQs Embeddings",
@@ -257,8 +257,8 @@
       "name": "Gmail Trigger",
       "credentials": {
         "gmailOAuth2": {
-          "id": "EzrY9VipLbH4tmwq",
-          "name": "Gmail account Adam Test"
+          "id": "sVqb0m2UfqzXbdvL",
+          "name": "Gmail account"
         }
       }
     },
@@ -1283,6 +1283,18 @@
     },
     "node:Email Trigger (IMAP)": {
       "lastMessageUid": 6
+    },
+    "node:Google Sheets Trigger": {
+      "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+      "sheetId": 0,
+      "lastRevision": 95,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=95&exportFormat=xlsx"
+    },
+    "node:Google Sheets Trigger1": {
+      "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+      "sheetId": 0,
+      "lastRevision": 95,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=95&exportFormat=xlsx"
     }
   },
   "meta": {
@@ -2861,9 +2873,9 @@
       }
     ]
   },
-  "versionId": "9b630ac2-d1f8-4b52-88f1-395f114bcc1d",
-  "activeVersionId": "d59d5404-5ca8-4333-880b-d2be0945785a",
-  "triggerCount": 1,
+  "versionId": "c6cecd12-46d4-4eec-915e-c74dd00cc261",
+  "activeVersionId": "c6cecd12-46d4-4eec-915e-c74dd00cc261",
+  "triggerCount": 3,
   "shared": [
     {
       "updatedAt": "2025-09-11T19:49:07.676Z",
@@ -2874,9 +2886,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-04-07T01:17:54.000Z",
-    "createdAt": "2026-04-07T01:17:51.520Z",
-    "versionId": "d59d5404-5ca8-4333-880b-d2be0945785a",
+    "updatedAt": "2026-05-07T13:50:46.000Z",
+    "createdAt": "2026-05-07T13:28:39.274Z",
+    "versionId": "c6cecd12-46d4-4eec-915e-c74dd00cc261",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -3130,8 +3142,8 @@
         "name": "Gmail Trigger",
         "credentials": {
           "gmailOAuth2": {
-            "id": "EzrY9VipLbH4tmwq",
-            "name": "Gmail account Adam Test"
+            "id": "sVqb0m2UfqzXbdvL",
+            "name": "Gmail account"
           }
         }
       },
@@ -3268,8 +3280,8 @@
         "type": "n8n-nodes-base.evaluationTrigger",
         "typeVersion": 4.6,
         "position": [
-          784,
-          768
+          -16,
+          480
         ],
         "id": "71cc0514-e666-4a83-893e-8a15946874cc",
         "name": "When fetching a dataset row",
@@ -3318,8 +3330,8 @@
         "type": "n8n-nodes-base.evaluation",
         "typeVersion": 4.7,
         "position": [
-          3024,
-          304
+          272,
+          640
         ],
         "id": "337fb1b5-c32d-4a64-8e74-0ee42d8c8132",
         "name": "Evaluation",
@@ -3340,8 +3352,8 @@
         "type": "n8n-nodes-base.evaluation",
         "typeVersion": 4.7,
         "position": [
-          2592,
-          608
+          -32,
+          640
         ],
         "id": "b3dc6f0a-8e28-4525-87a0-ad0faaf08f9e",
         "name": "Evaluation1"
@@ -3358,8 +3370,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.2,
         "position": [
-          2624,
-          864
+          16,
+          816
         ],
         "id": "11ed9aac-dc7e-4f06-a480-f2a5e22b18bb",
         "name": "OpenAI Chat Model",
@@ -3372,40 +3384,6 @@
       },
       {
         "parameters": {
-          "conditions": {
-            "options": {
-              "caseSensitive": true,
-              "leftValue": "",
-              "typeValidation": "strict",
-              "version": 2
-            },
-            "conditions": [
-              {
-                "id": "f5607a8f-0133-4f5b-8d1b-e60a5af4a1be",
-                "leftValue": "={{ $('Parse Questions').first().json.replyTo}}",
-                "rightValue": "none",
-                "operator": {
-                  "type": "string",
-                  "operation": "notEmpty",
-                  "singleValue": true
-                }
-              }
-            ],
-            "combinator": "and"
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.2,
-        "position": [
-          2320,
-          528
-        ],
-        "id": "b23de405-4473-4a26-8cd5-becf524c4657",
-        "name": "If threadId"
-      },
-      {
-        "parameters": {
           "modelId": {
             "__rl": true,
             "value": "gpt-4.1-mini",
@@ -3415,7 +3393,11 @@
           "messages": {
             "values": [
               {
-                "content": "=You are a helpful support assistant for the Deutsches Edelsteinhaus FAQ system.  \nA user has submitted a question in German.  \nYou have access to the following relevant FAQ Answers retrieved from the database, ordered by most similar first:  \n\nFAQ Matches:  \n{{ JSON.stringify( $json.body ) }}\n\nUser Question:  \n{{$('Split Out').item.json.json.question  }}\n\nInstructions:  \n- Always answer in **German** unless explicitly asked for English.  \n- Use the retrieved FAQ answers as your only source of truth.  \n- You may rephrase, clarify, or combine them for a natural reply.  \n- Do not invent facts beyond what is provided.  \n- If the FAQ answers are incomplete, politely acknowledge and keep the answer conservative.  \n- Keep a professional but warm tone suitable for email replies to potential investors. \n\n{{\n  $itemIndex === $items().length - 1\n    ? \"- Answer in a few sentences, and answer in a way that ellicits curiosity from the user to take the next step and schedule an appointment. Build curiosity and anticipation within the answer so the participant is on edge to hear more and talk about it in person.\"\n    : \"\"\n}}\n\n\n- Format your answer as a segment of an email body with no greeting or closing signature. The question answer segments will be joined together at a later step."
+                "content": "=FAQ Matches:\n{{ JSON.stringify($json.body) }}\n\nHuman-approved response for this matched FAQ, if available:\n{{ $json.approved_response || 'No human-approved response available.' }}\n\nUser Question:\n{{ $('Split Out').item.json.json.question }}\n\nInstructions:\nAnswer the user question using the retrieved FAQ answers.\n\nIf a human-approved response is available, use it as the preferred answer pattern and adapt it naturally to the current question.\n\n{{\n  $itemIndex === $items().length - 1\n    ? \"- Answer in a few sentences, and answer in a way that elicits curiosity from the user to take the next step and schedule an appointment. Build curiosity and anticipation within the answer so the participant is interested in hearing more and discussing it personally.\"\n    : \"\"\n}}"
+              },
+              {
+                "content": "You are a helpful support assistant for the Deutsches Edelsteinhaus FAQ system.\n\nAlways answer in German unless the customer explicitly asks for English.\n\nUse the retrieved FAQ answers as your source of truth. You may rephrase, clarify, or combine them for a natural reply, but you must not invent facts beyond what is provided.\n\nIf a human-approved response is provided, treat it as preferred guidance for this matched FAQ. Use it to align tone, structure, wording, and business positioning. Stay close to it when appropriate, but adapt naturally to the current customer question.\n\nIf the human-approved response conflicts with the retrieved FAQ answers, prefer the retrieved FAQ answers.\n\nIf the FAQ answers are incomplete, politely acknowledge the limits and keep the answer conservative.\n\nKeep a professional but warm tone suitable for email replies to potential investors.\n\nFormat your answer as a segment of an email body with no greeting and no closing signature. The answer segments will be joined together later.",
+                "role": "system"
               }
             ]
           },
@@ -3424,8 +3406,8 @@
         "type": "@n8n/n8n-nodes-langchain.openAi",
         "typeVersion": 1.8,
         "position": [
-          1392,
-          288
+          1232,
+          224
         ],
         "id": "4fc5f1d9-4770-41aa-9f20-bbb186c03db3",
         "name": "Generate Email Reply Segment",
@@ -3462,8 +3444,8 @@
         "type": "n8n-nodes-base.gmail",
         "typeVersion": 2.1,
         "position": [
-          2592,
-          288
+          2624,
+          0
         ],
         "id": "ef672b2a-fe04-409e-9181-d008643d44d2",
         "name": "Send a message",
@@ -3491,8 +3473,8 @@
         "type": "n8n-nodes-base.supabase",
         "typeVersion": 1,
         "position": [
-          1984,
-          288
+          2304,
+          592
         ],
         "id": "28068b06-5745-4e3a-a4b0-fda02998e707",
         "name": "Load Email Template",
@@ -3505,26 +3487,26 @@
       },
       {
         "parameters": {
-          "jsCode": "// Get all incoming items\nconst data = $input.all();\n\n// Map over each item and format Question + Answer\nconst qaPairs = data.map((item,i) => {\n  const question = $('Parse Questions').first().json.questions[i]?.json?.question || \"\";\n  const answer   = item.json.message?.content || \"\";\n  return `<p><strong>Ihre Frage: \"${question}\"</strong><br>${answer}</p>`;\n});\n\n// Join all Q&A pairs\nconst body = qaPairs.join(\"\\n\\n\");\n\nreturn {\n\n  body: body\n}"
+          "jsCode": "const items = $input.all();\n\nconst qaPairs = items.map((item, index) => {\n  const question = item.json.Question || \"\";\n  const answer = item.json[\"Column 1\"] || item.json[\"Agent Response\"] || \"\";\n\n  return `<p><strong>Ihre Frage:</strong> ${question}</p>\n<p>${answer}</p>`;\n});\n\nconst body = qaPairs.join(\"\\n\\n\");\n\nreturn [\n  {\n    json: {\n      thread_id: items[0]?.json.thread_id || \"\",\n      reply_to: items[0]?.json[\"Reply To\"] || \"\",\n      body,\n      qa_count: qaPairs.length,\n    },\n  },\n];"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1792,
-          288
+          2112,
+          592
         ],
         "id": "1f6f45db-12a3-4687-9fdf-1b3965214048",
         "name": "Join Q&A"
       },
       {
         "parameters": {
-          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\ntemplate = template.replace('{{greeting}}',greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nreturn {\n  to: $('Parse Questions').first().json.replyTo,\n  subject: 'Deutsches Edelsteinhaus Sachwerte - NAME, Ihre Webinarfrage',\n  body: emailbody\n}"
+          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\ntemplate = template.replace('{{greeting}}',greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nreturn {\n  participant_email: $('Google Sheets Trigger1').first().json[\"Reply To\"],\n  participant_name: $('Google Sheets Trigger1').first().json[\"Reply To Name\"],\n  subject: 'Deutsches Edelsteinhaus Sachwerte - NAME, Ihre Webinarfrage',\n  body: emailbody\n}"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          2256,
-          288
+          2576,
+          592
         ],
         "id": "8b053cba-fa88-4785-a334-5aabf7fd3115",
         "name": "Replace Content"
@@ -3540,7 +3522,7 @@
           "messages": {
             "values": [
               {
-                "content": "=You are an expert email salutation generator. Your role is to take an incoming name, determine if it is male or female, and generate a formal greeting in german to be placed at the top of an email. You will only generate the greeting, nothing else. No punctuation necessary.\n\nExamples:\n\"Sehr geehrter Herr Foth\"\n\"Sehr geehrte Frau Foth\"\n\nThe incoming name is:  {{ $('Parse Questions').first().json.replyToName.fullname }}"
+                "content": "=You are an expert email salutation generator. Your role is to take an incoming name, determine if it is male or female, and generate a formal greeting in german to be placed at the top of an email. You will only generate the greeting, nothing else. No punctuation necessary.\n\nExamples:\n\"Sehr geehrter Herr Foth\"\n\"Sehr geehrte Frau Foth\"\n\nThe incoming name is: {{ $('Google Sheets Trigger1').item.json['Reply To Name'] }}"
               }
             ]
           },
@@ -3549,8 +3531,8 @@
         "type": "@n8n/n8n-nodes-langchain.openAi",
         "typeVersion": 1.8,
         "position": [
-          1824,
-          528
+          2144,
+          832
         ],
         "id": "5f3b4029-4391-4164-ac5f-0fb59fda4ef2",
         "name": "Generate Greeting",
@@ -3560,6 +3542,353 @@
             "name": "OpenAi account"
           }
         }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Question": "={{ $('Split Out').item.json.json.question }}",
+              "date": "={{ $now.format('yyyy-MM-dd') }}",
+              "Agent Response": "={{ $json.message.content }}",
+              "Reply To": "={{ $('Parse Questions').item.json.replyTo }}",
+              "match_score": "={{ $('Supabase RPC Retrieval').item.json.body.first().similarity }}",
+              "match_uuid": "={{  $('Supabase RPC Retrieval').item.json.body.first().id}}",
+              "thread_id": "={{ $('Gmail Trigger').item.json.threadId }}",
+              "Reply To Name": "={{ $('Parse Questions').item.json.replyToName.fullname }}"
+            },
+            "matchingColumns": [
+              "Question"
+            ],
+            "schema": [
+              {
+                "id": "date",
+                "displayName": "date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "thread_id",
+                "displayName": "thread_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "match_uuid",
+                "displayName": "match_uuid",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "match_score",
+                "displayName": "match_score",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Reply To",
+                "displayName": "Reply To",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Reply To Name",
+                "displayName": "Reply To Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Question",
+                "displayName": "Question",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Agent Response",
+                "displayName": "Agent Response",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Approved",
+                "displayName": "Approved",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1616,
+          224
+        ],
+        "id": "099f0d19-927b-4d0d-90d6-4a1ea0a18cb0",
+        "name": "Append or update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyHour"
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "event": "rowUpdate",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          1152,
+          592
+        ],
+        "id": "548fb7a6-0028-4a4a-8bea-e179d2e5c566",
+        "name": "Google Sheets Trigger",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "DnIMz68XC0LUIK5a",
+            "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "97501650-9141-437f-b85a-6c6cf4f48144",
+                "leftValue": "={{ $json.Approved.toBoolean() }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          1376,
+          592
+        ],
+        "id": "37217c71-42ee-4dca-b120-0e88c4e097c7",
+        "name": "Filter1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {}
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "apikey",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
+              },
+              {
+                "name": "Prefer",
+                "value": "resolution=merge-duplicates, return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": \"{{ $json['Agent Response'] }}\",\n  \"p_match_similarity\": {{ $json.match_score }}\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1600,
+          592
+        ],
+        "id": "9a93fa19-3e1a-46a0-9e3f-83ea344af8a5",
+        "name": "Upsert FAQ Approved Answers",
+        "executeOnce": false
+      },
+      {
+        "parameters": {
+          "content": "## Test for all question/answers approved for that given webinar/user",
+          "height": 304,
+          "width": 1232
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1808,
+          496
+        ],
+        "id": "eaa1e299-f499-4db3-851b-bf311662347b",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyHour"
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "event": "rowUpdate",
+          "options": {
+            "columnsToWatch": [
+              "Approved"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          1568,
+          832
+        ],
+        "id": "933e1a3f-ac75-4f2c-8561-71372a61ccc4",
+        "name": "Google Sheets Trigger1",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "DnIMz68XC0LUIK5a",
+            "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Send Approved Answers to Supabase",
+          "height": 272,
+          "width": 688,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1088,
+          496
+        ],
+        "id": "fe9a82d7-ad16-4033-a01f-b00ef6bd5bd1",
+        "name": "Sticky Note3"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// Normalize Approved values because Google Sheets may return true, \"true\", \"\", etc.\nfunction isApproved(value) {\n  return value === true || String(value).toLowerCase().trim() === 'true';\n}\n\n// Group items by thread_id\nconst threads = {};\n\nfor (const item of items) {\n  const threadId = item.json.thread_id;\n\n  if (!threads[threadId]) {\n    threads[threadId] = [];\n  }\n\n  threads[threadId].push(item);\n}\n\n// Only allow items from threads where every item is Approved === true\nconst approvedItems = [];\n\nfor (const threadId of Object.keys(threads)) {\n  const threadItems = threads[threadId];\n\n  const allApproved = threadItems.every(item => {\n    return isApproved(item.json.Approved);\n  });\n\n  if (allApproved) {\n    approvedItems.push(...threadItems);\n  }\n}\n\nreturn approvedItems;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1888,
+          592
+        ],
+        "id": "cf603461-ca5f-4ae0-a398-70a1bec78163",
+        "name": "Filter all Approved"
       }
     ],
     "connections": {
@@ -3686,13 +4015,7 @@
       },
       "When fetching a dataset row": {
         "main": [
-          [
-            {
-              "node": "Parse Questions",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Evaluation1": {
@@ -3717,27 +4040,11 @@
           ]
         ]
       },
-      "If threadId": {
-        "main": [
-          [
-            {
-              "node": "Send a message",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Generate Email Reply Segment": {
         "main": [
           [
             {
-              "node": "Evaluation1",
-              "type": "main",
-              "index": 0
-            },
-            {
-              "node": "Join Q&A",
+              "node": "Append or update row in sheet",
               "type": "main",
               "index": 0
             }
@@ -3779,13 +4086,7 @@
       },
       "Replace Content": {
         "main": [
-          [
-            {
-              "node": "If threadId",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Generate Greeting": {
@@ -3798,10 +4099,59 @@
             }
           ]
         ]
+      },
+      "Append or update row in sheet": {
+        "main": [
+          []
+        ]
+      },
+      "Google Sheets Trigger": {
+        "main": [
+          [
+            {
+              "node": "Filter1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter1": {
+        "main": [
+          [
+            {
+              "node": "Upsert FAQ Approved Answers",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets Trigger1": {
+        "main": [
+          [
+            {
+              "node": "Filter all Approved",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter all Approved": {
+        "main": [
+          [
+            {
+              "node": "Join Q&A",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version d59d5404",
+    "name": "Version c6cecd12",
     "description": "",
     "autosaved": true
   },
