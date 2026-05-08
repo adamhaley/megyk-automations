@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-10-31T08:52:16.000Z",
+  "updatedAt": "2026-05-08T08:35:42.845Z",
   "createdAt": "2025-09-17T11:41:57.696Z",
   "id": "NpNXqyFPZrmcWZLX",
   "name": "Terminly KI-Vertriebssystem",
@@ -41,7 +41,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://sr1zxm.eu-5.quentn.com/public/api/v1/contact",
+        "url": "https://qk7fee.eu-4.quentn.com/public/api/v1/contact",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -55,13 +55,13 @@
             },
             {
               "name": "Authorization",
-              "value": "Bearer eVL7RXZgD0FuKQUsp-jYITrBlnu4McnCFP8ST2yYapA"
+              "value": "Bearer b57k1-A8vGU2jac9UT0nuGa843hFz_G6dVvGYl_PAQA"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"contact\": {\n    \"first_name\": \"{{ $json.body.first_name }}\",\n    \"family_name\": \"{{ $json.body.last_name }}\",\n    \"mail\": \"{{ $json.body.email }}\",\n    \"phone\": \"{{ $json.body.phone }}\",\n    \"terms\": [30]\n  },\n  \"duplicate_check_method\": \"email\",\n  \"duplicate_merge_method\": \"update_add\",\n  \"return_fields\": [\"id\", \"mail\", \"first_name\", \"family_name\", \"terms\"]\n}\n",
+        "jsonBody": "={\n  \"contact\": {\n    \"first_name\": \"{{ $json.body.first_name }}\",\n    \"family_name\": \"{{ $json.body.last_name }}\",\n    \"mail\": \"{{ $json.body.email }}\",\n    \"phone\": \"{{ $json.body.phone }}\",\n    \"terms\": [167]\n  },\n  \"duplicate_check_method\": \"email\",\n  \"duplicate_merge_method\": \"update\",\n  \"return_fields\": [\"id\", \"mail\", \"first_name\", \"family_name\", \"terms\"]\n}",
         "options": {
           "lowercaseHeaders": false
         }
@@ -182,7 +182,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": null,
@@ -280,8 +281,8 @@
       }
     ]
   },
-  "versionId": "bca9e86c-9bbe-45d9-902d-8d3d240a1baf",
-  "activeVersionId": "bca9e86c-9bbe-45d9-902d-8d3d240a1baf",
+  "versionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
+  "activeVersionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
   "triggerCount": 2,
   "shared": [
     {
@@ -293,9 +294,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-26T20:39:59.471Z",
-    "createdAt": "2025-11-26T20:39:59.471Z",
-    "versionId": "bca9e86c-9bbe-45d9-902d-8d3d240a1baf",
+    "updatedAt": "2026-05-08T08:35:44.000Z",
+    "createdAt": "2026-05-08T08:35:42.846Z",
+    "versionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
     "workflowId": "NpNXqyFPZrmcWZLX",
     "nodes": [
       {
@@ -333,7 +334,7 @@
       {
         "parameters": {
           "method": "POST",
-          "url": "https://sr1zxm.eu-5.quentn.com/public/api/v1/contact",
+          "url": "https://qk7fee.eu-4.quentn.com/public/api/v1/contact",
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
@@ -347,13 +348,13 @@
               },
               {
                 "name": "Authorization",
-                "value": "Bearer eVL7RXZgD0FuKQUsp-jYITrBlnu4McnCFP8ST2yYapA"
+                "value": "Bearer b57k1-A8vGU2jac9UT0nuGa843hFz_G6dVvGYl_PAQA"
               }
             ]
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n  \"contact\": {\n    \"first_name\": \"{{ $json.body.first_name }}\",\n    \"family_name\": \"{{ $json.body.last_name }}\",\n    \"mail\": \"{{ $json.body.email }}\",\n    \"phone\": \"{{ $json.body.phone }}\",\n    \"terms\": [30]\n  },\n  \"duplicate_check_method\": \"email\",\n  \"duplicate_merge_method\": \"update_add\",\n  \"return_fields\": [\"id\", \"mail\", \"first_name\", \"family_name\", \"terms\"]\n}\n",
+          "jsonBody": "={\n  \"contact\": {\n    \"first_name\": \"{{ $json.body.first_name }}\",\n    \"family_name\": \"{{ $json.body.last_name }}\",\n    \"mail\": \"{{ $json.body.email }}\",\n    \"phone\": \"{{ $json.body.phone }}\",\n    \"terms\": [167]\n  },\n  \"duplicate_check_method\": \"email\",\n  \"duplicate_merge_method\": \"update\",\n  \"return_fields\": [\"id\", \"mail\", \"first_name\", \"family_name\", \"terms\"]\n}",
           "options": {
             "lowercaseHeaders": false
           }
@@ -473,10 +474,10 @@
         ]
       }
     },
-    "authors": "system migration",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "authors": "Gordan Kljajic",
+    "name": "Version a8f3bab2",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
