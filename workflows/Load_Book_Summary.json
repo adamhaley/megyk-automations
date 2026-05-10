@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-04T22:53:55.304Z",
+  "updatedAt": "2026-05-09T22:58:47.036Z",
   "createdAt": "2025-12-05T14:39:39.243Z",
   "id": "TFbZMklKeSxB7159",
   "name": "Load Book Summary",
@@ -92,10 +92,6 @@
             {
               "keyName": "length",
               "keyValue": "={{ $('Config').item.json.length }}"
-            },
-            {
-              "keyName": "locale",
-              "keyValue": "={{ $json.locale }}"
             }
           ]
         }
@@ -235,10 +231,9 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
+          "book_id": "87ab2192-e2d5-43f3-8eeb-ee1ed6e4cb97",
           "style": "narrative",
-          "length": "medium",
-          "locale": "de"
+          "length": "medium"
         },
         "pairedItem": {
           "item": 0
@@ -246,8 +241,8 @@
       }
     ]
   },
-  "versionId": "27d46bfd-cffd-40f7-9823-ec80c7f46329",
-  "activeVersionId": "27d46bfd-cffd-40f7-9823-ec80c7f46329",
+  "versionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
+  "activeVersionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
   "triggerCount": 0,
   "shared": [
     {
@@ -259,9 +254,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-04-04T22:54:08.000Z",
-    "createdAt": "2026-04-04T22:53:55.305Z",
-    "versionId": "27d46bfd-cffd-40f7-9823-ec80c7f46329",
+    "updatedAt": "2026-05-09T22:58:49.000Z",
+    "createdAt": "2026-05-09T22:58:47.037Z",
+    "versionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
     "workflowId": "TFbZMklKeSxB7159",
     "nodes": [
       {
@@ -350,10 +345,6 @@
               {
                 "keyName": "length",
                 "keyValue": "={{ $('Config').item.json.length }}"
-              },
-              {
-                "keyName": "locale",
-                "keyValue": "={{ $json.locale }}"
               }
             ]
           }
@@ -482,7 +473,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 27d46bfd",
+    "name": "Version f5214abf",
     "description": "",
     "autosaved": true
   },
