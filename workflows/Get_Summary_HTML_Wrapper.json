@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-23T01:27:48.463Z",
+  "updatedAt": "2026-05-09T22:45:52.537Z",
   "createdAt": "2025-12-23T00:15:13.838Z",
   "id": "CMKnjjcqhsVEcxaV",
   "name": "Get Summary HTML Wrapper",
@@ -10,6 +10,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "get_summary_html",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -21,7 +22,13 @@
       ],
       "id": "c09dcfcb-1bd4-47b0-971e-713cbddd77d1",
       "name": "Webhook",
-      "webhookId": "f745935c-6b4c-4f2a-be77-658c169fb59b"
+      "webhookId": "f745935c-6b4c-4f2a-be77-658c169fb59b",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "oAO2iVZsNwBZMqjC",
+          "name": "Megyk Webhook Header Auth"
+        }
+      }
     },
     {
       "parameters": {
@@ -93,7 +100,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -133,8 +141,8 @@
       }
     ]
   },
-  "versionId": "344c1d4c-38ff-486d-8335-0be0186bf45e",
-  "activeVersionId": "344c1d4c-38ff-486d-8335-0be0186bf45e",
+  "versionId": "5e56724e-52c5-42d2-a14f-57dd61a0a6db",
+  "activeVersionId": "5e56724e-52c5-42d2-a14f-57dd61a0a6db",
   "triggerCount": 1,
   "shared": [
     {
@@ -146,15 +154,16 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-24T19:41:17.000Z",
-    "createdAt": "2025-12-23T01:27:48.464Z",
-    "versionId": "344c1d4c-38ff-486d-8335-0be0186bf45e",
+    "updatedAt": "2026-05-09T22:45:55.000Z",
+    "createdAt": "2026-05-09T22:45:52.538Z",
+    "versionId": "5e56724e-52c5-42d2-a14f-57dd61a0a6db",
     "workflowId": "CMKnjjcqhsVEcxaV",
     "nodes": [
       {
         "parameters": {
           "httpMethod": "POST",
           "path": "get_summary_html",
+          "authentication": "headerAuth",
           "responseMode": "responseNode",
           "options": {}
         },
@@ -166,7 +175,13 @@
         ],
         "id": "c09dcfcb-1bd4-47b0-971e-713cbddd77d1",
         "name": "Webhook",
-        "webhookId": "f745935c-6b4c-4f2a-be77-658c169fb59b"
+        "webhookId": "f745935c-6b4c-4f2a-be77-658c169fb59b",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "oAO2iVZsNwBZMqjC",
+            "name": "Megyk Webhook Header Auth"
+          }
+        }
       },
       {
         "parameters": {
@@ -238,9 +253,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 344c1d4c",
+    "name": "Version 5e56724e",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
