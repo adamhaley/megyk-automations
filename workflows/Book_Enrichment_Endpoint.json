@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-03T05:01:28.000Z",
+  "updatedAt": "2026-05-09T22:38:43.560Z",
   "createdAt": "2025-12-02T18:16:18.743Z",
   "id": "GWuurQa44UzlbQ08",
   "name": "Book Enrichment Endpoint",
@@ -10,6 +10,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "enrich_book",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {
           "allowedOrigins": "megyk.com"
@@ -23,7 +24,13 @@
       ],
       "id": "c98d56cb-5559-47b8-a6af-38aca0e070d6",
       "name": "Webhook",
-      "webhookId": "fd3f48cc-7dda-460f-8aba-f8aafcc97808"
+      "webhookId": "fd3f48cc-7dda-460f-8aba-f8aafcc97808",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "oAO2iVZsNwBZMqjC",
+          "name": "Megyk Webhook Header Auth"
+        }
+      }
     },
     {
       "parameters": {
@@ -144,7 +151,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -179,8 +187,8 @@
       }
     ]
   },
-  "versionId": "34ef581d-05d0-482b-9104-4e020b0c239a",
-  "activeVersionId": "34ef581d-05d0-482b-9104-4e020b0c239a",
+  "versionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
+  "activeVersionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
   "triggerCount": 1,
   "shared": [
     {
@@ -192,15 +200,16 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-02T18:51:28.691Z",
-    "createdAt": "2025-12-02T18:51:28.691Z",
-    "versionId": "34ef581d-05d0-482b-9104-4e020b0c239a",
+    "updatedAt": "2026-05-09T22:38:47.000Z",
+    "createdAt": "2026-05-09T22:38:43.561Z",
+    "versionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
     "workflowId": "GWuurQa44UzlbQ08",
     "nodes": [
       {
         "parameters": {
           "httpMethod": "POST",
           "path": "enrich_book",
+          "authentication": "headerAuth",
           "responseMode": "responseNode",
           "options": {
             "allowedOrigins": "megyk.com"
@@ -214,7 +223,13 @@
         ],
         "id": "c98d56cb-5559-47b8-a6af-38aca0e070d6",
         "name": "Webhook",
-        "webhookId": "fd3f48cc-7dda-460f-8aba-f8aafcc97808"
+        "webhookId": "fd3f48cc-7dda-460f-8aba-f8aafcc97808",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "oAO2iVZsNwBZMqjC",
+            "name": "Megyk Webhook Header Auth"
+          }
+        }
       },
       {
         "parameters": {
@@ -335,9 +350,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "name": "Version f4fb8d3b",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
