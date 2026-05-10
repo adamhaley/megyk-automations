@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-04T22:50:46.471Z",
+  "updatedAt": "2026-05-09T22:52:44.747Z",
   "createdAt": "2025-12-13T01:35:08.272Z",
   "id": "icF28UmruuHgkDgd",
   "name": "Get Summary PDF v3 CORE",
@@ -19,19 +19,13 @@
             {
               "id": "0e5aadd7-7c6c-4e08-980a-e58827a91d04",
               "name": "style",
-              "value": "={{ $json.body.preferences.style }}",
+              "value": "={{ $json.body.style }}",
               "type": "string"
             },
             {
               "id": "1aa41326-89d7-4960-9029-7f5d062395f7",
               "name": "length",
-              "value": "={{ $json.body.preferences.length }}",
-              "type": "string"
-            },
-            {
-              "id": "a4e340eb-229c-41a5-8269-a37bdfb2993d",
-              "name": "locale",
-              "value": "={{ $json.body.locale }}",
+              "value": "={{ $json.body.length }}",
               "type": "string"
             }
           ]
@@ -611,34 +605,25 @@
           "headers": {
             "host": "n8n.megyk.com",
             "user-agent": "node",
-            "content-length": "206",
+            "content-length": "88",
             "accept": "*/*",
             "accept-encoding": "br, gzip, deflate",
             "accept-language": "*",
-            "cache-control": "no-cache",
             "content-type": "application/json",
-            "pragma": "no-cache",
             "sec-fetch-mode": "cors",
             "via": "1.1 Caddy",
-            "x-forwarded-for": "172.19.0.1",
+            "x-forwarded-for": "4.43.180.94",
             "x-forwarded-host": "n8n.megyk.com",
             "x-forwarded-proto": "https"
           },
           "params": {},
-          "query": {
-            "ts": "1775342799957"
-          },
+          "query": {},
           "body": {
-            "book_id": "04c7ac03-6d11-4ac6-ba3d-1d556ae8ba22",
-            "preferences": {
-              "style": "narrative",
-              "length": "medium"
-            },
-            "user_id": "ed424ba5-1ccc-452d-b470-329a3e3b1b4b",
-            "timestamp": "2026-04-04T22:46:39.957Z",
-            "locale": "de"
+            "book_id": "87ab2192-e2d5-43f3-8eeb-ee1ed6e4cb97",
+            "style": "narrative",
+            "length": "medium"
           },
-          "webhookUrl": "https://n8n.megyk.com/webhook/get_summary_v3",
+          "webhookUrl": "https://n8n.megyk.com/webhook/get_summary_html",
           "executionMode": "production"
         },
         "pairedItem": {
@@ -647,8 +632,8 @@
       }
     ]
   },
-  "versionId": "4a91d69f-c817-42a2-adde-8bc0e8da4180",
-  "activeVersionId": "4a91d69f-c817-42a2-adde-8bc0e8da4180",
+  "versionId": "4ce2a3ee-fed8-491c-9698-556f9d94d425",
+  "activeVersionId": "4ce2a3ee-fed8-491c-9698-556f9d94d425",
   "triggerCount": 0,
   "shared": [
     {
@@ -660,9 +645,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-04-04T22:54:28.000Z",
-    "createdAt": "2026-04-04T22:50:46.473Z",
-    "versionId": "4a91d69f-c817-42a2-adde-8bc0e8da4180",
+    "updatedAt": "2026-05-09T22:52:51.000Z",
+    "createdAt": "2026-05-09T22:52:44.756Z",
+    "versionId": "4ce2a3ee-fed8-491c-9698-556f9d94d425",
     "workflowId": "icF28UmruuHgkDgd",
     "nodes": [
       {
@@ -678,19 +663,13 @@
               {
                 "id": "0e5aadd7-7c6c-4e08-980a-e58827a91d04",
                 "name": "style",
-                "value": "={{ $json.body.preferences.style }}",
+                "value": "={{ $json.body.style }}",
                 "type": "string"
               },
               {
                 "id": "1aa41326-89d7-4960-9029-7f5d062395f7",
                 "name": "length",
-                "value": "={{ $json.body.preferences.length }}",
-                "type": "string"
-              },
-              {
-                "id": "a4e340eb-229c-41a5-8269-a37bdfb2993d",
-                "name": "locale",
-                "value": "={{ $json.body.locale }}",
+                "value": "={{ $json.body.length }}",
                 "type": "string"
               }
             ]
@@ -1256,7 +1235,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 4a91d69f",
+    "name": "Version 4ce2a3ee",
     "description": "",
     "autosaved": true
   },
