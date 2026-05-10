@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-07T13:28:39.272Z",
+  "updatedAt": "2026-05-10T22:00:19.143Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "FAQs Embeddings",
@@ -241,9 +241,8 @@
         },
         "simple": false,
         "filters": {
-          "labelIds": [
-            "Label_996581151046338446"
-          ]
+          "labelIds": "={{ [\"INBOX\"] }}",
+          "sender": "adam@adamhaley.com"
         },
         "options": {}
       },
@@ -257,8 +256,8 @@
       "name": "Gmail Trigger",
       "credentials": {
         "gmailOAuth2": {
-          "id": "sVqb0m2UfqzXbdvL",
-          "name": "Gmail account"
+          "id": "EzrY9VipLbH4tmwq",
+          "name": "Gmail account Adam Test"
         }
       }
     },
@@ -269,7 +268,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1616,
+        1648,
         -16
       ],
       "id": "26b4089f-6513-4aef-8b1c-f08485cb67c5",
@@ -279,6 +278,8 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/rpc//match_faqs_json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -317,18 +318,24 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2256,
+        2288,
         -16
       ],
       "id": "975f770e-1c1f-4b4a-a237-9228b0e99953",
       "name": "Supabase RPC Retrieval",
       "alwaysOutputData": false,
-      "executeOnce": false
+      "executeOnce": false,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "QaXnFkOwM3YVwwfO",
+          "name": "Custom Auth account"
+        }
+      }
     },
     {
       "parameters": {
         "content": "## Retrieval ( Auto Q & A Flow )\n### Retrieval (Auto Q & A Flow)\n\nFlow:  \n1. **Trigger:** Gmail node receives new survey response with user questions.  \n2. **Parse Questions:** Extract raw text of each user question.  \n3. **OpenAI Embeddings:**  \n   - Model: `text-embedding-3-small` (1536-dim)  \n   - Input: `{{$json[\"question\"]}}` (user’s question in German)  \n   - Output: `{{$json[\"data\"][0][\"embedding\"]}}`  \n4. **Supabase RPC Retrieval:**  \n   - Calls `match_faqs_json(query_embedding, match_count=5)`  \n   - Returns top FAQ matches with similarity scores.  \n5. **AI Reply (next step):**  \n   - Pass best match into OpenAI Chat node  \n   - Draft personalized auto-reply email using FAQ answer as context  \n   - Format into Gmail/Bitrix email template  \n\n",
-        "height": 896,
+        "height": 912,
         "width": 1408,
         "color": 4
       },
@@ -336,7 +343,7 @@
       "typeVersion": 1,
       "position": [
         1088,
-        -448
+        -464
       ],
       "id": "de68b760-5b4d-470e-b296-db392d007c8a",
       "name": "Sticky Note1"
@@ -365,7 +372,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2032,
+        2064,
         -16
       ],
       "id": "ebf84add-dfbb-458c-9415-8a043c40d877",
@@ -395,8 +402,8 @@
       "type": "n8n-nodes-base.evaluationTrigger",
       "typeVersion": 4.6,
       "position": [
-        -16,
-        480
+        256,
+        928
       ],
       "id": "71cc0514-e666-4a83-893e-8a15946874cc",
       "name": "When fetching a dataset row",
@@ -445,8 +452,8 @@
       "type": "n8n-nodes-base.evaluation",
       "typeVersion": 4.7,
       "position": [
-        272,
-        640
+        544,
+        1088
       ],
       "id": "337fb1b5-c32d-4a64-8e74-0ee42d8c8132",
       "name": "Evaluation",
@@ -467,8 +474,8 @@
       "type": "n8n-nodes-base.evaluation",
       "typeVersion": 4.7,
       "position": [
-        -32,
-        640
+        240,
+        1088
       ],
       "id": "b3dc6f0a-8e28-4525-87a0-ad0faaf08f9e",
       "name": "Evaluation1"
@@ -485,8 +492,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        16,
-        816
+        288,
+        1264
       ],
       "id": "11ed9aac-dc7e-4f06-a480-f2a5e22b18bb",
       "name": "OpenAI Chat Model",
@@ -541,7 +548,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1824,
+        1856,
         -16
       ],
       "id": "70a7b9ea-11da-4987-bac7-9230262e8aa6",
@@ -559,8 +566,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        2624,
-        0
+        2304,
+        624
       ],
       "id": "ef672b2a-fe04-409e-9181-d008643d44d2",
       "name": "Send a message",
@@ -588,8 +595,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2304,
-        592
+        1712,
+        624
       ],
       "id": "28068b06-5745-4e3a-a4b0-fda02998e707",
       "name": "Load Email Template",
@@ -607,21 +614,21 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2112,
-        592
+        1520,
+        624
       ],
       "id": "1f6f45db-12a3-4687-9fdf-1b3965214048",
       "name": "Join Q&A"
     },
     {
       "parameters": {
-        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\ntemplate = template.replace('{{greeting}}',greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nreturn {\n  participant_email: $('Google Sheets Trigger1').first().json[\"Reply To\"],\n  participant_name: $('Google Sheets Trigger1').first().json[\"Reply To Name\"],\n  subject: 'Deutsches Edelsteinhaus Sachwerte - NAME, Ihre Webinarfrage',\n  body: emailbody\n}"
+        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2576,
-        592
+        2080,
+        624
       ],
       "id": "8b053cba-fa88-4785-a334-5aabf7fd3115",
       "name": "Replace Content"
@@ -646,8 +653,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        2144,
-        832
+        1552,
+        880
       ],
       "id": "5f3b4029-4391-4164-ac5f-0fb59fda4ef2",
       "name": "Generate Greeting",
@@ -776,7 +783,8 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -787,7 +795,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1616,
+        1648,
         224
       ],
       "id": "099f0d19-927b-4d0d-90d6-4a1ea0a18cb0",
@@ -828,8 +836,8 @@
       "type": "n8n-nodes-base.googleSheetsTrigger",
       "typeVersion": 1,
       "position": [
-        1152,
-        592
+        304,
+        624
       ],
       "id": "548fb7a6-0028-4a4a-8bea-e179d2e5c566",
       "name": "Google Sheets Trigger",
@@ -868,8 +876,8 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        1376,
-        592
+        528,
+        624
       ],
       "id": "37217c71-42ee-4dca-b120-0e88c4e097c7",
       "name": "Filter1"
@@ -878,12 +886,6 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {}
-          ]
-        },
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -903,14 +905,14 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": \"{{ $json['Agent Response'] }}\",\n  \"p_match_similarity\": {{ $json.match_score }}\n}",
+        "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": {{ JSON.stringify($json['Agent Response'])  }}\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1600,
-        592
+        752,
+        624
       ],
       "id": "9a93fa19-3e1a-46a0-9e3f-83ea344af8a5",
       "name": "Upsert FAQ Approved Answers",
@@ -920,13 +922,13 @@
       "parameters": {
         "content": "## Test for all question/answers approved for that given webinar/user",
         "height": 304,
-        "width": 1232
+        "width": 1408
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1808,
-        496
+        1088,
+        528
       ],
       "id": "eaa1e299-f499-4db3-851b-bf311662347b",
       "name": "Sticky Note2"
@@ -936,7 +938,7 @@
         "pollTimes": {
           "item": [
             {
-              "mode": "everyHour"
+              "mode": "everyMinute"
             }
           ]
         },
@@ -964,8 +966,8 @@
       "type": "n8n-nodes-base.googleSheetsTrigger",
       "typeVersion": 1,
       "position": [
-        1568,
-        832
+        672,
+        864
       ],
       "id": "933e1a3f-ac75-4f2c-8561-71372a61ccc4",
       "name": "Google Sheets Trigger1",
@@ -980,14 +982,14 @@
       "parameters": {
         "content": "## Send Approved Answers to Supabase",
         "height": 272,
-        "width": 688,
+        "width": 1008,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1088,
-        496
+        -80,
+        528
       ],
       "id": "fe9a82d7-ad16-4033-a01f-b00ef6bd5bd1",
       "name": "Sticky Note3"
@@ -999,11 +1001,215 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1888,
-        592
+        1296,
+        624
       ],
       "id": "cf603461-ca5f-4ae0-a398-70a1bec78163",
       "name": "Filter all Approved"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+          "mode": "list",
+          "cachedResultName": "FAQ Responder Approvals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "thread_id",
+              "lookupValue": "={{ $json.thread_id }}"
+            },
+            {
+              "lookupColumn": "Sent",
+              "lookupValue": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        864
+      ],
+      "id": "43d4e055-d38e-4b3d-9200-3778e91ca3a7",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+          "mode": "list",
+          "cachedResultName": "FAQ Responder Approvals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "thread_id": "={{ $('Get row(s) in sheet').item.json.thread_id }}",
+            "Sent": "true"
+          },
+          "matchingColumns": [
+            "thread_id"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "match_uuid",
+              "displayName": "match_uuid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "match_score",
+              "displayName": "match_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply To",
+              "displayName": "Reply To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply To Name",
+              "displayName": "Reply To Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Question",
+              "displayName": "Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Agent Response",
+              "displayName": "Agent Response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Approved",
+              "displayName": "Approved",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent",
+              "displayName": "Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2304,
+        880
+      ],
+      "id": "209b61b4-e494-4f9c-aeb2-840a7514d694",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
     }
   ],
   "connections": {
@@ -1201,7 +1407,13 @@
     },
     "Replace Content": {
       "main": [
-        []
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Generate Greeting": {
@@ -1246,7 +1458,7 @@
       "main": [
         [
           {
-            "node": "Filter all Approved",
+            "node": "Get row(s) in sheet",
             "type": "main",
             "index": 0
           }
@@ -1258,6 +1470,28 @@
         [
           {
             "node": "Join Q&A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter all Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
             "type": "main",
             "index": 0
           }
@@ -1275,9 +1509,9 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1760006711,
+        "lastTimeChecked": 1778436643,
         "possibleDuplicates": [
-          "199c8932b6f45314"
+          "19e1315c7291656a"
         ]
       }
     },
@@ -1287,14 +1521,14 @@
     "node:Google Sheets Trigger": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 95,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=95&exportFormat=xlsx"
+      "lastRevision": 136,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=136&exportFormat=xlsx"
     },
     "node:Google Sheets Trigger1": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 95,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=95&exportFormat=xlsx"
+      "lastRevision": 136,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=136&exportFormat=xlsx"
     }
   },
   "meta": {
@@ -2797,84 +3031,10 @@
           "finish_reason": "stop"
         }
       }
-    ],
-    "Gmail Trigger": [
-      {
-        "json": {
-          "id": "199c8932b6f45314",
-          "threadId": "199c8932b6f45314",
-          "labelIds": [
-            "UNREAD",
-            "Label_996581151046338446",
-            "CATEGORY_UPDATES",
-            "INBOX"
-          ],
-          "sizeEstimate": 7620,
-          "headers": {
-            "delivered-to": "Delivered-To: adam.haley@gmail.com",
-            "received": "Received: from b224-18.smtp-out.eu-central-1.amazonses.com (b224-18.smtp-out.eu-central-1.amazonses.com. [69.169.224.18])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-42583ade675si3737769f8f.776.2025.10.09.03.45.12\r\n        for <adam.haley@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Thu, 09 Oct 2025 03:45:12 -0700 (PDT)",
-            "x-google-smtp-source": "X-Google-Smtp-Source: AGHT+IEZLOGHmt6pGEnSSsjiHWIilvva3NpRgZGoOlRFb6LKnCKEY39yrVptDL32ipYht/UXaBl9",
-            "x-received": "X-Received: by 2002:a05:600c:468c:b0:46e:3287:57d6 with SMTP id 5b1f17b1804b1-46fa9b0e7f0mr47067655e9.27.1760006712285;\r\n        Thu, 09 Oct 2025 03:45:12 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1760006712; cv=none;\r\n        d=google.com; s=arc-20240605;\r\n        b=hN1W758b3YGyxqiofN8SlzO+q50EHY4XCg/GebFYW+sy1yjwod0ESHngKn/OoCX+/n\r\n         XBkdwCv2RcwXLCLeyRN5TcvYwnAGgxSEC8K7mOvR+L9kihq+YyFVlSr3C8xapvAnELoo\r\n         X7xuicr7l3KIFXb2DKBd9bYBC48QTIRy+Gfg1x1A/JG3Bd9aO2FiG5ctFE/C8VS5Pfob\r\n         ges/qYAfVeIHqs2WaCdYDi5zWwexFt5CuiER6hutjfT7LutI8r51n76E9g7v1V/HVWO3\r\n         3PRp9nHwyl6TWAEOWzw1Kaq2CtsammWur45HfqnvLfKqTgBS0arG7Ji61QeoqHD28gRz\r\n         1YIA==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=PHb3HKBi9eUD0n0cAM/1vbD9qWV/TGHRhqvH5ZVhVGE=;\r\n        fh=VBJduV2qPs37eC1Es4szfo/MHrRPrNXvRIdOwW+6qUI=;\r\n        b=Ea9f9YGg9NdgUxGZmRRnkyqlHfi9t2R7zg/8eUiGs8FL4QiUB4eexq0RlsMqr4QFnu\r\n         KwfIZERg51Bay8BNRMOnqZzFTqSFMAGfEjW+fC97RS+Y1t76dZFyluHD51nh5KlKJ6fp\r\n         HW7XoWdZA24Lygx87fTSeF4/ny55Iz3KmUfqt0eei2p1MeOcAunLzAbOPAv12hYRujBQ\r\n         t/w7ZsEV0g9V2RNvsmcQoUrDbXp/uE+rWLJxVCNSWGXNpcA0jx2LQzGIvnW2TiWXxWD0\r\n         FnnzHayS7kFVglvb6SGQV8EcAxFNK3gPRQyM1j7U6seS4lVK2leHhnP1NhWMGCWAmyGS\r\n         cgZQ==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=qmtkgwdgrn3fmd4acamtzeyfr4sbtgri header.b=DvnHzuLM;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=lGjLsRUE;\r\n       spf=pass (google.com: domain of 01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) client-ip=69.169.224.18;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=qmtkgwdgrn3fmd4acamtzeyfr4sbtgri header.b=DvnHzuLM;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=lGjLsRUE;\r\n       spf=pass (google.com: domain of 01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1760006711;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=TBskpcjqhqbQdfH2je+NevVVSljSyp9a3v/KUnCcqw4=;\r\n\tb=lGjLsRUEup1XH8yIY8avmecVmSbCFK5Nf7tlZwLycTzGC/ppHL0s65/HzHw7zcgm\r\n\tKsz868H+q7n2jLYgXRYDp6AIp6MmUjfR0yvezbekNz8aOZ4KpMYaIUqqM3yCfEBowh0\r\n\tFB8XpcLD91ZKTNkUAHRdwjHpbULJg82yyMWZbIdw=",
-            "date": "Date: Thu, 9 Oct 2025 10:45:11 +0000",
-            "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
-            "to": "To: adam.haley@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nac?=\r\n =?UTF-8?Q?hrichten:_tatjana.haufler@deutsches-?=\r\n =?UTF-8?Q?edelsteinhaus.com,_Brevo_Webinar:_D?=\r\n =?UTF-8?Q?ie_gr=C3=B6=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
-            "mime-version": "MIME-Version: 1.0",
-            "content-type": "Content-Type: text/html; charset=UTF-8",
-            "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com>",
-            "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2025.10.09-69.169.224.18"
-          },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die tatjana.haufler@deutsches-edelsteinhaus.com im Webinar \"Brevo Webinar: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Tatjana<br>\n Nachname: <br>\n E-Mail: tatjana.haufler@deutsches-edelsteinhaus.com<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: <br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: <br>\n UTM Content: <br>\n Webinar: Brevo Webinar: Die größten Gefahren für Ihr Vermögen (BREVO YOUTUBE: DEH - Auto WEBIGG NOT ACTIVE (x))<br>\n Anmeldezeit: 09.10.2025 10:53<br>\n Webinarzeit: 09.10.2025 10:55<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 09.10.2025 10:57<br>\n Logout-Zeit: 09.10.2025 12:25<br>\n Chat:<br>\n 1: Tatjana  (09.10.2025 10:58): sind es bei 15k mehrere steine oder istves ein stein in passender Grösse?.<br/>2: Tatjana  (09.10.2025 10:58): es ist also sinnvoll sein Haus schnekk zu verkaufen? rotz sinkender Preise<br/>3: Tatjana  (09.10.2025 10:59): Ich habe vor, nächstes Jahr nach Mauritius auszuwandern und in letzter Zeit habe ich das Gefühl, dass sich die Schweiz auch langsam umdrehen lässt. Inwieweit ist mein Schweizer Eurokonto YUH für kleinere Vermögen noch lukrativ? 1. Welche Währung sollte ich auf dem Schweizer Konto halten, CHF, USD?<br/>4: Tatjana  (09.10.2025 10:59): Ich bin neben Bargeld, Aktien, Gold und Silber aus 2014 und 2024, auch auf meine Rente und meine Miete aus Deutschland angewiesen. Darf ich weiterhin meine deutsche Miete auf Mauritius beziehen? Sollte ich mein Aktiendepot ins nicht EU Ausland umziehen? Wie funktioniert es, dass ich meine physischen Edelmetalle nach Mauritius in ein<br/>5: Tatjana  (09.10.2025 10:59): Vielen Dank im Voraus für Ihre Antworten<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (09.10.2025 12:45)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die\ntatjana.haufler@deutsches-edelsteinhaus.com im Webinar \"Brevo Webinar: Die\ngrößten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Tatjana\nNachname:\nE-Mail: tatjana.haufler@deutsches-edelsteinhaus.com\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source:\nUTM Medium:\nUTM Campaign:\nUTM Term:\nUTM Content:\nWebinar: Brevo Webinar: Die größten Gefahren für Ihr Vermögen (BREVO YOUTUBE:\nDEH - Auto WEBIGG NOT ACTIVE (x))\nAnmeldezeit: 09.10.2025 10:53\nWebinarzeit: 09.10.2025 10:55\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 09.10.2025 10:57\nLogout-Zeit: 09.10.2025 12:25\nChat:\n1: Tatjana (09.10.2025 10:58): sind es bei 15k mehrere steine oder istves ein\nstein in passender Grösse?.\n2: Tatjana (09.10.2025 10:58): es ist also sinnvoll sein Haus schnekk zu\nverkaufen? rotz sinkender Preise\n3: Tatjana (09.10.2025 10:59): Ich habe vor, nächstes Jahr nach Mauritius\nauszuwandern und in letzter Zeit habe ich das Gefühl, dass sich die Schweiz auch\nlangsam umdrehen lässt. Inwieweit ist mein Schweizer Eurokonto YUH für kleinere\nVermögen noch lukrativ? 1. Welche Währung sollte ich auf dem Schweizer Konto\nhalten, CHF, USD?\n4: Tatjana (09.10.2025 10:59): Ich bin neben Bargeld, Aktien, Gold und Silber\naus 2014 und 2024, auch auf meine Rente und meine Miete aus Deutschland\nangewiesen. Darf ich weiterhin meine deutsche Miete auf Mauritius beziehen?\nSollte ich mein Aktiendepot ins nicht EU Ausland umziehen? Wie funktioniert es,\ndass ich meine physischen Edelmetalle nach Mauritius in ein\n5: Tatjana (09.10.2025 10:59): Vielen Dank im Voraus für Ihre Antworten\n\n\n\n\nViele Grüße,\n\nWebinaris (09.10.2025 12:45)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die<br/><a href=\"mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">tatjana.haufler@deutsches-edelsteinhaus.com</a> im Webinar &quot;Brevo Webinar: Die<br/>gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Tatjana<br/>Nachname:<br/>E-Mail: <a href=\"mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">tatjana.haufler@deutsches-edelsteinhaus.com</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source:<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term:<br/>UTM Content:<br/>Webinar: Brevo Webinar: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (BREVO YOUTUBE:<br/>DEH - Auto WEBIGG NOT ACTIVE (x))<br/>Anmeldezeit: 09.10.2025 10:53<br/>Webinarzeit: 09.10.2025 10:55<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 09.10.2025 10:57<br/>Logout-Zeit: 09.10.2025 12:25<br/>Chat:<br/>1: Tatjana (09.10.2025 10:58): sind es bei 15k mehrere steine oder istves ein<br/>stein in passender Gr&ouml;sse?.<br/>2: Tatjana (09.10.2025 10:58): es ist also sinnvoll sein Haus schnekk zu<br/>verkaufen? rotz sinkender Preise<br/>3: Tatjana (09.10.2025 10:59): Ich habe vor, n&auml;chstes Jahr nach Mauritius<br/>auszuwandern und in letzter Zeit habe ich das Gef&uuml;hl, dass sich die Schweiz auch<br/>langsam umdrehen l&auml;sst. Inwieweit ist mein Schweizer Eurokonto YUH f&uuml;r kleinere<br/>Verm&ouml;gen noch lukrativ? 1. Welche W&auml;hrung sollte ich auf dem Schweizer Konto<br/>halten, CHF, USD?<br/>4: Tatjana (09.10.2025 10:59): Ich bin neben Bargeld, Aktien, Gold und Silber<br/>aus 2014 und 2024, auch auf meine Rente und meine Miete aus Deutschland<br/>angewiesen. Darf ich weiterhin meine deutsche Miete auf Mauritius beziehen?<br/>Sollte ich mein Aktiendepot ins nicht EU Ausland umziehen? Wie funktioniert es,<br/>dass ich meine physischen Edelmetalle nach Mauritius in ein<br/>5: Tatjana (09.10.2025 10:59): Vielen Dank im Voraus f&uuml;r Ihre Antworten</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (09.10.2025 12:45)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: tatjana.haufler@deutsches-edelsteinhaus.com, Brevo Webinar: Die größten Gefahren für Ihr Vermögen",
-          "date": "2025-10-09T10:45:11.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "adam.haley@gmail.com",
-                "name": ""
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><a href=\"mailto:adam.haley@gmail.com\" class=\"mp_address_email\">adam.haley@gmail.com</a></span>",
-            "text": "adam.haley@gmail.com"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "noreply-11551@webinaris.co",
-                "name": "Webinaris"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
-            "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
-          },
-          "messageId": "<01070199c89329ec-7ce44040-32a5-474a-bdd5-f98d801f3baf-000000@eu-central-1.amazonses.com>"
-        }
-      }
-    ],
-    "Replace Content": [
-      {
-        "json": {
-          "participant_email": "tatjana.haufler@deutsches-edelsteinhaus.com",
-          "participant_name": "Tatjana Haufler",
-          "subject": "Deutsches Edelsteinhaus Sachwerte - NAME, Ihre Webinarfrage",
-          "body": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n  </head>\n  <body>\n    <div id=\"main_mail_form_crm_act_email_create_form_quote_199298b3806\">\n      <div id=\"main_mail_form_crm_act_email_create_form_signature_199192c0ee6\">\n        <p>Sehr geehrte Frau Tatjana,</p>\n        <p>vielen Dank für Ihre Teilnahme an unserem Webinar. </p>\n        <p><b>Mein Name ist Tatjana Haufler, ich betreue im Namen von Herrn Streeb die Anfragen aus dem Webinar und führe die Beratung zum Investment in Farbedelsteine beim Deutschen Edelsteinhaus durch.</b></p>\n        <p>Aufgrund der Vielzahl an Fragen während des Webinars war es leider nicht möglich, sofort auf Ihre Frage einzugehen. Dies möchte ich nun gerne nachholen. </p>\n        <p>Aus rechtlichen Gründen möchten wir an dieser Stelle darauf hinweisen, dass die folgende Antwort keine Finanz- oder Rechtsberatung darstellt, sondern die persönliche Einschätzung von Herrn Streeb wiedergibt.</p>\n        <p><strong>Ihre Frage:</strong> sind es bei 15k mehrere steine oder istves ein stein in passender Grösse?.</p>\n<p>Bei einer Investition ab etwa 15.000 Euro handelt es sich in der Regel um einen einzelnen Edelstein in passender Größe, der sowohl als Investmentstein als auch als Schmuckstein geeignet ist. Die Grenze von 15.000 Euro wird dabei als eine Art Mindestgröße betrachtet, um einen klaren Unterschied zu günstigeren Schmucksteinen zu machen. Ob es dabei mehrere kleinere Steine oder ein einzelner Stein gewählt wird, hängt von der jeweiligen Auswahl und dem Angebot ab. Grundsätzlich legen wir Wert darauf, für unsere Kunden Steine in entsprechender Qualität und Größe zu erwerben, die den Investitionskriterien entsprechen.</p>\n\n<p><strong>Ihre Frage:</strong> es ist also sinnvoll sein Haus schnekk zu verkaufen? rotz sinkender Preise</p>\n<p>Ob es sinnvoll ist, Ihr Haus schnell zu verkaufen, hängt von vielen Faktoren ab, insbesondere von Ihrer individuellen Situation und den Marktentwicklungen. Im Zusammenhang mit Edelsteinen empfehlen wir generell, diese als langfristige Anlage über mehrere Jahre, idealerweise Jahrzehnte, zu betrachten und nicht auf kurzfristige Preisbewegungen zu reagieren. Ähnlich verhält es sich oft bei Immobilien – ein vorschneller Verkauf kann bedeuten, dass Sie möglicherweise nicht den optimalen Wert erzielen.\n\nSollten Sie dennoch schnell Liquidität benötigen, lohnt es sich, die jeweiligen Märkte und Alternativen sorgfältig zu prüfen. Bei Edelsteinen etwa bieten wir Ihnen verschiedene Verkaufswege an – von der Vermittlung über unseren Marktplatz bis hin zum direkten Rückkauf, jeweils mit transparenten Gebührenmodellen. Für Immobilien empfehlen wir eine individuelle Beratung, um die bestmögliche Strategie zu finden.\n\nGenerell gilt: Werte und Vermögen sollten idealerweise so erhalten oder angelegt werden, dass Sie auch in unsicheren Zeiten stabile Gegenwerte behielten. Ein schneller Verkauf in einer Marktsituation mit sinkenden Preisen kann daher mit Risiken verbunden sein.</p>\n\n<p><strong>Ihre Frage:</strong> Ich habe vor, nächstes Jahr nach Mauritius auszuwandern und in letzter Zeit habe ich das Gefühl, dass sich die Schweiz auch langsam umdrehen lässt. Inwieweit ist mein Schweizer Eurokonto YUH für kleinere Vermögen noch lukrativ? 1. Welche Währung sollte ich auf dem Schweizer Konto halten, CHF, USD?</p>\n<p>Bezüglich Ihres Schweizer Eurokontos bei YUH und Ihrer geplanten Auswanderung nach Mauritius ist zu berücksichtigen, dass die Schweiz zwar als sicherer Finanzplatz gilt, allerdings auch eigene Notstandsgesetze besitzt, die im Krisenfall Zugriffe auf Bankkonten ermöglichen können. \n\nWelche Währung auf Ihrem Schweizer Konto am sinnvollsten ist – CHF, EUR oder USD – hängt von mehreren Faktoren ab, insbesondere von Ihren künftigen Ausgaben und der wirtschaftlichen Stabilität der jeweiligen Währungen. Da Sie nach Mauritius auswandern, könnten USD eine gute Option sein, da der US-Dollar weltweit als stabile Reservewährung gilt und von vielen Märkten akzeptiert wird. Der Schweizer Franken hingegen gilt als stabil, aber die Schweiz kann – wie erwähnt – im Krisenfall eigene Maßnahmen ergreifen.\n\nGrundsätzlich empfiehlt es sich, Konten und Vermögen zu diversifizieren und nicht nur auf eine Währung oder ein Land zu setzen, um Risiken zu minimieren. Für kleinere Vermögen kann ein Schweizer Konto durchaus attraktiv bleiben, doch sollten Sie in Hinblick auf Wechselkurse, Gebühren und die jeweilige wirtschaftliche Lage der Währungsräume eine individuelle Entscheidung treffen.\n\nDa Ihre Situation mit einer Auswanderung verbunden ist, wäre es auch sinnvoll, zu prüfen, welche Währungen und Konten in Mauritius für Sie effektiv und flexibel nutzbar sind. Leider liegen dazu in unseren FAQ keine konkreten Informationen vor, weshalb eine Beratung durch einen Finanzexperten mit Fokus auf internationale Vermögensanlagen empfehlenswert wäre.</p>\n\n<p><strong>Ihre Frage:</strong> Ich bin neben Bargeld, Aktien, Gold und Silber aus 2014 und 2024, auch auf meine Rente und meine Miete aus Deutschland angewiesen. Darf ich weiterhin meine deutsche Miete auf Mauritius beziehen? Sollte ich mein Aktiendepot ins nicht EU Ausland umziehen? Wie funktioniert es, dass ich meine physischen Edelmetalle nach Mauritius in ein</p>\n<p>Bezüglich Ihrer deutschen Miete, die Sie auf Mauritius beziehen möchten, gibt es keine generelle Einschränkung, solange die vertraglichen und steuerlichen Vereinbarungen beachtet werden. Ein wichtiger Punkt ist, dass dabei eventuell Meldungen oder Nachweise erforderlich sind, je nachdem, wie die Zahlungen abgewickelt werden. Genaue Details und individuelle Lösungen lassen sich am besten im persönlichen Gespräch klären.\n\nIhr Aktiendepot ins Nicht-EU-Ausland zu verlegen, kann Vor- und Nachteile haben, etwa im Hinblick auf Steuern, Regulierung und Sicherheit der Bank. Hier kommt es darauf an, welche Länder und Institute Sie ins Auge fassen. Da dies komplex ist, lohnt sich eine genaue Analyse Ihrer Situation.\n\nHinsichtlich der physischen Edelmetalle ist bekannt, dass z.B. Liechtenstein als Standort vorteilhaft ist, da dort sowohl Schuldenfreiheit als auch kein Zugriff durch Notstandsgesetze gewährleistet sind. Wie Sie Ihre Edelmetalle sicher und flexibel nach Mauritius transferieren und lagern können, ist ein spannendes Thema, zu dem wir gerne mehr erläutern, da hier viele individuelle Faktoren eine Rolle spielen.\n\nGerne lade ich Sie ein, diese Themen gemeinsam zu vertiefen, um Ihre Situation optimal abzusichern und mögliche Chancen zu entdecken.</p>\n        <p>📅 <b>Sie möchten mehr erfahren oder einen Termin vereinbaren? </b></p>\n        <p><b>Nutzen Sie gerne meinen Online-Kalender, um einen für Sie passenden Termin zu buchen:</b></p>\n        <p><b>Link zum Kalender:</b>\n          <a href=\"https://termin.deutsches-edelsteinhaus.com/beratungstermin\" target=\"_blank\">\n            https://termin.deutsches-edelsteinhaus.com/beratungstermin\n          </a>\n        </p>\n        <p>Um Ihnen weitere Einblicke zu bieten, möchte ich Ihnen ein <b>aktuelles Interview mit Herrn Alexander Streeb</b> weiterleiten, das sich genau mit diesem spannenden Bereich beschäftigt.</p>\n        <p>In dem Video spricht Herr Streeb über seine Erfahrungen, die aktuelle Rentensituation, die Marktentwicklungen der Edelsteine und worauf es bei der Auswahl ankommt.</p>\n        <p>🔗 <b>Hier geht’s direkt zum Video:</b><br>\n          <a href=\"https://www.youtube.com/watch?v=DmvVy5avJjk\" target=\"_blank\">\n            https://www.youtube.com/watch?v=DmvVy5avJjk\n          </a>\n        </p>\n        <p><b>Im Anhang finden Sie die aktuelle Preisliste zu den Investment-Farbedelsteinen.</b></p>\n        <p>🌟 <b>Kundenbewertungen</b><br>\n          Auf dem unabhängigen Bewertungsportal PROVENEXPERT können Sie Bewertungen von Kunden einsehen, die bereits in Farbedelsteine investiert haben:<br>\n          🔗 <a href=\"https://www.provenexpert.com/deutsches-edelsteinhaus-deh-gmbh/\" target=\"_blank\">Hier finden Sie die Bewertungen</a>\n        </p>\n        <p>Bei Rückfragen stehen wir Ihnen selbstverständlich gerne per E-Mail zur Verfügung.</p>\n        <p>Ich wünsche Ihnen einen schönen Tag und freue mich auf Ihre Rückmeldung.</p>\n        <p>Mit besten Grüßen</p>\n        <p>Tatjana Haufler</p>\n        Fachberaterin Edelsteine <br><br>\n        <img width=\"195\" height=\"48\" src=\"https://workspace-deh.de/docs/pub/87ac98dbc3f2190cabcad967dd818271/showFile/?&token=z48b1g62iv8j.png\" alt=\"\" align=\"left\"><br><br>\n        Deutsches Edelsteinhaus DEH GmbH\n        <p>Kogenwiese 5</p>\n        <p>88279 Amtzell</p>\n        <p>Telefon +49 (0) 7520-913929-0 | Durchwahl -7 | Mobil +49 175 780 5317</p>\n        <p>Website: <a href=\"http://www.deutsches-edelsteinhaus.com\" target=\"_blank\">www.deutsches-edelsteinhaus.com</a></p>\n        <p>E-Mail: tatjana.haufler@deutsches-edelsteinhaus.com</p>\n        <p>Sitz der Gesellschaft: 88279 Amtzell</p>\n        <p>Handelsregister Ulm</p>\n        <p>HRB 737047</p>\n        <p>Geschäftsführer: Alexander Streeb, Oliver Kleimaier</p>\n        <p>Diese E-Mail enthält für den Adressaten persönlich bestimmte vertrauliche und/oder rechtlich geschützte Informationen. Wenn Sie nicht der richtige Adressat sind oder diese E-Mail irrtümlich erhalten haben, informieren Sie bitte sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopieren sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet. Der Inhalt dieser E-Mail ist nur rechtsverbindlich, wenn er von unserer Seite schriftlich durch Brief oder Telefax bestätigt wird. Die Versendung von E-Mails an uns hat keine fristwahrende Wirkung.</p>\n      </div>\n    </div>\n  </body>\n</html>\n"
-        }
-      }
     ]
   },
-  "versionId": "c6cecd12-46d4-4eec-915e-c74dd00cc261",
-  "activeVersionId": "c6cecd12-46d4-4eec-915e-c74dd00cc261",
+  "versionId": "7b3d45e2-85f7-4c8a-97b2-7416f88a162d",
+  "activeVersionId": "593774b3-28fd-4bee-b449-f64ea32f1b6d",
   "triggerCount": 3,
   "shared": [
     {
@@ -2886,9 +3046,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-07T13:50:46.000Z",
-    "createdAt": "2026-05-07T13:28:39.274Z",
-    "versionId": "c6cecd12-46d4-4eec-915e-c74dd00cc261",
+    "updatedAt": "2026-05-10T20:08:09.000Z",
+    "createdAt": "2026-05-10T20:08:05.644Z",
+    "versionId": "593774b3-28fd-4bee-b449-f64ea32f1b6d",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -3126,9 +3286,8 @@
           },
           "simple": false,
           "filters": {
-            "labelIds": [
-              "Label_996581151046338446"
-            ]
+            "labelIds": "={{ [\"INBOX\"] }}",
+            "sender": "adam@adamhaley.com"
           },
           "options": {}
         },
@@ -3142,8 +3301,8 @@
         "name": "Gmail Trigger",
         "credentials": {
           "gmailOAuth2": {
-            "id": "sVqb0m2UfqzXbdvL",
-            "name": "Gmail account"
+            "id": "EzrY9VipLbH4tmwq",
+            "name": "Gmail account Adam Test"
           }
         }
       },
@@ -3213,7 +3372,7 @@
       {
         "parameters": {
           "content": "## Retrieval ( Auto Q & A Flow )\n### Retrieval (Auto Q & A Flow)\n\nFlow:  \n1. **Trigger:** Gmail node receives new survey response with user questions.  \n2. **Parse Questions:** Extract raw text of each user question.  \n3. **OpenAI Embeddings:**  \n   - Model: `text-embedding-3-small` (1536-dim)  \n   - Input: `{{$json[\"question\"]}}` (user’s question in German)  \n   - Output: `{{$json[\"data\"][0][\"embedding\"]}}`  \n4. **Supabase RPC Retrieval:**  \n   - Calls `match_faqs_json(query_embedding, match_count=5)`  \n   - Returns top FAQ matches with similarity scores.  \n5. **AI Reply (next step):**  \n   - Pass best match into OpenAI Chat node  \n   - Draft personalized auto-reply email using FAQ answer as context  \n   - Format into Gmail/Bitrix email template  \n\n",
-          "height": 896,
+          "height": 912,
           "width": 1408,
           "color": 4
         },
@@ -3221,7 +3380,7 @@
         "typeVersion": 1,
         "position": [
           1088,
-          -448
+          -464
         ],
         "id": "de68b760-5b4d-470e-b296-db392d007c8a",
         "name": "Sticky Note1"
@@ -3280,7 +3439,7 @@
         "type": "n8n-nodes-base.evaluationTrigger",
         "typeVersion": 4.6,
         "position": [
-          -16,
+          -560,
           480
         ],
         "id": "71cc0514-e666-4a83-893e-8a15946874cc",
@@ -3330,7 +3489,7 @@
         "type": "n8n-nodes-base.evaluation",
         "typeVersion": 4.7,
         "position": [
-          272,
+          -272,
           640
         ],
         "id": "337fb1b5-c32d-4a64-8e74-0ee42d8c8132",
@@ -3352,7 +3511,7 @@
         "type": "n8n-nodes-base.evaluation",
         "typeVersion": 4.7,
         "position": [
-          -32,
+          -576,
           640
         ],
         "id": "b3dc6f0a-8e28-4525-87a0-ad0faaf08f9e",
@@ -3370,7 +3529,7 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.2,
         "position": [
-          16,
+          -528,
           816
         ],
         "id": "11ed9aac-dc7e-4f06-a480-f2a5e22b18bb",
@@ -3444,8 +3603,8 @@
         "type": "n8n-nodes-base.gmail",
         "typeVersion": 2.1,
         "position": [
-          2624,
-          0
+          2208,
+          624
         ],
         "id": "ef672b2a-fe04-409e-9181-d008643d44d2",
         "name": "Send a message",
@@ -3473,8 +3632,8 @@
         "type": "n8n-nodes-base.supabase",
         "typeVersion": 1,
         "position": [
-          2304,
-          592
+          1712,
+          624
         ],
         "id": "28068b06-5745-4e3a-a4b0-fda02998e707",
         "name": "Load Email Template",
@@ -3492,21 +3651,21 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          2112,
-          592
+          1520,
+          624
         ],
         "id": "1f6f45db-12a3-4687-9fdf-1b3965214048",
         "name": "Join Q&A"
       },
       {
         "parameters": {
-          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\ntemplate = template.replace('{{greeting}}',greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nreturn {\n  participant_email: $('Google Sheets Trigger1').first().json[\"Reply To\"],\n  participant_name: $('Google Sheets Trigger1').first().json[\"Reply To Name\"],\n  subject: 'Deutsches Edelsteinhaus Sachwerte - NAME, Ihre Webinarfrage',\n  body: emailbody\n}"
+          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          2576,
-          592
+          1984,
+          624
         ],
         "id": "8b053cba-fa88-4785-a334-5aabf7fd3115",
         "name": "Replace Content"
@@ -3531,8 +3690,8 @@
         "type": "@n8n/n8n-nodes-langchain.openAi",
         "typeVersion": 1.8,
         "position": [
-          2144,
-          832
+          1552,
+          880
         ],
         "id": "5f3b4029-4391-4164-ac5f-0fb59fda4ef2",
         "name": "Generate Greeting",
@@ -3661,7 +3820,8 @@
                 "defaultMatch": false,
                 "display": true,
                 "type": "string",
-                "canBeUsedToMatch": true
+                "canBeUsedToMatch": true,
+                "removed": true
               }
             ],
             "attemptToConvertTypes": false,
@@ -3713,8 +3873,8 @@
         "type": "n8n-nodes-base.googleSheetsTrigger",
         "typeVersion": 1,
         "position": [
-          1152,
-          592
+          304,
+          624
         ],
         "id": "548fb7a6-0028-4a4a-8bea-e179d2e5c566",
         "name": "Google Sheets Trigger",
@@ -3753,8 +3913,8 @@
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.3,
         "position": [
-          1376,
-          592
+          528,
+          624
         ],
         "id": "37217c71-42ee-4dca-b120-0e88c4e097c7",
         "name": "Filter1"
@@ -3763,12 +3923,6 @@
         "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
-          "sendQuery": true,
-          "queryParameters": {
-            "parameters": [
-              {}
-            ]
-          },
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
@@ -3788,14 +3942,14 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": \"{{ $json['Agent Response'] }}\",\n  \"p_match_similarity\": {{ $json.match_score }}\n}",
+          "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": {{ JSON.stringify($json['Agent Response'])  }}\n}",
           "options": {}
         },
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.3,
         "position": [
-          1600,
-          592
+          752,
+          624
         ],
         "id": "9a93fa19-3e1a-46a0-9e3f-83ea344af8a5",
         "name": "Upsert FAQ Approved Answers",
@@ -3805,13 +3959,13 @@
         "parameters": {
           "content": "## Test for all question/answers approved for that given webinar/user",
           "height": 304,
-          "width": 1232
+          "width": 1408
         },
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          1808,
-          496
+          1088,
+          528
         ],
         "id": "eaa1e299-f499-4db3-851b-bf311662347b",
         "name": "Sticky Note2"
@@ -3821,7 +3975,7 @@
           "pollTimes": {
             "item": [
               {
-                "mode": "everyHour"
+                "mode": "everyMinute"
               }
             ]
           },
@@ -3849,8 +4003,8 @@
         "type": "n8n-nodes-base.googleSheetsTrigger",
         "typeVersion": 1,
         "position": [
-          1568,
-          832
+          672,
+          864
         ],
         "id": "933e1a3f-ac75-4f2c-8561-71372a61ccc4",
         "name": "Google Sheets Trigger1",
@@ -3865,14 +4019,14 @@
         "parameters": {
           "content": "## Send Approved Answers to Supabase",
           "height": 272,
-          "width": 688,
+          "width": 1008,
           "color": 7
         },
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          1088,
-          496
+          -80,
+          528
         ],
         "id": "fe9a82d7-ad16-4033-a01f-b00ef6bd5bd1",
         "name": "Sticky Note3"
@@ -3884,11 +4038,215 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1888,
-          592
+          1296,
+          624
         ],
         "id": "cf603461-ca5f-4ae0-a398-70a1bec78163",
         "name": "Filter all Approved"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "thread_id",
+                "lookupValue": "={{ $json.thread_id }}"
+              },
+              {
+                "lookupColumn": "Sent",
+                "lookupValue": "false"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          896,
+          864
+        ],
+        "id": "43d4e055-d38e-4b3d-9200-3778e91ca3a7",
+        "name": "Get row(s) in sheet",
+        "executeOnce": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "thread_id": "={{ $('Get row(s) in sheet').item.json.thread_id }}",
+              "Sent": "true"
+            },
+            "matchingColumns": [
+              "thread_id"
+            ],
+            "schema": [
+              {
+                "id": "date",
+                "displayName": "date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "thread_id",
+                "displayName": "thread_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "match_uuid",
+                "displayName": "match_uuid",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "match_score",
+                "displayName": "match_score",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Reply To",
+                "displayName": "Reply To",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Reply To Name",
+                "displayName": "Reply To Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Question",
+                "displayName": "Question",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Agent Response",
+                "displayName": "Agent Response",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Approved",
+                "displayName": "Approved",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Sent",
+                "displayName": "Sent",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2208,
+          880
+        ],
+        "id": "209b61b4-e494-4f9c-aeb2-840a7514d694",
+        "name": "Update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
       }
     ],
     "connections": {
@@ -4086,7 +4444,13 @@
       },
       "Replace Content": {
         "main": [
-          []
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
         ]
       },
       "Generate Greeting": {
@@ -4131,7 +4495,7 @@
         "main": [
           [
             {
-              "node": "Filter all Approved",
+              "node": "Get row(s) in sheet",
               "type": "main",
               "index": 0
             }
@@ -4148,10 +4512,32 @@
             }
           ]
         ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "Filter all Approved",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send a message": {
+        "main": [
+          [
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version c6cecd12",
+    "name": "Version 593774b3",
     "description": "",
     "autosaved": true
   },
