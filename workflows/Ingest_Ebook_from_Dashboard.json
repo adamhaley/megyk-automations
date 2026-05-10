@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-24T20:05:54.731Z",
+  "updatedAt": "2026-05-09T22:35:41.881Z",
   "createdAt": "2025-11-30T19:24:49.314Z",
   "id": "25cNh3Ffp4T7BQSn",
   "name": "Ingest Ebook from Dashboard",
@@ -10,6 +10,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "ingest_book",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -21,7 +22,13 @@
       ],
       "id": "983356fb-4b9d-43da-a81a-63c96f881e9e",
       "name": "Webhook",
-      "webhookId": "58cd0889-5c11-4e40-8213-54b2d97e788e"
+      "webhookId": "58cd0889-5c11-4e40-8213-54b2d97e788e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "oAO2iVZsNwBZMqjC",
+          "name": "Megyk Webhook Header Auth"
+        }
+      }
     },
     {
       "parameters": {
@@ -356,10 +363,13 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "pinData": {
     "Webhook": [
       {
@@ -399,8 +409,8 @@
       }
     ]
   },
-  "versionId": "92ec106e-296f-4551-baa6-2a762d46c5ba",
-  "activeVersionId": "ae870cc1-5754-4f36-b759-6b5718ae45ea",
+  "versionId": "ab530966-2295-4e3e-bca1-6faca6d2f1f9",
+  "activeVersionId": "ab530966-2295-4e3e-bca1-6faca6d2f1f9",
   "triggerCount": 1,
   "shared": [
     {
@@ -412,15 +422,16 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-01T03:46:07.208Z",
-    "createdAt": "2025-12-01T03:46:07.208Z",
-    "versionId": "ae870cc1-5754-4f36-b759-6b5718ae45ea",
+    "updatedAt": "2026-05-09T22:36:06.000Z",
+    "createdAt": "2026-05-09T22:35:41.882Z",
+    "versionId": "ab530966-2295-4e3e-bca1-6faca6d2f1f9",
     "workflowId": "25cNh3Ffp4T7BQSn",
     "nodes": [
       {
         "parameters": {
           "httpMethod": "POST",
           "path": "ingest_book",
+          "authentication": "headerAuth",
           "responseMode": "responseNode",
           "options": {}
         },
@@ -432,7 +443,13 @@
         ],
         "id": "983356fb-4b9d-43da-a81a-63c96f881e9e",
         "name": "Webhook",
-        "webhookId": "58cd0889-5c11-4e40-8213-54b2d97e788e"
+        "webhookId": "58cd0889-5c11-4e40-8213-54b2d97e788e",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "oAO2iVZsNwBZMqjC",
+            "name": "Megyk Webhook Header Auth"
+          }
+        }
       },
       {
         "parameters": {
@@ -590,7 +607,24 @@
           },
           "workflowInputs": {
             "mappingMode": "defineBelow",
-            "value": {}
+            "value": {},
+            "matchingColumns": [
+              "filename"
+            ],
+            "schema": [
+              {
+                "id": "filename",
+                "displayName": "filename",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
           },
           "options": {}
         },
@@ -750,9 +784,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "name": "Version ab530966",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
