@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-30T15:10:00.905Z",
+  "updatedAt": "2026-05-10T00:08:24.470Z",
   "createdAt": "2026-01-04T00:37:36.306Z",
   "id": "ZIqLGdvpuQRGveHM",
   "name": "AppSignups",
@@ -10,6 +10,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "app_signups",
+        "authentication": "headerAuth",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -20,7 +21,13 @@
       ],
       "id": "243d0681-9ad7-4e8a-8444-39f334ac59d2",
       "name": "Webhook",
-      "webhookId": "60f5c04f-4e0c-4da9-86f7-095cc2ba5449"
+      "webhookId": "60f5c04f-4e0c-4da9-86f7-095cc2ba5449",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "oAO2iVZsNwBZMqjC",
+          "name": "Megyk Webhook Header Auth"
+        }
+      }
     },
     {
       "parameters": {
@@ -311,7 +318,7 @@
       }
     ]
   },
-  "versionId": "fe70f472-56ac-43b8-ae4c-ef1fa740877c",
+  "versionId": "5fd3c443-3203-495e-8725-9dcf6cf3865d",
   "activeVersionId": "fe70f472-56ac-43b8-ae4c-ef1fa740877c",
   "triggerCount": 1,
   "shared": [
