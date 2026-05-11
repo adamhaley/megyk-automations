@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-03T05:02:06.000Z",
+  "updatedAt": "2026-05-10T22:22:38.609Z",
   "createdAt": "2025-11-29T09:02:23.121Z",
   "id": "4K3AAcmwY7GyuGAd",
   "name": "Ingest Ebook v3 EPUB",
@@ -267,7 +267,7 @@
       "typeVersion": 1,
       "position": [
         144,
-        56
+        64
       ],
       "id": "b60007bf-7912-4d1a-8969-d8907a5c152b",
       "name": "Convert MOBI to EPUB",
@@ -318,6 +318,8 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/chapters",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -379,7 +381,13 @@
       ],
       "id": "2ff60499-1eb2-4ae6-baa4-27da3f16fecf",
       "name": "Upsert Chapter",
-      "executeOnce": false
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "ocLTr2Ljnx729d0p",
+          "name": "Supabase account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -396,8 +404,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -904,
-        680
+        -912,
+        688
       ],
       "id": "a42bd168-7f81-4447-8d51-15cd885cce7b",
       "name": "OpenAI Chat Model1",
@@ -428,7 +436,7 @@
       "typeVersion": 1.7,
       "position": [
         -976,
-        456
+        464
       ],
       "id": "a66fd228-1a8d-44bb-8e89-3c54b51ab751",
       "name": "Is Chapter?"
@@ -461,7 +469,7 @@
       "typeVersion": 2.2,
       "position": [
         -400,
-        456
+        464
       ],
       "id": "24839314-e596-4f05-aac5-92090dbbab16",
       "name": "Filter1"
@@ -475,7 +483,7 @@
       "typeVersion": 2,
       "position": [
         -624,
-        456
+        464
       ],
       "id": "56ba914a-8b71-452a-b957-d24307de9d1c",
       "name": "Parse Output"
@@ -493,8 +501,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -104,
-        680
+        -112,
+        688
       ],
       "id": "5d07420b-2933-4c86-8ab3-a74035559bda",
       "name": "OpenAI Chat Model2",
@@ -522,7 +530,7 @@
       "typeVersion": 1.7,
       "position": [
         -176,
-        456
+        464
       ],
       "id": "af525f99-56d3-4eb8-a7c9-478091ab235f",
       "name": "Summarize Chapter"
@@ -536,7 +544,7 @@
       "typeVersion": 2,
       "position": [
         176,
-        456
+        464
       ],
       "id": "c71ea581-a95f-49c2-8bdc-c1771641a9ea",
       "name": "Parse Output1"
@@ -1133,7 +1141,8 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
@@ -1297,8 +1306,8 @@
       }
     ]
   },
-  "versionId": "8e38caa6-75c9-4404-bced-7b02b7469c61",
-  "activeVersionId": "8e38caa6-75c9-4404-bced-7b02b7469c61",
+  "versionId": "f2a57efa-6a5d-411b-ac19-d7ac00f00d90",
+  "activeVersionId": "f2a57efa-6a5d-411b-ac19-d7ac00f00d90",
   "triggerCount": 0,
   "shared": [
     {
@@ -1310,9 +1319,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-02T02:48:22.065Z",
-    "createdAt": "2025-12-02T02:48:22.065Z",
-    "versionId": "8e38caa6-75c9-4404-bced-7b02b7469c61",
+    "updatedAt": "2026-05-10T22:22:41.000Z",
+    "createdAt": "2026-05-10T22:22:38.614Z",
+    "versionId": "f2a57efa-6a5d-411b-ac19-d7ac00f00d90",
     "workflowId": "4K3AAcmwY7GyuGAd",
     "nodes": [
       {
@@ -1576,7 +1585,7 @@
         "typeVersion": 1,
         "position": [
           144,
-          56
+          64
         ],
         "id": "b60007bf-7912-4d1a-8969-d8907a5c152b",
         "name": "Convert MOBI to EPUB",
@@ -1627,6 +1636,8 @@
         "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/chapters",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
           "sendQuery": true,
           "queryParameters": {
             "parameters": [
@@ -1688,7 +1699,13 @@
         ],
         "id": "2ff60499-1eb2-4ae6-baa4-27da3f16fecf",
         "name": "Upsert Chapter",
-        "executeOnce": false
+        "executeOnce": false,
+        "credentials": {
+          "supabaseApi": {
+            "id": "ocLTr2Ljnx729d0p",
+            "name": "Supabase account 2"
+          }
+        }
       },
       {
         "parameters": {
@@ -1705,8 +1722,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.3,
         "position": [
-          -904,
-          680
+          -912,
+          688
         ],
         "id": "a42bd168-7f81-4447-8d51-15cd885cce7b",
         "name": "OpenAI Chat Model1",
@@ -1737,7 +1754,7 @@
         "typeVersion": 1.7,
         "position": [
           -976,
-          456
+          464
         ],
         "id": "a66fd228-1a8d-44bb-8e89-3c54b51ab751",
         "name": "Is Chapter?"
@@ -1770,7 +1787,7 @@
         "typeVersion": 2.2,
         "position": [
           -400,
-          456
+          464
         ],
         "id": "24839314-e596-4f05-aac5-92090dbbab16",
         "name": "Filter1"
@@ -1784,7 +1801,7 @@
         "typeVersion": 2,
         "position": [
           -624,
-          456
+          464
         ],
         "id": "56ba914a-8b71-452a-b957-d24307de9d1c",
         "name": "Parse Output"
@@ -1802,8 +1819,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.3,
         "position": [
-          -104,
-          680
+          -112,
+          688
         ],
         "id": "5d07420b-2933-4c86-8ab3-a74035559bda",
         "name": "OpenAI Chat Model2",
@@ -1831,7 +1848,7 @@
         "typeVersion": 1.7,
         "position": [
           -176,
-          456
+          464
         ],
         "id": "af525f99-56d3-4eb8-a7c9-478091ab235f",
         "name": "Summarize Chapter"
@@ -1845,7 +1862,7 @@
         "typeVersion": 2,
         "position": [
           176,
-          456
+          464
         ],
         "id": "c71ea581-a95f-49c2-8bdc-c1771641a9ea",
         "name": "Parse Output1"
@@ -2442,9 +2459,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "name": "Version f2a57efa",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
