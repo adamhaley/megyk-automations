@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-30T02:24:08.794Z",
+  "updatedAt": "2026-05-10T22:21:43.297Z",
   "createdAt": "2025-10-23T23:05:24.016Z",
   "id": "0BYKJHTyr9yFaaXh",
   "name": "Ingest Ebook",
@@ -133,29 +133,14 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/chapter_chunks",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
             {
               "name": "on_conflict",
               "value": "chapter_id,chunk_index"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            },
-            {
-              "name": "apikey",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            },
-            {
-              "name": "Prefer",
-              "value": "resolution=merge-duplicates, return=representation"
             }
           ]
         },
@@ -185,7 +170,13 @@
         784
       ],
       "id": "9fffe58f-acf7-4bd0-9cc5-ca78ce01bb98",
-      "name": "Upsert Chapter Chunks"
+      "name": "Upsert Chapter Chunks",
+      "credentials": {
+        "supabaseApi": {
+          "id": "ocLTr2Ljnx729d0p",
+          "name": "Supabase account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -1054,15 +1045,16 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": true
+    "availableInMCP": true,
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "3b1a41b2-4ec8-4ea7-b6b6-809593981a17",
-  "activeVersionId": "3b1a41b2-4ec8-4ea7-b6b6-809593981a17",
+  "versionId": "e8e36496-2ae8-4397-9d0e-ee4c7b0f66b4",
+  "activeVersionId": "e8e36496-2ae8-4397-9d0e-ee4c7b0f66b4",
   "triggerCount": 0,
   "shared": [
     {
@@ -1074,9 +1066,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-29T08:52:21.676Z",
-    "createdAt": "2025-11-29T08:52:21.676Z",
-    "versionId": "3b1a41b2-4ec8-4ea7-b6b6-809593981a17",
+    "updatedAt": "2026-05-10T22:22:06.000Z",
+    "createdAt": "2026-05-10T22:21:43.299Z",
+    "versionId": "e8e36496-2ae8-4397-9d0e-ee4c7b0f66b4",
     "workflowId": "0BYKJHTyr9yFaaXh",
     "nodes": [
       {
@@ -1206,29 +1198,14 @@
         "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/chapter_chunks",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
           "sendQuery": true,
           "queryParameters": {
             "parameters": [
               {
                 "name": "on_conflict",
                 "value": "chapter_id,chunk_index"
-              }
-            ]
-          },
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Authorization",
-                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              },
-              {
-                "name": "apikey",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              },
-              {
-                "name": "Prefer",
-                "value": "resolution=merge-duplicates, return=representation"
               }
             ]
           },
@@ -1258,7 +1235,13 @@
           784
         ],
         "id": "9fffe58f-acf7-4bd0-9cc5-ca78ce01bb98",
-        "name": "Upsert Chapter Chunks"
+        "name": "Upsert Chapter Chunks",
+        "credentials": {
+          "supabaseApi": {
+            "id": "ocLTr2Ljnx729d0p",
+            "name": "Supabase account 2"
+          }
+        }
       },
       {
         "parameters": {
@@ -2126,9 +2109,9 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": null,
-    "description": null,
-    "autosaved": false
+    "name": "Version e8e36496",
+    "description": "",
+    "autosaved": true
   },
   "tags": []
 }
