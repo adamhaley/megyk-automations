@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-27T13:18:08.204Z",
+  "updatedAt": "2026-05-10T22:28:20.815Z",
   "createdAt": "2025-12-10T16:45:31.947Z",
   "id": "eT2zOo08WfGn5Gbt",
   "name": "Pitch Paul Campaign Automation ( CC )",
@@ -1238,19 +1238,8 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/rpc/get_leads_ready_to_send",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            },
-            {
-              "name": "apikey",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            }
-          ]
-        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -1278,7 +1267,13 @@
       "id": "f3ecaa87-4bfc-456e-bb63-7c89c3dcb262",
       "name": "Supabase RPC Retrieval - Get Leads",
       "alwaysOutputData": false,
-      "executeOnce": true
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "ocLTr2Ljnx729d0p",
+          "name": "Supabase account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -1706,7 +1701,7 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        0
+        12
       ]
     }
   },
@@ -1735,8 +1730,8 @@
       }
     ]
   },
-  "versionId": "01dfd4fb-9795-4039-9793-0edf1b6f1f98",
-  "activeVersionId": "01dfd4fb-9795-4039-9793-0edf1b6f1f98",
+  "versionId": "3ff0aa44-3ed9-4afc-8cb7-46ffea585012",
+  "activeVersionId": "3ff0aa44-3ed9-4afc-8cb7-46ffea585012",
   "triggerCount": 1,
   "shared": [
     {
@@ -1748,9 +1743,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-03-27T13:18:13.000Z",
-    "createdAt": "2026-03-27T13:18:08.205Z",
-    "versionId": "01dfd4fb-9795-4039-9793-0edf1b6f1f98",
+    "updatedAt": "2026-05-10T22:28:23.000Z",
+    "createdAt": "2026-05-10T22:28:20.816Z",
+    "versionId": "3ff0aa44-3ed9-4afc-8cb7-46ffea585012",
     "workflowId": "eT2zOo08WfGn5Gbt",
     "nodes": [
       {
@@ -2985,19 +2980,8 @@
         "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/rpc/get_leads_ready_to_send",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Authorization",
-                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              },
-              {
-                "name": "apikey",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              }
-            ]
-          },
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
           "sendBody": true,
           "bodyParameters": {
             "parameters": [
@@ -3025,7 +3009,13 @@
         "id": "f3ecaa87-4bfc-456e-bb63-7c89c3dcb262",
         "name": "Supabase RPC Retrieval - Get Leads",
         "alwaysOutputData": false,
-        "executeOnce": true
+        "executeOnce": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "ocLTr2Ljnx729d0p",
+            "name": "Supabase account 2"
+          }
+        }
       },
       {
         "parameters": {
@@ -3444,7 +3434,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 01dfd4fb",
+    "name": "Version 3ff0aa44",
     "description": "",
     "autosaved": true
   },
