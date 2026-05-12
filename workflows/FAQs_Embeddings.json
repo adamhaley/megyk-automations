@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-10T22:00:19.143Z",
+  "updatedAt": "2026-05-12T03:10:55.960Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "FAQs Embeddings",
@@ -242,7 +242,7 @@
         "simple": false,
         "filters": {
           "labelIds": "={{ [\"INBOX\"] }}",
-          "sender": "adam@adamhaley.com"
+          "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
         },
         "options": {}
       },
@@ -256,14 +256,14 @@
       "name": "Gmail Trigger",
       "credentials": {
         "gmailOAuth2": {
-          "id": "EzrY9VipLbH4tmwq",
-          "name": "Gmail account Adam Test"
+          "id": "ElDhEFB9UngCuzGT",
+          "name": "Deutsches EdelsteinHaus Gmail"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email;\n\n// Regex: stop at <br> or line break\nconst firstMatch = text.match(/Vorname:\\s*([^<\\n]*)/i);\nconst lastMatch  = text.match(/Nachname:\\s*([^<\\n]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\nconst lastname  = lastMatch && (!lastMatch[1].substring('Email'))? lastMatch[1].trim() : \"\";\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n// Extract \"Chat:\" section only\nconst chatSection = text.split(\"Chat:\")[1] || \"\";\n\n// Parse questions\nconst questions = [];\nconst regex = /\\d+:\\s.*?\\):\\s([\\s\\S]*?)(?=\\n\\d+:|$)/g;\nlet match;\n\nwhile ((match = regex.exec(chatSection)) !== null) {\n  let q = match[1].trim();\n\n  // Normalize whitespace\n  q = q.replace(/\\s+/g, \" \");\n\n  // Stop parsing at common footer phrases\n  if (/Vielen Dank|Best regards|Webinaris|Hinweis:|Note:/i.test(q)) {\n    break;\n  }\n\n  // Filter out boilerplate lines inside question blocks\n  if (\n    q &&\n    !/Vielen Dank|Best regards|Webinaris|Hinweis:|Note:/i.test(q)\n  ) {\n    questions.push({ question: q });\n  }\n}\n\n\n// Extract attendee email address from the \"E-Mail:\" line\nlet replyTo = null;\nconst emailMatch = text.match(/E-Mail:\\s*([^\\s<]+@[^\\s<]+)/i);\nif (emailMatch) {\n  replyTo = emailMatch[1].trim();\n  // Normalize: lowercase + strip trailing punctuation\n  replyTo = replyTo.replace(/[.,;]+$/, \"\").toLowerCase();\n}\n\nreturn {\n  threadId: $input.first().json.threadId || 'none',\n  replyTo: replyTo || 'not_found@example.com',\n  replyToName: { fullname, firstname, lastname },\n  questions: questions.map(q => ({ json: q }))\n};\n"
+        "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch  = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSection = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Parse questions\n// --------------------------------------\nconst questions = [];\n\n// Matches lines like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst regex = /\\d+:\\s.*?\\):\\s([\\s\\S]*?)(?=\\n\\s*\\d+:\\s|$)/g;\n\nlet match;\n\nwhile ((match = regex.exec(chatSection)) !== null) {\n  let q = match[1].trim();\n\n  // Convert HTML line breaks to spaces\n  q = q.replace(/<br\\s*\\/?>/gi, \" \");\n\n  // Strip basic HTML tags\n  q = q.replace(/<[^>]+>/g, \" \");\n\n  // Normalize whitespace\n  q = q.replace(/\\s+/g, \" \").trim();\n\n  // Stop parsing at common footer / signoff phrases\n  if (/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)) {\n    break;\n  }\n\n  // Filter out boilerplate lines\n  if (\n    q &&\n    !/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)\n  ) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -278,21 +278,8 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/rpc//match_faqs_json",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpCustomAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            },
-            {
-              "name": "apikey",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            }
-          ]
-        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -327,8 +314,12 @@
       "executeOnce": false,
       "credentials": {
         "httpCustomAuth": {
-          "id": "QaXnFkOwM3YVwwfO",
-          "name": "Custom Auth account"
+          "id": "qTH8XGwb9fhDknYB",
+          "name": "Custom Supabase Auth"
+        },
+        "supabaseApi": {
+          "id": "ocLTr2Ljnx729d0p",
+          "name": "Supabase account 2"
         }
       }
     },
@@ -515,7 +506,7 @@
         "messages": {
           "values": [
             {
-              "content": "=FAQ Matches:\n{{ JSON.stringify($json.body) }}\n\nHuman-approved response for this matched FAQ, if available:\n{{ $json.approved_response || 'No human-approved response available.' }}\n\nUser Question:\n{{ $('Split Out').item.json.json.question }}\n\nInstructions:\nAnswer the user question using the retrieved FAQ answers.\n\nIf a human-approved response is available, use it as the preferred answer pattern and adapt it naturally to the current question.\n\n{{\n  $itemIndex === $items().length - 1\n    ? \"- Answer in a few sentences, and answer in a way that elicits curiosity from the user to take the next step and schedule an appointment. Build curiosity and anticipation within the answer so the participant is interested in hearing more and discussing it personally.\"\n    : \"\"\n}}"
+              "content": "=FAQ Matches:\n{{ JSON.stringify($json.body) }}\n\nHuman-approved response for this matched FAQ, if available:\n{{$json.body[0].approved_response  || 'No human-approved response available.' }}\n\nUser Question:\n{{ $('Split Out').item.json.json.question }}\n\nInstructions:\nAnswer the user question using the retrieved FAQ answers.\n\nIf a human-approved response is available, use it as the preferred answer pattern and adapt it naturally to the current question.\n\n{{\n  $itemIndex === $items().length - 1\n    ? \"- Answer in a few sentences, and answer in a way that elicits curiosity from the user to take the next step and schedule an appointment. Build curiosity and anticipation within the answer so the participant is interested in hearing more and discussing it personally.\"\n    : \"\"\n}}"
             },
             {
               "content": "You are a helpful support assistant for the Deutsches Edelsteinhaus FAQ system.\n\nAlways answer in German unless the customer explicitly asks for English.\n\nUse the retrieved FAQ answers as your source of truth. You may rephrase, clarify, or combine them for a natural reply, but you must not invent facts beyond what is provided.\n\nIf a human-approved response is provided, treat it as preferred guidance for this matched FAQ. Use it to align tone, structure, wording, and business positioning. Stay close to it when appropriate, but adapt naturally to the current customer question.\n\nIf the human-approved response conflicts with the retrieved FAQ answers, prefer the retrieved FAQ answers.\n\nIf the FAQ answers are incomplete, politely acknowledge the limits and keep the answer conservative.\n\nKeep a professional but warm tone suitable for email replies to potential investors.\n\nFormat your answer as a segment of an email body with no greeting and no closing signature. The answer segments will be joined together later.",
@@ -574,8 +565,8 @@
       "webhookId": "ade81706-0a21-4d27-9db3-9644eae2fe3b",
       "credentials": {
         "gmailOAuth2": {
-          "id": "EzrY9VipLbH4tmwq",
-          "name": "Gmail account Adam Test"
+          "id": "ElDhEFB9UngCuzGT",
+          "name": "Deutsches EdelsteinHaus Gmail"
         }
       }
     },
@@ -886,23 +877,8 @@
       "parameters": {
         "method": "POST",
         "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            },
-            {
-              "name": "apikey",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-            },
-            {
-              "name": "Prefer",
-              "value": "resolution=merge-duplicates, return=representation"
-            }
-          ]
-        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": {{ JSON.stringify($json['Agent Response'])  }}\n}",
@@ -916,7 +892,13 @@
       ],
       "id": "9a93fa19-3e1a-46a0-9e3f-83ea344af8a5",
       "name": "Upsert FAQ Approved Answers",
-      "executeOnce": false
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "ocLTr2Ljnx729d0p",
+          "name": "Supabase account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -966,8 +948,8 @@
       "type": "n8n-nodes-base.googleSheetsTrigger",
       "typeVersion": 1,
       "position": [
-        672,
-        864
+        720,
+        880
       ],
       "id": "933e1a3f-ac75-4f2c-8561-71372a61ccc4",
       "name": "Google Sheets Trigger1",
@@ -1040,8 +1022,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        896,
-        864
+        944,
+        880
       ],
       "id": "43d4e055-d38e-4b3d-9200-3778e91ca3a7",
       "name": "Get row(s) in sheet",
@@ -1509,9 +1491,9 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1778436643,
+        "lastTimeChecked": 1778576297,
         "possibleDuplicates": [
-          "19e1315c7291656a"
+          "19e1b6898050f032"
         ]
       }
     },
@@ -1521,14 +1503,14 @@
     "node:Google Sheets Trigger": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 136,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=136&exportFormat=xlsx"
+      "lastRevision": 138,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=138&exportFormat=xlsx"
     },
     "node:Google Sheets Trigger1": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 136,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=136&exportFormat=xlsx"
+      "lastRevision": 138,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=138&exportFormat=xlsx"
     }
   },
   "meta": {
@@ -3033,8 +3015,8 @@
       }
     ]
   },
-  "versionId": "7b3d45e2-85f7-4c8a-97b2-7416f88a162d",
-  "activeVersionId": "593774b3-28fd-4bee-b449-f64ea32f1b6d",
+  "versionId": "109fb1ea-a13a-454f-a20b-2aca0ecf30a0",
+  "activeVersionId": "109fb1ea-a13a-454f-a20b-2aca0ecf30a0",
   "triggerCount": 3,
   "shared": [
     {
@@ -3046,9 +3028,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-10T20:08:09.000Z",
-    "createdAt": "2026-05-10T20:08:05.644Z",
-    "versionId": "593774b3-28fd-4bee-b449-f64ea32f1b6d",
+    "updatedAt": "2026-05-12T03:11:01.000Z",
+    "createdAt": "2026-05-12T03:10:55.964Z",
+    "versionId": "109fb1ea-a13a-454f-a20b-2aca0ecf30a0",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -3287,7 +3269,7 @@
           "simple": false,
           "filters": {
             "labelIds": "={{ [\"INBOX\"] }}",
-            "sender": "adam@adamhaley.com"
+            "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
           },
           "options": {}
         },
@@ -3301,19 +3283,19 @@
         "name": "Gmail Trigger",
         "credentials": {
           "gmailOAuth2": {
-            "id": "EzrY9VipLbH4tmwq",
-            "name": "Gmail account Adam Test"
+            "id": "ElDhEFB9UngCuzGT",
+            "name": "Deutsches EdelsteinHaus Gmail"
           }
         }
       },
       {
         "parameters": {
-          "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email;\n\n// Regex: stop at <br> or line break\nconst firstMatch = text.match(/Vorname:\\s*([^<\\n]*)/i);\nconst lastMatch  = text.match(/Nachname:\\s*([^<\\n]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\nconst lastname  = lastMatch && (!lastMatch[1].substring('Email'))? lastMatch[1].trim() : \"\";\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n// Extract \"Chat:\" section only\nconst chatSection = text.split(\"Chat:\")[1] || \"\";\n\n// Parse questions\nconst questions = [];\nconst regex = /\\d+:\\s.*?\\):\\s([\\s\\S]*?)(?=\\n\\d+:|$)/g;\nlet match;\n\nwhile ((match = regex.exec(chatSection)) !== null) {\n  let q = match[1].trim();\n\n  // Normalize whitespace\n  q = q.replace(/\\s+/g, \" \");\n\n  // Stop parsing at common footer phrases\n  if (/Vielen Dank|Best regards|Webinaris|Hinweis:|Note:/i.test(q)) {\n    break;\n  }\n\n  // Filter out boilerplate lines inside question blocks\n  if (\n    q &&\n    !/Vielen Dank|Best regards|Webinaris|Hinweis:|Note:/i.test(q)\n  ) {\n    questions.push({ question: q });\n  }\n}\n\n\n// Extract attendee email address from the \"E-Mail:\" line\nlet replyTo = null;\nconst emailMatch = text.match(/E-Mail:\\s*([^\\s<]+@[^\\s<]+)/i);\nif (emailMatch) {\n  replyTo = emailMatch[1].trim();\n  // Normalize: lowercase + strip trailing punctuation\n  replyTo = replyTo.replace(/[.,;]+$/, \"\").toLowerCase();\n}\n\nreturn {\n  threadId: $input.first().json.threadId || 'none',\n  replyTo: replyTo || 'not_found@example.com',\n  replyToName: { fullname, firstname, lastname },\n  questions: questions.map(q => ({ json: q }))\n};\n"
+          "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch  = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSection = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Parse questions\n// --------------------------------------\nconst questions = [];\n\n// Matches lines like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst regex = /\\d+:\\s.*?\\):\\s([\\s\\S]*?)(?=\\n\\s*\\d+:\\s|$)/g;\n\nlet match;\n\nwhile ((match = regex.exec(chatSection)) !== null) {\n  let q = match[1].trim();\n\n  // Convert HTML line breaks to spaces\n  q = q.replace(/<br\\s*\\/?>/gi, \" \");\n\n  // Strip basic HTML tags\n  q = q.replace(/<[^>]+>/g, \" \");\n\n  // Normalize whitespace\n  q = q.replace(/\\s+/g, \" \").trim();\n\n  // Stop parsing at common footer / signoff phrases\n  if (/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)) {\n    break;\n  }\n\n  // Filter out boilerplate lines\n  if (\n    q &&\n    !/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)\n  ) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1616,
+          1648,
           -16
         ],
         "id": "26b4089f-6513-4aef-8b1c-f08485cb67c5",
@@ -3323,19 +3305,8 @@
         "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/rpc//match_faqs_json",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Authorization",
-                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              },
-              {
-                "name": "apikey",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              }
-            ]
-          },
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
           "sendBody": true,
           "bodyParameters": {
             "parameters": [
@@ -3361,13 +3332,23 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          2256,
+          2288,
           -16
         ],
         "id": "975f770e-1c1f-4b4a-a237-9228b0e99953",
         "name": "Supabase RPC Retrieval",
         "alwaysOutputData": false,
-        "executeOnce": false
+        "executeOnce": false,
+        "credentials": {
+          "httpCustomAuth": {
+            "id": "qTH8XGwb9fhDknYB",
+            "name": "Custom Supabase Auth"
+          },
+          "supabaseApi": {
+            "id": "ocLTr2Ljnx729d0p",
+            "name": "Supabase account 2"
+          }
+        }
       },
       {
         "parameters": {
@@ -3409,7 +3390,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          2032,
+          2064,
           -16
         ],
         "id": "ebf84add-dfbb-458c-9415-8a043c40d877",
@@ -3439,8 +3420,8 @@
         "type": "n8n-nodes-base.evaluationTrigger",
         "typeVersion": 4.6,
         "position": [
-          -560,
-          480
+          256,
+          928
         ],
         "id": "71cc0514-e666-4a83-893e-8a15946874cc",
         "name": "When fetching a dataset row",
@@ -3489,8 +3470,8 @@
         "type": "n8n-nodes-base.evaluation",
         "typeVersion": 4.7,
         "position": [
-          -272,
-          640
+          544,
+          1088
         ],
         "id": "337fb1b5-c32d-4a64-8e74-0ee42d8c8132",
         "name": "Evaluation",
@@ -3511,8 +3492,8 @@
         "type": "n8n-nodes-base.evaluation",
         "typeVersion": 4.7,
         "position": [
-          -576,
-          640
+          240,
+          1088
         ],
         "id": "b3dc6f0a-8e28-4525-87a0-ad0faaf08f9e",
         "name": "Evaluation1"
@@ -3529,8 +3510,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.2,
         "position": [
-          -528,
-          816
+          288,
+          1264
         ],
         "id": "11ed9aac-dc7e-4f06-a480-f2a5e22b18bb",
         "name": "OpenAI Chat Model",
@@ -3552,7 +3533,7 @@
           "messages": {
             "values": [
               {
-                "content": "=FAQ Matches:\n{{ JSON.stringify($json.body) }}\n\nHuman-approved response for this matched FAQ, if available:\n{{ $json.approved_response || 'No human-approved response available.' }}\n\nUser Question:\n{{ $('Split Out').item.json.json.question }}\n\nInstructions:\nAnswer the user question using the retrieved FAQ answers.\n\nIf a human-approved response is available, use it as the preferred answer pattern and adapt it naturally to the current question.\n\n{{\n  $itemIndex === $items().length - 1\n    ? \"- Answer in a few sentences, and answer in a way that elicits curiosity from the user to take the next step and schedule an appointment. Build curiosity and anticipation within the answer so the participant is interested in hearing more and discussing it personally.\"\n    : \"\"\n}}"
+                "content": "=FAQ Matches:\n{{ JSON.stringify($json.body) }}\n\nHuman-approved response for this matched FAQ, if available:\n{{$json.body[0].approved_response  || 'No human-approved response available.' }}\n\nUser Question:\n{{ $('Split Out').item.json.json.question }}\n\nInstructions:\nAnswer the user question using the retrieved FAQ answers.\n\nIf a human-approved response is available, use it as the preferred answer pattern and adapt it naturally to the current question.\n\n{{\n  $itemIndex === $items().length - 1\n    ? \"- Answer in a few sentences, and answer in a way that elicits curiosity from the user to take the next step and schedule an appointment. Build curiosity and anticipation within the answer so the participant is interested in hearing more and discussing it personally.\"\n    : \"\"\n}}"
               },
               {
                 "content": "You are a helpful support assistant for the Deutsches Edelsteinhaus FAQ system.\n\nAlways answer in German unless the customer explicitly asks for English.\n\nUse the retrieved FAQ answers as your source of truth. You may rephrase, clarify, or combine them for a natural reply, but you must not invent facts beyond what is provided.\n\nIf a human-approved response is provided, treat it as preferred guidance for this matched FAQ. Use it to align tone, structure, wording, and business positioning. Stay close to it when appropriate, but adapt naturally to the current customer question.\n\nIf the human-approved response conflicts with the retrieved FAQ answers, prefer the retrieved FAQ answers.\n\nIf the FAQ answers are incomplete, politely acknowledge the limits and keep the answer conservative.\n\nKeep a professional but warm tone suitable for email replies to potential investors.\n\nFormat your answer as a segment of an email body with no greeting and no closing signature. The answer segments will be joined together later.",
@@ -3585,7 +3566,7 @@
         "type": "n8n-nodes-base.splitOut",
         "typeVersion": 1,
         "position": [
-          1824,
+          1856,
           -16
         ],
         "id": "70a7b9ea-11da-4987-bac7-9230262e8aa6",
@@ -3603,7 +3584,7 @@
         "type": "n8n-nodes-base.gmail",
         "typeVersion": 2.1,
         "position": [
-          2208,
+          2304,
           624
         ],
         "id": "ef672b2a-fe04-409e-9181-d008643d44d2",
@@ -3611,8 +3592,8 @@
         "webhookId": "ade81706-0a21-4d27-9db3-9644eae2fe3b",
         "credentials": {
           "gmailOAuth2": {
-            "id": "EzrY9VipLbH4tmwq",
-            "name": "Gmail account Adam Test"
+            "id": "ElDhEFB9UngCuzGT",
+            "name": "Deutsches EdelsteinHaus Gmail"
           }
         }
       },
@@ -3664,7 +3645,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1984,
+          2080,
           624
         ],
         "id": "8b053cba-fa88-4785-a334-5aabf7fd3115",
@@ -3832,7 +3813,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          1616,
+          1648,
           224
         ],
         "id": "099f0d19-927b-4d0d-90d6-4a1ea0a18cb0",
@@ -3923,23 +3904,8 @@
         "parameters": {
           "method": "POST",
           "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Authorization",
-                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              },
-              {
-                "name": "apikey",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NTgwMDYwMDAsImV4cCI6MTkxNTc3MjQwMH0.aJnAP1Kwp6GYlWvtzMR_xAYg82o6KRaMvWU5Est_aNA"
-              },
-              {
-                "name": "Prefer",
-                "value": "resolution=merge-duplicates, return=representation"
-              }
-            ]
-          },
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
           "sendBody": true,
           "specifyBody": "json",
           "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": {{ JSON.stringify($json['Agent Response'])  }}\n}",
@@ -3953,7 +3919,13 @@
         ],
         "id": "9a93fa19-3e1a-46a0-9e3f-83ea344af8a5",
         "name": "Upsert FAQ Approved Answers",
-        "executeOnce": false
+        "executeOnce": false,
+        "credentials": {
+          "supabaseApi": {
+            "id": "ocLTr2Ljnx729d0p",
+            "name": "Supabase account 2"
+          }
+        }
       },
       {
         "parameters": {
@@ -4003,8 +3975,8 @@
         "type": "n8n-nodes-base.googleSheetsTrigger",
         "typeVersion": 1,
         "position": [
-          672,
-          864
+          720,
+          880
         ],
         "id": "933e1a3f-ac75-4f2c-8561-71372a61ccc4",
         "name": "Google Sheets Trigger1",
@@ -4077,8 +4049,8 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          896,
-          864
+          944,
+          880
         ],
         "id": "43d4e055-d38e-4b3d-9200-3778e91ca3a7",
         "name": "Get row(s) in sheet",
@@ -4236,7 +4208,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          2208,
+          2304,
           880
         ],
         "id": "209b61b4-e494-4f9c-aeb2-840a7514d694",
@@ -4537,7 +4509,7 @@
       }
     },
     "authors": "Gordan Kljajic",
-    "name": "Version 593774b3",
+    "name": "Version 109fb1ea",
     "description": "",
     "autosaved": true
   },
