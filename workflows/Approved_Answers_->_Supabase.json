@@ -1,0 +1,337 @@
+{
+  "updatedAt": "2026-05-14T17:45:47.024Z",
+  "createdAt": "2026-05-14T17:45:07.281Z",
+  "id": "76QZZ5EoInYGmdfO",
+  "name": "Approved Answers -> Supabase",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+          "mode": "list",
+          "cachedResultName": "FAQ Responder Approvals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+        },
+        "event": "rowUpdate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        384,
+        96
+      ],
+      "id": "e44ff6c6-df97-4cd4-bd5f-ead3068b50ef",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "DnIMz68XC0LUIK5a",
+          "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "97501650-9141-437f-b85a-6c6cf4f48144",
+              "leftValue": "={{ $json.Approved.toBoolean() }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        608,
+        96
+      ],
+      "id": "5d7bbbc4-223b-496d-aecc-9672face6728",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": {{ JSON.stringify($json['Agent Response'])  }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        832,
+        96
+      ],
+      "id": "71067f0a-b87f-4c71-980a-d023253149d5",
+      "name": "Upsert FAQ Approved Answers",
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "ocLTr2Ljnx729d0p",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Send Approved Answers to Supabase",
+        "height": 272,
+        "width": 1008,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        152,
+        -16
+      ],
+      "id": "463701a2-c11e-43d8-9150-15473e8ee75f",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Upsert FAQ Approved Answers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "WbISMAIlclQfzorG",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Google Sheets Trigger": {
+      "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+      "sheetId": 0,
+      "lastRevision": 138,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=138&exportFormat=xlsx"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "90857087-df6c-4360-9fa1-a07aae7534df",
+  "activeVersionId": "90857087-df6c-4360-9fa1-a07aae7534df",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-14T17:45:07.307Z",
+      "createdAt": "2026-05-14T17:45:07.307Z",
+      "role": "workflow:owner",
+      "workflowId": "76QZZ5EoInYGmdfO",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-14T17:45:37.000Z",
+    "createdAt": "2026-05-14T17:45:32.004Z",
+    "versionId": "90857087-df6c-4360-9fa1-a07aae7534df",
+    "workflowId": "76QZZ5EoInYGmdfO",
+    "nodes": [
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyHour"
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "event": "rowUpdate",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          384,
+          96
+        ],
+        "id": "e44ff6c6-df97-4cd4-bd5f-ead3068b50ef",
+        "name": "Google Sheets Trigger",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "DnIMz68XC0LUIK5a",
+            "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "97501650-9141-437f-b85a-6c6cf4f48144",
+                "leftValue": "={{ $json.Approved.toBoolean() }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.3,
+        "position": [
+          608,
+          96
+        ],
+        "id": "5d7bbbc4-223b-496d-aecc-9672face6728",
+        "name": "Filter1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://supabase.megyk.com/rest/v1/rpc/upsert_faq_approved_response",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"p_faq_id\": \"{{ $json.match_uuid }}\",\n  \"p_approved_response\": {{ JSON.stringify($json['Agent Response'])  }}\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          832,
+          96
+        ],
+        "id": "71067f0a-b87f-4c71-980a-d023253149d5",
+        "name": "Upsert FAQ Approved Answers",
+        "executeOnce": false,
+        "credentials": {
+          "supabaseApi": {
+            "id": "ocLTr2Ljnx729d0p",
+            "name": "Supabase account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Send Approved Answers to Supabase",
+          "height": 272,
+          "width": 1008,
+          "color": 7
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          152,
+          -16
+        ],
+        "id": "463701a2-c11e-43d8-9150-15473e8ee75f",
+        "name": "Sticky Note3"
+      }
+    ],
+    "connections": {
+      "Google Sheets Trigger": {
+        "main": [
+          [
+            {
+              "node": "Filter1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter1": {
+        "main": [
+          [
+            {
+              "node": "Upsert FAQ Approved Answers",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 90857087",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
