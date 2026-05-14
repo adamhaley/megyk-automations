@@ -1,0 +1,1009 @@
+{
+  "updatedAt": "2026-05-14T17:47:37.542Z",
+  "createdAt": "2026-05-14T17:47:13.547Z",
+  "id": "hY6C5SQKzOYzYouT",
+  "name": "Generate Email from Approved",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        -32
+      ],
+      "id": "e87c36bd-b799-490e-a5f1-f651a77f522a",
+      "name": "Send a message",
+      "webhookId": "ade81706-0a21-4d27-9db3-9644eae2fe3b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ElDhEFB9UngCuzGT",
+          "name": "Deutsches EdelsteinHaus Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "email_templates",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -32
+      ],
+      "id": "d485d7b7-3b86-4be2-a78e-5d47ef809c11",
+      "name": "Load Email Template",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fdzgJDGuPA2JozKn",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst qaPairs = items.map((item, index) => {\n  const question = item.json.Question || \"\";\n  const answer = item.json[\"Column 1\"] || item.json[\"Agent Response\"] || \"\";\n\n  return `<p><strong>Ihre Frage:</strong> ${question}</p>\n<p>${answer}</p>`;\n});\n\nconst body = qaPairs.join(\"\\n\\n\");\n\nreturn [\n  {\n    json: {\n      thread_id: items[0]?.json.thread_id || \"\",\n      reply_to: items[0]?.json[\"Reply To\"] || \"\",\n      body,\n      qa_count: qaPairs.length,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -32
+      ],
+      "id": "11efc36a-4da5-4b6e-9fc7-3e5592fe8b5c",
+      "name": "Join Q&A"
+    },
+    {
+      "parameters": {
+        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        -32
+      ],
+      "id": "4f865d78-304b-484b-85c2-a2668dbe6147",
+      "name": "Replace Content"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert email salutation generator. Your role is to take an incoming name, determine if it is male or female, and generate a formal greeting in german to be placed at the top of an email. You will only generate the greeting, nothing else. No punctuation necessary.\n\nExamples:\n\"Sehr geehrter Herr Foth\"\n\"Sehr geehrte Frau Foth\"\n\nThe incoming name is: {{ $('Google Sheets Trigger1').item.json['Reply To Name'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        208,
+        224
+      ],
+      "id": "94177498-003d-42b3-83e7-5994a5f35bb2",
+      "name": "Generate Greeting",
+      "credentials": {
+        "openAiApi": {
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Test for all question/answers approved for that given webinar/user",
+        "height": 304,
+        "width": 1408
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -128
+      ],
+      "id": "a7196d31-b16c-48e6-85e4-9f7b31a7b6eb",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+          "mode": "list",
+          "cachedResultName": "FAQ Responder Approvals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+        },
+        "event": "rowUpdate",
+        "options": {
+          "columnsToWatch": [
+            "Approved"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        224
+      ],
+      "id": "24d3efc2-3ba2-47a2-abb2-dfb2e1bbe3e3",
+      "name": "Google Sheets Trigger1",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "DnIMz68XC0LUIK5a",
+          "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Normalize Approved values because Google Sheets may return true, \"true\", \"\", etc.\nfunction isApproved(value) {\n  return value === true || String(value).toLowerCase().trim() === 'true';\n}\n\n// Group items by thread_id\nconst threads = {};\n\nfor (const item of items) {\n  const threadId = item.json.thread_id;\n\n  if (!threads[threadId]) {\n    threads[threadId] = [];\n  }\n\n  threads[threadId].push(item);\n}\n\n// Only allow items from threads where every item is Approved === true\nconst approvedItems = [];\n\nfor (const threadId of Object.keys(threads)) {\n  const threadItems = threads[threadId];\n\n  const allApproved = threadItems.every(item => {\n    return isApproved(item.json.Approved);\n  });\n\n  if (allApproved) {\n    approvedItems.push(...threadItems);\n  }\n}\n\nreturn approvedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "03eb51d0-187a-4ab7-bad2-2847ae021943",
+      "name": "Filter all Approved"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+          "mode": "list",
+          "cachedResultName": "FAQ Responder Approvals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "thread_id",
+              "lookupValue": "={{ $json.thread_id }}"
+            },
+            {
+              "lookupColumn": "Sent",
+              "lookupValue": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -400,
+        224
+      ],
+      "id": "86d789c0-109c-4f02-a480-bc32e1f1e9f2",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+          "mode": "list",
+          "cachedResultName": "FAQ Responder Approvals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "thread_id": "={{ $('Get row(s) in sheet').item.json.thread_id }}",
+            "Sent": "true"
+          },
+          "matchingColumns": [
+            "thread_id"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "match_uuid",
+              "displayName": "match_uuid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "match_score",
+              "displayName": "match_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply To",
+              "displayName": "Reply To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reply To Name",
+              "displayName": "Reply To Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Question",
+              "displayName": "Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Agent Response",
+              "displayName": "Agent Response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Approved",
+              "displayName": "Approved",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Sent",
+              "displayName": "Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        224
+      ],
+      "id": "d9ac433b-4a35-4f9a-a8cb-17a24592b1ea",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Email Template": {
+      "main": [
+        [
+          {
+            "node": "Generate Greeting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Join Q&A": {
+      "main": [
+        [
+          {
+            "node": "Load Email Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Content": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Greeting": {
+      "main": [
+        [
+          {
+            "node": "Replace Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter all Approved": {
+      "main": [
+        [
+          {
+            "node": "Join Q&A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter all Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "WbISMAIlclQfzorG",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Google Sheets Trigger1": {
+      "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+      "sheetId": 0,
+      "lastRevision": 142,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=142&exportFormat=xlsx"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "3257335d-bbf0-461d-8162-92dfe30b624d",
+  "activeVersionId": "3257335d-bbf0-461d-8162-92dfe30b624d",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-14T17:47:13.552Z",
+      "createdAt": "2026-05-14T17:47:13.552Z",
+      "role": "workflow:owner",
+      "workflowId": "hY6C5SQKzOYzYouT",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-14T17:47:29.000Z",
+    "createdAt": "2026-05-14T17:47:24.976Z",
+    "versionId": "3257335d-bbf0-461d-8162-92dfe30b624d",
+    "workflowId": "hY6C5SQKzOYzYouT",
+    "nodes": [
+      {
+        "parameters": {
+          "sendTo": "={{ $json.to }}",
+          "subject": "={{ $json.subject }}",
+          "message": "={{ $json.body }}",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          960,
+          -32
+        ],
+        "id": "e87c36bd-b799-490e-a5f1-f651a77f522a",
+        "name": "Send a message",
+        "webhookId": "ade81706-0a21-4d27-9db3-9644eae2fe3b",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "ElDhEFB9UngCuzGT",
+            "name": "Deutsches EdelsteinHaus Gmail"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "email_templates",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id",
+                "keyValue": "1"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          368,
+          -32
+        ],
+        "id": "d485d7b7-3b86-4be2-a78e-5d47ef809c11",
+        "name": "Load Email Template",
+        "credentials": {
+          "supabaseApi": {
+            "id": "fdzgJDGuPA2JozKn",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nconst qaPairs = items.map((item, index) => {\n  const question = item.json.Question || \"\";\n  const answer = item.json[\"Column 1\"] || item.json[\"Agent Response\"] || \"\";\n\n  return `<p><strong>Ihre Frage:</strong> ${question}</p>\n<p>${answer}</p>`;\n});\n\nconst body = qaPairs.join(\"\\n\\n\");\n\nreturn [\n  {\n    json: {\n      thread_id: items[0]?.json.thread_id || \"\",\n      reply_to: items[0]?.json[\"Reply To\"] || \"\",\n      body,\n      qa_count: qaPairs.length,\n    },\n  },\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          176,
+          -32
+        ],
+        "id": "11efc36a-4da5-4b6e-9fc7-3e5592fe8b5c",
+        "name": "Join Q&A"
+      },
+      {
+        "parameters": {
+          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          736,
+          -32
+        ],
+        "id": "4f865d78-304b-484b-85c2-a2668dbe6147",
+        "name": "Replace Content"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4.1-MINI"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=You are an expert email salutation generator. Your role is to take an incoming name, determine if it is male or female, and generate a formal greeting in german to be placed at the top of an email. You will only generate the greeting, nothing else. No punctuation necessary.\n\nExamples:\n\"Sehr geehrter Herr Foth\"\n\"Sehr geehrte Frau Foth\"\n\nThe incoming name is: {{ $('Google Sheets Trigger1').item.json['Reply To Name'] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          208,
+          224
+        ],
+        "id": "94177498-003d-42b3-83e7-5994a5f35bb2",
+        "name": "Generate Greeting",
+        "credentials": {
+          "openAiApi": {
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Test for all question/answers approved for that given webinar/user",
+          "height": 304,
+          "width": 1408
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -256,
+          -128
+        ],
+        "id": "a7196d31-b16c-48e6-85e4-9f7b31a7b6eb",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyMinute"
+              }
+            ]
+          },
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "event": "rowUpdate",
+          "options": {
+            "columnsToWatch": [
+              "Approved"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleSheetsTrigger",
+        "typeVersion": 1,
+        "position": [
+          -624,
+          224
+        ],
+        "id": "24d3efc2-3ba2-47a2-abb2-dfb2e1bbe3e3",
+        "name": "Google Sheets Trigger1",
+        "credentials": {
+          "googleSheetsTriggerOAuth2Api": {
+            "id": "DnIMz68XC0LUIK5a",
+            "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// Normalize Approved values because Google Sheets may return true, \"true\", \"\", etc.\nfunction isApproved(value) {\n  return value === true || String(value).toLowerCase().trim() === 'true';\n}\n\n// Group items by thread_id\nconst threads = {};\n\nfor (const item of items) {\n  const threadId = item.json.thread_id;\n\n  if (!threads[threadId]) {\n    threads[threadId] = [];\n  }\n\n  threads[threadId].push(item);\n}\n\n// Only allow items from threads where every item is Approved === true\nconst approvedItems = [];\n\nfor (const threadId of Object.keys(threads)) {\n  const threadItems = threads[threadId];\n\n  const allApproved = threadItems.every(item => {\n    return isApproved(item.json.Approved);\n  });\n\n  if (allApproved) {\n    approvedItems.push(...threadItems);\n  }\n}\n\nreturn approvedItems;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -48,
+          -32
+        ],
+        "id": "03eb51d0-187a-4ab7-bad2-2847ae021943",
+        "name": "Filter all Approved"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "thread_id",
+                "lookupValue": "={{ $json.thread_id }}"
+              },
+              {
+                "lookupColumn": "Sent",
+                "lookupValue": "false"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          -400,
+          224
+        ],
+        "id": "86d789c0-109c-4f02-a480-bc32e1f1e9f2",
+        "name": "Get row(s) in sheet",
+        "executeOnce": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
+            "mode": "list",
+            "cachedResultName": "FAQ Responder Approvals",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "thread_id": "={{ $('Get row(s) in sheet').item.json.thread_id }}",
+              "Sent": "true"
+            },
+            "matchingColumns": [
+              "thread_id"
+            ],
+            "schema": [
+              {
+                "id": "date",
+                "displayName": "date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "thread_id",
+                "displayName": "thread_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "match_uuid",
+                "displayName": "match_uuid",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "match_score",
+                "displayName": "match_score",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Reply To",
+                "displayName": "Reply To",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Reply To Name",
+                "displayName": "Reply To Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Question",
+                "displayName": "Question",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Agent Response",
+                "displayName": "Agent Response",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Approved",
+                "displayName": "Approved",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Sent",
+                "displayName": "Sent",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          960,
+          224
+        ],
+        "id": "d9ac433b-4a35-4f9a-a8cb-17a24592b1ea",
+        "name": "Update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Send a message": {
+        "main": [
+          [
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Load Email Template": {
+        "main": [
+          [
+            {
+              "node": "Generate Greeting",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Join Q&A": {
+        "main": [
+          [
+            {
+              "node": "Load Email Template",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace Content": {
+        "main": [
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Greeting": {
+        "main": [
+          [
+            {
+              "node": "Replace Content",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets Trigger1": {
+        "main": [
+          [
+            {
+              "node": "Get row(s) in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter all Approved": {
+        "main": [
+          [
+            {
+              "node": "Join Q&A",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "Filter all Approved",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 3257335d",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
