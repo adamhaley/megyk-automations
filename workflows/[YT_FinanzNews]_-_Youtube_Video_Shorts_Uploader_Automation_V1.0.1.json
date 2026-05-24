@@ -1,0 +1,4641 @@
+{
+  "updatedAt": "2026-05-24T16:14:59.902Z",
+  "createdAt": "2026-04-29T04:24:59.915Z",
+  "id": "gury2D7XYEtsNXiF",
+  "name": "[YT_FinanzNews] - Youtube_Video_Shorts_Uploader_Automation_V1.0.1",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7,9,11,13,15,17,19,21 * * *"
+            }
+          ]
+        }
+      },
+      "id": "d0e2f65b-f7a8-4a33-b8be-f1de6f1be739",
+      "name": "Scheduled Folder Check",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1136,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "file-id",
+              "name": "fileId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "file-name",
+              "name": "fileName",
+              "value": "={{ $json.name || $json.fileName || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "file-base-name",
+              "name": "fileBaseName",
+              "value": "={{ ($json.name || $json.fileName || \"\").replace(/\\.[^/.]+$/, \"\").replace(/\\s+/g, \" \").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "mime",
+              "name": "mimeType",
+              "value": "={{ $json.mimeType || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "detected-at",
+              "name": "detectedAt",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "execution-id",
+              "name": "executionId",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "region",
+              "name": "youtubeRegionCode",
+              "value": "={{ $('Fetch YouTube Channel Info').item.json.items[0].snippet.country || 'DE' }}",
+              "type": "string"
+            },
+            {
+              "id": "category-id",
+              "name": "youtubeCategoryId",
+              "value": "22",
+              "type": "string"
+            },
+            {
+              "id": "language-name",
+              "name": "youtubeLanguageName",
+              "value": "German",
+              "type": "string"
+            },
+            {
+              "id": "channel-name",
+              "name": "youtubeChannelName",
+              "value": "={{ $('Fetch YouTube Channel Info').item.json.items[0].snippet.title || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "channel-id",
+              "name": "youtubeChannelId",
+              "value": "={{ $('Fetch YouTube Channel Info').item.json.items[0].id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "ddc5924f-9d8c-46d8-acd6-2b4827d0aa6e",
+              "name": "scheduleTime",
+              "value": "={{ $('Scheduled Folder Check').item.json.timestamp.toDateTime().format('HH:mm') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2d68a334-8a27-4ffb-8a8b-756e8947ef7c",
+      "name": "Normalize Event",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Normalize Event').first().json.fileId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "1519bb40-72f4-4e52-b773-54d6aa98ac89",
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2080,
+        496
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "w3kD1oQDIn947kPH",
+          "name": "GDriveAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { ...$json, status: 'Ready', reason: 'Video inspection skipped.', logTimestamp: new Date().toISOString(), publishAt: $json.detectedAt || new Date().toISOString(), uploadReadyFlag: 'true' }, binary: $input.first().binary }];"
+      },
+      "id": "96454fe6-af8d-44f6-beeb-d204b75a6fda",
+      "name": "Evaluate Video",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.uploadReadyFlag }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a7c74ace-d71b-4129-8ff9-3cad3aedbaf9",
+      "name": "If Ready To Upload",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2624,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4/edit#gid=674810455"
+        },
+        "options": {}
+      },
+      "id": "4b40deb9-7654-4175-a26a-f3a836a2901c",
+      "name": "Load Tracker Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        176,
+        512
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Normalize Event').item.json;\nconst trackerRow = $json || {};\nconst clean = (value) => String(value ?? '').trim();\nconst hasTrackerRow = Object.keys(trackerRow).length > 0;\nconst titleToMatch = clean(source.fileBaseName || String(source.fileName || '').replace(/\\.[^/.]+$/, ''));\nconst languageCodeMap = {\n  german: 'de',\n  deutsch: 'de',\n  de: 'de',\n  english: 'en',\n  englisch: 'en',\n  en: 'en'\n};\nconst normalizeSlot = (value) => {\n  if (typeof value === 'number' && Number.isFinite(value)) {\n    const totalMinutes = Math.round(value * 24 * 60) % (24 * 60);\n    const hour = Math.floor(totalMinutes / 60);\n    const minute = totalMinutes % 60;\n    return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');\n  }\n  const raw = clean(value);\n  const match = raw.match(/^(\\d{1,2}):(\\d{2})$/);\n  if (!match) return '';\n  const hour = Number(match[1]);\n  const minute = Number(match[2]);\n  if (!Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) return '';\n  return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');\n};\nconst currentBerlinSlot = new Intl.DateTimeFormat('en-GB', {\n  timeZone: 'Europe/Berlin',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n}).format(new Date());\n\nif (!hasTrackerRow) {\n  return [{ json: { ...source, trackerRowFound: 'false', status: 'Skipped - No Tracker Row', reason: `No tracker row found where Video Title matches uploaded file name '${titleToMatch}'.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false', currentBerlinSlot } }];\n}\n\nconst trackerStatus = clean(trackerRow['Status']);\nconst trackerStatusLower = trackerStatus.toLowerCase();\nconst title = clean(trackerRow['Video Title']);\nconst description = clean(trackerRow['Video Description']);\nconst tags = clean(trackerRow['Youtube Tags']);\nconst privacyInput = clean(trackerRow['Privacy Status']).toLowerCase();\nconst privacy = ['private', 'public', 'unlisted'].includes(privacyInput) ? privacyInput : 'public';\nconst madeForKidsRaw = clean(trackerRow['Made For Kids']).toLowerCase();\nconst madeForKids = madeForKidsRaw === 'true';\nconst regionCode = clean(trackerRow['Region Code']) || clean(source.youtubeRegionCode) || 'DE';\nconst categoryName = clean(trackerRow['Category Name']) || clean(source.youtubeCategoryName);\nconst languageName = clean(trackerRow['Language Name']) || clean(source.youtubeLanguageName) || 'German';\nconst scheduleTime = normalizeSlot(trackerRow['Schedule Time']);\nconst scheduleTimeDisplay = scheduleTime.replace(/^0(?=\\d:)/, '');\nconst youtubeDefaultLanguageCode = languageCodeMap[languageName.toLowerCase()] || languageName.toLowerCase() || 'de';\nconst basePayload = {\n  ...source,\n  trackerFileName: clean(trackerRow['File Name']) || clean(source.fileName),\n  trackerRowNumber: Number(trackerRow['row_number'] || 0),\n  trackerStatusInput: trackerStatus,\n  youtubeTitle: title,\n  youtubeDescription: description,\n  youtubeTags: tags,\n  youtubePrivacyStatus: privacy,\n  youtubeMadeForKidsBoolean: madeForKids,\n  youtubeRegionCode: regionCode,\n  youtubeCategoryId: clean(source.youtubeCategoryId),\n  youtubeCategoryName: categoryName,\n  youtubeLanguageName: languageName,\n  youtubeDefaultLanguageCode,\n  youtubeChannelName: clean(source.youtubeChannelName),\n  youtubeChannelId: clean(source.youtubeChannelId),\n  scheduleTime: scheduleTimeDisplay,\n  currentBerlinSlot,\n  publishAt: source.detectedAt,\n};\n\nif (trackerStatusLower === 'scheduled') {\n  return [{ json: { ...basePayload, trackerRowFound: 'false', status: 'Scheduled', reason: `Tracker row for '${title}' is already marked Scheduled.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nif (!title) {\n  return [{ json: { ...basePayload, trackerRowFound: 'true', status: 'Failed - Metadata Missing', reason: `Tracker row for '${titleToMatch}' is missing required field: Video Title.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nif (!scheduleTime) {\n  return [{ json: { ...basePayload, trackerRowFound: 'false', status: 'Pending', reason: `Schedule Time is blank or invalid for '${title}'. Row ignored until a valid slot is selected.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nif (scheduleTime !== currentBerlinSlot) {\n  return [{ json: { ...basePayload, trackerRowFound: 'false', status: 'Pending', reason: `Schedule Time ${scheduleTime} does not match current Berlin slot ${currentBerlinSlot}.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nreturn [{ json: { ...basePayload, trackerRowFound: 'true', status: 'Ready', reason: `Tracker row found and ready for the ${scheduleTime} Berlin slot.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'true', youtubeTitle: title.slice(0, 100) } }];"
+      },
+      "id": "ee6722c5-61b3-46ae-a9a9-a71f8f994a66",
+      "name": "Evaluate Tracker Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.uploadReadyFlag }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "e31575de-73c7-4f1d-ba20-d4441928b1c5"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "530ebce7-63df-4414-bc6f-e2ad6157dd63",
+      "name": "If Tracker Ready",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $('Normalize Event').item.json.fileBaseName }}",
+        "regionCode": "={{ $('Normalize Event').item.json.youtubeRegionCode }}",
+        "categoryId": "={{ $json.youtubeCategoryId }}",
+        "options": {
+          "defaultLanguage": "={{ $json.youtubeDefaultLanguageCode || \"de\" }}",
+          "description": "={{ $('Evaluate Tracker Row').item.json.youtubeDescription }}",
+          "privacyStatus": "={{ $('Evaluate Tracker Row').item.json.youtubePrivacyStatus }}",
+          "selfDeclaredMadeForKids": "={{ $('Evaluate Tracker Row').item.json.youtubeMadeForKidsBoolean }}",
+          "tags": "={{ $('Evaluate Tracker Row').item.json.youtubeTags }}"
+        }
+      },
+      "id": "a41dcac1-359a-4436-a9e7-ef8a164e8595",
+      "name": "Upload Video",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        2864,
+        480
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "LjT6sDoCuNydtnkS",
+          "name": "YouTubAPI(CompactWisdom:novaticom.marketing@gmail.com)"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "upload-fail-file-id",
+              "name": "fileId",
+              "value": "={{ $(\"Evaluate Video\").item.json.fileId }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-file-name",
+              "name": "fileName",
+              "value": "={{ $(\"Evaluate Video\").item.json.fileName }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-status",
+              "name": "status",
+              "value": "Failed - Upload",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-reason",
+              "name": "reason",
+              "value": "={{ $json.error?.message || $json.message || \"YouTube upload failed.\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-log",
+              "name": "logTimestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-tracker",
+              "name": "trackerRowFound",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.trackerRowFound || \"false\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-title",
+              "name": "youtubeTitle",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeTitle || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-desc",
+              "name": "youtubeDescription",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeDescription || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-tags",
+              "name": "youtubeTags",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeTags || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-privacy",
+              "name": "youtubePrivacyStatus",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubePrivacyStatus || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-madeforkids",
+              "name": "youtubeMadeForKidsBoolean",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeMadeForKidsBoolean ? \"true\" : \"false\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-region",
+              "name": "youtubeRegionCode",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeRegionCode || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-category-name",
+              "name": "youtubeCategoryName",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeCategoryName || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-language-name",
+              "name": "youtubeLanguageName",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeLanguageName || \"German\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-channel-name",
+              "name": "youtubeChannelName",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeChannelName || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-channel-id",
+              "name": "youtubeChannelId",
+              "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeChannelId || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "upload-fail-publish",
+              "name": "publishAt",
+              "value": "={{ $(\"Evaluate Video\").item.json.publishAt || \"\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ca444c6d-7596-408d-8969-c1c58b871e46",
+      "name": "Prepare Upload Failure",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1648,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.first().json;\nconst source = $('Evaluate Video').first().json;\nconst youtubeVideoId = payload.id || payload.videoId || payload.uploadId || payload.video?.id || '';\nconst youtubeVideoUrl = youtubeVideoId ? `https://www.youtube.com/watch?v=${youtubeVideoId}` : '';\nreturn [{ json: { ...source, status: 'Scheduled', reason: 'Uploaded to YouTube successfully.', youtubeVideoId, youtubeVideoUrl, logTimestamp: new Date().toISOString() }, binary: $('Evaluate Video').first().binary }];"
+      },
+      "id": "defccfb4-9e1a-4e31-bf14-eafcb819062b",
+      "name": "Mark Processed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Evaluate Tracker Row').item.json.fileId }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1zpb0adZvHxJ4imJ_q024CuI5E1LDKvRP",
+          "mode": "id"
+        }
+      },
+      "id": "e4a472f2-25db-4138-8e15-7370aec0bfca",
+      "name": "Move To Archive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3328,
+        464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "w3kD1oQDIn947kPH",
+          "name": "GDriveAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.trackerRowFound || 'false' }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "900f5424-7b4d-4ff3-97e7-b7e3720dcd83",
+      "name": "If Tracker Row Found For Status Update",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2064,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4/edit#gid=674810455"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "File Name",
+              "displayName": "File Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video Title",
+              "displayName": "Video Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video Description",
+              "displayName": "Video Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Schedule Time",
+              "displayName": "Schedule Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video ID",
+              "displayName": "Video ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube Link",
+              "displayName": "YouTube Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Name",
+              "displayName": "Channel Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Id",
+              "displayName": "Channel Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Region Code",
+              "displayName": "Region Code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category Name",
+              "displayName": "Category Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Language Name",
+              "displayName": "Language Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Youtube Tags",
+              "displayName": "Youtube Tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Privacy Status",
+              "displayName": "Privacy Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Made For Kids",
+              "displayName": "Made For Kids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Publish Datetime",
+              "displayName": "Publish Datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Error Reason",
+              "displayName": "Error Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "bfec63b2-029d-4ab0-9f11-21a42b30f47f",
+      "name": "Update Tracker Status Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2512,
+        784
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13gFx-VEiv564D8qanUNn-RBUiHY0oq1ClwC7FaJseSE/edit#gid=674810455"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Video Title": "={{ $('Evaluate Tracker Row').item.json.fileBaseName }}",
+            "File Name": "={{ $('Evaluate Tracker Row').item.json.fileName }}",
+            "Status": "={{ $('Mark Processed').item.json.status || \"Scheduled\" }}",
+            "Video ID": "={{ $('Mark Processed').item.json.youtubeVideoId || \"\" }}",
+            "YouTube Link": "={{ $('Mark Processed').item.json.youtubeVideoUrl || \"\" }}",
+            "Channel Name": "={{ $('Evaluate Tracker Row').item.json.youtubeChannelName }}",
+            "Channel Id": "={{ $('Evaluate Tracker Row').item.json.youtubeChannelId }}",
+            "Region Code": "={{ $('Mark Processed').item.json.youtubeRegionCode || \"\" }}",
+            "Category Name": "={{ $('Mark Processed').item.json.youtubeCategoryName || \"\" }}",
+            "Language Name": "={{ $('Mark Processed').item.json.youtubeLanguageName || \"\" }}",
+            "Youtube Tags": "={{ $('Mark Processed').item.json.youtubeTags || \"\" }}",
+            "Privacy Status": "={{ $('Mark Processed').item.json.youtubePrivacyStatus || \"\" }}",
+            "Made For Kids": "={{ String($('Mark Processed').item.json.youtubeMadeForKidsBoolean).toLowerCase() === \"true\" ? \"TRUE\" : \"FALSE\" }}",
+            "Publish Datetime": "={{ $('Mark Processed').item.json.publishAt || $('Mark Processed').item.json.detectedAt || \"\" }}"
+          },
+          "matchingColumns": [
+            "Video Title"
+          ],
+          "schema": [
+            {
+              "id": "File Name",
+              "displayName": "File Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video Title",
+              "displayName": "Video Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video Description",
+              "displayName": "Video Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Schedule Time",
+              "displayName": "Schedule Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Video ID",
+              "displayName": "Video ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube Link",
+              "displayName": "YouTube Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Name",
+              "displayName": "Channel Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Id",
+              "displayName": "Channel Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Region Code",
+              "displayName": "Region Code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category Name",
+              "displayName": "Category Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Language Name",
+              "displayName": "Language Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Youtube Tags",
+              "displayName": "Youtube Tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Privacy Status",
+              "displayName": "Privacy Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Made For Kids",
+              "displayName": "Made For Kids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Publish Datetime",
+              "displayName": "Publish Datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Error Reason",
+              "displayName": "Error Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "70b8e497-da57-4756-aed7-2d9d136a6c03",
+      "name": "Update Tracker Scheduled Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3568,
+        464
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all()\n  .filter((item) => item.json.uploadReadyFlag === 'true' && item.json.status !== 'Scheduled')\n  .sort((a, b) => {\n    const aRow = Number(a.json.trackerRowNumber || Number.MAX_SAFE_INTEGER);\n    const bRow = Number(b.json.trackerRowNumber || Number.MAX_SAFE_INTEGER);\n    if (aRow !== bRow) return aRow - bRow;\n    return String(a.json.youtubeTitle || '').localeCompare(String(b.json.youtubeTitle || ''));\n  });"
+      },
+      "id": "42ea4d1e-b0ed-44ba-8dd6-23e1705033da",
+      "name": "Sort Queued Videos For Current Slot",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        512
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "options": {}
+      },
+      "id": "45e35145-6bb0-4ee6-a73f-e1c28a97f4cb",
+      "name": "Fetch YouTube Channel Info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -896,
+        544
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "7fs6mbrOfgZvhzPw",
+          "name": "YT_FINANZNEWS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/drive/v3/files?q=%271bL6XzMyYOUSygF25bSlodzanqIvxhUfi%27%20in%20parents%20and%20trashed%3Dfalse&fields=files(id%2Cname%2CmimeType%2CcreatedTime%2CmodifiedTime)&pageSize=1000&supportsAllDrives=true&includeItemsFromAllDrives=true",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {}
+      },
+      "id": "ac8e4193-dd81-4454-aafe-9a68537bb7ca",
+      "name": "List Upload Folder Files",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1664,
+        112
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "w3kD1oQDIn947kPH",
+          "name": "GDriveAPI(novaticom.marketing@gmail.com)"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "video/mp4",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "83c4f4ff-f3ce-4357-b34e-64447696e61f"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "77c9e718-b9b2-4e80-941f-157932843879",
+      "name": "If Drive File Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Explicitly end the no-file branch without passing data downstream.\nreturn [];"
+      },
+      "id": "4429ab45-9cd9-4aa2-8a3a-adf1e00a0389",
+      "name": "No File Found - End",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "209ef6bb-0f59-4b69-bac0-e90a1a930ae4",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "video/mp4",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "22093698-db3b-4e15-8636-d18639875b9c",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -592,
+        -32
+      ],
+      "id": "84e0b88d-7a1f-4619-9c5b-6cce6bdf481a",
+      "name": "Execute If MIME Type=video/mp4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fileItems = $('Execute If MIME Type=video/mp4').all();\nconst descItems = $input.all();\n\nif (fileItems.length !== descItems.length) {\n  throw new Error(\n    `Item count mismatch: file node has ${fileItems.length} items, description node has ${descItems.length} items`\n  );\n}\n\nreturn fileItems.map((fileItem, i) => ({\n  json: {\n    fileName: fileItem.json.name,\n    videoTitle: fileItem.json.name\n      .replace(/\\.[^/.]+$/, \"\")\n      .replace(/\\s+/g, \" \")\n      .trim(),\n    videoDescription: descItems[i].json?.['Video Description'],\n    status: \"Ready\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -48
+      ],
+      "id": "dc960201-e4ac-45e8-be10-d12395e4114e",
+      "name": "Normalize Data Input For Tracker"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Search For \\'Youtube Uploader Tracker\\' Sheet').item.json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=674810455"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "File Name": "={{ $json.fileName }}",
+            "Video Title": "={{ $json.videoTitle }}",
+            "Video Description": "={{ $json.videoDescription }}",
+            "Status": "={{ $json.status }}"
+          },
+          "matchingColumns": [
+            "File Name"
+          ],
+          "schema": [
+            {
+              "id": "File Name",
+              "displayName": "File Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video Title",
+              "displayName": "Video Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video Description",
+              "displayName": "Video Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Schedule Time",
+              "displayName": "Schedule Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video ID",
+              "displayName": "Video ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube Link",
+              "displayName": "YouTube Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Channel Name",
+              "displayName": "Channel Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Channel Id",
+              "displayName": "Channel Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Region Code",
+              "displayName": "Region Code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category Name",
+              "displayName": "Category Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Language Name",
+              "displayName": "Language Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Youtube Tags",
+              "displayName": "Youtube Tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Privacy Status",
+              "displayName": "Privacy Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Made For Kids",
+              "displayName": "Made For Kids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Publish Datetime",
+              "displayName": "Publish Datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Error Reason",
+              "displayName": "Error Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        -48
+      ],
+      "id": "24acd7ba-8207-4f60-a618-eca30a5c1d3d",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1056,
+        -32
+      ],
+      "id": "6201c28f-cc1e-4add-b34a-eca13ceed083",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=674810455"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "File Name": "={{ $json['File Name'] }}",
+            "Schedule Time": "={{ $('Normalize Event').first().json.scheduleTime }}",
+            "Region Code": "={{ $('Normalize Event').first().json.youtubeRegionCode }}",
+            "Category Name": "={{ $('Normalize Event').first().json.youtubeCategoryId }}",
+            "Language Name": "={{ $('Normalize Event').first().json.youtubeLanguageName }}",
+            "Channel Id": "={{ $('Normalize Event').first().json.youtubeChannelId }}",
+            "Channel Name": "={{ $('Normalize Event').item.json.youtubeChannelName }}"
+          },
+          "matchingColumns": [
+            "File Name"
+          ],
+          "schema": [
+            {
+              "id": "File Name",
+              "displayName": "File Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video Title",
+              "displayName": "Video Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Video Description",
+              "displayName": "Video Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Schedule Time",
+              "displayName": "Schedule Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video ID",
+              "displayName": "Video ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "YouTube Link",
+              "displayName": "YouTube Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Channel Name",
+              "displayName": "Channel Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Id",
+              "displayName": "Channel Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Region Code",
+              "displayName": "Region Code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category Name",
+              "displayName": "Category Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Language Name",
+              "displayName": "Language Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Youtube Tags",
+              "displayName": "Youtube Tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Privacy Status",
+              "displayName": "Privacy Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Made For Kids",
+              "displayName": "Made For Kids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Publish Datetime",
+              "displayName": "Publish Datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Error Reason",
+              "displayName": "Error Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        512
+      ],
+      "id": "549dce08-193a-4d20-86e3-0e81331044aa",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        384,
+        512
+      ],
+      "id": "21e21630-6216-4809-91c5-563d5cf416e4",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4/edit#gid=674810455"
+        },
+        "options": {}
+      },
+      "id": "a2c19848-5299-403f-a90c-8b5de6b92def",
+      "name": "Load Tracker Row1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        784,
+        512
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        192
+      ],
+      "id": "2a08dff5-d73b-4cf1-8e48-5d3a54138686",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "[FINANZNEWS]Youtube Uploader Tracker",
+        "filter": {
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "id",
+            "kind",
+            "mimeType",
+            "name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -320,
+        -48
+      ],
+      "id": "4a036442-c3a3-4dfa-9cf8-72950781ce3b",
+      "name": "Search For 'Youtube Uploader Tracker' Sheet",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jDykVPOrQ1TpJ3Yy",
+          "name": "GoogleDriveAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 674810455,
+          "mode": "list",
+          "cachedResultName": "Work Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=674810455"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -64,
+        -176
+      ],
+      "id": "7a836a56-1711-4776-9af7-2feaec7edb34",
+      "name": "Get All Rows From 'Youtube Uploader Tracker' Work Sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        176,
+        -48
+      ],
+      "id": "874d8ec0-7b3b-4790-8264-216b5fd0bc14",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1608878626,
+          "mode": "list",
+          "cachedResultName": "Video Description Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=1608878626"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRange"
+            }
+          },
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -64,
+        96
+      ],
+      "id": "a876ff25-ad3e-4554-abb0-61b2cc017d5f",
+      "name": "Get Description Template From 'Youtube Uploader Tracker'",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ly8qHNExsEXiWq0o",
+          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Triggering Video Files From 'n8n FINANZNEWS Shorts automated upload' GDrive Folder\n**Folder Link** : [n8n FINANZNEWS Shorts automated upload](https://drive.google.com/drive/u/1/folders/1NNn2RA2I-4CZchss2vINQL52xxPam1Ub)",
+        "height": 576,
+        "width": 2096
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1152,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "2e97e4da-1820-4292-ae73-da1c55a50166",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        816
+      ],
+      "id": "700e8eb5-cffb-4a0a-b6e4-b5c3171e321d",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b609346e-ca40-45b5-a4b9-4a292a2c8227",
+              "leftValue": "={{ $json.items[0].snippet.title }}",
+              "rightValue": "FinanzNews",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -688,
+        544
+      ],
+      "id": "7f93a1b6-7a79-49c9-8673-72b54b96187f",
+      "name": "Execute If Channel Name = Alexander Streeb"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1NNn2RA2I-4CZchss2vINQL52xxPam1Ub",
+            "mode": "id"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "mimeType",
+            "kind",
+            "id",
+            "name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -480,
+        528
+      ],
+      "id": "bf056a1e-cd10-43c5-a5fd-aa10db25156f",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jDykVPOrQ1TpJ3Yy",
+          "name": "GoogleDriveAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const files = $input.first().json.files || [];\nreturn files\n  .filter((file) => file?.id && file?.name && file.mimeType !== 'application/vnd.google-apps.folder')\n  .map((file) => ({ json: file }));"
+      },
+      "id": "502039fa-011f-4e1a-83fa-bd5be15c8bf7",
+      "name": "Expand Drive File List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1424,
+        112
+      ],
+      "alwaysOutputData": true,
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        992
+      ],
+      "id": "1dd0d016-e7ca-4e88-82ba-96364ca69de9",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger Uploaded Videos & Update Tracker Status \nFolder Link:  [n8n ALEXANDER STREEB Shorts automated upload](https://drive.google.com/drive/u/1/folders/1X2MCSkOLIRlGnEq5Y8sBW88Hf2M8ZrNB)\nTracker Sheet Link:  [[ALEXANDER_STREEB]Youtube Uploader Tracker](https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit?gid=674810455#gid=674810455)",
+        "height": 608,
+        "width": 2672,
+        "color": "#004000"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1216,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "951b8d03-ae3a-4974-bfea-3579a18eab9c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Download Video From GDrive & Upload To Youtube\n**Youtube Channel Name** : Alexander Streeb\n*Youtube Channel URL: https://www.youtube.com/channel/UCZc-fRIOjes1xeFt7heb9hg",
+        "height": 672,
+        "width": 2272,
+        "color": "#004040"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1552,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "1d1c7fef-200d-4729-a86e-fe0be3377de0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1NNn2RA2I-4CZchss2vINQL52xxPam1Ub",
+            "mode": "id"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "id",
+            "kind",
+            "mimeType",
+            "name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -848,
+        -32
+      ],
+      "id": "c02a8f75-08d2-4978-a55b-d230f1b345f2",
+      "name": "Fetch All Files From 'n8n FINANZNEWS' folder",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jDykVPOrQ1TpJ3Yy",
+          "name": "GoogleDriveAPI(novaticom.marketing@gmail.com)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Scheduled Folder Check": {
+      "main": [
+        [
+          {
+            "node": "Fetch YouTube Channel Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Event": {
+      "main": [
+        [
+          {
+            "node": "Load Tracker Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Evaluate Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Video": {
+      "main": [
+        [
+          {
+            "node": "If Ready To Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Ready To Upload": {
+      "main": [
+        [
+          {
+            "node": "Upload Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If Tracker Row Found For Status Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Tracker Row": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Tracker Row": {
+      "main": [
+        [
+          {
+            "node": "Sort Queued Videos For Current Slot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Tracker Ready": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Upload Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video": {
+      "main": [
+        [
+          {
+            "node": "Mark Processed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Upload Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Upload Failure": {
+      "main": [
+        [
+          {
+            "node": "If Tracker Row Found For Status Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Processed": {
+      "main": [
+        [
+          {
+            "node": "Move To Archive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move To Archive": {
+      "main": [
+        [
+          {
+            "node": "Update Tracker Scheduled Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Tracker Row Found For Status Update": {
+      "main": [
+        [
+          {
+            "node": "Update Tracker Status Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort Queued Videos For Current Slot": {
+      "main": [
+        [
+          {
+            "node": "If Tracker Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch YouTube Channel Info": {
+      "main": [
+        [
+          {
+            "node": "Execute If Channel Name = Alexander Streeb",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Upload Folder Files": {
+      "main": [
+        [
+          {
+            "node": "Expand Drive File List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Drive File Exists": {
+      "main": [
+        [
+          {
+            "node": "Normalize Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No File Found - End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute If MIME Type=video/mp4": {
+      "main": [
+        [
+          {
+            "node": "Search For 'Youtube Uploader Tracker' Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Data Input For Tracker": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch All Files From 'n8n FINANZNEWS' folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Load Tracker Row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Tracker Row1": {
+      "main": [
+        [
+          {
+            "node": "Evaluate Tracker Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search For 'Youtube Uploader Tracker' Sheet": {
+      "main": [
+        [
+          {
+            "node": "Get All Rows From 'Youtube Uploader Tracker' Work Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Description Template From 'Youtube Uploader Tracker'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Rows From 'Youtube Uploader Tracker' Work Sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Normalize Data Input For Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Description Template From 'Youtube Uploader Tracker'": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Execute If Channel Name = Alexander Streeb": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "If Drive File Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Drive File List": {
+      "main": [
+        []
+      ]
+    },
+    "Fetch All Files From 'n8n FINANZNEWS' folder": {
+      "main": [
+        [
+          {
+            "node": "Execute If MIME Type=video/mp4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Scheduled Folder Check": {
+      "recurrenceRules": []
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "752a4008-b748-48a0-beac-ba1885205cdd",
+  "activeVersionId": "752a4008-b748-48a0-beac-ba1885205cdd",
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-04-29T04:24:59.922Z",
+      "createdAt": "2026-04-29T04:24:59.922Z",
+      "role": "workflow:owner",
+      "workflowId": "gury2D7XYEtsNXiF",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-24T16:28:37.000Z",
+    "createdAt": "2026-05-24T16:14:59.904Z",
+    "versionId": "752a4008-b748-48a0-beac-ba1885205cdd",
+    "workflowId": "gury2D7XYEtsNXiF",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 7,9,11,13,15,17,19,21 * * *"
+              }
+            ]
+          }
+        },
+        "id": "d0e2f65b-f7a8-4a33-b8be-f1de6f1be739",
+        "name": "Scheduled Folder Check",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1136,
+          544
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "file-id",
+                "name": "fileId",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              },
+              {
+                "id": "file-name",
+                "name": "fileName",
+                "value": "={{ $json.name || $json.fileName || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "file-base-name",
+                "name": "fileBaseName",
+                "value": "={{ ($json.name || $json.fileName || \"\").replace(/\\.[^/.]+$/, \"\").replace(/\\s+/g, \" \").trim() }}",
+                "type": "string"
+              },
+              {
+                "id": "mime",
+                "name": "mimeType",
+                "value": "={{ $json.mimeType || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "detected-at",
+                "name": "detectedAt",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "execution-id",
+                "name": "executionId",
+                "value": "={{ $execution.id }}",
+                "type": "string"
+              },
+              {
+                "id": "region",
+                "name": "youtubeRegionCode",
+                "value": "={{ $('Fetch YouTube Channel Info').item.json.items[0].snippet.country || 'DE' }}",
+                "type": "string"
+              },
+              {
+                "id": "category-id",
+                "name": "youtubeCategoryId",
+                "value": "22",
+                "type": "string"
+              },
+              {
+                "id": "language-name",
+                "name": "youtubeLanguageName",
+                "value": "German",
+                "type": "string"
+              },
+              {
+                "id": "channel-name",
+                "name": "youtubeChannelName",
+                "value": "={{ $('Fetch YouTube Channel Info').item.json.items[0].snippet.title || '' }}",
+                "type": "string"
+              },
+              {
+                "id": "channel-id",
+                "name": "youtubeChannelId",
+                "value": "={{ $('Fetch YouTube Channel Info').item.json.items[0].id || '' }}",
+                "type": "string"
+              },
+              {
+                "id": "ddc5924f-9d8c-46d8-acd6-2b4827d0aa6e",
+                "name": "scheduleTime",
+                "value": "={{ $('Scheduled Folder Check').item.json.timestamp.toDateTime().format('HH:mm') }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2d68a334-8a27-4ffb-8a8b-756e8947ef7c",
+        "name": "Normalize Event",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -16,
+          512
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "download",
+          "fileId": {
+            "__rl": true,
+            "value": "={{ $('Normalize Event').first().json.fileId }}",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "1519bb40-72f4-4e52-b773-54d6aa98ac89",
+        "name": "Download File",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          2080,
+          496
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "w3kD1oQDIn947kPH",
+            "name": "GDriveAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { ...$json, status: 'Ready', reason: 'Video inspection skipped.', logTimestamp: new Date().toISOString(), publishAt: $json.detectedAt || new Date().toISOString(), uploadReadyFlag: 'true' }, binary: $input.first().binary }];"
+        },
+        "id": "96454fe6-af8d-44f6-beeb-d204b75a6fda",
+        "name": "Evaluate Video",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2384,
+          496
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.uploadReadyFlag }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "a7c74ace-d71b-4129-8ff9-3cad3aedbaf9",
+        "name": "If Ready To Upload",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2624,
+          496
+        ]
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4/edit#gid=674810455"
+          },
+          "options": {}
+        },
+        "id": "4b40deb9-7654-4175-a26a-f3a836a2901c",
+        "name": "Load Tracker Row",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          176,
+          512
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const source = $('Normalize Event').item.json;\nconst trackerRow = $json || {};\nconst clean = (value) => String(value ?? '').trim();\nconst hasTrackerRow = Object.keys(trackerRow).length > 0;\nconst titleToMatch = clean(source.fileBaseName || String(source.fileName || '').replace(/\\.[^/.]+$/, ''));\nconst languageCodeMap = {\n  german: 'de',\n  deutsch: 'de',\n  de: 'de',\n  english: 'en',\n  englisch: 'en',\n  en: 'en'\n};\nconst normalizeSlot = (value) => {\n  if (typeof value === 'number' && Number.isFinite(value)) {\n    const totalMinutes = Math.round(value * 24 * 60) % (24 * 60);\n    const hour = Math.floor(totalMinutes / 60);\n    const minute = totalMinutes % 60;\n    return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');\n  }\n  const raw = clean(value);\n  const match = raw.match(/^(\\d{1,2}):(\\d{2})$/);\n  if (!match) return '';\n  const hour = Number(match[1]);\n  const minute = Number(match[2]);\n  if (!Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) return '';\n  return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');\n};\nconst currentBerlinSlot = new Intl.DateTimeFormat('en-GB', {\n  timeZone: 'Europe/Berlin',\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n}).format(new Date());\n\nif (!hasTrackerRow) {\n  return [{ json: { ...source, trackerRowFound: 'false', status: 'Skipped - No Tracker Row', reason: `No tracker row found where Video Title matches uploaded file name '${titleToMatch}'.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false', currentBerlinSlot } }];\n}\n\nconst trackerStatus = clean(trackerRow['Status']);\nconst trackerStatusLower = trackerStatus.toLowerCase();\nconst title = clean(trackerRow['Video Title']);\nconst description = clean(trackerRow['Video Description']);\nconst tags = clean(trackerRow['Youtube Tags']);\nconst privacyInput = clean(trackerRow['Privacy Status']).toLowerCase();\nconst privacy = ['private', 'public', 'unlisted'].includes(privacyInput) ? privacyInput : 'public';\nconst madeForKidsRaw = clean(trackerRow['Made For Kids']).toLowerCase();\nconst madeForKids = madeForKidsRaw === 'true';\nconst regionCode = clean(trackerRow['Region Code']) || clean(source.youtubeRegionCode) || 'DE';\nconst categoryName = clean(trackerRow['Category Name']) || clean(source.youtubeCategoryName);\nconst languageName = clean(trackerRow['Language Name']) || clean(source.youtubeLanguageName) || 'German';\nconst scheduleTime = normalizeSlot(trackerRow['Schedule Time']);\nconst scheduleTimeDisplay = scheduleTime.replace(/^0(?=\\d:)/, '');\nconst youtubeDefaultLanguageCode = languageCodeMap[languageName.toLowerCase()] || languageName.toLowerCase() || 'de';\nconst basePayload = {\n  ...source,\n  trackerFileName: clean(trackerRow['File Name']) || clean(source.fileName),\n  trackerRowNumber: Number(trackerRow['row_number'] || 0),\n  trackerStatusInput: trackerStatus,\n  youtubeTitle: title,\n  youtubeDescription: description,\n  youtubeTags: tags,\n  youtubePrivacyStatus: privacy,\n  youtubeMadeForKidsBoolean: madeForKids,\n  youtubeRegionCode: regionCode,\n  youtubeCategoryId: clean(source.youtubeCategoryId),\n  youtubeCategoryName: categoryName,\n  youtubeLanguageName: languageName,\n  youtubeDefaultLanguageCode,\n  youtubeChannelName: clean(source.youtubeChannelName),\n  youtubeChannelId: clean(source.youtubeChannelId),\n  scheduleTime: scheduleTimeDisplay,\n  currentBerlinSlot,\n  publishAt: source.detectedAt,\n};\n\nif (trackerStatusLower === 'scheduled') {\n  return [{ json: { ...basePayload, trackerRowFound: 'false', status: 'Scheduled', reason: `Tracker row for '${title}' is already marked Scheduled.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nif (!title) {\n  return [{ json: { ...basePayload, trackerRowFound: 'true', status: 'Failed - Metadata Missing', reason: `Tracker row for '${titleToMatch}' is missing required field: Video Title.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nif (!scheduleTime) {\n  return [{ json: { ...basePayload, trackerRowFound: 'false', status: 'Pending', reason: `Schedule Time is blank or invalid for '${title}'. Row ignored until a valid slot is selected.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nif (scheduleTime !== currentBerlinSlot) {\n  return [{ json: { ...basePayload, trackerRowFound: 'false', status: 'Pending', reason: `Schedule Time ${scheduleTime} does not match current Berlin slot ${currentBerlinSlot}.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'false' } }];\n}\n\nreturn [{ json: { ...basePayload, trackerRowFound: 'true', status: 'Ready', reason: `Tracker row found and ready for the ${scheduleTime} Berlin slot.`, logTimestamp: new Date().toISOString(), uploadReadyFlag: 'true', youtubeTitle: title.slice(0, 100) } }];"
+        },
+        "id": "ee6722c5-61b3-46ae-a9a9-a71f8f994a66",
+        "name": "Evaluate Tracker Row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1040,
+          512
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.uploadReadyFlag }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                },
+                "id": "e31575de-73c7-4f1d-ba20-d4441928b1c5"
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "530ebce7-63df-4414-bc6f-e2ad6157dd63",
+        "name": "If Tracker Ready",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1616,
+          512
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "video",
+          "operation": "upload",
+          "title": "={{ $('Normalize Event').item.json.fileBaseName }}",
+          "regionCode": "={{ $('Normalize Event').item.json.youtubeRegionCode }}",
+          "categoryId": "={{ $json.youtubeCategoryId }}",
+          "options": {
+            "defaultLanguage": "={{ $json.youtubeDefaultLanguageCode || \"de\" }}",
+            "description": "={{ $('Evaluate Tracker Row').item.json.youtubeDescription }}",
+            "privacyStatus": "={{ $('Evaluate Tracker Row').item.json.youtubePrivacyStatus }}",
+            "selfDeclaredMadeForKids": "={{ $('Evaluate Tracker Row').item.json.youtubeMadeForKidsBoolean }}",
+            "tags": "={{ $('Evaluate Tracker Row').item.json.youtubeTags }}"
+          }
+        },
+        "id": "a41dcac1-359a-4436-a9e7-ef8a164e8595",
+        "name": "Upload Video",
+        "type": "n8n-nodes-base.youTube",
+        "typeVersion": 1,
+        "position": [
+          2864,
+          480
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 5000,
+        "credentials": {
+          "youTubeOAuth2Api": {
+            "id": "LjT6sDoCuNydtnkS",
+            "name": "YouTubAPI(CompactWisdom:novaticom.marketing@gmail.com)"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "upload-fail-file-id",
+                "name": "fileId",
+                "value": "={{ $(\"Evaluate Video\").item.json.fileId }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-file-name",
+                "name": "fileName",
+                "value": "={{ $(\"Evaluate Video\").item.json.fileName }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-status",
+                "name": "status",
+                "value": "Failed - Upload",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-reason",
+                "name": "reason",
+                "value": "={{ $json.error?.message || $json.message || \"YouTube upload failed.\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-log",
+                "name": "logTimestamp",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-tracker",
+                "name": "trackerRowFound",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.trackerRowFound || \"false\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-title",
+                "name": "youtubeTitle",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeTitle || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-desc",
+                "name": "youtubeDescription",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeDescription || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-tags",
+                "name": "youtubeTags",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeTags || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-privacy",
+                "name": "youtubePrivacyStatus",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubePrivacyStatus || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-madeforkids",
+                "name": "youtubeMadeForKidsBoolean",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeMadeForKidsBoolean ? \"true\" : \"false\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-region",
+                "name": "youtubeRegionCode",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeRegionCode || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-category-name",
+                "name": "youtubeCategoryName",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeCategoryName || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-language-name",
+                "name": "youtubeLanguageName",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeLanguageName || \"German\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-channel-name",
+                "name": "youtubeChannelName",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeChannelName || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-channel-id",
+                "name": "youtubeChannelId",
+                "value": "={{ $(\"Evaluate Tracker Row\").item.json.youtubeChannelId || \"\" }}",
+                "type": "string"
+              },
+              {
+                "id": "upload-fail-publish",
+                "name": "publishAt",
+                "value": "={{ $(\"Evaluate Video\").item.json.publishAt || \"\" }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ca444c6d-7596-408d-8969-c1c58b871e46",
+        "name": "Prepare Upload Failure",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1648,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const payload = $input.first().json;\nconst source = $('Evaluate Video').first().json;\nconst youtubeVideoId = payload.id || payload.videoId || payload.uploadId || payload.video?.id || '';\nconst youtubeVideoUrl = youtubeVideoId ? `https://www.youtube.com/watch?v=${youtubeVideoId}` : '';\nreturn [{ json: { ...source, status: 'Scheduled', reason: 'Uploaded to YouTube successfully.', youtubeVideoId, youtubeVideoUrl, logTimestamp: new Date().toISOString() }, binary: $('Evaluate Video').first().binary }];"
+        },
+        "id": "defccfb4-9e1a-4e31-bf14-eafcb819062b",
+        "name": "Mark Processed",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3120,
+          464
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "move",
+          "fileId": {
+            "__rl": true,
+            "value": "={{ $('Evaluate Tracker Row').item.json.fileId }}",
+            "mode": "id"
+          },
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1zpb0adZvHxJ4imJ_q024CuI5E1LDKvRP",
+            "mode": "id"
+          }
+        },
+        "id": "e4a472f2-25db-4138-8e15-7370aec0bfca",
+        "name": "Move To Archive",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          3328,
+          464
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "w3kD1oQDIn947kPH",
+            "name": "GDriveAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.trackerRowFound || 'false' }}",
+                "rightValue": "true",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "900f5424-7b4d-4ff3-97e7-b7e3720dcd83",
+        "name": "If Tracker Row Found For Status Update",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2064,
+          800
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4/edit#gid=674810455"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "File Name",
+                "displayName": "File Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Video Title",
+                "displayName": "Video Title",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Video Description",
+                "displayName": "Video Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Schedule Time",
+                "displayName": "Schedule Time",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Video ID",
+                "displayName": "Video ID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "YouTube Link",
+                "displayName": "YouTube Link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Channel Name",
+                "displayName": "Channel Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Channel Id",
+                "displayName": "Channel Id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Region Code",
+                "displayName": "Region Code",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Category Name",
+                "displayName": "Category Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Language Name",
+                "displayName": "Language Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Youtube Tags",
+                "displayName": "Youtube Tags",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Privacy Status",
+                "displayName": "Privacy Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Made For Kids",
+                "displayName": "Made For Kids",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Publish Datetime",
+                "displayName": "Publish Datetime",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Error Reason",
+                "displayName": "Error Reason",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "bfec63b2-029d-4ab0-9f11-21a42b30f47f",
+        "name": "Update Tracker Status Row",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          2512,
+          784
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13gFx-VEiv564D8qanUNn-RBUiHY0oq1ClwC7FaJseSE/edit#gid=674810455"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Video Title": "={{ $('Evaluate Tracker Row').item.json.fileBaseName }}",
+              "File Name": "={{ $('Evaluate Tracker Row').item.json.fileName }}",
+              "Status": "={{ $('Mark Processed').item.json.status || \"Scheduled\" }}",
+              "Video ID": "={{ $('Mark Processed').item.json.youtubeVideoId || \"\" }}",
+              "YouTube Link": "={{ $('Mark Processed').item.json.youtubeVideoUrl || \"\" }}",
+              "Channel Name": "={{ $('Evaluate Tracker Row').item.json.youtubeChannelName }}",
+              "Channel Id": "={{ $('Evaluate Tracker Row').item.json.youtubeChannelId }}",
+              "Region Code": "={{ $('Mark Processed').item.json.youtubeRegionCode || \"\" }}",
+              "Category Name": "={{ $('Mark Processed').item.json.youtubeCategoryName || \"\" }}",
+              "Language Name": "={{ $('Mark Processed').item.json.youtubeLanguageName || \"\" }}",
+              "Youtube Tags": "={{ $('Mark Processed').item.json.youtubeTags || \"\" }}",
+              "Privacy Status": "={{ $('Mark Processed').item.json.youtubePrivacyStatus || \"\" }}",
+              "Made For Kids": "={{ String($('Mark Processed').item.json.youtubeMadeForKidsBoolean).toLowerCase() === \"true\" ? \"TRUE\" : \"FALSE\" }}",
+              "Publish Datetime": "={{ $('Mark Processed').item.json.publishAt || $('Mark Processed').item.json.detectedAt || \"\" }}"
+            },
+            "matchingColumns": [
+              "Video Title"
+            ],
+            "schema": [
+              {
+                "id": "File Name",
+                "displayName": "File Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Video Title",
+                "displayName": "Video Title",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Video Description",
+                "displayName": "Video Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Schedule Time",
+                "displayName": "Schedule Time",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Video ID",
+                "displayName": "Video ID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "YouTube Link",
+                "displayName": "YouTube Link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Channel Name",
+                "displayName": "Channel Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Channel Id",
+                "displayName": "Channel Id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Region Code",
+                "displayName": "Region Code",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Category Name",
+                "displayName": "Category Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Language Name",
+                "displayName": "Language Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Youtube Tags",
+                "displayName": "Youtube Tags",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Privacy Status",
+                "displayName": "Privacy Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Made For Kids",
+                "displayName": "Made For Kids",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Publish Datetime",
+                "displayName": "Publish Datetime",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Error Reason",
+                "displayName": "Error Reason",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "70b8e497-da57-4756-aed7-2d9d136a6c03",
+        "name": "Update Tracker Scheduled Row",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          3568,
+          464
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all()\n  .filter((item) => item.json.uploadReadyFlag === 'true' && item.json.status !== 'Scheduled')\n  .sort((a, b) => {\n    const aRow = Number(a.json.trackerRowNumber || Number.MAX_SAFE_INTEGER);\n    const bRow = Number(b.json.trackerRowNumber || Number.MAX_SAFE_INTEGER);\n    if (aRow !== bRow) return aRow - bRow;\n    return String(a.json.youtubeTitle || '').localeCompare(String(b.json.youtubeTitle || ''));\n  });"
+        },
+        "id": "42ea4d1e-b0ed-44ba-8dd6-23e1705033da",
+        "name": "Sort Queued Videos For Current Slot",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1312,
+          512
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "url": "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "youTubeOAuth2Api",
+          "options": {}
+        },
+        "id": "45e35145-6bb0-4ee6-a73f-e1c28a97f4cb",
+        "name": "Fetch YouTube Channel Info",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -896,
+          544
+        ],
+        "credentials": {
+          "youTubeOAuth2Api": {
+            "id": "7fs6mbrOfgZvhzPw",
+            "name": "YT_FINANZNEWS"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://www.googleapis.com/drive/v3/files?q=%271bL6XzMyYOUSygF25bSlodzanqIvxhUfi%27%20in%20parents%20and%20trashed%3Dfalse&fields=files(id%2Cname%2CmimeType%2CcreatedTime%2CmodifiedTime)&pageSize=1000&supportsAllDrives=true&includeItemsFromAllDrives=true",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleDriveOAuth2Api",
+          "options": {}
+        },
+        "id": "ac8e4193-dd81-4454-aafe-9a68537bb7ca",
+        "name": "List Upload Folder Files",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1664,
+          112
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "w3kD1oQDIn947kPH",
+            "name": "GDriveAPI(novaticom.marketing@gmail.com)"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.mimeType }}",
+                "rightValue": "video/mp4",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                },
+                "id": "83c4f4ff-f3ce-4357-b34e-64447696e61f"
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "77c9e718-b9b2-4e80-941f-157932843879",
+        "name": "If Drive File Exists",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -256,
+          528
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Explicitly end the no-file branch without passing data downstream.\nreturn [];"
+        },
+        "id": "4429ab45-9cd9-4aa2-8a3a-adf1e00a0389",
+        "name": "No File Found - End",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -256,
+          848
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "209ef6bb-0f59-4b69-bac0-e90a1a930ae4",
+                "leftValue": "={{ $json.mimeType }}",
+                "rightValue": "video/mp4",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "22093698-db3b-4e15-8636-d18639875b9c",
+                "leftValue": "={{ $json }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "object",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -592,
+          -32
+        ],
+        "id": "84e0b88d-7a1f-4619-9c5b-6cce6bdf481a",
+        "name": "Execute If MIME Type=video/mp4"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fileItems = $('Execute If MIME Type=video/mp4').all();\nconst descItems = $input.all();\n\nif (fileItems.length !== descItems.length) {\n  throw new Error(\n    `Item count mismatch: file node has ${fileItems.length} items, description node has ${descItems.length} items`\n  );\n}\n\nreturn fileItems.map((fileItem, i) => ({\n  json: {\n    fileName: fileItem.json.name,\n    videoTitle: fileItem.json.name\n      .replace(/\\.[^/.]+$/, \"\")\n      .replace(/\\s+/g, \" \")\n      .trim(),\n    videoDescription: descItems[i].json?.['Video Description'],\n    status: \"Ready\"\n  }\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          448,
+          -48
+        ],
+        "id": "dc960201-e4ac-45e8-be10-d12395e4114e",
+        "name": "Normalize Data Input For Tracker"
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $('Search For \\'Youtube Uploader Tracker\\' Sheet').item.json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=674810455"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "File Name": "={{ $json.fileName }}",
+              "Video Title": "={{ $json.videoTitle }}",
+              "Video Description": "={{ $json.videoDescription }}",
+              "Status": "={{ $json.status }}"
+            },
+            "matchingColumns": [
+              "File Name"
+            ],
+            "schema": [
+              {
+                "id": "File Name",
+                "displayName": "File Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Video Title",
+                "displayName": "Video Title",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Video Description",
+                "displayName": "Video Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Schedule Time",
+                "displayName": "Schedule Time",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Video ID",
+                "displayName": "Video ID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "YouTube Link",
+                "displayName": "YouTube Link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Channel Name",
+                "displayName": "Channel Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Channel Id",
+                "displayName": "Channel Id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Region Code",
+                "displayName": "Region Code",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Category Name",
+                "displayName": "Category Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Language Name",
+                "displayName": "Language Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Youtube Tags",
+                "displayName": "Youtube Tags",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Privacy Status",
+                "displayName": "Privacy Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Made For Kids",
+                "displayName": "Made For Kids",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Publish Datetime",
+                "displayName": "Publish Datetime",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Error Reason",
+                "displayName": "Error Reason",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          720,
+          -48
+        ],
+        "id": "24acd7ba-8207-4f60-a618-eca30a5c1d3d",
+        "name": "Append or update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "minutes",
+                "minutesInterval": 10
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -1056,
+          -32
+        ],
+        "id": "6201c28f-cc1e-4add-b34a-eca13ceed083",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=674810455"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "File Name": "={{ $json['File Name'] }}",
+              "Schedule Time": "={{ $('Normalize Event').first().json.scheduleTime }}",
+              "Region Code": "={{ $('Normalize Event').first().json.youtubeRegionCode }}",
+              "Category Name": "={{ $('Normalize Event').first().json.youtubeCategoryId }}",
+              "Language Name": "={{ $('Normalize Event').first().json.youtubeLanguageName }}",
+              "Channel Id": "={{ $('Normalize Event').first().json.youtubeChannelId }}",
+              "Channel Name": "={{ $('Normalize Event').item.json.youtubeChannelName }}"
+            },
+            "matchingColumns": [
+              "File Name"
+            ],
+            "schema": [
+              {
+                "id": "File Name",
+                "displayName": "File Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Video Title",
+                "displayName": "Video Title",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Video Description",
+                "displayName": "Video Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Schedule Time",
+                "displayName": "Schedule Time",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Video ID",
+                "displayName": "Video ID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "YouTube Link",
+                "displayName": "YouTube Link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Channel Name",
+                "displayName": "Channel Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Channel Id",
+                "displayName": "Channel Id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Region Code",
+                "displayName": "Region Code",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Category Name",
+                "displayName": "Category Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Language Name",
+                "displayName": "Language Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Youtube Tags",
+                "displayName": "Youtube Tags",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Privacy Status",
+                "displayName": "Privacy Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Made For Kids",
+                "displayName": "Made For Kids",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Publish Datetime",
+                "displayName": "Publish Datetime",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Error Reason",
+                "displayName": "Error Reason",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          576,
+          512
+        ],
+        "id": "549dce08-193a-4d20-86e3-0e81331044aa",
+        "name": "Update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.limit",
+        "typeVersion": 1,
+        "position": [
+          384,
+          512
+        ],
+        "id": "21e21630-6216-4809-91c5-563d5cf416e4",
+        "name": "Limit"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1PCKeYbjpQUXULbclwIkEhjaDr1re1syt_u4gj5CqbO4/edit#gid=674810455"
+          },
+          "options": {}
+        },
+        "id": "a2c19848-5299-403f-a90c-8b5de6b92def",
+        "name": "Load Tracker Row1",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          784,
+          512
+        ],
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -512,
+          192
+        ],
+        "id": "2a08dff5-d73b-4cf1-8e48-5d3a54138686",
+        "name": "No Operation, do nothing"
+      },
+      {
+        "parameters": {
+          "resource": "fileFolder",
+          "queryString": "[FINANZNEWS]Youtube Uploader Tracker",
+          "filter": {
+            "whatToSearch": "files"
+          },
+          "options": {
+            "fields": [
+              "id",
+              "kind",
+              "mimeType",
+              "name"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -320,
+          -48
+        ],
+        "id": "4a036442-c3a3-4dfa-9cf8-72950781ce3b",
+        "name": "Search For 'Youtube Uploader Tracker' Sheet",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "jDykVPOrQ1TpJ3Yy",
+            "name": "GoogleDriveAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 674810455,
+            "mode": "list",
+            "cachedResultName": "Work Sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=674810455"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          -64,
+          -176
+        ],
+        "id": "7a836a56-1711-4776-9af7-2feaec7edb34",
+        "name": "Get All Rows From 'Youtube Uploader Tracker' Work Sheet",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          176,
+          -48
+        ],
+        "id": "874d8ec0-7b3b-4790-8264-216b5fd0bc14",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1608878626,
+            "mode": "list",
+            "cachedResultName": "Video Description Template",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit#gid=1608878626"
+          },
+          "options": {
+            "dataLocationOnSheet": {
+              "values": {
+                "rangeDefinition": "specifyRange"
+              }
+            },
+            "returnFirstMatch": true
+          }
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          -64,
+          96
+        ],
+        "id": "a876ff25-ad3e-4554-abb0-61b2cc017d5f",
+        "name": "Get Description Template From 'Youtube Uploader Tracker'",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ly8qHNExsEXiWq0o",
+            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## Triggering Video Files From 'n8n FINANZNEWS Shorts automated upload' GDrive Folder\n**Folder Link** : [n8n FINANZNEWS Shorts automated upload](https://drive.google.com/drive/u/1/folders/1NNn2RA2I-4CZchss2vINQL52xxPam1Ub)",
+          "height": 576,
+          "width": 2096
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1152,
+          -256
+        ],
+        "typeVersion": 1,
+        "id": "2e97e4da-1820-4292-ae73-da1c55a50166",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -800,
+          816
+        ],
+        "id": "700e8eb5-cffb-4a0a-b6e4-b5c3171e321d",
+        "name": "No Operation, do nothing1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "b609346e-ca40-45b5-a4b9-4a292a2c8227",
+                "leftValue": "={{ $json.items[0].snippet.title }}",
+                "rightValue": "FinanzNews",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -688,
+          544
+        ],
+        "id": "7f93a1b6-7a79-49c9-8673-72b54b96187f",
+        "name": "Execute If Channel Name = Alexander Streeb"
+      },
+      {
+        "parameters": {
+          "resource": "fileFolder",
+          "filter": {
+            "folderId": {
+              "__rl": true,
+              "value": "1NNn2RA2I-4CZchss2vINQL52xxPam1Ub",
+              "mode": "id"
+            },
+            "whatToSearch": "files"
+          },
+          "options": {
+            "fields": [
+              "mimeType",
+              "kind",
+              "id",
+              "name"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -480,
+          528
+        ],
+        "id": "bf056a1e-cd10-43c5-a5fd-aa10db25156f",
+        "name": "Search files and folders",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "jDykVPOrQ1TpJ3Yy",
+            "name": "GoogleDriveAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const files = $input.first().json.files || [];\nreturn files\n  .filter((file) => file?.id && file?.name && file.mimeType !== 'application/vnd.google-apps.folder')\n  .map((file) => ({ json: file }));"
+        },
+        "id": "502039fa-011f-4e1a-83fa-bd5be15c8bf7",
+        "name": "Expand Drive File List",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1424,
+          112
+        ],
+        "alwaysOutputData": true,
+        "disabled": true
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2224,
+          992
+        ],
+        "id": "1dd0d016-e7ca-4e88-82ba-96364ca69de9",
+        "name": "No Operation, do nothing2"
+      },
+      {
+        "parameters": {
+          "content": "## Trigger Uploaded Videos & Update Tracker Status \nFolder Link:  [n8n ALEXANDER STREEB Shorts automated upload](https://drive.google.com/drive/u/1/folders/1X2MCSkOLIRlGnEq5Y8sBW88Hf2M8ZrNB)\nTracker Sheet Link:  [[ALEXANDER_STREEB]Youtube Uploader Tracker](https://docs.google.com/spreadsheets/d/13wrc9CVD3jK_MTijn-LUTKp0tkloaK7mDqa2rtEPCX4/edit?gid=674810455#gid=674810455)",
+          "height": 608,
+          "width": 2672,
+          "color": "#004000"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1216,
+          400
+        ],
+        "typeVersion": 1,
+        "id": "951b8d03-ae3a-4974-bfea-3579a18eab9c",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "content": "## Download Video From GDrive & Upload To Youtube\n**Youtube Channel Name** : Alexander Streeb\n*Youtube Channel URL: https://www.youtube.com/channel/UCZc-fRIOjes1xeFt7heb9hg",
+          "height": 672,
+          "width": 2272,
+          "color": "#004040"
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1552,
+          400
+        ],
+        "typeVersion": 1,
+        "id": "1d1c7fef-200d-4729-a86e-fe0be3377de0",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "resource": "fileFolder",
+          "filter": {
+            "folderId": {
+              "__rl": true,
+              "value": "1NNn2RA2I-4CZchss2vINQL52xxPam1Ub",
+              "mode": "id"
+            },
+            "whatToSearch": "files"
+          },
+          "options": {
+            "fields": [
+              "id",
+              "kind",
+              "mimeType",
+              "name"
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -848,
+          -32
+        ],
+        "id": "c02a8f75-08d2-4978-a55b-d230f1b345f2",
+        "name": "Fetch All Files From 'n8n FINANZNEWS' folder",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "jDykVPOrQ1TpJ3Yy",
+            "name": "GoogleDriveAPI(novaticom.marketing@gmail.com)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Scheduled Folder Check": {
+        "main": [
+          [
+            {
+              "node": "Fetch YouTube Channel Info",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Event": {
+        "main": [
+          [
+            {
+              "node": "Load Tracker Row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Download File": {
+        "main": [
+          [
+            {
+              "node": "Evaluate Video",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Evaluate Video": {
+        "main": [
+          [
+            {
+              "node": "If Ready To Upload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If Ready To Upload": {
+        "main": [
+          [
+            {
+              "node": "Upload Video",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "If Tracker Row Found For Status Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Load Tracker Row": {
+        "main": [
+          [
+            {
+              "node": "Limit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Evaluate Tracker Row": {
+        "main": [
+          [
+            {
+              "node": "Sort Queued Videos For Current Slot",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If Tracker Ready": {
+        "main": [
+          [
+            {
+              "node": "Download File",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Prepare Upload Failure",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload Video": {
+        "main": [
+          [
+            {
+              "node": "Mark Processed",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Prepare Upload Failure",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Upload Failure": {
+        "main": [
+          [
+            {
+              "node": "If Tracker Row Found For Status Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mark Processed": {
+        "main": [
+          [
+            {
+              "node": "Move To Archive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Move To Archive": {
+        "main": [
+          [
+            {
+              "node": "Update Tracker Scheduled Row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If Tracker Row Found For Status Update": {
+        "main": [
+          [
+            {
+              "node": "Update Tracker Status Row",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No Operation, do nothing2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sort Queued Videos For Current Slot": {
+        "main": [
+          [
+            {
+              "node": "If Tracker Ready",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch YouTube Channel Info": {
+        "main": [
+          [
+            {
+              "node": "Execute If Channel Name = Alexander Streeb",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List Upload Folder Files": {
+        "main": [
+          [
+            {
+              "node": "Expand Drive File List",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If Drive File Exists": {
+        "main": [
+          [
+            {
+              "node": "Normalize Event",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No File Found - End",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Execute If MIME Type=video/mp4": {
+        "main": [
+          [
+            {
+              "node": "Search For 'Youtube Uploader Tracker' Sheet",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No Operation, do nothing",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Data Input For Tracker": {
+        "main": [
+          [
+            {
+              "node": "Append or update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Fetch All Files From 'n8n FINANZNEWS' folder",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Load Tracker Row1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limit": {
+        "main": [
+          [
+            {
+              "node": "Update row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Load Tracker Row1": {
+        "main": [
+          [
+            {
+              "node": "Evaluate Tracker Row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Search For 'Youtube Uploader Tracker' Sheet": {
+        "main": [
+          [
+            {
+              "node": "Get All Rows From 'Youtube Uploader Tracker' Work Sheet",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Get Description Template From 'Youtube Uploader Tracker'",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get All Rows From 'Youtube Uploader Tracker' Work Sheet": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Normalize Data Input For Tracker",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Description Template From 'Youtube Uploader Tracker'": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Execute If Channel Name = Alexander Streeb": {
+        "main": [
+          [
+            {
+              "node": "Search files and folders",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "No Operation, do nothing1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Search files and folders": {
+        "main": [
+          [
+            {
+              "node": "If Drive File Exists",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Expand Drive File List": {
+        "main": [
+          []
+        ]
+      },
+      "Fetch All Files From 'n8n FINANZNEWS' folder": {
+        "main": [
+          [
+            {
+              "node": "Execute If MIME Type=video/mp4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Gordan Kljajic",
+    "name": "Version 752a4008",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
