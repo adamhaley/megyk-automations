@@ -448,6 +448,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Gordan Kljajic",
     "name": "Version a5069dcf",
     "description": "",
