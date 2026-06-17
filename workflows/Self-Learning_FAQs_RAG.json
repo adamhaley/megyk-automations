@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-14T20:01:24.893Z",
+  "updatedAt": "2026-06-17T21:30:59.711Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "Self-Learning FAQs RAG",
@@ -2407,79 +2407,6 @@
           "finish_reason": "stop"
         }
       }
-    ],
-    "Gmail Trigger": [
-      {
-        "json": {
-          "id": "19e13ef19ccca39e",
-          "threadId": "19e1315c7291656a",
-          "labelIds": [
-            "UNREAD",
-            "Label_1072389281074894062",
-            "IMPORTANT",
-            "CATEGORY_PERSONAL",
-            "INBOX"
-          ],
-          "sizeEstimate": 9424,
-          "headers": {
-            "delivered-to": "Delivered-To: adam.haley@gmail.com",
-            "received": "Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])\r\n        by mx.google.com with SMTPS id 956f58d0204a3-65d9578aa00sor5333938d50.6.2026.05.10.15.08.17\r\n        for <adam.haley@gmail.com>\r\n        (Google Transport Security);\r\n        Sun, 10 May 2026 15:08:17 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:690e:1209:b0:65d:cc6b:6767 with SMTP id\r\n 956f58d0204a3-65dcc6b686dmr493984d50.3.1778450896657; Sun, 10 May 2026\r\n 15:08:16 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1778450897; cv=none;\r\n        d=google.com; s=arc-20240605;\r\n        b=AiEFMn40F4nOcEqoC3k4zDAvC8xOpCfIeXFSghHeGBEVT5KDTaMc0kSnd1MKYd0Ynm\r\n         DK0d88miGiOsO8BQU/odBFRoMl5R5wSASJsDgqcWTeU/ZhYUfg1KThR4KURLgpTs57nn\r\n         aqCFu3/5Wd65RUl8/31ZFbO5foa5fHK+RA8AFf14fnX973aT1VSSiL/lHL/Nywp575qb\r\n         N1TfF94yILCG0Gj6YNXlHS2Yy3+n6VEQ5yjw+OxQqlB21pKoIXeoLKihM1abneAlMzfL\r\n         llsdMPBW8T5PznbEBB3qgxBOCBEm3pZnxbxNoDkoOlaO30Cf14muXLWxedC565Bul0/v\r\n         2/Sg==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;\r\n        h=content-transfer-encoding:to:subject:message-id:date:from\r\n         :in-reply-to:references:mime-version:dkim-signature;\r\n        bh=Ov5Jz9LJcMy+iwie4Ddwtklh1GW+Rmnznce/pjh68ww=;\r\n        fh=VBJduV2qPs37eC1Es4szfo/MHrRPrNXvRIdOwW+6qUI=;\r\n        b=b32jri2qNh5WiZ19pLbjJitbmb8DiDeKtl8kDvT4d2rxB1xfq06P5BQhUM3idmcKMe\r\n         CbqAysBOtVmahzyC3ADdKZJYF8Ip5vYzBGYELWjWOPyXGFWFz3bc9zBhiOHGhmWsnhpb\r\n         WGQb8FcWepUMltS/ntQwI68UpUGTNZfqXGwyLw/v/l8czlMVS94ztWlvf/JQyMyO+8o/\r\n         +xvUTj+hG7qdXlH31aJ6xzPRQ0ASbKgfvcWwkFRKbciQT+S/O7UWsQKaBdigCDJbTc6i\r\n         NTRyrfz5LPAgBWOYyINmtfSB96fpdDBeUSCePrMIpH554Fm+rkmZlikJXB3CrIJXCEkS\r\n         oL/g==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com; arc=none",
-            "return-path": "Return-Path: <adam@adamhaley.com>",
-            "received-spf": "Received-SPF: none (google.com: adam@adamhaley.com does not designate permitted sender hosts) client-ip=209.85.220.41;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@adamhaley-com.20251104.gappssmtp.com header.s=20251104 header.b=My4aQ38H;\r\n       arc=pass (i=1);\r\n       spf=none (google.com: adam@adamhaley.com does not designate permitted sender hosts) smtp.mailfrom=adam@adamhaley.com;\r\n       dara=pass header.i=@gmail.com",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=adamhaley-com.20251104.gappssmtp.com; s=20251104; t=1778450897; x=1779055697; dara=google.com;\r\n        h=content-transfer-encoding:to:subject:message-id:date:from\r\n         :in-reply-to:references:mime-version:from:to:cc:subject:date\r\n         :message-id:reply-to;\r\n        bh=Ov5Jz9LJcMy+iwie4Ddwtklh1GW+Rmnznce/pjh68ww=;\r\n        b=My4aQ38H++dF8q0smj5jMqJEkzTQ3MF3Vqbmyy9Wm7mDwfD9lhiznpNC18SQCCw5Lh\r\n         jyRdYe72jw0PUIuQohn7XaEVR+/JYvkixeLU0TPISX3Ln+FDvCBjb8ZHE4ovs6R2XfQJ\r\n         rv/2qzv6p3r5f5JHrmQCaMUqQ5HyaB/etB4IE1TyvkPoST6ZNWqVNOW1QmszhIeBc1WA\r\n         H066NwRJWIqn1mGdrvO0cPDj5bpaH0YRhMWKrTBA3MWLI62j0Px1yirDZR8vv9x7NZiF\r\n         pJrt2np6a+bfIHJa7MKlJjOCzArty7jTLehi3WXa6PMwBOU27zMBI2ddaACtDPSxBegf\r\n         /1CA==",
-            "x-google-dkim-signature": "X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=1e100.net; s=20251104; t=1778450897; x=1779055697;\r\n        h=content-transfer-encoding:to:subject:message-id:date:from\r\n         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from\r\n         :to:cc:subject:date:message-id:reply-to;\r\n        bh=Ov5Jz9LJcMy+iwie4Ddwtklh1GW+Rmnznce/pjh68ww=;\r\n        b=fjeqn41mayGczLIotM28ySXDbS/piHrAyt6LPxHn2Sqk2uS05LGyZ/cS+RH5Ipn/Q1\r\n         0vl4v0DqcXMx6aDCjan9Rpu/vFlqtfG9skAcJ/1BeLJiDW141ZO8NCxJjuVH1PQzPrqB\r\n         2ONxgI4q4EBFvEsb3JAhHEuTIlaQPqg8W8jmIhEVVH/IxZbZYO12phyU9+2b7JN3OAl1\r\n         BrGfjM/j/Gxn8MmEncDG+wT+PDot7u9fGjf1iS0Qz5Zj/FDdu+737GHz5lT7soBLOXOM\r\n         llP2CZfDNcnBGWZwCZSNBBJDly/sN3pkCnAkXGQoapBOWRdWbBWYh2bp95s8NfAiEaS0\r\n         hO9A==",
-            "x-gm-message-state": "X-Gm-Message-State: AOJu0YzUkj18IfG84P+8UpVDnmASrA5PgUuRYQdXFikEGBeeovJSMUv1\r\n\tmEokcfHewiQCTyNjC9t0shxAl9bvZSMD/SMnpxrsvTuYMlJX8b4WM0cx3Va6eRvKgfcan7ihHfA\r\n\tKPt7263FhUfZirmiVcOrCoAgGwcjKhEMEuC4NB+aBhA+mRXsL2Xv2P+0=",
-            "x-gm-gg": "X-Gm-Gg: Acq92OHQoc66qXzd1rJzPVeusyclLrkjjjWrbQZnxV2pyY0zLQf9N2bgH/6hnj6kVv/\r\n\t1edmzC+nb7u3ZNVhlpfs3EQagIO7W3P3lUaHBNBP5HP1c+98BT8sP5mPKAhiuDwDFoSWrbmwEzI\r\n\tqxv6w8PuuJvIFHyoFdVYtOOk5+vBuuFN2h0a2DDg8MBkY7Br89Z1Iv4HBOkzZJkwDcIQLOMYQFT\r\n\tgX0D9/Kcoj/iZF3IaDcx6IRXASw1fvsQKIt8pd1Dl4aK2E3KNLN6zaubJ6GKebGUFN0Q+j9I/pS\r\n\tTYCrSQki5ejOIe5AV4yLwpk9iKVGZW9O6pQyPOeSaI4LFa2Dt+U=",
-            "mime-version": "MIME-Version: 1.0",
-            "references": "References: <CAFd3oHtkkkzmJ4qnk5P=dOriFz6SxTz=vNoYaeuUodA4bi7JOg@mail.gmail.com>\r\n <CAFd3oHu-9o2qG_fK4Fd82akSTkv_0=aFGfdrUUT9B6Ae8vha4A@mail.gmail.com>",
-            "in-reply-to": "In-Reply-To: <CAFd3oHu-9o2qG_fK4Fd82akSTkv_0=aFGfdrUUT9B6Ae8vha4A@mail.gmail.com>",
-            "from": "From: Adam Haley <adam@adamhaley.com>",
-            "date": "Date: Sun, 10 May 2026 15:08:05 -0700",
-            "x-gm-features": "X-Gm-Features: AVHnY4ITrTaMys3Rj1cJsXE4AaeRKXRUVolSHsdaQBVcDv5v0FUzLd2MxHrMBws",
-            "message-id": "Message-ID: <CAFd3oHs_nG_N+Zn5qn+azRrhYOk49fFNUD8iQxoTmuA9-dWs2Q@mail.gmail.com>",
-            "subject": "Subject: Fwd: Webinar FAQ",
-            "to": "To: adam.haley@gmail.com",
-            "content-type": "Content-Type: text/plain; charset=\"UTF-8\"",
-            "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable"
-          },
-          "text": "<p>Below you will find the chat messages that<br/>\n<a href=\"mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">tatjana.haufler@deutsches-edelsteinhaus.com</a>\nleft in the webinar “Brevo Webinar: The<br/>\nGreatest Dangers to Your Wealth.”</p>\n\n<p>First name: Tatjana<br/>\nLast name:<br/>\nEmail: <a href=\"mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">tatjana.haufler@deutsches-edelsteinhaus.com</a><br/>\nPhone number:<br/>\nCallback requested: No<br/>\nCallback number:<br/>\nNote:<br/>\nSource ID:<br/>\nAffiliate ID:<br/>\nUTM Source:<br/>\nUTM Medium:<br/>\nUTM Campaign:<br/>\nUTM Term:<br/>\nUTM Content:<br/>\nWebinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:<br/>\nDEH - Auto WEBIGG NOT ACTIVE (x))<br/>\nRegistration time: 10/09/2025 10:53<br/>\nWebinar time: 10/09/2025 10:55<br/>\nClicked buttons:<br/>\nAnswered surveys:<br/>\nLogin time: 10/09/2025 10:57<br/>\nLogout time: 10/09/2025 12:25<br/>\nChat:<br/>\n\n1: Tatjana (10/09/2025 10:58): For 15k, is it multiple stones, or is\nit one stone of the appropriate size?<br/>\n\n2: Tatjana (10/09/2025 10:58): So does it make sense to sell your\nhouse quickly? Despite falling prices?<br/>\n\n3: Tatjana (10/09/2025 10:59): I am planning to emigrate to Mauritius\nnext year, and lately I have the feeling that Switzerland is also\nslowly starting to shift/turn. To what extent is my Swiss euro account\nwith YUH still worthwhile for smaller assets? 1. Which currency should\nI keep in the Swiss account, CHF or USD?<br/>\n\n4: Tatjana (10/09/2025 10:59): Besides cash, stocks, gold and silver\nfrom 2014 and 2024, I also depend on my pension and my rental income\nfrom Germany. Am I allowed to continue receiving my German rental\nincome while living in Mauritius? Should I move my stock portfolio to\na non-EU country? How does it work if I want to move my physical\nprecious metals to Mauritius into a<br/>\n\n5: Tatjana (10/09/2025 10:59): Thank you in advance for your answers.</p>\n\n<p>Kind regards,</p>\n\n<p>Webinaris (10/09/2025 12:45)</p>\n\n<p>Note: All times are given in the UTC+2 time zone.</p>\n\n<p>Note: If you no longer wish to receive notification emails for this\nwebinar, you can deactivate them in your Webinaris account for the\nrespective webinar under the menu “Expert Settings ->\nNotifications.”</p>\n",
-          "textAsHtml": "<p>&lt;p&gt;Below you will find the chat messages that&lt;br/&gt;<br/>&lt;a <a href=\"mailto:href=&quot;mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">href=&quot;mailto:tatjana.haufler@deutsches-edelsteinhaus.com</a>&quot;&gt;<a href=\"mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">tatjana.haufler@deutsches-edelsteinhaus.com</a>&lt;/a&gt;<br/>left in the webinar &ldquo;Brevo Webinar: The&lt;br/&gt;<br/>Greatest Dangers to Your Wealth.&rdquo;&lt;/p&gt;</p><p>&lt;p&gt;First name: Tatjana&lt;br/&gt;<br/>Last name:&lt;br/&gt;<br/>Email: &lt;a <a href=\"mailto:href=&quot;mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">href=&quot;mailto:tatjana.haufler@deutsches-edelsteinhaus.com</a>&quot;&gt;<a href=\"mailto:tatjana.haufler@deutsches-edelsteinhaus.com\">tatjana.haufler@deutsches-edelsteinhaus.com</a>&lt;/a&gt;&lt;br/&gt;<br/>Phone number:&lt;br/&gt;<br/>Callback requested: No&lt;br/&gt;<br/>Callback number:&lt;br/&gt;<br/>Note:&lt;br/&gt;<br/>Source ID:&lt;br/&gt;<br/>Affiliate ID:&lt;br/&gt;<br/>UTM Source:&lt;br/&gt;<br/>UTM Medium:&lt;br/&gt;<br/>UTM Campaign:&lt;br/&gt;<br/>UTM Term:&lt;br/&gt;<br/>UTM Content:&lt;br/&gt;<br/>Webinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:&lt;br/&gt;<br/>DEH - Auto WEBIGG NOT ACTIVE (x))&lt;br/&gt;<br/>Registration time: 10/09/2025 10:53&lt;br/&gt;<br/>Webinar time: 10/09/2025 10:55&lt;br/&gt;<br/>Clicked buttons:&lt;br/&gt;<br/>Answered surveys:&lt;br/&gt;<br/>Login time: 10/09/2025 10:57&lt;br/&gt;<br/>Logout time: 10/09/2025 12:25&lt;br/&gt;<br/>Chat:&lt;br/&gt;</p><p>1: Tatjana (10/09/2025 10:58): For 15k, is it multiple stones, or is<br/>it one stone of the appropriate size?&lt;br/&gt;</p><p>2: Tatjana (10/09/2025 10:58): So does it make sense to sell your<br/>house quickly? Despite falling prices?&lt;br/&gt;</p><p>3: Tatjana (10/09/2025 10:59): I am planning to emigrate to Mauritius<br/>next year, and lately I have the feeling that Switzerland is also<br/>slowly starting to shift/turn. To what extent is my Swiss euro account<br/>with YUH still worthwhile for smaller assets? 1. Which currency should<br/>I keep in the Swiss account, CHF or USD?&lt;br/&gt;</p><p>4: Tatjana (10/09/2025 10:59): Besides cash, stocks, gold and silver<br/>from 2014 and 2024, I also depend on my pension and my rental income<br/>from Germany. Am I allowed to continue receiving my German rental<br/>income while living in Mauritius? Should I move my stock portfolio to<br/>a non-EU country? How does it work if I want to move my physical<br/>precious metals to Mauritius into a&lt;br/&gt;</p><p>5: Tatjana (10/09/2025 10:59): Thank you in advance for your answers.&lt;/p&gt;</p><p>&lt;p&gt;Kind regards,&lt;/p&gt;</p><p>&lt;p&gt;Webinaris (10/09/2025 12:45)&lt;/p&gt;</p><p>&lt;p&gt;Note: All times are given in the UTC+2 time zone.&lt;/p&gt;</p><p>&lt;p&gt;Note: If you no longer wish to receive notification emails for this<br/>webinar, you can deactivate them in your Webinaris account for the<br/>respective webinar under the menu &ldquo;Expert Settings -&gt;<br/>Notifications.&rdquo;&lt;/p&gt;</p>",
-          "subject": "Fwd: Webinar FAQ",
-          "references": [
-            "<CAFd3oHtkkkzmJ4qnk5P=dOriFz6SxTz=vNoYaeuUodA4bi7JOg@mail.gmail.com>",
-            "<CAFd3oHu-9o2qG_fK4Fd82akSTkv_0=aFGfdrUUT9B6Ae8vha4A@mail.gmail.com>"
-          ],
-          "date": "2026-05-10T22:08:05.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "adam.haley@gmail.com",
-                "name": ""
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><a href=\"mailto:adam.haley@gmail.com\" class=\"mp_address_email\">adam.haley@gmail.com</a></span>",
-            "text": "adam.haley@gmail.com"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "adam@adamhaley.com",
-                "name": "Adam Haley"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Adam Haley</span> &lt;<a href=\"mailto:adam@adamhaley.com\" class=\"mp_address_email\">adam@adamhaley.com</a>&gt;</span>",
-            "text": "\"Adam Haley\" <adam@adamhaley.com>"
-          },
-          "messageId": "<CAFd3oHs_nG_N+Zn5qn+azRrhYOk49fFNUD8iQxoTmuA9-dWs2Q@mail.gmail.com>",
-          "inReplyTo": "<CAFd3oHu-9o2qG_fK4Fd82akSTkv_0=aFGfdrUUT9B6Ae8vha4A@mail.gmail.com>",
-          "html": false
-        }
-      }
     ]
   },
   "versionId": "73bbe74f-9c26-4c6b-9294-101fc95464be",
@@ -3369,6 +3296,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Gordan Kljajic",
     "name": "Version 73bbe74f",
     "description": "",
