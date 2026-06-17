@@ -890,7 +890,7 @@
   },
   "staticData": {
     "node:Wufoo Trigger": {
-      "handshakeKey": "e54afcb4e32e29ff3f3cfb700280de12df07fc33",
+      "handshakeKey": "a240b4b53c7e1102fd0c9de8e5750770b019e838",
       "webhookId": "mqhpg7d0p203ml"
     }
   },
@@ -1848,6 +1848,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "system migration",
     "name": null,
     "description": null,
