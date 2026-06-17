@@ -596,6 +596,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Gordan Kljajic",
     "name": "Version fe70f472",
     "description": "",
