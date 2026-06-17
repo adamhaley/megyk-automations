@@ -381,6 +381,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Gordan Kljajic",
     "name": "Version fbe10f36",
     "description": "",
