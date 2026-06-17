@@ -163,6 +163,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Gordan Kljajic",
     "name": "Version fd76d84b",
     "description": "",
