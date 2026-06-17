@@ -380,6 +380,7 @@
         ]
       }
     },
+    "nodeGroups": [],
     "authors": "Gordan Kljajic",
     "name": "Version 260bc49c",
     "description": "",
