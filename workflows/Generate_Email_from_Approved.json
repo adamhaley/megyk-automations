@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-14T17:47:37.542Z",
+  "updatedAt": "2026-06-18T11:47:40.776Z",
   "createdAt": "2026-05-14T17:47:13.547Z",
   "id": "hY6C5SQKzOYzYouT",
   "name": "Generate Email from Approved",
@@ -172,8 +172,8 @@
       "name": "Google Sheets Trigger1",
       "credentials": {
         "googleSheetsTriggerOAuth2Api": {
-          "id": "DnIMz68XC0LUIK5a",
-          "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+          "id": "aX46deTSBSZHLDEu",
+          "name": "Google Sheets Trigger account"
         }
       }
     },
@@ -211,10 +211,6 @@
             {
               "lookupColumn": "thread_id",
               "lookupValue": "={{ $json.thread_id }}"
-            },
-            {
-              "lookupColumn": "Sent",
-              "lookupValue": "false"
             }
           ]
         },
@@ -231,166 +227,8 @@
       "executeOnce": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "Ly8qHNExsEXiWq0o",
-          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "documentId": {
-          "__rl": true,
-          "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
-          "mode": "list",
-          "cachedResultName": "FAQ Responder Approvals",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "thread_id": "={{ $('Get row(s) in sheet').item.json.thread_id }}",
-            "Sent": "true"
-          },
-          "matchingColumns": [
-            "thread_id"
-          ],
-          "schema": [
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "thread_id",
-              "displayName": "thread_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "match_uuid",
-              "displayName": "match_uuid",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "match_score",
-              "displayName": "match_score",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "Reply To",
-              "displayName": "Reply To",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "Reply To Name",
-              "displayName": "Reply To Name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "Question",
-              "displayName": "Question",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "Agent Response",
-              "displayName": "Agent Response",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "Approved",
-              "displayName": "Approved",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "Sent",
-              "displayName": "Sent",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "row_number",
-              "displayName": "row_number",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "readOnly": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        960,
-        224
-      ],
-      "id": "d9ac433b-4a35-4f9a-a8cb-17a24592b1ea",
-      "name": "Update row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "Ly8qHNExsEXiWq0o",
-          "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+          "id": "MKFJCwnipfxXY5Ho",
+          "name": "GoogleSheetAPI(novaticom.marketing@gmail.com)"
         }
       }
     }
@@ -398,13 +236,7 @@
   "connections": {
     "Send a message": {
       "main": [
-        [
-          {
-            "node": "Update row in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Load Email Template": {
@@ -497,14 +329,71 @@
     "node:Google Sheets Trigger1": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 144,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=144&exportFormat=xlsx"
+      "lastRevision": 193,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=193&exportFormat=xlsx"
     }
   },
   "meta": null,
-  "pinData": {},
-  "versionId": "3257335d-bbf0-461d-8162-92dfe30b624d",
-  "activeVersionId": "3257335d-bbf0-461d-8162-92dfe30b624d",
+  "pinData": {
+    "Google Sheets Trigger1": [
+      {
+        "json": {
+          "row_number": 11,
+          "date": 46191,
+          "thread_id": "19eda80dfacb690c",
+          "match_uuid": "451d87e1-0e95-45e9-879e-a51b4b0f6cbb",
+          "match_score": 0.650920552048507,
+          "Reply To": "adamhaley@gmail.com",
+          "Reply To Name": "Adam Haley",
+          "Question": "I have €20,000 and want a long-term physical asset. Which gemstones might be available to me?",
+          "Agent Response": "\n\n**Answer:**  \nAt €20,000, you would typically acquire high-quality investment-grade gemstones such as Aquamarine, Spinel, Tanzanite, or Tourmaline, which are suitable for long-term value preservation. This budget range allows flexibility in selecting either a single exceptional stone or multiple smaller stones, depending on availability and quality. For detailed recommendations, you can explore our guide on investment-grade colored gemstones: [https://www.deutsches-edelsteinhaus.com/wissen/investment-farbedelsteine/](https://www.deutsches-edelsteinhaus.com/wissen/investment-farbedelsteine/).  \n\nThis aligns with the recommended approach for long-term physical assets, as mentioned in our approved response for similar budgets.\n",
+          "Approved": true,
+          "Sent": ""
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "row_number": 12,
+          "date": 46191,
+          "thread_id": "19eda80dfacb690c",
+          "match_uuid": "fc3d9a5b-afde-40cf-bb6c-60e5524545d8",
+          "match_score": 0.329284749049897,
+          "Reply To": "adamhaley@gmail.com",
+          "Reply To Name": "Adam Haley",
+          "Question": "What is the minimum investment, how can I pay, and how long does delivery take?",
+          "Agent Response": "Ein Investmentin Farbedelsteine beginnt ab etwa 15 000 Euro; üblicherweise werden Preisstaffelungen von 15.000 – 20.000 Euro, 20.000 – 50.000 Euro, 50.000 – 100.000 Euro und darüber hinaus angeboten. Die Zahlungsabwicklung wird nach Auswahl des Steins individuell vereinbart und erfolgt in der Regel per Banküberweisung, wobei weitere Details gemeinsam mit Ihnen abgestimmt werden. Die Auslieferung kann weltweit erfolgen und wird durch spezialisierte Werttransportunternehmen abgewickelt; einPersonalausweis ist bei Übergabe erforderlich. Bis zur Übergabe bleiben die Edelsteine versichert, und die genauen Lieferzeiten werden nach Vertragsabschluss und Zahlungskoordination mit Ihnen festgelegt.",
+          "Approved": true,
+          "Sent": ""
+        },
+        "pairedItem": {
+          "item": 1
+        }
+      },
+      {
+        "json": {
+          "row_number": 13,
+          "date": 46191,
+          "thread_id": "19eda80dfacb690c",
+          "match_uuid": "03de95e1-7b45-4c1e-a9ed-0855a9fe9ba8",
+          "match_score": 0.364307620595046,
+          "Reply To": "adamhaley@gmail.com",
+          "Reply To Name": "Adam Haley",
+          "Question": "Can airport scanners detect gemstones? -- Adam",
+          "Agent Response": "Die Anfrage nach dem Erkennen von Edelsteinen durch Flughafen-Scanner ist interessant. Allein aus den bereitgestellten Fragen und Antworten folgt nicht direkt eine generelle Möglichkeit, endgültige Aussagen zu treffen. Dennoch zeigt die FAQ, dass die Authentizität durch Garantien wie Prüfzeichen, Hologramme und zertifizierte Bewertungen gesichert wird. Wenn Sie sich sicher sein möchten, dass Ihre Steine den hohen Standards entsprechen, könnten wir gerne eine kurze Beratung vereinbaren, um alle Details zu klären. Lassen Sie uns gemeinsam sicherstellen, dass alles perfekt ist.",
+          "Approved": true,
+          "Sent": ""
+        },
+        "pairedItem": {
+          "item": 2
+        }
+      }
+    ]
+  },
+  "versionId": "072b3baa-7624-4d0c-bb6e-e8dc63ce8fac",
+  "activeVersionId": "072b3baa-7624-4d0c-bb6e-e8dc63ce8fac",
   "triggerCount": 1,
   "shared": [
     {
@@ -516,9 +405,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-14T17:47:29.000Z",
-    "createdAt": "2026-05-14T17:47:24.976Z",
-    "versionId": "3257335d-bbf0-461d-8162-92dfe30b624d",
+    "updatedAt": "2026-06-18T11:47:44.000Z",
+    "createdAt": "2026-06-18T11:47:40.778Z",
+    "versionId": "072b3baa-7624-4d0c-bb6e-e8dc63ce8fac",
     "workflowId": "hY6C5SQKzOYzYouT",
     "nodes": [
       {
@@ -687,8 +576,8 @@
         "name": "Google Sheets Trigger1",
         "credentials": {
           "googleSheetsTriggerOAuth2Api": {
-            "id": "DnIMz68XC0LUIK5a",
-            "name": "GSheetsTriggerAPI(novaticom.marketing@gmail.com)"
+            "id": "aX46deTSBSZHLDEu",
+            "name": "Google Sheets Trigger account"
           }
         }
       },
@@ -726,10 +615,6 @@
               {
                 "lookupColumn": "thread_id",
                 "lookupValue": "={{ $json.thread_id }}"
-              },
-              {
-                "lookupColumn": "Sent",
-                "lookupValue": "false"
               }
             ]
           },
@@ -746,166 +631,8 @@
         "executeOnce": true,
         "credentials": {
           "googleSheetsOAuth2Api": {
-            "id": "Ly8qHNExsEXiWq0o",
-            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "operation": "update",
-          "documentId": {
-            "__rl": true,
-            "value": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
-            "mode": "list",
-            "cachedResultName": "FAQ Responder Approvals",
-            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit?usp=drivesdk"
-          },
-          "sheetName": {
-            "__rl": true,
-            "value": "gid=0",
-            "mode": "list",
-            "cachedResultName": "Sheet1",
-            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50/edit#gid=0"
-          },
-          "columns": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "thread_id": "={{ $('Get row(s) in sheet').item.json.thread_id }}",
-              "Sent": "true"
-            },
-            "matchingColumns": [
-              "thread_id"
-            ],
-            "schema": [
-              {
-                "id": "date",
-                "displayName": "date",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "thread_id",
-                "displayName": "thread_id",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": false
-              },
-              {
-                "id": "match_uuid",
-                "displayName": "match_uuid",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "match_score",
-                "displayName": "match_score",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "Reply To",
-                "displayName": "Reply To",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "Reply To Name",
-                "displayName": "Reply To Name",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "Question",
-                "displayName": "Question",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "Agent Response",
-                "displayName": "Agent Response",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "Approved",
-                "displayName": "Approved",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": true
-              },
-              {
-                "id": "Sent",
-                "displayName": "Sent",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true
-              },
-              {
-                "id": "row_number",
-                "displayName": "row_number",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "number",
-                "canBeUsedToMatch": true,
-                "readOnly": true,
-                "removed": true
-              }
-            ],
-            "attemptToConvertTypes": false,
-            "convertFieldsToString": false
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.googleSheets",
-        "typeVersion": 4.7,
-        "position": [
-          960,
-          224
-        ],
-        "id": "d9ac433b-4a35-4f9a-a8cb-17a24592b1ea",
-        "name": "Update row in sheet",
-        "credentials": {
-          "googleSheetsOAuth2Api": {
-            "id": "Ly8qHNExsEXiWq0o",
-            "name": "GSheetsAPI(novaticom.marketing@gmail.com)"
+            "id": "MKFJCwnipfxXY5Ho",
+            "name": "GoogleSheetAPI(novaticom.marketing@gmail.com)"
           }
         }
       }
@@ -913,13 +640,7 @@
     "connections": {
       "Send a message": {
         "main": [
-          [
-            {
-              "node": "Update row in sheet",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Load Email Template": {
@@ -1002,9 +723,9 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 3257335d",
+    "name": "Version 072b3baa",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
   "tags": []
 }
