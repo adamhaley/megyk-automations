@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-17T21:30:59.711Z",
+  "updatedAt": "2026-06-18T12:06:17.253Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "Self-Learning FAQs RAG",
@@ -242,7 +242,7 @@
         "simple": false,
         "filters": {
           "labelIds": "={{ [\"INBOX\"] }}",
-          "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
+          "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:tatjana.haufler@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
         },
         "options": {}
       },
@@ -372,126 +372,6 @@
         "httpBearerAuth": {
           "id": "t0h6OX63Uc1M41Fp",
           "name": "OpenAi Megyk Tests"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 651789693,
-          "mode": "list",
-          "cachedResultName": "Copy of Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug/edit#gid=651789693"
-        }
-      },
-      "type": "n8n-nodes-base.evaluationTrigger",
-      "typeVersion": 4.6,
-      "position": [
-        624,
-        432
-      ],
-      "id": "71cc0514-e666-4a83-893e-8a15946874cc",
-      "name": "When fetching a dataset row",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "qJ5ck4AVx9Jx37Fr",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 651789693,
-          "mode": "list",
-          "cachedResultName": "Copy of Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug/edit#gid=651789693"
-        },
-        "outputs": {
-          "values": [
-            {
-              "outputName": "answer_correctness",
-              "outputValue": "={{ $json.Correctness }}"
-            },
-            {
-              "outputName": "generated_answer",
-              "outputValue": "={{ $('Generate Email Reply Segment').item.json.message.content }}"
-            },
-            {
-              "outputName": "result",
-              "outputValue": "={{ ($json.Correctness >=2)? 'Pass' : 'Fail' }}"
-            },
-            {
-              "outputName": "actual_faq_match",
-              "outputValue": "={{ $('Supabase RPC Retrieval').item.json.body[0].id }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.evaluation",
-      "typeVersion": 4.7,
-      "position": [
-        1536,
-        512
-      ],
-      "id": "337fb1b5-c32d-4a64-8e74-0ee42d8c8132",
-      "name": "Evaluation",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "qJ5ck4AVx9Jx37Fr",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "setMetrics",
-        "expectedAnswer": "={{ $('Supabase RPC Retrieval').item.json.body[0].answer }}",
-        "actualAnswer": "={{ $json.message.content }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.evaluation",
-      "typeVersion": 4.7,
-      "position": [
-        1184,
-        512
-      ],
-      "id": "b3dc6f0a-8e28-4525-87a0-ad0faaf08f9e",
-      "name": "Evaluation1"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        1248,
-        736
-      ],
-      "id": "11ed9aac-dc7e-4f06-a480-f2a5e22b18bb",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "BRRf66J5aSwt4UDP",
-          "name": "OpenAi account"
         }
       }
     },
@@ -665,16 +545,6 @@
               "type": "string",
               "canBeUsedToMatch": true,
               "removed": true
-            },
-            {
-              "id": "Sent",
-              "displayName": "Sent",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -820,33 +690,6 @@
         ]
       ]
     },
-    "When fetching a dataset row": {
-      "main": [
-        []
-      ]
-    },
-    "Evaluation1": {
-      "main": [
-        [
-          {
-            "node": "Evaluation",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Evaluation1",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Generate Email Reply Segment": {
       "main": [
         [
@@ -885,9 +728,10 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1778576297,
+        "lastTimeChecked": 1781784279,
         "possibleDuplicates": [
-          "19e1b6898050f032"
+          "19eda9eb135896f5",
+          "19eda9713f23299c"
         ]
       }
     },
@@ -2407,10 +2251,87 @@
           "finish_reason": "stop"
         }
       }
+    ],
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "19eda9eb135896f5",
+          "threadId": "19eda9eb135896f5",
+          "labelIds": [
+            "UNREAD",
+            "CATEGORY_PERSONAL",
+            "INBOX"
+          ],
+          "sizeEstimate": 9985,
+          "headers": {
+            "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
+            "received": "Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])\r\n        by mx.google.com with SMTPS id 5614622812f47-488a97192fcsor4094585b6e.4.2026.06.18.05.04.53\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (Google Transport Security);\r\n        Thu, 18 Jun 2026 05:04:53 -0700 (PDT)",
+            "x-received": "X-Received: by 2002:a05:6808:1184:b0:489:3a6b:2425 with SMTP id\r\n 5614622812f47-4894294f066mr6373183b6e.15.1781784290807; Thu, 18 Jun 2026\r\n 05:04:50 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1781784293; cv=none;\r\n        d=google.com; s=arc-20240605;\r\n        b=f6ccxuz5pZnug0LVknH2TooDeJwCPnNw84gvdexVldkR4vSQp1y7QNLEcbKOWM86d7\r\n         nGvIk0Vu+MzdctI2QDVp92EqWmzK1PyFNWOaQzRrSOXuMLIHuURI2Q+obCa0LbBuoniG\r\n         f9AtXSeCU11H2lWeoGcMVEzkUFCzu7123PajToRvsKoXwvTEmUbud3NBhrnyC/R8H81O\r\n         yEmftG9b7qMcXgSGEDo7Rfl9Cim7DezehpmdTOkU4dQXEepQdEGhds5RY/iMa23zV2Yj\r\n         LwpobqVo1AUh3sfP73QJocELAhL7yWegoRuUDLVcH2tyozQiUY/I3KJuQKccuS9aRWNv\r\n         CW/Q==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;\r\n        h=to:subject:message-id:date:from:reply-to:mime-version\r\n         :dkim-signature;\r\n        bh=5jN0GRwms+YMwuZgOQ0GmFI8lQ4sL4MhBoVqJLNuu/g=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=iANufkDQ/ruKcpIUwt9FWeBwqufoM5PYkNpcDZLAdlzQfAzFhQEwo5cuGY/sYqAzgP\r\n         HBfGhJX2lm7dwLM/K3hHYF0xl0sAs5Iujxf+qAXEcjw+oZF/zWrRCjP+uaK53wKm1d0N\r\n         z20p6uH+AdHApH4k+f2Set2TCsjV6azu4faISnMD/XbZzfxW31kXxx2ru0l/ZAbjcvGs\r\n         IMWsyaLNl/LJHQLYlDlpcN0VppD3pJ1VN5fgLWIrwUp6rrbfnodb+2umeSbr9+iTuKKN\r\n         WiBvgGrX7k37SLJI7MshZSt0YiBVNukFtGfOsn6luzYArv/2k4XjjeT7YtUra2vONzL9\r\n         xcFA==;\r\n        dara=google.com",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com; arc=none",
+            "return-path": "Return-Path: <adamhaley@gmail.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of adamhaley@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;",
+            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@gmail.com header.s=20251104 header.b=F41V2o3K;\r\n       arc=pass (i=1);\r\n       spf=pass (google.com: domain of adamhaley@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=adamhaley@gmail.com;\r\n       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;\r\n       dara=pass header.i=@gmail.com",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=gmail.com; s=20251104; t=1781784293; x=1782389093; dara=google.com;\r\n        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc\r\n         :subject:date:message-id:reply-to;\r\n        bh=5jN0GRwms+YMwuZgOQ0GmFI8lQ4sL4MhBoVqJLNuu/g=;\r\n        b=F41V2o3KzISBLoBpE7981GYT2EF+YBCDv4xCaQiK3ozES6JJcdQBRy641UBnKxvcMx\r\n         ibA1cIZ3MV3nQ13qQZW0KWpdfoHC05yl5fPyIUQUYfENgDIV8EtcEGPmeXROHLMRUnPJ\r\n         ECJD93ylRwU9UywJax96QDz2ZxJ2ef6O0aWFlCJNnPDc47NZgeyMZuUTxuC24kF85GIP\r\n         AnuVNboW4FhC8QQkMj8SDOYCmgwpbjsBOcoAzU5uvnRkQC25mlWW30Rr5iOwp8T2xN8A\r\n         hu2iMOBvAlTm60oEr2CDtlpiM0JtPGo27qiP496oBlsa8ugxGFD4bcQwB1GKBuwKwzcg\r\n         xi7g==",
+            "x-google-dkim-signature": "X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=1e100.net; s=20251104; t=1781784293; x=1782389093;\r\n        h=to:subject:message-id:date:from:reply-to:mime-version:x-gm-gg\r\n         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;\r\n        bh=5jN0GRwms+YMwuZgOQ0GmFI8lQ4sL4MhBoVqJLNuu/g=;\r\n        b=festM7wvc8388Fh5UOew+6ZkEohy+duaPwL7GvK/wB+gA/ZBtG4c87ecRFwtIfhiTe\r\n         AoJluPy+grsvldRsxzy6w2AVakQrftDBD0NQucg1zknkJnh+1phEN9b0f80Apv70G/uS\r\n         HQFaeAQ7+bKDyluWjQp19beZ3WhjQzyPTGDQK3JmSG3avCypxVYRXz3MN8iQj6Mbok3i\r\n         FFIWLcE8oo0znahY0sDekpjYF0Kbk9bb6vPvGDKgE3EE7NnuduOZh8obZ2eIO3ShRhgJ\r\n         ttXsbhBqAoXn6GtAZowIzFeJ6HQ0/HEXtu5RFs5h+Gn13NtC8muVsE2SmXBN3Ib8B+PE\r\n         74AQ==",
+            "x-gm-message-state": "X-Gm-Message-State: AOJu0Yw43PVagkPZWhrKV3sLdNJA7e9FaUvDiZgsCSyvxw28N4w4nj3L\r\n\tgcerg4gb3TOM20HBTQCzZh/LL78bF9/dZKGRbAI/j9MfWv737deevwIexeCgczgqla+gOjQxZCr\r\n\ti39v9rcrPCV/D5d4OR56j76E5u7elCCq/sfUGilg=",
+            "x-gm-gg": "X-Gm-Gg: Acq92OElv1p8124OoVFQq/DDO3b6Xwi+BiAq96RvSk8SC0G/9nWg8bRC49P+Of7yPy1\r\n\t0O3e/Jh3CfXHwm2/jVlR2MXZS/WMk66N99A1TucsVtLPa6GXTK4JdCt3Cmuau1xMaZTMUa56hdJ\r\n\t9xrr18OxBIAXgZ42/pAWn8i6g16moPQ0JRh/g51dDL3nKHLPKO/bY9hInG2i/3DpKPhEBe66VYE\r\n\tlnIcgIRp9Bz6tHGcDBuF7RpV/Q6PPQcV3iyhdzZuPjTxLrNZtGqtoUIwSmhWfEmrs9lgVVV+YVV\r\n\tNUJfxZhurwuHQGH00KVniAiL03xGMw85IfMJiuoZjTftvxqd8uYb61II5jyR3g==",
+            "mime-version": "MIME-Version: 1.0",
+            "reply-to": "Reply-To: adamhaley@gmail.com",
+            "from": "From: Adam Haley <adamhaley@gmail.com>",
+            "date": "Date: Thu, 18 Jun 2026 05:04:39 -0700",
+            "x-gm-features": "X-Gm-Features: AVVi8CfQOPOkynmv2ZSoPI8PlEqfs6S9vdA11qr5ZJAR-PDBew_oDgMM5vzSJmQ",
+            "message-id": "Message-ID: <CAL2j52N8gYRajzMi-5cj9+TALA=f=2VSVskXp4m6VJ=GQke7ow@mail.gmail.com>",
+            "subject": "Subject: test",
+            "to": "To: deutschesedelsteinhaus@gmail.com",
+            "content-type": "Content-Type: multipart/alternative; boundary=\"000000000000b85556065485fbcc\""
+          },
+          "html": "<div dir=\"ltr\"><div>Below you will find the chat messages that<br><a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br>left in the webinar “Brevo Webinar: The<br>Greatest Dangers to Your Wealth.”<br><br>First name: Adam<br>Last name: Haley<br>Email: <a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br>Phone number:<br>Callback requested: No<br>Callback number:<br>Note:<br>Source ID:<br>Affiliate ID:<br>UTM Source:<br>UTM Medium:<br>UTM Campaign:<br>UTM Term:<br>UTM Content:<br>Webinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:<br>DEH - Auto WEBIGG NOT ACTIVE (x))<br>Registration time: 10/09/2025 10:53<br>Webinar time: 10/09/2025 10:55<br>Clicked buttons:<br>Answered surveys:<br>Login time: 6/18/2026 10:57<br>Logout time: 6/18/2026 12:25<br>Chat: <br>1: Adam (6/18/2026 10:58):<br>What is the minimum investment required to purchase investment-grade gemstones?<br>2: Adam (6/18/2026 10:58):<br>How long does it take for the gemstones to be purchased and delivered?<br>3: Adam (6/18/2026 10:58):<br>How much does storage in the Liechtenstein bonded warehouse cost?<br>4: Adam (6/18/2026 10:58):<br>Can customers choose which gemstones they receive?<br>5: Adam (6/18/2026 10:58):<br>Are the gemstones delivered with appraisal certificates?<br>6: Adam (6/18/2026 10:58):<br>Which laboratories verify that the gemstones are genuine?<br></div><div><br></div><span class=\"gmail_signature_prefix\">-- </span><br><div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\">Adam <br></div></div>\n",
+          "text": "Below you will find the chat messages that\nadamhaley@gmail.com\nleft in the webinar “Brevo Webinar: The\nGreatest Dangers to Your Wealth.”\n\nFirst name: Adam\nLast name: Haley\nEmail: adamhaley@gmail.com\nPhone number:\nCallback requested: No\nCallback number:\nNote:\nSource ID:\nAffiliate ID:\nUTM Source:\nUTM Medium:\nUTM Campaign:\nUTM Term:\nUTM Content:\nWebinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:\nDEH - Auto WEBIGG NOT ACTIVE (x))\nRegistration time: 10/09/2025 10:53\nWebinar time: 10/09/2025 10:55\nClicked buttons:\nAnswered surveys:\nLogin time: 6/18/2026 10:57\nLogout time: 6/18/2026 12:25\nChat:\n1: Adam (6/18/2026 10:58):\nWhat is the minimum investment required to purchase investment-grade\ngemstones?\n2: Adam (6/18/2026 10:58):\nHow long does it take for the gemstones to be purchased and delivered?\n3: Adam (6/18/2026 10:58):\nHow much does storage in the Liechtenstein bonded warehouse cost?\n4: Adam (6/18/2026 10:58):\nCan customers choose which gemstones they receive?\n5: Adam (6/18/2026 10:58):\nAre the gemstones delivered with appraisal certificates?\n6: Adam (6/18/2026 10:58):\nWhich laboratories verify that the gemstones are genuine?\n\n-- \nAdam\n",
+          "textAsHtml": "<p>Below you will find the chat messages that<br/><a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br/>left in the webinar &ldquo;Brevo Webinar: The<br/>Greatest Dangers to Your Wealth.&rdquo;</p><p>First name: Adam<br/>Last name: Haley<br/>Email: <a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br/>Phone number:<br/>Callback requested: No<br/>Callback number:<br/>Note:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source:<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term:<br/>UTM Content:<br/>Webinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:<br/>DEH - Auto WEBIGG NOT ACTIVE (x))<br/>Registration time: 10/09/2025 10:53<br/>Webinar time: 10/09/2025 10:55<br/>Clicked buttons:<br/>Answered surveys:<br/>Login time: 6/18/2026 10:57<br/>Logout time: 6/18/2026 12:25<br/>Chat:<br/>1: Adam (6/18/2026 10:58):<br/>What is the minimum investment required to purchase investment-grade<br/>gemstones?<br/>2: Adam (6/18/2026 10:58):<br/>How long does it take for the gemstones to be purchased and delivered?<br/>3: Adam (6/18/2026 10:58):<br/>How much does storage in the Liechtenstein bonded warehouse cost?<br/>4: Adam (6/18/2026 10:58):<br/>Can customers choose which gemstones they receive?<br/>5: Adam (6/18/2026 10:58):<br/>Are the gemstones delivered with appraisal certificates?<br/>6: Adam (6/18/2026 10:58):<br/>Which laboratories verify that the gemstones are genuine?</p><p>--<br/>Adam</p>",
+          "subject": "test",
+          "date": "2026-06-18T12:04:39.000Z",
+          "to": {
+            "value": [
+              {
+                "address": "deutschesedelsteinhaus@gmail.com",
+                "name": ""
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><a href=\"mailto:deutschesedelsteinhaus@gmail.com\" class=\"mp_address_email\">deutschesedelsteinhaus@gmail.com</a></span>",
+            "text": "deutschesedelsteinhaus@gmail.com"
+          },
+          "from": {
+            "value": [
+              {
+                "address": "adamhaley@gmail.com",
+                "name": "Adam Haley"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Adam Haley</span> &lt;<a href=\"mailto:adamhaley@gmail.com\" class=\"mp_address_email\">adamhaley@gmail.com</a>&gt;</span>",
+            "text": "\"Adam Haley\" <adamhaley@gmail.com>"
+          },
+          "messageId": "<CAL2j52N8gYRajzMi-5cj9+TALA=f=2VSVskXp4m6VJ=GQke7ow@mail.gmail.com>",
+          "replyTo": {
+            "value": [
+              {
+                "address": "adamhaley@gmail.com",
+                "name": ""
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><a href=\"mailto:adamhaley@gmail.com\" class=\"mp_address_email\">adamhaley@gmail.com</a></span>",
+            "text": "adamhaley@gmail.com"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
     ]
   },
-  "versionId": "73bbe74f-9c26-4c6b-9294-101fc95464be",
-  "activeVersionId": "73bbe74f-9c26-4c6b-9294-101fc95464be",
+  "versionId": "2eea4359-f111-404a-916a-8277d2d7daa9",
+  "activeVersionId": "2eea4359-f111-404a-916a-8277d2d7daa9",
   "triggerCount": 1,
   "shared": [
     {
@@ -2422,9 +2343,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-14T20:02:35.000Z",
-    "createdAt": "2026-05-14T20:01:24.896Z",
-    "versionId": "73bbe74f-9c26-4c6b-9294-101fc95464be",
+    "updatedAt": "2026-06-18T12:07:01.000Z",
+    "createdAt": "2026-06-18T12:06:17.256Z",
+    "versionId": "2eea4359-f111-404a-916a-8277d2d7daa9",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -2663,7 +2584,7 @@
           "simple": false,
           "filters": {
             "labelIds": "={{ [\"INBOX\"] }}",
-            "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
+            "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:tatjana.haufler@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
           },
           "options": {}
         },
@@ -2793,126 +2714,6 @@
           "httpBearerAuth": {
             "id": "t0h6OX63Uc1M41Fp",
             "name": "OpenAi Megyk Tests"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "documentId": {
-            "__rl": true,
-            "value": "1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug",
-            "mode": "id"
-          },
-          "sheetName": {
-            "__rl": true,
-            "value": 651789693,
-            "mode": "list",
-            "cachedResultName": "Copy of Sheet1",
-            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug/edit#gid=651789693"
-          }
-        },
-        "type": "n8n-nodes-base.evaluationTrigger",
-        "typeVersion": 4.6,
-        "position": [
-          624,
-          432
-        ],
-        "id": "71cc0514-e666-4a83-893e-8a15946874cc",
-        "name": "When fetching a dataset row",
-        "credentials": {
-          "googleSheetsOAuth2Api": {
-            "id": "qJ5ck4AVx9Jx37Fr",
-            "name": "Google Sheets account"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "documentId": {
-            "__rl": true,
-            "value": "1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug",
-            "mode": "id"
-          },
-          "sheetName": {
-            "__rl": true,
-            "value": 651789693,
-            "mode": "list",
-            "cachedResultName": "Copy of Sheet1",
-            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RlfPHGwn5uZ1ucIdLnk_6ZFPJPfhTpa8uQwsYuJCYug/edit#gid=651789693"
-          },
-          "outputs": {
-            "values": [
-              {
-                "outputName": "answer_correctness",
-                "outputValue": "={{ $json.Correctness }}"
-              },
-              {
-                "outputName": "generated_answer",
-                "outputValue": "={{ $('Generate Email Reply Segment').item.json.message.content }}"
-              },
-              {
-                "outputName": "result",
-                "outputValue": "={{ ($json.Correctness >=2)? 'Pass' : 'Fail' }}"
-              },
-              {
-                "outputName": "actual_faq_match",
-                "outputValue": "={{ $('Supabase RPC Retrieval').item.json.body[0].id }}"
-              }
-            ]
-          }
-        },
-        "type": "n8n-nodes-base.evaluation",
-        "typeVersion": 4.7,
-        "position": [
-          1536,
-          512
-        ],
-        "id": "337fb1b5-c32d-4a64-8e74-0ee42d8c8132",
-        "name": "Evaluation",
-        "credentials": {
-          "googleSheetsOAuth2Api": {
-            "id": "qJ5ck4AVx9Jx37Fr",
-            "name": "Google Sheets account"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "operation": "setMetrics",
-          "expectedAnswer": "={{ $('Supabase RPC Retrieval').item.json.body[0].answer }}",
-          "actualAnswer": "={{ $json.message.content }}",
-          "options": {}
-        },
-        "type": "n8n-nodes-base.evaluation",
-        "typeVersion": 4.7,
-        "position": [
-          1184,
-          512
-        ],
-        "id": "b3dc6f0a-8e28-4525-87a0-ad0faaf08f9e",
-        "name": "Evaluation1"
-      },
-      {
-        "parameters": {
-          "model": {
-            "__rl": true,
-            "mode": "list",
-            "value": "gpt-4.1-mini"
-          },
-          "options": {}
-        },
-        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-        "typeVersion": 1.2,
-        "position": [
-          1248,
-          736
-        ],
-        "id": "11ed9aac-dc7e-4f06-a480-f2a5e22b18bb",
-        "name": "OpenAI Chat Model",
-        "credentials": {
-          "openAiApi": {
-            "id": "BRRf66J5aSwt4UDP",
-            "name": "OpenAi account"
           }
         }
       },
@@ -3086,16 +2887,6 @@
                 "type": "string",
                 "canBeUsedToMatch": true,
                 "removed": true
-              },
-              {
-                "id": "Sent",
-                "displayName": "Sent",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "type": "string",
-                "canBeUsedToMatch": true,
-                "removed": false
               }
             ],
             "attemptToConvertTypes": false,
@@ -3241,33 +3032,6 @@
           ]
         ]
       },
-      "When fetching a dataset row": {
-        "main": [
-          []
-        ]
-      },
-      "Evaluation1": {
-        "main": [
-          [
-            {
-              "node": "Evaluation",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "OpenAI Chat Model": {
-        "ai_languageModel": [
-          [
-            {
-              "node": "Evaluation1",
-              "type": "ai_languageModel",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Generate Email Reply Segment": {
         "main": [
           [
@@ -3298,7 +3062,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 73bbe74f",
+    "name": "Version 2eea4359",
     "description": "",
     "autosaved": true
   },
