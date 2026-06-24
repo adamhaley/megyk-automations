@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T11:47:40.776Z",
+  "updatedAt": "2026-06-24T00:09:41.832Z",
   "createdAt": "2026-05-14T17:47:13.547Z",
   "id": "hY6C5SQKzOYzYouT",
   "name": "Generate Email from Approved",
@@ -74,7 +74,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
+        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: 'webinar-lead@deutsches-edelsteinhaus.com',\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -338,62 +338,25 @@
     "Google Sheets Trigger1": [
       {
         "json": {
-          "row_number": 11,
-          "date": 46191,
-          "thread_id": "19eda80dfacb690c",
-          "match_uuid": "451d87e1-0e95-45e9-879e-a51b4b0f6cbb",
-          "match_score": 0.650920552048507,
-          "Reply To": "adamhaley@gmail.com",
-          "Reply To Name": "Adam Haley",
-          "Question": "I have €20,000 and want a long-term physical asset. Which gemstones might be available to me?",
-          "Agent Response": "\n\n**Answer:**  \nAt €20,000, you would typically acquire high-quality investment-grade gemstones such as Aquamarine, Spinel, Tanzanite, or Tourmaline, which are suitable for long-term value preservation. This budget range allows flexibility in selecting either a single exceptional stone or multiple smaller stones, depending on availability and quality. For detailed recommendations, you can explore our guide on investment-grade colored gemstones: [https://www.deutsches-edelsteinhaus.com/wissen/investment-farbedelsteine/](https://www.deutsches-edelsteinhaus.com/wissen/investment-farbedelsteine/).  \n\nThis aligns with the recommended approach for long-term physical assets, as mentioned in our approved response for similar budgets.\n",
-          "Approved": true,
-          "Sent": ""
+          "row_number": 8,
+          "date": 46192,
+          "thread_id": "19edf99c72de5c82",
+          "match_uuid": "fe860bc8-ec91-414a-bb4b-b307c65cdb61",
+          "match_score": 0.734720485184937,
+          "Reply To": "petrarapp62@gmail.com",
+          "Reply To Name": "Petra Rapp",
+          "Question": "möchte mein Geld in Sicherheit bringen, wie funktioniert dies.Konto im Ausland eröffnen.",
+          "Agent Response": "Ein Konto im Ausland kann grundsätzlich Teil einer Vorsorgestruktur sein, ist aber nicht automatisch „sicherer“. Entscheidend ist vor allem, **in welchem Land die Bank sitzt** und wie stabil dessen Wirtschafts- und Finanzsystem ist.\n\nWichtig zu wissen:\n\n- Geht **nur eine einzelne Bank** pleite, greifen in der Regel die jeweiligen nationalen Sicherheitsmechanismen.\n- Kritisch wird es bei einem **Systemcrash**, also wenn mehrere Banken gleichzeitig Probleme bekommen. Dann können Sicherungssysteme überfordert sein, und der Staat muss eingreifen.\n- Die Erfahrung aus Krisen wie in Zypern zeigt, dass es im Extremfall zu hohen Verlusten kommen kann oder Einlagen im Rahmen gesetzlicher Abwicklungsregeln in Bankwerte umgewandelt werden können.\n- Es ist nicht davon auszugehen, dass alle Länder gleichzeitig pleitegehen. Problematisch kann jedoch ein Dominoeffekt innerhalb des Euro-Raums sein.\n\nWenn Sie ein Konto oder Depot im Ausland eröffnen möchten, sollte daher nicht nur der Standort zählen, sondern auch die Art der Bank. Besonders vorsichtig einzuordnen sind Banken mit Kreditgeschäft. Sinnvoller kann eine Bank sein, die als **spezielle Wertpapier-Handelsbank** arbeitet, also keine Kredite vergibt und ausschließlich Wertpapierdepots verwaltet. In diesem Fall ist der konkrete Standort der Bank tendenziell weniger entscheidend.\n\nKurz gesagt: Ein Auslandskonto kann sinnvoll sein, sollte aber gut ausgewählt werden. Entscheidend sind Land, Bankmodell, Einlagensicherung und die Frage, ob Sie dort nur Geld halten oder Wertpapiere depotführen möchten.",
+          "Approved": true
         },
         "pairedItem": {
           "item": 0
         }
-      },
-      {
-        "json": {
-          "row_number": 12,
-          "date": 46191,
-          "thread_id": "19eda80dfacb690c",
-          "match_uuid": "fc3d9a5b-afde-40cf-bb6c-60e5524545d8",
-          "match_score": 0.329284749049897,
-          "Reply To": "adamhaley@gmail.com",
-          "Reply To Name": "Adam Haley",
-          "Question": "What is the minimum investment, how can I pay, and how long does delivery take?",
-          "Agent Response": "Ein Investmentin Farbedelsteine beginnt ab etwa 15 000 Euro; üblicherweise werden Preisstaffelungen von 15.000 – 20.000 Euro, 20.000 – 50.000 Euro, 50.000 – 100.000 Euro und darüber hinaus angeboten. Die Zahlungsabwicklung wird nach Auswahl des Steins individuell vereinbart und erfolgt in der Regel per Banküberweisung, wobei weitere Details gemeinsam mit Ihnen abgestimmt werden. Die Auslieferung kann weltweit erfolgen und wird durch spezialisierte Werttransportunternehmen abgewickelt; einPersonalausweis ist bei Übergabe erforderlich. Bis zur Übergabe bleiben die Edelsteine versichert, und die genauen Lieferzeiten werden nach Vertragsabschluss und Zahlungskoordination mit Ihnen festgelegt.",
-          "Approved": true,
-          "Sent": ""
-        },
-        "pairedItem": {
-          "item": 1
-        }
-      },
-      {
-        "json": {
-          "row_number": 13,
-          "date": 46191,
-          "thread_id": "19eda80dfacb690c",
-          "match_uuid": "03de95e1-7b45-4c1e-a9ed-0855a9fe9ba8",
-          "match_score": 0.364307620595046,
-          "Reply To": "adamhaley@gmail.com",
-          "Reply To Name": "Adam Haley",
-          "Question": "Can airport scanners detect gemstones? -- Adam",
-          "Agent Response": "Die Anfrage nach dem Erkennen von Edelsteinen durch Flughafen-Scanner ist interessant. Allein aus den bereitgestellten Fragen und Antworten folgt nicht direkt eine generelle Möglichkeit, endgültige Aussagen zu treffen. Dennoch zeigt die FAQ, dass die Authentizität durch Garantien wie Prüfzeichen, Hologramme und zertifizierte Bewertungen gesichert wird. Wenn Sie sich sicher sein möchten, dass Ihre Steine den hohen Standards entsprechen, könnten wir gerne eine kurze Beratung vereinbaren, um alle Details zu klären. Lassen Sie uns gemeinsam sicherstellen, dass alles perfekt ist.",
-          "Approved": true,
-          "Sent": ""
-        },
-        "pairedItem": {
-          "item": 2
-        }
       }
     ]
   },
-  "versionId": "072b3baa-7624-4d0c-bb6e-e8dc63ce8fac",
-  "activeVersionId": "072b3baa-7624-4d0c-bb6e-e8dc63ce8fac",
+  "versionId": "b08a283c-bde0-4783-bbc4-8adc8a2b05bc",
+  "activeVersionId": "b08a283c-bde0-4783-bbc4-8adc8a2b05bc",
   "triggerCount": 1,
   "shared": [
     {
@@ -405,9 +368,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-18T11:47:44.000Z",
-    "createdAt": "2026-06-18T11:47:40.778Z",
-    "versionId": "072b3baa-7624-4d0c-bb6e-e8dc63ce8fac",
+    "updatedAt": "2026-06-24T00:10:52.000Z",
+    "createdAt": "2026-06-24T00:09:41.833Z",
+    "versionId": "b08a283c-bde0-4783-bbc4-8adc8a2b05bc",
     "workflowId": "hY6C5SQKzOYzYouT",
     "nodes": [
       {
@@ -478,7 +441,7 @@
       },
       {
         "parameters": {
-          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
+          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: 'webinar-lead@deutsches-edelsteinhaus.com',\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -723,9 +686,9 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 072b3baa",
+    "name": "Version b08a283c",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": []
 }
