@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T00:09:41.832Z",
+  "updatedAt": "2026-07-01T04:05:52.317Z",
   "createdAt": "2026-05-14T17:47:13.547Z",
   "id": "hY6C5SQKzOYzYouT",
   "name": "Generate Email from Approved",
@@ -12,7 +12,8 @@
         "subject": "={{ $json.subject }}",
         "message": "={{ $json.body }}",
         "options": {
-          "appendAttribution": false
+          "appendAttribution": false,
+          "replyTo": "={{ $json.participant_name }} <{{ $json.participant_email }}>"
         }
       },
       "type": "n8n-nodes-base.gmail",
@@ -329,8 +330,8 @@
     "node:Google Sheets Trigger1": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 210,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=210&exportFormat=xlsx"
+      "lastRevision": 237,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=237&exportFormat=xlsx"
     }
   },
   "meta": null,
@@ -338,15 +339,15 @@
     "Google Sheets Trigger1": [
       {
         "json": {
-          "row_number": 8,
+          "row_number": 9,
           "date": 46192,
           "thread_id": "19edf99c72de5c82",
-          "match_uuid": "fe860bc8-ec91-414a-bb4b-b307c65cdb61",
-          "match_score": 0.734720485184937,
-          "Reply To": "petrarapp62@gmail.com",
+          "match_uuid": "f117eaf1-689f-4c96-afaf-e74a74f316e8",
+          "match_score": 0.372778122635577,
+          "Reply To": "webinar-lead@deutsches-edelsteinhaus.com",
           "Reply To Name": "Petra Rapp",
-          "Question": "möchte mein Geld in Sicherheit bringen, wie funktioniert dies.Konto im Ausland eröffnen.",
-          "Agent Response": "Ein Konto im Ausland kann grundsätzlich Teil einer Vorsorgestruktur sein, ist aber nicht automatisch „sicherer“. Entscheidend ist vor allem, **in welchem Land die Bank sitzt** und wie stabil dessen Wirtschafts- und Finanzsystem ist.\n\nWichtig zu wissen:\n\n- Geht **nur eine einzelne Bank** pleite, greifen in der Regel die jeweiligen nationalen Sicherheitsmechanismen.\n- Kritisch wird es bei einem **Systemcrash**, also wenn mehrere Banken gleichzeitig Probleme bekommen. Dann können Sicherungssysteme überfordert sein, und der Staat muss eingreifen.\n- Die Erfahrung aus Krisen wie in Zypern zeigt, dass es im Extremfall zu hohen Verlusten kommen kann oder Einlagen im Rahmen gesetzlicher Abwicklungsregeln in Bankwerte umgewandelt werden können.\n- Es ist nicht davon auszugehen, dass alle Länder gleichzeitig pleitegehen. Problematisch kann jedoch ein Dominoeffekt innerhalb des Euro-Raums sein.\n\nWenn Sie ein Konto oder Depot im Ausland eröffnen möchten, sollte daher nicht nur der Standort zählen, sondern auch die Art der Bank. Besonders vorsichtig einzuordnen sind Banken mit Kreditgeschäft. Sinnvoller kann eine Bank sein, die als **spezielle Wertpapier-Handelsbank** arbeitet, also keine Kredite vergibt und ausschließlich Wertpapierdepots verwaltet. In diesem Fall ist der konkrete Standort der Bank tendenziell weniger entscheidend.\n\nKurz gesagt: Ein Auslandskonto kann sinnvoll sein, sollte aber gut ausgewählt werden. Entscheidend sind Land, Bankmodell, Einlagensicherung und die Frage, ob Sie dort nur Geld halten oder Wertpapiere depotführen möchten.",
+          "Question": "wie kommt man aus dem System raus",
+          "Agent Response": "Meine Rückfrage wäre zunächst: **Aus welchem System genau möchten Sie aussteigen?** Dem Finanzsystem, dem Bankensystem oder meinen Sie etwas anderes?\n\nJe nachdem gibt es unterschiedliche Möglichkeiten, Risiken zu reduzieren und unabhängiger zu werden. Eine pauschale Antwort wäre deshalb unseriös.\n\nGenau dafür gibt es unser 15-minütiges Sachwertstrategiegespräch. Dort schauen wir uns Ihre persönliche Situation an und besprechen, welche Schritte für Sie sinnvoll sein können – und ob Farbedelsteine dabei eine passende Ergänzung sind.\n\n",
           "Approved": true
         },
         "pairedItem": {
@@ -355,8 +356,8 @@
       }
     ]
   },
-  "versionId": "b08a283c-bde0-4783-bbc4-8adc8a2b05bc",
-  "activeVersionId": "b08a283c-bde0-4783-bbc4-8adc8a2b05bc",
+  "versionId": "6bc535f8-1af8-4e19-9af0-724737157ed8",
+  "activeVersionId": "6bc535f8-1af8-4e19-9af0-724737157ed8",
   "triggerCount": 1,
   "shared": [
     {
@@ -368,9 +369,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-24T00:10:52.000Z",
-    "createdAt": "2026-06-24T00:09:41.833Z",
-    "versionId": "b08a283c-bde0-4783-bbc4-8adc8a2b05bc",
+    "updatedAt": "2026-07-01T04:06:54.000Z",
+    "createdAt": "2026-07-01T04:05:52.318Z",
+    "versionId": "6bc535f8-1af8-4e19-9af0-724737157ed8",
     "workflowId": "hY6C5SQKzOYzYouT",
     "nodes": [
       {
@@ -379,7 +380,8 @@
           "subject": "={{ $json.subject }}",
           "message": "={{ $json.body }}",
           "options": {
-            "appendAttribution": false
+            "appendAttribution": false,
+            "replyTo": "={{ $json.participant_name }} <{{ $json.participant_email }}>"
           }
         },
         "type": "n8n-nodes-base.gmail",
@@ -686,7 +688,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version b08a283c",
+    "name": "Version 6bc535f8",
     "description": "",
     "autosaved": true
   },
