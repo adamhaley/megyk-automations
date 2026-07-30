@@ -890,13 +890,14 @@
   },
   "staticData": {
     "node:Wufoo Trigger": {
-      "handshakeKey": "a240b4b53c7e1102fd0c9de8e5750770b019e838",
+      "handshakeKey": "31c6943822aba8a37d0fc1e2d050c7553f7c4809",
       "webhookId": "mqhpg7d0p203ml"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
+  "nodeGroups": [],
   "pinData": {
     "Wufoo Trigger": [
       {
