@@ -2054,15 +2054,26 @@
   },
   "staticData": {
     "node:Scheduled Folder Check": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
     },
     "node:Schedule Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
+  "nodeGroups": [],
   "pinData": {},
   "versionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
   "activeVersionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
