@@ -131,10 +131,16 @@
       "recurrenceRules": []
     },
     "node:Monthly Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
     }
   },
   "meta": null,
+  "nodeGroups": [],
   "pinData": {},
   "versionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
   "activeVersionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
