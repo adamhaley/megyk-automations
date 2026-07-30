@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T04:05:52.317Z",
+  "updatedAt": "2026-07-08T15:57:59.134Z",
   "createdAt": "2026-05-14T17:47:13.547Z",
   "id": "hY6C5SQKzOYzYouT",
   "name": "Generate Email from Approved",
@@ -75,7 +75,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: 'webinar-lead@deutsches-edelsteinhaus.com',\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
+        "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -330,11 +330,12 @@
     "node:Google Sheets Trigger1": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 237,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=237&exportFormat=xlsx"
+      "lastRevision": 363,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=363&exportFormat=xlsx"
     }
   },
   "meta": null,
+  "nodeGroups": [],
   "pinData": {
     "Google Sheets Trigger1": [
       {
@@ -356,8 +357,8 @@
       }
     ]
   },
-  "versionId": "6bc535f8-1af8-4e19-9af0-724737157ed8",
-  "activeVersionId": "6bc535f8-1af8-4e19-9af0-724737157ed8",
+  "versionId": "917c8d71-df8f-4f35-9648-d00ad0458a76",
+  "activeVersionId": "917c8d71-df8f-4f35-9648-d00ad0458a76",
   "triggerCount": 1,
   "shared": [
     {
@@ -369,9 +370,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-07-01T04:06:54.000Z",
-    "createdAt": "2026-07-01T04:05:52.318Z",
-    "versionId": "6bc535f8-1af8-4e19-9af0-724737157ed8",
+    "updatedAt": "2026-07-08T15:58:05.000Z",
+    "createdAt": "2026-07-08T15:57:59.136Z",
+    "versionId": "917c8d71-df8f-4f35-9648-d00ad0458a76",
     "workflowId": "hY6C5SQKzOYzYouT",
     "nodes": [
       {
@@ -443,7 +444,7 @@
       },
       {
         "parameters": {
-          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: 'webinar-lead@deutsches-edelsteinhaus.com',\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
+          "jsCode": "let template = $('Load Email Template').first().json.body;\nlet greeting = $input.first().json.message.content;\nlet questions = $('Join Q&A').first().json.body;\n\ntemplate = template.replace('{{greeting}}', greeting);\nlet emailbody = template.replace('{{questions}}', questions);\n\nconst replyTo = $('Join Q&A').first().json.reply_to;\nconst participantName = $('Google Sheets Trigger1').first().json[\"Reply To Name\"] || '';\n\nreturn {\n  to: replyTo,\n  participant_email: replyTo,\n  participant_name: participantName,\n  subject: `Deutsches Edelsteinhaus Sachwerte - Ihre Webinarfrage`,\n  body: emailbody\n};"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -688,7 +689,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 6bc535f8",
+    "name": "Version 917c8d71",
     "description": "",
     "autosaved": true
   },
