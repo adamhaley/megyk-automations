@@ -428,12 +428,18 @@
   },
   "staticData": {
     "node:Run Daily": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
+  "nodeGroups": [],
   "pinData": {},
   "versionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
   "activeVersionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
