@@ -393,13 +393,17 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        18
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
       ]
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
+  "nodeGroups": [],
   "pinData": {
     "Schedule Trigger": [
       {
