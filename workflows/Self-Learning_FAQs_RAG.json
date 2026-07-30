@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-18T12:06:17.253Z",
+  "updatedAt": "2026-07-09T20:16:36.708Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "Self-Learning FAQs RAG",
@@ -241,8 +241,7 @@
         },
         "simple": false,
         "filters": {
-          "labelIds": "={{ [\"INBOX\"] }}",
-          "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:tatjana.haufler@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
+          "q": "{from: noreply-11551@webinaris.co from:anna.streeb@deutsches-edelsteinhaus.com from:tatjana.haufler@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
         },
         "options": {}
       },
@@ -263,7 +262,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch  = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSection = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Parse questions\n// --------------------------------------\nconst questions = [];\n\n// Matches lines like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst regex = /\\d+:\\s.*?\\):\\s([\\s\\S]*?)(?=\\n\\s*\\d+:\\s|$)/g;\n\nlet match;\n\nwhile ((match = regex.exec(chatSection)) !== null) {\n  let q = match[1].trim();\n\n  // Convert HTML line breaks to spaces\n  q = q.replace(/<br\\s*\\/?>/gi, \" \");\n\n  // Strip basic HTML tags\n  q = q.replace(/<[^>]+>/g, \" \");\n\n  // Normalize whitespace\n  q = q.replace(/\\s+/g, \" \").trim();\n\n  // Stop parsing at common footer / signoff phrases\n  if (/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)) {\n    break;\n  }\n\n  // Filter out boilerplate lines\n  if (\n    q &&\n    !/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)\n  ) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};"
+        "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSectionRaw = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Normalize chat section before parsing\n// HTML emails often use <br> instead of line breaks.\n// --------------------------------------\nlet chatSection = chatSectionRaw\n  .replace(/<br\\s*\\/?>/gi, \"\\n\")\n  .replace(/<\\/p>/gi, \"\\n\")\n  .replace(/<[^>]+>/g, \" \")\n  .replace(/\\r/g, \"\")\n  .replace(/[ \\t]+\\n/g, \"\\n\")\n  .replace(/\\n{2,}/g, \"\\n\")\n  .trim();\n\n// Webinar notification emails often append signoff/footer text directly\n// after the chat block. Truncate at the first obvious footer marker so the\n// last question does not absorb \"Viele Grüße\", \"Webinaris\", \"Hinweis:\", etc.\nchatSection = chatSection.split(\n  /\\n(?=(?:Von|From|An|To|Datum|Date):|Viele Grüße,?|Webinaris\\s*\\(|Hinweis:|Wenn du keine Benachrichtigungs-Mails)/i\n)[0].trim();\n\n// --------------------------------------\n// Parse questions\n// Keeps the same output contract as the current node\n// --------------------------------------\nconst questions = [];\n\nfunction isRealQuestion(q) {\n  const text = q.trim();\n\n  if (!text) {\n    return false;\n  }\n\n  // Reject emoji-only or symbol-only messages like \"👍🏻\"\n  if (/^[\\p{Emoji}\\p{Symbol}\\s]+$/u.test(text)) {\n    return false;\n  }\n\n  // Reject short acknowledgements and feedback that are not actionable questions\n  if (/^(ja|nein|ok|okay|danke|danke schön|dankeschön|super|perfekt|top|gut)$/i.test(text)) {\n    return false;\n  }\n\n  // A question mark is the clearest signal that this should pass through\n  if (text.includes(\"?\")) {\n    return true;\n  }\n\n  // Reject very short fragments even if they are not in the explicit stoplist\n  if (text.length < 12) {\n    return false;\n  }\n\n  // Keep longer sentence-like inputs for now, even if they omit '?'\n  return /\\s/.test(text);\n}\n\n// Split on numbered chat entries like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst parts = chatSection.split(/\\n(?=\\d+:\\s.*?\\):\\s*)/);\n\nfor (const part of parts) {\n  const match = part.match(/^\\d+:\\s.*?\\):\\s*([\\s\\S]*)$/);\n  if (!match) {\n    continue;\n  }\n\n  let q = match[1].replace(/\\s+/g, \" \").trim();\n\n  // Skip clear footer/signoff lines but do not stop parsing entirely.\n  if (!q) {\n    continue;\n  }\n\n  if (/^(Vielen Dank|Thank you in advance|Best regards|Kind regards|Hinweis:|Note:)/i.test(q)) {\n    continue;\n  }\n\n  if (isRealQuestion(q)) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -325,22 +324,6 @@
     },
     {
       "parameters": {
-        "content": "## Retrieval ( Auto Q & A Flow )\n### Retrieval (Auto Q & A Flow)\n\nFlow:  \n1. **Trigger:** Gmail node receives new survey response with user questions.  \n2. **Parse Questions:** Extract raw text of each user question.  \n3. **OpenAI Embeddings:**  \n   - Model: `text-embedding-3-small` (1536-dim)  \n   - Input: `{{$json[\"question\"]}}` (user’s question in German)  \n   - Output: `{{$json[\"data\"][0][\"embedding\"]}}`  \n4. **Supabase RPC Retrieval:**  \n   - Calls `match_faqs_json(query_embedding, match_count=5)`  \n   - Returns top FAQ matches with similarity scores.  \n5. **AI Reply (next step):**  \n   - Pass best match into OpenAI Chat node  \n   - Draft personalized auto-reply email using FAQ answer as context  \n   - Format into Gmail/Bitrix email template  \n\n",
-        "height": 912,
-        "width": 1408,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1088,
-        -464
-      ],
-      "id": "de68b760-5b4d-470e-b296-db392d007c8a",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://api.openai.com/v1/embeddings",
         "authentication": "genericCredentialType",
@@ -379,9 +362,9 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "openrouter/free",
+          "value": "gpt-4.1-mini",
           "mode": "list",
-          "cachedResultName": "OPENROUTER/FREE"
+          "cachedResultName": "GPT-4.1-MINI"
         },
         "messages": {
           "values": [
@@ -406,8 +389,8 @@
       "name": "Generate Email Reply Segment",
       "credentials": {
         "openAiApi": {
-          "id": "nYUZBGx2UZRpW2Ia",
-          "name": "OpenRouter Account"
+          "id": "BRRf66J5aSwt4UDP",
+          "name": "OpenAi account"
         }
       }
     },
@@ -728,10 +711,10 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1782980942,
+        "lastTimeChecked": 1785437116,
         "possibleDuplicates": [
-          "19f21f21d588acd2",
-          "19f217858a6a8944"
+          "19fb4585bb8c9496",
+          "19fb458520e276ce"
         ]
       }
     },
@@ -754,6 +737,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
+  "nodeGroups": [],
   "pinData": {
     "Message a model": [
       {
@@ -2255,43 +2239,65 @@
     "Gmail Trigger": [
       {
         "json": {
-          "id": "19eda9eb135896f5",
-          "threadId": "19eda9eb135896f5",
+          "id": "19f47933868f3562",
+          "threadId": "19f47933868f3562",
           "labelIds": [
             "UNREAD",
             "CATEGORY_PERSONAL",
             "INBOX"
           ],
-          "sizeEstimate": 9985,
+          "sizeEstimate": 15560,
           "headers": {
             "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])\r\n        by mx.google.com with SMTPS id 5614622812f47-488a97192fcsor4094585b6e.4.2026.06.18.05.04.53\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (Google Transport Security);\r\n        Thu, 18 Jun 2026 05:04:53 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6808:1184:b0:489:3a6b:2425 with SMTP id\r\n 5614622812f47-4894294f066mr6373183b6e.15.1781784290807; Thu, 18 Jun 2026\r\n 05:04:50 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1781784293; cv=none;\r\n        d=google.com; s=arc-20240605;\r\n        b=f6ccxuz5pZnug0LVknH2TooDeJwCPnNw84gvdexVldkR4vSQp1y7QNLEcbKOWM86d7\r\n         nGvIk0Vu+MzdctI2QDVp92EqWmzK1PyFNWOaQzRrSOXuMLIHuURI2Q+obCa0LbBuoniG\r\n         f9AtXSeCU11H2lWeoGcMVEzkUFCzu7123PajToRvsKoXwvTEmUbud3NBhrnyC/R8H81O\r\n         yEmftG9b7qMcXgSGEDo7Rfl9Cim7DezehpmdTOkU4dQXEepQdEGhds5RY/iMa23zV2Yj\r\n         LwpobqVo1AUh3sfP73QJocELAhL7yWegoRuUDLVcH2tyozQiUY/I3KJuQKccuS9aRWNv\r\n         CW/Q==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;\r\n        h=to:subject:message-id:date:from:reply-to:mime-version\r\n         :dkim-signature;\r\n        bh=5jN0GRwms+YMwuZgOQ0GmFI8lQ4sL4MhBoVqJLNuu/g=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=iANufkDQ/ruKcpIUwt9FWeBwqufoM5PYkNpcDZLAdlzQfAzFhQEwo5cuGY/sYqAzgP\r\n         HBfGhJX2lm7dwLM/K3hHYF0xl0sAs5Iujxf+qAXEcjw+oZF/zWrRCjP+uaK53wKm1d0N\r\n         z20p6uH+AdHApH4k+f2Set2TCsjV6azu4faISnMD/XbZzfxW31kXxx2ru0l/ZAbjcvGs\r\n         IMWsyaLNl/LJHQLYlDlpcN0VppD3pJ1VN5fgLWIrwUp6rrbfnodb+2umeSbr9+iTuKKN\r\n         WiBvgGrX7k37SLJI7MshZSt0YiBVNukFtGfOsn6luzYArv/2k4XjjeT7YtUra2vONzL9\r\n         xcFA==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com; arc=none",
-            "return-path": "Return-Path: <adamhaley@gmail.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of adamhaley@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@gmail.com header.s=20251104 header.b=F41V2o3K;\r\n       arc=pass (i=1);\r\n       spf=pass (google.com: domain of adamhaley@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=adamhaley@gmail.com;\r\n       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;\r\n       dara=pass header.i=@gmail.com",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=gmail.com; s=20251104; t=1781784293; x=1782389093; dara=google.com;\r\n        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc\r\n         :subject:date:message-id:reply-to;\r\n        bh=5jN0GRwms+YMwuZgOQ0GmFI8lQ4sL4MhBoVqJLNuu/g=;\r\n        b=F41V2o3KzISBLoBpE7981GYT2EF+YBCDv4xCaQiK3ozES6JJcdQBRy641UBnKxvcMx\r\n         ibA1cIZ3MV3nQ13qQZW0KWpdfoHC05yl5fPyIUQUYfENgDIV8EtcEGPmeXROHLMRUnPJ\r\n         ECJD93ylRwU9UywJax96QDz2ZxJ2ef6O0aWFlCJNnPDc47NZgeyMZuUTxuC24kF85GIP\r\n         AnuVNboW4FhC8QQkMj8SDOYCmgwpbjsBOcoAzU5uvnRkQC25mlWW30Rr5iOwp8T2xN8A\r\n         hu2iMOBvAlTm60oEr2CDtlpiM0JtPGo27qiP496oBlsa8ugxGFD4bcQwB1GKBuwKwzcg\r\n         xi7g==",
-            "x-google-dkim-signature": "X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=1e100.net; s=20251104; t=1781784293; x=1782389093;\r\n        h=to:subject:message-id:date:from:reply-to:mime-version:x-gm-gg\r\n         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;\r\n        bh=5jN0GRwms+YMwuZgOQ0GmFI8lQ4sL4MhBoVqJLNuu/g=;\r\n        b=festM7wvc8388Fh5UOew+6ZkEohy+duaPwL7GvK/wB+gA/ZBtG4c87ecRFwtIfhiTe\r\n         AoJluPy+grsvldRsxzy6w2AVakQrftDBD0NQucg1zknkJnh+1phEN9b0f80Apv70G/uS\r\n         HQFaeAQ7+bKDyluWjQp19beZ3WhjQzyPTGDQK3JmSG3avCypxVYRXz3MN8iQj6Mbok3i\r\n         FFIWLcE8oo0znahY0sDekpjYF0Kbk9bb6vPvGDKgE3EE7NnuduOZh8obZ2eIO3ShRhgJ\r\n         ttXsbhBqAoXn6GtAZowIzFeJ6HQ0/HEXtu5RFs5h+Gn13NtC8muVsE2SmXBN3Ib8B+PE\r\n         74AQ==",
-            "x-gm-message-state": "X-Gm-Message-State: AOJu0Yw43PVagkPZWhrKV3sLdNJA7e9FaUvDiZgsCSyvxw28N4w4nj3L\r\n\tgcerg4gb3TOM20HBTQCzZh/LL78bF9/dZKGRbAI/j9MfWv737deevwIexeCgczgqla+gOjQxZCr\r\n\ti39v9rcrPCV/D5d4OR56j76E5u7elCCq/sfUGilg=",
-            "x-gm-gg": "X-Gm-Gg: Acq92OElv1p8124OoVFQq/DDO3b6Xwi+BiAq96RvSk8SC0G/9nWg8bRC49P+Of7yPy1\r\n\t0O3e/Jh3CfXHwm2/jVlR2MXZS/WMk66N99A1TucsVtLPa6GXTK4JdCt3Cmuau1xMaZTMUa56hdJ\r\n\t9xrr18OxBIAXgZ42/pAWn8i6g16moPQ0JRh/g51dDL3nKHLPKO/bY9hInG2i/3DpKPhEBe66VYE\r\n\tlnIcgIRp9Bz6tHGcDBuF7RpV/Q6PPQcV3iyhdzZuPjTxLrNZtGqtoUIwSmhWfEmrs9lgVVV+YVV\r\n\tNUJfxZhurwuHQGH00KVniAiL03xGMw85IfMJiuoZjTftvxqd8uYb61II5jyR3g==",
+            "received": "Received: from FR0P281MB2877.DEUP281.PROD.OUTLOOK.COM\r\n ([fe80::baa5:ceb5:714a:7cad]) by FR0P281MB2877.DEUP281.PROD.OUTLOOK.COM\r\n ([fe80::baa5:ceb5:714a:7cad%6]) with mapi id 15.21.0181.014; Thu, 9 Jul 2026\r\n 15:50:54 +0000",
+            "x-received": "X-Received: by 2002:a05:6a00:1788:b0:848:2f73:8ffd with SMTP id d2e1a72fcca58-8484369149amr7449625b3a.70.1783612258425;\r\n        Thu, 09 Jul 2026 08:50:58 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;\r\n b=GdzxW7SPHw3Sbdrk/DtybEFspGzAineWlye/pa8Q+s/yaEUwhfC/iFppKVyPWjSSmNNu9Rl/bnoT4Kx3MUMUb2SH0YRwFoDgMtXHQ8Vrza6yiljxVAX7BZOMrRT9AiIB0hb6knfpBoKFCV1j57n2a58+/4+EBqNazJyuSz2Rnz3kbdwjLEczidLshCYoddYlCYPnb1cIiNORIGF7lxC1ss569WshA86Kx5TctuzAhKx858MqE5T9UOHVbgRbw62tKktiFgGTQh8C9KEaHFlZfewQQRPSGJ7zbURwPOYnk5Q/rzMByHXR5985tk2WxI2/HkSgRduppVga0pQDUh4a/Q==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;\r\n s=arcselector10001;\r\n h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;\r\n bh=r57nUHTQUVT/zORC7dmwj4M9aN6DES3e1hMZmvugrQw=;\r\n b=t6XMNvyKqtakQp790XwwiivwGWT9FTDmiK2hDqXkay26N+uvpe1YAnLhT8wr5/l7LvgqK5oRb74PdIPk+5/s4+mZ9YYjRstZZ7Qajrxnp/3z++fHTeLhEVKbd+F3JaTT831EKeEToKy5VR+3Skd/y53xiGjgaGAU+933vAB/QXKCYNDd/iSz4b6HLnB2LotQmpgd5YOnAq4WJkTFIjf5DyJV3uW4woP5igfAa2oDv3pRck6oEWjw7n7ZfHVaELb0BK4+2MwVKPPfBvjUOwseyDn0BtK18fU7qdkCvcE/xm6+EOo5JSIJmzLz7adjbjfys9hzuTuF/I4ItMRtr0DB6g==",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass\r\n smtp.mailfrom=deutsches-edelsteinhaus.com; dmarc=pass action=none\r\n header.from=deutsches-edelsteinhaus.com; dkim=pass\r\n header.d=deutsches-edelsteinhaus.com; arc=none",
+            "return-path": "Return-Path: <anna.streeb@deutsches-edelsteinhaus.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of anna.streeb@deutsches-edelsteinhaus.com designates 2a01:111:f403:c20b::1 as permitted sender) client-ip=2a01:111:f403:c20b::1;",
+            "authentication-results": "authentication-results: dkim=none (message not signed)\r\n header.d=none;dmarc=none action=none header.from=deutsches-edelsteinhaus.com;",
+            "from": "From: Anna Streeb <anna.streeb@deutsches-edelsteinhaus.com>",
+            "to": "To: \"deutschesedelsteinhaus@gmail.com\" <deutschesedelsteinhaus@gmail.com>",
+            "subject": "Subject:\r\n =?iso-8859-1?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_sonjambauer@g?=\r\n =?iso-8859-1?Q?mx.de,_Online_Vortrag:_Die_gr=F6=DFten_Gefahren_f=FCr_Ihr_?=\r\n =?iso-8859-1?Q?Verm=F6gen?=",
+            "thread-topic": "Thread-Topic:\r\n =?iso-8859-1?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_sonjambauer@g?=\r\n =?iso-8859-1?Q?mx.de,_Online_Vortrag:_Die_gr=F6=DFten_Gefahren_f=FCr_Ihr_?=\r\n =?iso-8859-1?Q?Verm=F6gen?=",
+            "thread-index": "Thread-Index: AQHdD7qfYj84P0TSMU2kt8Y8os2hdw==",
+            "date": "Date: Thu, 9 Jul 2026 15:50:54 +0000",
+            "message-id": "Message-ID:\r\n <FR0P281MB2877D5F20B56238E912DA9A6ADFE2@FR0P281MB2877.DEUP281.PROD.OUTLOOK.COM>",
+            "accept-language": "Accept-Language: de-DE, en-US",
+            "content-language": "Content-Language: de-DE",
+            "x-ms-has-attach": "X-MS-Has-Attach:",
+            "x-ms-tnef-correlator": "X-MS-TNEF-Correlator:",
+            "x-ms-reactions": "x-ms-reactions: allow",
+            "x-ms-publictraffictype": "x-ms-publictraffictype: Email",
+            "x-ms-traffictypediagnostic": "x-ms-traffictypediagnostic: FR0P281MB2877:EE_|BE3P281MB5871:EE_",
+            "x-ms-office365-filtering-correlation-id": "x-ms-office365-filtering-correlation-id: 880b5fd4-f19a-4c62-e1a1-08deddd1dc62",
+            "x-ms-exchange-senderadcheck": "x-ms-exchange-senderadcheck: 1",
+            "x-ms-exchange-antispam-relay": "x-ms-exchange-antispam-relay: 0",
+            "x-microsoft-antispam": "x-microsoft-antispam:\r\n BCL:0;ARA:13230040|23010399003|366016|376014|1800799024|56012099006|8096899003|18002099003|38070700021|220923002;",
+            "x-microsoft-antispam-message-info": "x-microsoft-antispam-message-info:\r\n lvPlppCZGCS4mxZWbk4TCxD9+VBgIVLZZUkujkrQDbKiFUj5bCTI+ikaIAonxw94j6MMBqBdxAy0XMxdvYEJ1TDb6ZOEPBdxZgfAT9Z2+9CoIwjB647ZTyl1urpNVlXGlRaLhqVeedjLJLjplum2M0sBq2Av2yosqADDqGoITGJTxE6pxsjF70z2adGG5VO7uh4mqD+9x/RlsHAa6VGmJyO43IfKiad5wApVF5HYAOoR7Kwd0gzTlNkzHSDh6spjKVcth0MA988pLSQcyu8cTtd67s9U0H/BD4e0onOKjrZVvbKQ+opTur6jUgbsVceKg7YIqnqs0xr7GhpDLUeRjK8G+hdpnpGcP8TC8Mex5pBTMFFPNcn+8mU1iFG/dIGE9ziW2HHUq51iZ50F4WJQmDiGhQ4OYFeKEeezm+QgYRT5x283ZvfDjtjiP/a3wl8QyOK5/In9nRngU1YXVuKpMJBCU6p9jwBK2S6gAQZFBI5fWBN+XBHB2HpFdxtmORKU2s0fykvWVM2LzmWeypsc5BGwVb8ALk6PUbFAX1DIlQZ6bEcpKEFFuUe8dssQOHdhvxrI9PPaRt8remrI8h5q7ZuM8uPypH0lZyXhncOyRPJ093hs/EPz0a47uhRBDajMBPhy2rJ1C0OaUg5N2SqwudHpLqaF/OPbB4p3sTGRr0HGxZ7AOWhUipevE7cFUJ0QdT3hwxAggjwqWwUa1o/gu5yW4dQoM5vHGkJRKvlZtG4=",
+            "x-forefront-antispam-report": "x-forefront-antispam-report:\r\n CIP:255.255.255.255;CTRY:;LANG:de;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR0P281MB2877.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(366016)(376014)(1800799024)(56012099006)(8096899003)(18002099003)(38070700021)(220923002);DIR:OUT;SFP:1102;",
+            "x-ms-exchange-antispam-messagedata-chunkcount": "x-ms-exchange-antispam-messagedata-chunkcount: 2",
+            "x-ms-exchange-antispam-messagedata-0": "x-ms-exchange-antispam-messagedata-0:\r\n =?iso-8859-1?Q?sQxQZ14DYPJNaIAu3mSGr5t8mMwoYNvbpQxNEVQm2CYRbsqtKvUbbpKGOH?=\r\n =?iso-8859-1?Q?PdV+u2shdsHVe53g4YBoeg7+qTaSBLsekWPbT4md21CoA+EDefvDhXhY1S?=\r\n =?iso-8859-1?Q?hFJVjbho9GyOnJyM3p9/r9VPvoijCtQ8aGiJBlWmyZe/kTHjXDZFXkURH9?=\r\n =?iso-8859-1?Q?N862bXwvwq5hdWwYtkoS0xeENsPbZtPNHLkc/prrzoyTVXbR4Sh3sg43KH?=\r\n =?iso-8859-1?Q?Fek6IfO5gaZaXGeawspkFpOgMbjxIx10rPqTmlkogTLpoFWPtxwno5J8xf?=\r\n =?iso-8859-1?Q?oEBVK0BXwKFWvGbqRyg5CQwfWizAcfAjSwTxsyHGbf03c+l+v05Ts7sAnm?=\r\n =?iso-8859-1?Q?qNQWAbsltsYIn/zTnN24+k4TmQ41+q6oObdtGyftjeYXO8R/adNQrD1i1u?=\r\n =?iso-8859-1?Q?enDVe2kXjArHdbVNU5ST0dusXg74krnf5TXtDnCTU8mlAmzxRbv+SUmoP3?=\r\n =?iso-8859-1?Q?9NhWL1vyDX7Mga8zO99oz92Elf0HFx52yhz60mtMx5CrnHniDiF9FBoZ1j?=\r\n =?iso-8859-1?Q?VQozy9F5k/+GSngPas3Sxjyt76g+uI5EsmUSqyka7Xt/E3GyGclJOvNjfR?=\r\n =?iso-8859-1?Q?MLfkDqKVti6W1gL4sHhQRjFTmu8HTs3hewXfTBuxQuheT57AqAel+fe6sM?=\r\n =?iso-8859-1?Q?qeziwrk6h9l1M4VTPWP+Wf7E9ZUQdfMVrGLtjLBI9TPFOwUkl7+myGE0P6?=\r\n =?iso-8859-1?Q?bVg0+S3rLcNa19UmX+UVgHchA16RhSvZgzH70NkCpGIFf4P5AuL04izp0r?=\r\n =?iso-8859-1?Q?Bd2nW3IDNj5Yzkp1Zot1tWf3ZKOR50vns/DaiaTg0y5b8/d7uPDsiY+gVk?=\r\n =?iso-8859-1?Q?CrcMgG6FaRL4qXX//ghLreQf6KdxDjaZdsza96XCjSi2noAF4hh4bCof9I?=\r\n =?iso-8859-1?Q?rkdLSi3TA/zxc2Gb7gZR7+6DBQhV2snuaKEt3GDSoVVbSASEMpuQxU5TdY?=\r\n =?iso-8859-1?Q?t7rPwwXsMRbqtYYDeRmvgkQnqVeguBMGDmeeIRv2Z6XomFe7GSxIDY7Vyf?=\r\n =?iso-8859-1?Q?d43HKFTOANYLra/45vwm6wrugcnBVVEhRraaH9fiUoIldp+gYAHhsO9Ome?=\r\n =?iso-8859-1?Q?NfrkjkB9or22g7LbORQdzE2nDx40yL+kmIlyEA8b4zbj9SjGQivZvhEUdi?=\r\n =?iso-8859-1?Q?DNXgGDqG84xNLNb6qoZAaP1wMeuJAbQxosE8cZoBDz6mqsk3nncrJvECfM?=\r\n =?iso-8859-1?Q?HZl1XKUQtEgh31NK6XSxOkj1/7HVNGg+Zej5b2ekj0GGKh7zqAYcoUg1L7?=\r\n =?iso-8859-1?Q?jM1dreUmim85tyrJdjPJ6WVon4VpaWhg2y7xVhlQKani/Bc4IqDrk8rvrG?=\r\n =?iso-8859-1?Q?abFBHBf+8JUexf3HfHyFn5Hho3HtgC5gvyYcS0FVVgcbvAEldAo4E2sq8m?=\r\n =?iso-8859-1?Q?l1KRELB0z7LsjVGkJCiO2ttWl90htXKMfdnXiG/bTdJOjkLepVcdc5AFgm?=\r\n =?iso-8859-1?Q?l1DrKztb4xjLhmW6Cvdju2zTYpT735PYVN+ZqcGNfny6trADL9gszGFInd?=\r\n =?iso-8859-1?Q?rJYaVsABvxZCZKAFrTEKiSLt0o6Szkw6GoNJcFS47Wo9d6/xEe5hThCG+k?=\r\n =?iso-8859-1?Q?i/i5YxnOrDPsNo5wuJEsE28YwYUPjoRkhblWmpysDdg9aTPQgEu73tn0Dt?=\r\n =?iso-8859-1?Q?XA4A76xVFa+1FNaHPfCwYoCNmBOd9lpL6g9Rz1AoGpp9SSw68f6BNRtRcG?=\r\n =?iso-8859-1?Q?rqYaRCNhmFG9vX+JSRgeu2Zb9Uu8oEwl/jMgU9Tzl/JhtIYGETDmfP/z/1?=\r\n =?iso-8859-1?Q?BZPHR4W1C5PMBnLdiSeLfrGOMwprCfY2SALZEH63lDEswWoZRluYt3403P?=\r\n =?iso-8859-1?Q?cAZRztr2ZrpoeR8aZzJmUu+von1xdfAPlIFQoXv4aszXU9/aoga3XQonnj?=\r\n =?iso-8859-1?Q?ct?=",
+            "x-ms-exchange-antispam-messagedata-1": "x-ms-exchange-antispam-messagedata-1: /aXMBKEFmlXGkQ==",
+            "content-type": "Content-Type: multipart/alternative;\r\n\tboundary=\"_000_FR0P281MB2877D5F20B56238E912DA9A6ADFE2FR0P281MB2877DEUP_\"",
             "mime-version": "MIME-Version: 1.0",
-            "reply-to": "Reply-To: adamhaley@gmail.com",
-            "from": "From: Adam Haley <adamhaley@gmail.com>",
-            "date": "Date: Thu, 18 Jun 2026 05:04:39 -0700",
-            "x-gm-features": "X-Gm-Features: AVVi8CfQOPOkynmv2ZSoPI8PlEqfs6S9vdA11qr5ZJAR-PDBew_oDgMM5vzSJmQ",
-            "message-id": "Message-ID: <CAL2j52N8gYRajzMi-5cj9+TALA=f=2VSVskXp4m6VJ=GQke7ow@mail.gmail.com>",
-            "subject": "Subject: test",
-            "to": "To: deutschesedelsteinhaus@gmail.com",
-            "content-type": "Content-Type: multipart/alternative; boundary=\"000000000000b85556065485fbcc\""
+            "x-originatororg": "X-OriginatorOrg: deutsches-edelsteinhaus.com",
+            "x-ms-exchange-crosstenant-authas": "X-MS-Exchange-CrossTenant-AuthAs: Internal",
+            "x-ms-exchange-crosstenant-authsource": "X-MS-Exchange-CrossTenant-AuthSource: FR0P281MB2877.DEUP281.PROD.OUTLOOK.COM",
+            "x-ms-exchange-crosstenant-network-message-id": "X-MS-Exchange-CrossTenant-Network-Message-Id: 880b5fd4-f19a-4c62-e1a1-08deddd1dc62",
+            "x-ms-exchange-crosstenant-originalarrivaltime": "X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2026 15:50:54.8264\r\n (UTC)",
+            "x-ms-exchange-crosstenant-fromentityheader": "X-MS-Exchange-CrossTenant-fromentityheader: Hosted",
+            "x-ms-exchange-crosstenant-id": "X-MS-Exchange-CrossTenant-id: e3c6a583-4ced-461a-9ef5-a66b4f93be1b",
+            "x-ms-exchange-crosstenant-mailboxtype": "X-MS-Exchange-CrossTenant-mailboxtype: HOSTED",
+            "x-ms-exchange-crosstenant-userprincipalname": "X-MS-Exchange-CrossTenant-userprincipalname: xT3wD0PBXRbuFxqHvS23xCpOfFrM1MFm2pH9fsNZK8TJhzSjJ5t84QiGTtZyo96CwlA9qnyeO7crRiOV1xyMobA1Qd5W1I09/cKMn/JouR0skT3yCIokTMgnj14y/XBY",
+            "x-ms-exchange-transport-crosstenantheadersstamped": "X-MS-Exchange-Transport-CrossTenantHeadersStamped: BE3P281MB5871"
           },
-          "html": "<div dir=\"ltr\"><div>Below you will find the chat messages that<br><a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br>left in the webinar “Brevo Webinar: The<br>Greatest Dangers to Your Wealth.”<br><br>First name: Adam<br>Last name: Haley<br>Email: <a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br>Phone number:<br>Callback requested: No<br>Callback number:<br>Note:<br>Source ID:<br>Affiliate ID:<br>UTM Source:<br>UTM Medium:<br>UTM Campaign:<br>UTM Term:<br>UTM Content:<br>Webinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:<br>DEH - Auto WEBIGG NOT ACTIVE (x))<br>Registration time: 10/09/2025 10:53<br>Webinar time: 10/09/2025 10:55<br>Clicked buttons:<br>Answered surveys:<br>Login time: 6/18/2026 10:57<br>Logout time: 6/18/2026 12:25<br>Chat: <br>1: Adam (6/18/2026 10:58):<br>What is the minimum investment required to purchase investment-grade gemstones?<br>2: Adam (6/18/2026 10:58):<br>How long does it take for the gemstones to be purchased and delivered?<br>3: Adam (6/18/2026 10:58):<br>How much does storage in the Liechtenstein bonded warehouse cost?<br>4: Adam (6/18/2026 10:58):<br>Can customers choose which gemstones they receive?<br>5: Adam (6/18/2026 10:58):<br>Are the gemstones delivered with appraisal certificates?<br>6: Adam (6/18/2026 10:58):<br>Which laboratories verify that the gemstones are genuine?<br></div><div><br></div><span class=\"gmail_signature_prefix\">-- </span><br><div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\">Adam <br></div></div>\n",
-          "text": "Below you will find the chat messages that\nadamhaley@gmail.com\nleft in the webinar “Brevo Webinar: The\nGreatest Dangers to Your Wealth.”\n\nFirst name: Adam\nLast name: Haley\nEmail: adamhaley@gmail.com\nPhone number:\nCallback requested: No\nCallback number:\nNote:\nSource ID:\nAffiliate ID:\nUTM Source:\nUTM Medium:\nUTM Campaign:\nUTM Term:\nUTM Content:\nWebinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:\nDEH - Auto WEBIGG NOT ACTIVE (x))\nRegistration time: 10/09/2025 10:53\nWebinar time: 10/09/2025 10:55\nClicked buttons:\nAnswered surveys:\nLogin time: 6/18/2026 10:57\nLogout time: 6/18/2026 12:25\nChat:\n1: Adam (6/18/2026 10:58):\nWhat is the minimum investment required to purchase investment-grade\ngemstones?\n2: Adam (6/18/2026 10:58):\nHow long does it take for the gemstones to be purchased and delivered?\n3: Adam (6/18/2026 10:58):\nHow much does storage in the Liechtenstein bonded warehouse cost?\n4: Adam (6/18/2026 10:58):\nCan customers choose which gemstones they receive?\n5: Adam (6/18/2026 10:58):\nAre the gemstones delivered with appraisal certificates?\n6: Adam (6/18/2026 10:58):\nWhich laboratories verify that the gemstones are genuine?\n\n-- \nAdam\n",
-          "textAsHtml": "<p>Below you will find the chat messages that<br/><a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br/>left in the webinar &ldquo;Brevo Webinar: The<br/>Greatest Dangers to Your Wealth.&rdquo;</p><p>First name: Adam<br/>Last name: Haley<br/>Email: <a href=\"mailto:adamhaley@gmail.com\">adamhaley@gmail.com</a><br/>Phone number:<br/>Callback requested: No<br/>Callback number:<br/>Note:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source:<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term:<br/>UTM Content:<br/>Webinar: Brevo Webinar: The Greatest Dangers to Your Wealth (BREVO YOUTUBE:<br/>DEH - Auto WEBIGG NOT ACTIVE (x))<br/>Registration time: 10/09/2025 10:53<br/>Webinar time: 10/09/2025 10:55<br/>Clicked buttons:<br/>Answered surveys:<br/>Login time: 6/18/2026 10:57<br/>Logout time: 6/18/2026 12:25<br/>Chat:<br/>1: Adam (6/18/2026 10:58):<br/>What is the minimum investment required to purchase investment-grade<br/>gemstones?<br/>2: Adam (6/18/2026 10:58):<br/>How long does it take for the gemstones to be purchased and delivered?<br/>3: Adam (6/18/2026 10:58):<br/>How much does storage in the Liechtenstein bonded warehouse cost?<br/>4: Adam (6/18/2026 10:58):<br/>Can customers choose which gemstones they receive?<br/>5: Adam (6/18/2026 10:58):<br/>Are the gemstones delivered with appraisal certificates?<br/>6: Adam (6/18/2026 10:58):<br/>Which laboratories verify that the gemstones are genuine?</p><p>--<br/>Adam</p>",
-          "subject": "test",
-          "date": "2026-06-18T12:04:39.000Z",
+          "html": "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n</head>\n<body>\n<div style=\"direction: ltr; font-family: Helvetica, Arial, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);\">\n<br>\n</div>\n<p style=\"direction: ltr; text-align: left; text-indent: 0px; text-transform: none; background-color: rgb(255, 255, 255);\">\n<span style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9.75pt; color: rgb(34, 34, 34);\">Nachfolgend findest du die Chatnachrichten, die\n</span><span style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9.75pt; color: rgb(17, 85, 204);\"><a href=\"mailto:sonjambauer@gmx.de\" target=\"_blank\" data-outlook-id=\"1741c33c-402a-436f-bdfe-ba3a8c974512\" style=\"color: rgb(17, 85, 204); margin-top: 0px; margin-bottom: 0px;\">sonjambauer@gmx.de</a></span><span style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9.75pt; color: rgb(34, 34, 34);\">&nbsp;im\n Webinar &quot;Online Vortrag: Die größten Gefahren für Ihr Vermögen&quot; hinterlassen hat.<br>\n<br>\nVorname: sonja<br>\nNachname:<br>\nE-Mail: </span><span style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9.75pt; color: rgb(17, 85, 204);\"><a href=\"mailto:sonjambauer@gmx.de\" target=\"_blank\" data-outlook-id=\"9f90f655-5b85-4c11-808c-22195f25f9e5\" style=\"color: rgb(17, 85, 204); margin-top: 0px; margin-bottom: 0px;\">sonjambauer@gmx.de</a></span><span style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9.75pt; color: rgb(34, 34, 34);\"><br>\nTelefonnummer:<br>\nRückruf-Bitte: Nein<br>\nRückruf-Nummer:<br>\nNotiz:<br>\nSource ID:<br>\nAffiliate ID:<br>\nUTM Source: PPCYT_SCL_WEBIGGv7_intGOLD_<wbr style=\"color: rgb(34, 34, 34);\">LMI2-1m<br>\nUTM Medium:<br>\nUTM Campaign:<br>\nUTM Term:<br>\nUTM Content:<br>\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\nAnmeldezeit: 07.07.2026 11:36<br>\nWebinarzeit: 08.07.2026 19:00<br>\nGeklickte Buttons:<br>\nBeantwortete Umfragen:<br>\nLogin-Zeit: 08.07.2026 19:01<br>\nLogout-Zeit: 08.07.2026 20:18<br>\nChat:<br>\n1: sonja (08.07.2026 20:16): in welcher Preiskategorie sind wir denn ungefähr?<br>\n<br>\n<br>\n<br>\n<br>\nViele Grüße,<br>\n<br>\nWebinaris (08.07.2026 20:45)<br>\n<br>\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</span></p>\n<p style=\"text-align: left; text-indent: 0px; text-transform: none; background-color: rgb(255, 255, 255);\">\n<span style=\"font-family: Arial, Helvetica, sans-serif; font-size: 9.75pt; color: rgb(34, 34, 34);\">Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\n Menü \\'Experten-Einstellungen -&gt; Benachrichtigungen\\' deaktivieren.</span></p>\n<div style=\"direction: ltr; font-family: aptos, sans-serif; font-size: 11pt; color: black;\">\n<br>\n</div>\n</body>\n</html>\n",
+          "text": "\nNachfolgend findest du die Chatnachrichten, die sonjambauer@gmx.de<mailto:sonjambauer@gmx.de> im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: sonja\nNachname:\nE-Mail: sonjambauer@gmx.de<mailto:sonjambauer@gmx.de>\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_SCL_WEBIGGv7_intGOLD_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term:\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 07.07.2026 11:36\nWebinarzeit: 08.07.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 08.07.2026 19:01\nLogout-Zeit: 08.07.2026 20:18\nChat:\n1: sonja (08.07.2026 20:16): in welcher Preiskategorie sind wir denn ungefähr?\n\n\n\n\nViele Grüße,\n\nWebinaris (08.07.2026 20:45)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.\n\n",
+          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:sonjambauer@gmx.de\">sonjambauer@gmx.de</a>&lt;<a href=\"mailto:sonjambauer@gmx.de\">mailto:sonjambauer@gmx.de</a>&gt; im Webinar &quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: sonja<br/>Nachname:<br/>E-Mail: <a href=\"mailto:sonjambauer@gmx.de\">sonjambauer@gmx.de</a>&lt;<a href=\"mailto:sonjambauer@gmx.de\">mailto:sonjambauer@gmx.de</a>&gt;<br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_SCL_WEBIGGv7_intGOLD_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term:<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 07.07.2026 11:36<br/>Webinarzeit: 08.07.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 08.07.2026 19:01<br/>Logout-Zeit: 08.07.2026 20:18<br/>Chat:<br/>1: sonja (08.07.2026 20:16): in welcher Preiskategorie sind wir denn ungef&auml;hr?</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (08.07.2026 20:45)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
+          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: sonjambauer@gmx.de, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
+          "date": "2026-07-09T15:50:54.000Z",
           "to": {
             "value": [
               {
@@ -2305,24 +2311,14 @@
           "from": {
             "value": [
               {
-                "address": "adamhaley@gmail.com",
-                "name": "Adam Haley"
+                "address": "anna.streeb@deutsches-edelsteinhaus.com",
+                "name": "Anna Streeb"
               }
             ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Adam Haley</span> &lt;<a href=\"mailto:adamhaley@gmail.com\" class=\"mp_address_email\">adamhaley@gmail.com</a>&gt;</span>",
-            "text": "\"Adam Haley\" <adamhaley@gmail.com>"
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Anna Streeb</span> &lt;<a href=\"mailto:anna.streeb@deutsches-edelsteinhaus.com\" class=\"mp_address_email\">anna.streeb@deutsches-edelsteinhaus.com</a>&gt;</span>",
+            "text": "\"Anna Streeb\" <anna.streeb@deutsches-edelsteinhaus.com>"
           },
-          "messageId": "<CAL2j52N8gYRajzMi-5cj9+TALA=f=2VSVskXp4m6VJ=GQke7ow@mail.gmail.com>",
-          "replyTo": {
-            "value": [
-              {
-                "address": "adamhaley@gmail.com",
-                "name": ""
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><a href=\"mailto:adamhaley@gmail.com\" class=\"mp_address_email\">adamhaley@gmail.com</a></span>",
-            "text": "adamhaley@gmail.com"
-          }
+          "messageId": "<FR0P281MB2877D5F20B56238E912DA9A6ADFE2@FR0P281MB2877.DEUP281.PROD.OUTLOOK.COM>"
         },
         "pairedItem": {
           "item": 0
@@ -2330,8 +2326,8 @@
       }
     ]
   },
-  "versionId": "2eea4359-f111-404a-916a-8277d2d7daa9",
-  "activeVersionId": "2eea4359-f111-404a-916a-8277d2d7daa9",
+  "versionId": "68595ef2-f1fe-447b-9137-eceb1011054d",
+  "activeVersionId": "68595ef2-f1fe-447b-9137-eceb1011054d",
   "triggerCount": 1,
   "shared": [
     {
@@ -2343,9 +2339,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-18T12:07:01.000Z",
-    "createdAt": "2026-06-18T12:06:17.256Z",
-    "versionId": "2eea4359-f111-404a-916a-8277d2d7daa9",
+    "updatedAt": "2026-07-09T20:16:41.000Z",
+    "createdAt": "2026-07-09T20:16:36.713Z",
+    "versionId": "68595ef2-f1fe-447b-9137-eceb1011054d",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -2583,8 +2579,7 @@
           },
           "simple": false,
           "filters": {
-            "labelIds": "={{ [\"INBOX\"] }}",
-            "q": "{ from:anna.streeb@deutsches-edelsteinhaus.com from:tatjana.haufler@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
+            "q": "{from: noreply-11551@webinaris.co from:anna.streeb@deutsches-edelsteinhaus.com from:tatjana.haufler@deutsches-edelsteinhaus.com from:adamhaley@gmail.com}"
           },
           "options": {}
         },
@@ -2605,7 +2600,7 @@
       },
       {
         "parameters": {
-          "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch  = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSection = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Parse questions\n// --------------------------------------\nconst questions = [];\n\n// Matches lines like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst regex = /\\d+:\\s.*?\\):\\s([\\s\\S]*?)(?=\\n\\s*\\d+:\\s|$)/g;\n\nlet match;\n\nwhile ((match = regex.exec(chatSection)) !== null) {\n  let q = match[1].trim();\n\n  // Convert HTML line breaks to spaces\n  q = q.replace(/<br\\s*\\/?>/gi, \" \");\n\n  // Strip basic HTML tags\n  q = q.replace(/<[^>]+>/g, \" \");\n\n  // Normalize whitespace\n  q = q.replace(/\\s+/g, \" \").trim();\n\n  // Stop parsing at common footer / signoff phrases\n  if (/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)) {\n    break;\n  }\n\n  // Filter out boilerplate lines\n  if (\n    q &&\n    !/Vielen Dank|Thank you in advance|Best regards|Kind regards|Webinaris|Hinweis:|Note:/i.test(q)\n  ) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};"
+          "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSectionRaw = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Normalize chat section before parsing\n// HTML emails often use <br> instead of line breaks.\n// --------------------------------------\nlet chatSection = chatSectionRaw\n  .replace(/<br\\s*\\/?>/gi, \"\\n\")\n  .replace(/<\\/p>/gi, \"\\n\")\n  .replace(/<[^>]+>/g, \" \")\n  .replace(/\\r/g, \"\")\n  .replace(/[ \\t]+\\n/g, \"\\n\")\n  .replace(/\\n{2,}/g, \"\\n\")\n  .trim();\n\n// Webinar notification emails often append signoff/footer text directly\n// after the chat block. Truncate at the first obvious footer marker so the\n// last question does not absorb \"Viele Grüße\", \"Webinaris\", \"Hinweis:\", etc.\nchatSection = chatSection.split(\n  /\\n(?=(?:Von|From|An|To|Datum|Date):|Viele Grüße,?|Webinaris\\s*\\(|Hinweis:|Wenn du keine Benachrichtigungs-Mails)/i\n)[0].trim();\n\n// --------------------------------------\n// Parse questions\n// Keeps the same output contract as the current node\n// --------------------------------------\nconst questions = [];\n\nfunction isRealQuestion(q) {\n  const text = q.trim();\n\n  if (!text) {\n    return false;\n  }\n\n  // Reject emoji-only or symbol-only messages like \"👍🏻\"\n  if (/^[\\p{Emoji}\\p{Symbol}\\s]+$/u.test(text)) {\n    return false;\n  }\n\n  // Reject short acknowledgements and feedback that are not actionable questions\n  if (/^(ja|nein|ok|okay|danke|danke schön|dankeschön|super|perfekt|top|gut)$/i.test(text)) {\n    return false;\n  }\n\n  // A question mark is the clearest signal that this should pass through\n  if (text.includes(\"?\")) {\n    return true;\n  }\n\n  // Reject very short fragments even if they are not in the explicit stoplist\n  if (text.length < 12) {\n    return false;\n  }\n\n  // Keep longer sentence-like inputs for now, even if they omit '?'\n  return /\\s/.test(text);\n}\n\n// Split on numbered chat entries like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst parts = chatSection.split(/\\n(?=\\d+:\\s.*?\\):\\s*)/);\n\nfor (const part of parts) {\n  const match = part.match(/^\\d+:\\s.*?\\):\\s*([\\s\\S]*)$/);\n  if (!match) {\n    continue;\n  }\n\n  let q = match[1].replace(/\\s+/g, \" \").trim();\n\n  // Skip clear footer/signoff lines but do not stop parsing entirely.\n  if (!q) {\n    continue;\n  }\n\n  if (/^(Vielen Dank|Thank you in advance|Best regards|Kind regards|Hinweis:|Note:)/i.test(q)) {\n    continue;\n  }\n\n  if (isRealQuestion(q)) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -2667,22 +2662,6 @@
       },
       {
         "parameters": {
-          "content": "## Retrieval ( Auto Q & A Flow )\n### Retrieval (Auto Q & A Flow)\n\nFlow:  \n1. **Trigger:** Gmail node receives new survey response with user questions.  \n2. **Parse Questions:** Extract raw text of each user question.  \n3. **OpenAI Embeddings:**  \n   - Model: `text-embedding-3-small` (1536-dim)  \n   - Input: `{{$json[\"question\"]}}` (user’s question in German)  \n   - Output: `{{$json[\"data\"][0][\"embedding\"]}}`  \n4. **Supabase RPC Retrieval:**  \n   - Calls `match_faqs_json(query_embedding, match_count=5)`  \n   - Returns top FAQ matches with similarity scores.  \n5. **AI Reply (next step):**  \n   - Pass best match into OpenAI Chat node  \n   - Draft personalized auto-reply email using FAQ answer as context  \n   - Format into Gmail/Bitrix email template  \n\n",
-          "height": 912,
-          "width": 1408,
-          "color": 4
-        },
-        "type": "n8n-nodes-base.stickyNote",
-        "typeVersion": 1,
-        "position": [
-          1088,
-          -464
-        ],
-        "id": "de68b760-5b4d-470e-b296-db392d007c8a",
-        "name": "Sticky Note1"
-      },
-      {
-        "parameters": {
           "method": "POST",
           "url": "https://api.openai.com/v1/embeddings",
           "authentication": "genericCredentialType",
@@ -2721,9 +2700,9 @@
         "parameters": {
           "modelId": {
             "__rl": true,
-            "value": "openrouter/free",
+            "value": "gpt-4.1-mini",
             "mode": "list",
-            "cachedResultName": "OPENROUTER/FREE"
+            "cachedResultName": "GPT-4.1-MINI"
           },
           "messages": {
             "values": [
@@ -2748,8 +2727,8 @@
         "name": "Generate Email Reply Segment",
         "credentials": {
           "openAiApi": {
-            "id": "nYUZBGx2UZRpW2Ia",
-            "name": "OpenRouter Account"
+            "id": "BRRf66J5aSwt4UDP",
+            "name": "OpenAi account"
           }
         }
       },
@@ -3062,7 +3041,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 2eea4359",
+    "name": "Version 68595ef2",
     "description": "",
     "autosaved": true
   },
