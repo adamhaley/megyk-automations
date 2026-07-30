@@ -161,11 +161,12 @@
     "node:Google Sheets Trigger": {
       "documentId": "10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50",
       "sheetId": 0,
-      "lastRevision": 227,
-      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=227&exportFormat=xlsx"
+      "lastRevision": 363,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=363&exportFormat=xlsx"
     }
   },
   "meta": null,
+  "nodeGroups": [],
   "pinData": {},
   "versionId": "90857087-df6c-4360-9fa1-a07aae7534df",
   "activeVersionId": "90857087-df6c-4360-9fa1-a07aae7534df",
