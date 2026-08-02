@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-30T22:50:59.612Z",
+  "updatedAt": "2026-08-02T17:49:22.155Z",
   "createdAt": "2026-07-10T22:16:26.074Z",
   "id": "ryhu6xynPYdjdgD7",
   "name": "Wufoo Risk-Fast-Check Risiko-Schnell-Check",
@@ -58,6 +58,19 @@
       ],
       "id": "12e8aed5-0868-4894-ae36-3d0b5f5ff0cd",
       "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "const resolved = $('Resolve Pitch').first().json;\n\nconst selectionSequence = (resolved.selections || []).map((item, index) => ({\n  type: 'answer',\n  order: index + 1,\n  stepNumber: item.stepNumber,\n  stepName: item.stepName,\n  label: item.key,\n  videoId: String(item.videoId || '').trim(),\n}));\n\nconst pitchSequenceItem = {\n  type: 'pitch',\n  order: selectionSequence.length + 1,\n  label: resolved.pitch.key,\n  videoId: String(resolved.pitch.videoId || '').trim(),\n};\n\nconst sequence = [...selectionSequence, pitchSequenceItem];\n\nconst missingVideo = sequence.find((item) => !item.videoId);\n\nif (missingVideo) {\n  throw new Error(`Sequence item is missing a videoId: ${missingVideo.label}`);\n}\n\nreturn [\n  {\n    json: {\n      ...resolved,\n      sequence,\n      sequenceVideoIds: sequence.map((item) => item.videoId),\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "2d3b4567-4cff-494f-a107-a8862fdd4fdf",
+      "name": "Build Sequence"
     }
   ],
   "connections": {
@@ -85,7 +98,13 @@
     },
     "Resolve Pitch": {
       "main": [
-        []
+        [
+          {
+            "node": "Build Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "When Executed by Another Workflow": {
@@ -140,8 +159,8 @@
       }
     ]
   },
-  "versionId": "eddcfa68-01be-4d0a-b6d9-499acb1c917c",
-  "activeVersionId": "eddcfa68-01be-4d0a-b6d9-499acb1c917c",
+  "versionId": "f2b4cae4-5cf7-4aea-b92f-668471ba4128",
+  "activeVersionId": "f2b4cae4-5cf7-4aea-b92f-668471ba4128",
   "triggerCount": 0,
   "shared": [
     {
@@ -153,9 +172,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-07-30T22:51:09.000Z",
-    "createdAt": "2026-07-30T22:50:59.616Z",
-    "versionId": "eddcfa68-01be-4d0a-b6d9-499acb1c917c",
+    "updatedAt": "2026-08-02T17:49:23.000Z",
+    "createdAt": "2026-08-02T17:49:22.158Z",
+    "versionId": "f2b4cae4-5cf7-4aea-b92f-668471ba4128",
     "workflowId": "ryhu6xynPYdjdgD7",
     "nodes": [
       {
@@ -210,6 +229,19 @@
         ],
         "id": "12e8aed5-0868-4894-ae36-3d0b5f5ff0cd",
         "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "jsCode": "const resolved = $('Resolve Pitch').first().json;\n\nconst selectionSequence = (resolved.selections || []).map((item, index) => ({\n  type: 'answer',\n  order: index + 1,\n  stepNumber: item.stepNumber,\n  stepName: item.stepName,\n  label: item.key,\n  videoId: String(item.videoId || '').trim(),\n}));\n\nconst pitchSequenceItem = {\n  type: 'pitch',\n  order: selectionSequence.length + 1,\n  label: resolved.pitch.key,\n  videoId: String(resolved.pitch.videoId || '').trim(),\n};\n\nconst sequence = [...selectionSequence, pitchSequenceItem];\n\nconst missingVideo = sequence.find((item) => !item.videoId);\n\nif (missingVideo) {\n  throw new Error(`Sequence item is missing a videoId: ${missingVideo.label}`);\n}\n\nreturn [\n  {\n    json: {\n      ...resolved,\n      sequence,\n      sequenceVideoIds: sequence.map((item) => item.videoId),\n    },\n  },\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          896,
+          0
+        ],
+        "id": "2d3b4567-4cff-494f-a107-a8862fdd4fdf",
+        "name": "Build Sequence"
       }
     ],
     "connections": {
@@ -237,7 +269,13 @@
       },
       "Resolve Pitch": {
         "main": [
-          []
+          [
+            {
+              "node": "Build Sequence",
+              "type": "main",
+              "index": 0
+            }
+          ]
         ]
       },
       "When Executed by Another Workflow": {
@@ -254,9 +292,9 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version eddcfa68",
+    "name": "Version f2b4cae4",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
   "tags": []
 }
