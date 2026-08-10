@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-08T21:49:32.451Z",
+  "updatedAt": "2026-08-10T00:58:00.368Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "Self-Learning FAQs RAG",
@@ -262,7 +262,8 @@
     },
     {
       "parameters": {
-        "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSectionRaw = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Normalize chat section before parsing\n// HTML emails often use <br> instead of line breaks.\n// --------------------------------------\nlet chatSection = chatSectionRaw\n  .replace(/<br\\s*\\/?>/gi, \"\\n\")\n  .replace(/<\\/p>/gi, \"\\n\")\n  .replace(/<[^>]+>/g, \" \")\n  .replace(/\\r/g, \"\")\n  .replace(/[ \\t]+\\n/g, \"\\n\")\n  .replace(/\\n{2,}/g, \"\\n\")\n  .trim();\n\n// Webinar notification emails often append signoff/footer text directly\n// after the chat block. Truncate at the first obvious footer marker so the\n// last question does not absorb \"Viele Grüße\", \"Webinaris\", \"Hinweis:\", etc.\nchatSection = chatSection.split(\n  /\\n(?=(?:Von|From|An|To|Datum|Date):|Viele Grüße,?|Webinaris\\s*\\(|Hinweis:|Wenn du keine Benachrichtigungs-Mails)/i\n)[0].trim();\n\n// --------------------------------------\n// Parse questions\n// Keeps the same output contract as the current node\n// --------------------------------------\nconst questions = [];\n\nfunction isRealQuestion(q) {\n  const text = q.trim();\n\n  if (!text) {\n    return false;\n  }\n\n  // Reject emoji-only or symbol-only messages like \"👍🏻\"\n  if (/^[\\p{Emoji}\\p{Symbol}\\s]+$/u.test(text)) {\n    return false;\n  }\n\n  // Reject short acknowledgements and feedback that are not actionable questions\n  if (/^(ja|nein|ok|okay|danke|danke schön|dankeschön|super|perfekt|top|gut)$/i.test(text)) {\n    return false;\n  }\n\n  // A question mark is the clearest signal that this should pass through\n  if (text.includes(\"?\")) {\n    return true;\n  }\n\n  // Reject very short fragments even if they are not in the explicit stoplist\n  if (text.length < 12) {\n    return false;\n  }\n\n  // Keep longer sentence-like inputs for now, even if they omit '?'\n  return /\\s/.test(text);\n}\n\n// Split on numbered chat entries like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst parts = chatSection.split(/\\n(?=\\d+:\\s.*?\\):\\s*)/);\n\nfor (const part of parts) {\n  const match = part.match(/^\\d+:\\s.*?\\):\\s*([\\s\\S]*)$/);\n  if (!match) {\n    continue;\n  }\n\n  let q = match[1].replace(/\\s+/g, \" \").trim();\n\n  // Skip clear footer/signoff lines but do not stop parsing entirely.\n  if (!q) {\n    continue;\n  }\n\n  if (/^(Vielen Dank|Thank you in advance|Best regards|Kind regards|Hinweis:|Note:)/i.test(q)) {\n    continue;\n  }\n\n  if (isRealQuestion(q)) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};\n"
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Get email text\n const text = $json.text || $json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSectionRaw = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Normalize chat section before parsing\n// HTML emails often use <br> instead of line breaks.\n// --------------------------------------\nlet chatSection = chatSectionRaw\n  .replace(/<br\\s*\\/?>/gi, \"\\n\")\n  .replace(/<\\/p>/gi, \"\\n\")\n  .replace(/<[^>]+>/g, \" \")\n  .replace(/\\r/g, \"\")\n  .replace(/[ \\t]+\\n/g, \"\\n\")\n  .replace(/\\n{2,}/g, \"\\n\")\n  .trim();\n\n// Webinar notification emails often append signoff/footer text directly\n// after the chat block. Truncate at the first obvious footer marker so the\n// last question does not absorb \"Viele Grüße\", \"Webinaris\", \"Hinweis:\", etc.\nchatSection = chatSection.split(\n  /\\n(?=(?:Von|From|An|To|Datum|Date):|Viele Grüße,?|Webinaris\\s*\\(|Hinweis:|Wenn du keine Benachrichtigungs-Mails)/i\n)[0].trim();\n\n// --------------------------------------\n// Parse questions\n// Keeps the same output contract as the current node\n// --------------------------------------\nconst questions = [];\n\nfunction isRealQuestion(q) {\n  const text = q.trim();\n\n  if (!text) {\n    return false;\n  }\n\n  // Reject emoji-only or symbol-only messages like \"👍🏻\"\n  if (/^[\\p{Emoji}\\p{Symbol}\\s]+$/u.test(text)) {\n    return false;\n  }\n\n  // Reject short acknowledgements and feedback that are not actionable questions\n  if (/^(ja|nein|ok|okay|danke|danke schön|dankeschön|super|perfekt|top|gut)$/i.test(text)) {\n    return false;\n  }\n\n  // A question mark is the clearest signal that this should pass through\n  if (text.includes(\"?\")) {\n    return true;\n  }\n\n  // Reject very short fragments even if they are not in the explicit stoplist\n  if (text.length < 12) {\n    return false;\n  }\n\n  // Keep longer sentence-like inputs for now, even if they omit '?'\n  return /\\s/.test(text);\n}\n\n// Split on numbered chat entries like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst parts = chatSection.split(/\\n(?=\\d+:\\s.*?\\):\\s*)/);\n\nfor (const part of parts) {\n  const match = part.match(/^\\d+:\\s.*?\\):\\s*([\\s\\S]*)$/);\n  if (!match) {\n    continue;\n  }\n\n  let q = match[1].replace(/\\s+/g, \" \").trim();\n\n  // Skip clear footer/signoff lines but do not stop parsing entirely.\n  if (!q) {\n    continue;\n  }\n\n  if (/^(Vielen Dank|Thank you in advance|Best regards|Kind regards|Hinweis:|Note:)/i.test(q)) {\n    continue;\n  }\n\n  if (isRealQuestion(q)) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n threadId: $json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -304,7 +305,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2288,
+        2368,
         -16
       ],
       "id": "975f770e-1c1f-4b4a-a237-9228b0e99953",
@@ -346,7 +347,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2064,
+        2144,
         -16
       ],
       "id": "ebf84add-dfbb-458c-9415-8a043c40d877",
@@ -383,7 +384,7 @@
       "typeVersion": 1.8,
       "position": [
         1280,
-        224
+        272
       ],
       "id": "4fc5f1d9-4770-41aa-9f20-bbb186c03db3",
       "name": "Generate Email Reply Segment",
@@ -402,11 +403,12 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1856,
+        1936,
         -16
       ],
       "id": "70a7b9ea-11da-4987-bac7-9230262e8aa6",
-      "name": "Split Out"
+      "name": "Split Out",
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -539,7 +541,7 @@
       "typeVersion": 4.7,
       "position": [
         1648,
-        224
+        272
       ],
       "id": "099f0d19-927b-4d0d-90d6-4a1ea0a18cb0",
       "name": "Append or update row in sheet",
@@ -711,10 +713,10 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1786308129,
+        "lastTimeChecked": 1786390931,
         "possibleDuplicates": [
-          "19fe842f785fa78c",
-          "19fe80c21f990035"
+          "19fed326a3caaa66",
+          "19fecfb8070e5eff"
         ]
       }
     },
@@ -2239,42 +2241,42 @@
     "Gmail Trigger": [
       {
         "json": {
-          "id": "19fe2aed16fef8b5",
-          "threadId": "19fe2aed16fef8b5",
+          "id": "19fc8f1c488b7156",
+          "threadId": "19fc8f1c488b7156",
           "labelIds": [
             "UNREAD",
             "IMPORTANT",
             "CATEGORY_UPDATES",
             "INBOX"
           ],
-          "sizeEstimate": 6496,
+          "sizeEstimate": 6457,
           "headers": {
             "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from b224-18.smtp-out.eu-central-1.amazonses.com (b224-18.smtp-out.eu-central-1.amazonses.com. [69.169.224.18])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-48002233b29si9033406f8f.180.2026.08.08.11.42.15\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Sat, 08 Aug 2026 11:42:15 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6000:2501:b0:47f:8b9e:f44e with SMTP id ffacd0b85a97d-48130eb0a58mr11080675f8f.12.1786214535179;\r\n        Sat, 08 Aug 2026 11:42:15 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1786214535; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=YQoI0JXRFuQjeFy9cCgm3abbW10w4pcg5huACOQ1tPxfCU2U37bAH5Q242GIqpcJKi\r\n         8Je5+aT+HEWdDnLhZkoTmjR3EUVDKL3EORh1N8GvymRxzPTXqeRuRPzNxOO7Jb785fA1\r\n         SKLmkvZ6hEh1Z3iYJ97lOd5gzlz3ML9aIR9p5XmodaKwCb/sbfkUAsluBFiy1a3lbhN1\r\n         zaHS5nPxkyYRXi0LcKnN/k66vqvQkzQPIrwwP9jermRmteICCYp6EcI2kCtLGYSc0N1+\r\n         YlnPB2XzXdQEBZ3PCMllUIoOdUbjnuu0VRDyDb6QfyJjQJop+mKBSjq8F+XKLomuNaxp\r\n         I7bg==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=pkppCPH8ckBNFEe3/FaQjwSnQgYlHtsK3DoVv4KJQcA=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=U6CAivnv6bUQXjX02wsF+BkUUhTCmxm93fdhQ2QyRmUwkgxQjEofm+wprXSW/Bp46E\r\n         SVIc9HPnzSlmTHPGVVW6I8SBSv0JEGKvoIi7/ifd6sWDd6V9e1zUHHB/bQMYKcr6DfM9\r\n         fSJ2yprVlLwx9/FJApRuEubBN3m0FOcU8PfiIexC9+iOb5dzpfdbMTBEgpuY7iYK/1H8\r\n         XtYrnZfwhvPCbAzhPKBHoeRv96+Bx215EkSBgj/mmT3yqOQb/FMew9Dy6VApQOPJMQWR\r\n         oDHIxzK/CufaI1uLZjMRIxQ/Cpc3wML/ogPwhlNz922bCPe5NuZqpby3Wz6sZUAIyfkK\r\n         8q0Q==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=fz6UQsjb;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=P7PS3gGv;\r\n       spf=pass (google.com: domain of 0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) client-ip=69.169.224.18;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=fz6UQsjb;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=P7PS3gGv;\r\n       spf=pass (google.com: domain of 0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1786214534;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=hyy8VD0MJ+kmjioPqcA88sBS63ajlDHgqn403eUn6vg=;\r\n\tb=P7PS3gGvYqyPOUTg94BGcTmUwYpUDVOC8l+SkRiSQ1SPybfBXgu2nJz73YLXRkat\r\n\tiVBWklZPamOOfeLneg1rJTofljhKA2yZXHrOsWFfhAi09nkrX7vOdmqoEGJkfwAVFmn\r\n\tf/phst6XtutYwTFz7iFkoEdYyMWakWF79Gc20RbA=",
-            "date": "Date: Sat, 8 Aug 2026 18:42:14 +0000",
+            "received": "Received: from b224-18.smtp-out.eu-central-1.amazonses.com (b224-18.smtp-out.eu-central-1.amazonses.com. [69.169.224.18])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-47fd41dc1a6si18244780f8f.2.2026.08.03.11.45.15\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Mon, 03 Aug 2026 11:45:15 -0700 (PDT)",
+            "x-received": "X-Received: by 2002:a05:6000:4613:b0:47f:93be:dabd with SMTP id ffacd0b85a97d-47fd72f193dmr26769040f8f.28.1785782715668;\r\n        Mon, 03 Aug 2026 11:45:15 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1785782715; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=i94h1fHEq17lnpTsu3OQ7eyD70bkj2jBQG4x/cgufXxMQ6c7oLoPz+PnagO5bsiPD1\r\n         88Ap6WqD3FVfUjg5XQQLgEatPHhqKKWMUw/p9TtxdvnWMWwHaWgZV7ej2D7EwNczJWha\r\n         xi4jvSonOsAz+RaJ2tfHa6x0gbqDQY9CAUcq4uWdjBXkbN2/EQTP2+BToR2t0oD8TuWg\r\n         l9B/94wm4m6DlJ542YeoMFm6QsDVURTI1DrkZDYtmmYwI2vuzEPaHLDR5FLPIMka3YAc\r\n         XrHfBgzv5Mm+KrrJ5i9jGmXAHKbjCWy1BnTM/tE3AkytC5SzRe+NM5Z65oMCuy+EeUeH\r\n         HWLA==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=d+ozw2pbvlL5gcrmvCFc/HTIbVM680uaegDiF/gWgL0=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=QlqMfGdQQTxaXmC5FsX7XF7KeDoY2H+FmWGY4iVDssqMSibhRt77DXppMKnzJn7MOi\r\n         lc7Wfp7Wk4zGTuOhgjyC2xN5BACj0+DFEBHkyYQfHaXHHxhyBEnQG/E8jAaKIM9lG2Wo\r\n         lH3FOAcWaMgJQ3ieF6h/0IC1rECbZmOKNfWRmXi/tR2Su/kr6y4aHYY3O/ygs3b+SbAO\r\n         0USANfebzZoYsXX+Rxd7HiSxG20ixeDn+v278r1IOkoqjEpb0z7REBvr9Hxlc8lUtS5X\r\n         EzIr2mj7LkzX0aB8RRcjuSEp75wNwQ6NAwFTO4usbZglmjsChLXmnzUrlWB96GqsbgMN\r\n         mbYQ==;\r\n        dara=google.com",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=\"n/nIPc+T\";\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=h4oi6Gc4;\r\n       spf=pass (google.com: domain of 0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
+            "return-path": "Return-Path: <0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) client-ip=69.169.224.18;",
+            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=\"n/nIPc+T\";\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=h4oi6Gc4;\r\n       spf=pass (google.com: domain of 0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1785782715;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=iS3WJjpYpJHfaIXN2HurDrOp8puEybDoUTMB84oZHrs=;\r\n\tb=h4oi6Gc4zL4740phz6Jfiv7OcmlzR1/jcdS0jZAcma2KRYFTTWq5RcEmkBxsPCwt\r\n\tQKLhQId7MDGXFjM+0Dcr7wy9+AXSsCEya1F3d+vZeLD4B80MUDKmG0WUspMTCIbtP6L\r\n\tfn0OIbleFoYNQMG30JWtZYzjvojtJQGLVSPjdaqQ=",
+            "date": "Date: Mon, 3 Aug 2026 18:45:15 +0000",
             "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
             "to": "To: deutschesedelsteinhaus@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_s.k.majer@gmai?=\r\n =?UTF-8?Q?l.com,_Online_Vortrag:_Die_gr=C3=B6?=\r\n =?UTF-8?Q?=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
+            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_juttakratzat@w?=\r\n =?UTF-8?Q?eb.de,_Online_Vortrag:_Die_gr=C3=B6?=\r\n =?UTF-8?Q?=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
             "mime-version": "MIME-Version: 1.0",
             "content-type": "Content-Type: text/html; charset=UTF-8",
             "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com>",
+            "message-id": "Message-ID: <0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com>",
             "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.08-69.169.224.18"
+            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.03-69.169.224.18"
           },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die s.k.majer@gmail.com im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Kerstin Majer<br>\n Nachname: <br>\n E-Mail: s.k.majer@gmail.com<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_clusLIFESTYLE_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 07.08.2026 19:48<br>\n Webinarzeit: 08.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 08.08.2026 19:00<br>\n Logout-Zeit: 08.08.2026 20:24<br>\n Chat:<br>\n 1: Kerstin Majer  (08.08.2026 19:00): gut zu hören - ja, gut zu sehen<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (08.08.2026 20:42)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die s.k.majer@gmail.com im Webinar\n\"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Kerstin Majer\nNachname:\nE-Mail: s.k.majer@gmail.com\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_clusLIFESTYLE_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 07.08.2026 19:48\nWebinarzeit: 08.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 08.08.2026 19:00\nLogout-Zeit: 08.08.2026 20:24\nChat:\n1: Kerstin Majer (08.08.2026 19:00): gut zu hören - ja, gut zu sehen\n\n\n\n\nViele Grüße,\n\nWebinaris (08.08.2026 20:42)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:s.k.majer@gmail.com\">s.k.majer@gmail.com</a> im Webinar<br/>&quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Kerstin Majer<br/>Nachname:<br/>E-Mail: <a href=\"mailto:s.k.majer@gmail.com\">s.k.majer@gmail.com</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_clusLIFESTYLE_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 07.08.2026 19:48<br/>Webinarzeit: 08.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 08.08.2026 19:00<br/>Logout-Zeit: 08.08.2026 20:24<br/>Chat:<br/>1: Kerstin Majer (08.08.2026 19:00): gut zu h&ouml;ren - ja, gut zu sehen</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (08.08.2026 20:42)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: s.k.majer@gmail.com, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
-          "date": "2026-08-08T18:42:14.000Z",
+          "html": "<p>Nachfolgend findest du die Chatnachrichten, die juttakratzat@web.de im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Jutta Kratzat<br>\n Nachname: <br>\n E-Mail: juttakratzat@web.de<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_kwINF_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 01.08.2026 04:12<br>\n Webinarzeit: 03.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 03.08.2026 19:00<br>\n Logout-Zeit: 03.08.2026 20:44<br>\n Chat:<br>\n 1: Jutta Kratzat  (03.08.2026 19:00): ja<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (03.08.2026 20:45)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
+          "text": "Nachfolgend findest du die Chatnachrichten, die juttakratzat@web.de im Webinar\n\"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Jutta Kratzat\nNachname:\nE-Mail: juttakratzat@web.de\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_kwINF_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 01.08.2026 04:12\nWebinarzeit: 03.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 03.08.2026 19:00\nLogout-Zeit: 03.08.2026 20:44\nChat:\n1: Jutta Kratzat (03.08.2026 19:00): ja\n\n\n\n\nViele Grüße,\n\nWebinaris (03.08.2026 20:45)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
+          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:juttakratzat@web.de\">juttakratzat@web.de</a> im Webinar<br/>&quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Jutta Kratzat<br/>Nachname:<br/>E-Mail: <a href=\"mailto:juttakratzat@web.de\">juttakratzat@web.de</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_kwINF_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 01.08.2026 04:12<br/>Webinarzeit: 03.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 03.08.2026 19:00<br/>Logout-Zeit: 03.08.2026 20:44<br/>Chat:<br/>1: Jutta Kratzat (03.08.2026 19:00): ja</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (03.08.2026 20:45)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
+          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: juttakratzat@web.de, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
+          "date": "2026-08-03T18:45:15.000Z",
           "to": {
             "value": [
               {
@@ -2295,7 +2297,7 @@
             "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
             "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
           },
-          "messageId": "<0107019fe2aece64-8fcab325-c301-4e57-b903-7f28f013b9f1-000000@eu-central-1.amazonses.com>"
+          "messageId": "<0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com>"
         },
         "pairedItem": {
           "item": 0
@@ -2303,42 +2305,42 @@
       },
       {
         "json": {
-          "id": "19fe2aece3fd6d4a",
-          "threadId": "19fe2aece3fd6d4a",
+          "id": "19fc8f1b9f56d679",
+          "threadId": "19fc8f1b9f56d679",
           "labelIds": [
             "UNREAD",
             "IMPORTANT",
             "CATEGORY_UPDATES",
             "INBOX"
           ],
-          "sizeEstimate": 6429,
+          "sizeEstimate": 7007,
           "headers": {
             "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from b224-14.smtp-out.eu-central-1.amazonses.com (b224-14.smtp-out.eu-central-1.amazonses.com. [69.169.224.14])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-480021594cbsi9662758f8f.24.2026.08.08.11.42.15\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Sat, 08 Aug 2026 11:42:15 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6000:4006:b0:46e:c978:7ddc with SMTP id ffacd0b85a97d-47fec62e675mr46288053f8f.24.1786214535110;\r\n        Sat, 08 Aug 2026 11:42:15 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1786214535; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=LnkhIEYSgsfWe6l/epquajKnFab9gATjx+iY6hwiSO+XX7nKUcEE80mruXF+Z5JtFj\r\n         VqXPQd+hRF58EGsqJMPp/GwD9KZ4yzZDNgzxBZZZfuEJv7J1aPyLRNLpiOKS3AsCQIYu\r\n         oWMaFsN1szfM+0fKIeJMlfAT2/OBUv3X6gwbGM71JXn2JIGGJvdz4ETmJqLYaZjF82ZA\r\n         GmIN58JEMosL8Sri2uFYdWd8YYe30owI0Q6Tmo/K+4Nm6Mnw+tyoVX8GAMgxNsrtejrj\r\n         YNNaIo4U55Dr8UWT2wTdOIMlDum7S7Ah70ccMblDrxJsrSOeiAycqjlXu/tMKhnMRGvs\r\n         cm/Q==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=eEXiQwTVaQO98eCkWiOhw787j5zQDUTj8fNLHim2Be0=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=C6mvuRHZ/pYKNJSmYkWTQ9X5n/Qk5XMa826R7lXgplVAjGHZY5Ci0wLrthpOxNukhk\r\n         go8gTt9DfD9tVxHct9rRZZvcw7BaSGp5W3eRyCK1r54mfTIlGQPyMXoATDedaGHxzUAW\r\n         McQoNI0w2ZRsihFiM77LfuFx7k/d+YE57D9HDKaKGQ/OlDPPah2/C2hlJKD7ryBZtu5A\r\n         1HmRnYs2fjjSg+L0IarpoHuH9yvmhXW+KezD+UMgniVei/nUXN0euBzxTwtC8a5++F/T\r\n         bL5FnZ7vpEhUnbNN5vT8RvZD6RvbREqRnuMVEBCdROnWlGR3BqAVhC6MyHB9cSJZq/V/\r\n         aQGA==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=iOvh9MwU;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=UsKzgIEY;\r\n       spf=pass (google.com: domain of 0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com designates 69.169.224.14 as permitted sender) smtp.mailfrom=0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com designates 69.169.224.14 as permitted sender) client-ip=69.169.224.14;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=iOvh9MwU;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=UsKzgIEY;\r\n       spf=pass (google.com: domain of 0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com designates 69.169.224.14 as permitted sender) smtp.mailfrom=0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1786214534;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=OIOwax18dQHI5k3ZXMvaMHtwc7lBO4tS/o60hh4rbpY=;\r\n\tb=UsKzgIEYrUk1o3lE6zcfWFZC/o6NOvwCL6rwFY++I8+7T8CBJdzDJbyAogdAzuSo\r\n\thOUPBDzORjpv6vjs4wOrsrxGatIEWo6GUXL9EMymCGuJGje++Xj2lS5W/RTwQBloh9N\r\n\tjek7/MZgl1JvENsiqFVXZz7E3hCbZHMxSYDjgjoc=",
-            "date": "Date: Sat, 8 Aug 2026 18:42:14 +0000",
+            "received": "Received: from b224-13.smtp-out.eu-central-1.amazonses.com (b224-13.smtp-out.eu-central-1.amazonses.com. [69.169.224.13])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-47fd41db474si18691741f8f.83.2026.08.03.11.45.12\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Mon, 03 Aug 2026 11:45:12 -0700 (PDT)",
+            "x-received": "X-Received: by 2002:a05:6000:46cb:b0:47f:8abb:7476 with SMTP id ffacd0b85a97d-47fd72d47cbmr21832789f8f.19.1785782712552;\r\n        Mon, 03 Aug 2026 11:45:12 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1785782712; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=K6T9NxkqD/TU6cBAjzCx6/xYLZDcA9nhbRtHcSYAXb38tm6fny+0VwjEemlphZTd7Z\r\n         +OcgvTlqroHQfoFNvYVnJ/bKfEjZbmhHAmhbxkeGWXXK5vl0W9yFhvVu62h9NoIeQRaT\r\n         npFu6WRdcNX/NzpZQ+d7/39CjEyUY8DgUJgGso8W2rjk5XbhIgPgpfvqjBrd7zMeLNYv\r\n         Y4SMfMZuTUg3sw7T9Yoh/P17AAILd0g8ApWrte1R+PY3o0bTTLL0jdqcE7s1s6LUxj4a\r\n         uojPpPgfrFii+he4o+KtJpxKjGtxJmWIAIt5JhHazVzud4WTAek5PNaIfTpYZKQacOmX\r\n         6Fcw==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=p8YO6V4MwVvx7bQe0Il/SdfnzRXlNccnORgg09XZjFA=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=lLxVARqkPtzkMeIGvFNo2ZCrirll5+Gteh5wht6fAZ98tZAjAOrNd7hu8pEossZyjc\r\n         y49+bIcA0GIow2IPLrG0bMQ5DfnvJglaHnxb+BUmd0/yr2qVZbZ51UBddWlAfEiyILj3\r\n         dmUQIWo7/621TQj2YfM0BwvmeY2esUjb8W1nKYGDpf60pbznrqMTjz7j7rxWkvXwPJRg\r\n         81qg1uS8a/43eIWG4UDNWCYeDnqm06PxFxDKF47udm5weG8D1qyvNv/U4/tjdXwNpFqa\r\n         CWxDsaaPsIYLv+d1nSRFFFf1bovdRH/HWOXQz48+wpLGQUpBg15VC8J1GLqxN0p9Gy4E\r\n         xJkQ==;\r\n        dara=google.com",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=Yhd8IlfG;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=GHnrZqBb;\r\n       spf=pass (google.com: domain of 0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) smtp.mailfrom=0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
+            "return-path": "Return-Path: <0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) client-ip=69.169.224.13;",
+            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=Yhd8IlfG;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=GHnrZqBb;\r\n       spf=pass (google.com: domain of 0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) smtp.mailfrom=0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1785782712;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=hAU9jUL63uI1pNPiwp3SDVZgBzPnqOVZHHGkfWVInZg=;\r\n\tb=GHnrZqBb6/pUavzwfGXHEj+Fgc0sLLOdrfJAk4xWfLdnoNhdUoq/HygURl779jU7\r\n\th8MirilO9LdR4TxUO2jncSQ7TdNp1cJWe622PfgK3xtOgV6k8RCTF+TV2kmabuQLH3C\r\n\tQKKOjc+vKdcbcgYqUsqb89CCGXYfHe6WMLI8z9aI=",
+            "date": "Date: Mon, 3 Aug 2026 18:45:11 +0000",
             "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
             "to": "To: deutschesedelsteinhaus@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_rolf4baron@gmai?=\r\n =?UTF-8?Q?l.com,_Online_Vortrag:_Die_gr=C3=B6?=\r\n =?UTF-8?Q?=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
+            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_tap.zaiser@google?=\r\n =?UTF-8?Q?mail.com,_Online_Vortrag:_Die_g?=\r\n =?UTF-8?Q?r=C3=B6=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
             "mime-version": "MIME-Version: 1.0",
             "content-type": "Content-Type: text/html; charset=UTF-8",
             "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com>",
+            "message-id": "Message-ID: <0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com>",
             "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.08-69.169.224.14"
+            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.03-69.169.224.13"
           },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die rolf4baron@gmail.com im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Baron<br>\n Nachname: <br>\n E-Mail: rolf4baron@gmail.com<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_AS_WEBIGGv7_Langemann_YT_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 06.08.2026 18:35<br>\n Webinarzeit: 08.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 08.08.2026 19:00<br>\n Logout-Zeit: 08.08.2026 20:26<br>\n Chat:<br>\n 1: Baron  (08.08.2026 19:00): Ja<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (08.08.2026 20:42)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die rolf4baron@gmail.com im Webinar\n\"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Baron\nNachname:\nE-Mail: rolf4baron@gmail.com\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_AS_WEBIGGv7_Langemann_YT_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 06.08.2026 18:35\nWebinarzeit: 08.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 08.08.2026 19:00\nLogout-Zeit: 08.08.2026 20:26\nChat:\n1: Baron (08.08.2026 19:00): Ja\n\n\n\n\nViele Grüße,\n\nWebinaris (08.08.2026 20:42)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:rolf4baron@gmail.com\">rolf4baron@gmail.com</a> im Webinar<br/>&quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Baron<br/>Nachname:<br/>E-Mail: <a href=\"mailto:rolf4baron@gmail.com\">rolf4baron@gmail.com</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_AS_WEBIGGv7_Langemann_YT_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 06.08.2026 18:35<br/>Webinarzeit: 08.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 08.08.2026 19:00<br/>Logout-Zeit: 08.08.2026 20:26<br/>Chat:<br/>1: Baron (08.08.2026 19:00): Ja</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (08.08.2026 20:42)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: rolf4baron@gmail.com, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
-          "date": "2026-08-08T18:42:14.000Z",
+          "html": "<p>Nachfolgend findest du die Chatnachrichten, die tap.zaiser@googlemail.com im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Thomas Zaiser<br>\n Nachname: <br>\n E-Mail: tap.zaiser@googlemail.com<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 01.08.2026 05:44<br>\n Webinarzeit: 03.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 03.08.2026 19:00<br>\n Logout-Zeit: 03.08.2026 20:43<br>\n Chat:<br>\n 1: Thomas Zaiser  (03.08.2026 19:30): ..<br/>2: Thomas Zaiser  (03.08.2026 19:31): Meine Annahme ist: Wenn ich Schulen bei der Bank habe, weil meine Immobilie noch nicht vollständig abbezahlt ist, habe ich bei einer schleichenden und gemäßigten Inflation eher Vorteile. Der Wert des Geldes sinkt, ich muss bei einem Baudarlehen, Annuitätendarlehen, immer den gleichen monatlichen Betrag zurückzahlen.\n\nFragen: \nIst die Annahme richtig? \nWas ändert sich bei einer Hyperinflation? Welche (gravierenden) Nachteile können entstehen?<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (03.08.2026 20:45)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
+          "text": "Nachfolgend findest du die Chatnachrichten, die tap.zaiser@googlemail.com im\nWebinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen\nhat.\n\nVorname: Thomas Zaiser\nNachname:\nE-Mail: tap.zaiser@googlemail.com\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 01.08.2026 05:44\nWebinarzeit: 03.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 03.08.2026 19:00\nLogout-Zeit: 03.08.2026 20:43\nChat:\n1: Thomas Zaiser (03.08.2026 19:30): ..\n2: Thomas Zaiser (03.08.2026 19:31): Meine Annahme ist: Wenn ich Schulen bei der\nBank habe, weil meine Immobilie noch nicht vollständig abbezahlt ist, habe ich\nbei einer schleichenden und gemäßigten Inflation eher Vorteile. Der Wert des\nGeldes sinkt, ich muss bei einem Baudarlehen, Annuitätendarlehen, immer den\ngleichen monatlichen Betrag zurückzahlen. Fragen: Ist die Annahme richtig? Was\nändert sich bei einer Hyperinflation? Welche (gravierenden) Nachteile können\nentstehen?\n\n\n\n\nViele Grüße,\n\nWebinaris (03.08.2026 20:45)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
+          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:tap.zaiser@googlemail.com\">tap.zaiser@googlemail.com</a> im<br/>Webinar &quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen<br/>hat.</p><p>Vorname: Thomas Zaiser<br/>Nachname:<br/>E-Mail: <a href=\"mailto:tap.zaiser@googlemail.com\">tap.zaiser@googlemail.com</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 01.08.2026 05:44<br/>Webinarzeit: 03.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 03.08.2026 19:00<br/>Logout-Zeit: 03.08.2026 20:43<br/>Chat:<br/>1: Thomas Zaiser (03.08.2026 19:30): ..<br/>2: Thomas Zaiser (03.08.2026 19:31): Meine Annahme ist: Wenn ich Schulen bei der<br/>Bank habe, weil meine Immobilie noch nicht vollst&auml;ndig abbezahlt ist, habe ich<br/>bei einer schleichenden und gem&auml;&szlig;igten Inflation eher Vorteile. Der Wert des<br/>Geldes sinkt, ich muss bei einem Baudarlehen, Annuit&auml;tendarlehen, immer den<br/>gleichen monatlichen Betrag zur&uuml;ckzahlen. Fragen: Ist die Annahme richtig? Was<br/>&auml;ndert sich bei einer Hyperinflation? Welche (gravierenden) Nachteile k&ouml;nnen<br/>entstehen?</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (03.08.2026 20:45)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
+          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: tap.zaiser@googlemail.com, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
+          "date": "2026-08-03T18:45:11.000Z",
           "to": {
             "value": [
               {
@@ -2359,144 +2361,16 @@
             "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
             "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
           },
-          "messageId": "<0107019fe2aece57-46572310-6714-4cd0-ab18-b6c8eda4fb16-000000@eu-central-1.amazonses.com>"
+          "messageId": "<0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com>"
         },
         "pairedItem": {
           "item": 1
         }
-      },
-      {
-        "json": {
-          "id": "19fe2aec95698ff9",
-          "threadId": "19fe2aec95698ff9",
-          "labelIds": [
-            "UNREAD",
-            "IMPORTANT",
-            "CATEGORY_UPDATES",
-            "INBOX"
-          ],
-          "sizeEstimate": 6584,
-          "headers": {
-            "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from b224-18.smtp-out.eu-central-1.amazonses.com (b224-18.smtp-out.eu-central-1.amazonses.com. [69.169.224.18])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-48002234d8asi10050665f8f.137.2026.08.08.11.42.13\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Sat, 08 Aug 2026 11:42:13 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6000:4029:b0:47f:4fa9:ae42 with SMTP id ffacd0b85a97d-47fec5151d7mr49186054f8f.11.1786214533602;\r\n        Sat, 08 Aug 2026 11:42:13 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1786214533; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=DeLgvPZOyQtfhIyr6q/fLsymhEe9RiE5Y+3816nXgrm/ZtALyLD79lnZa3q+3IoCHz\r\n         YkJeIeX/mmsVwCHjpisHgWOY/NL5zZ+X29nnNXK23rHgFOLj1POnK0zl0bJ346n7Iun6\r\n         JQHVNaYy2+2y/XVC79rx0FC//uKj+dTF0kx7AYKlFwE+r6w9dIPnTXQfUf2fuSWEUodY\r\n         uWnGefxlrPNZf4rmUPFOKsBpLS7st6RA392+JtLsMKT65cGekt2FaTReLBNQAKU0wyvI\r\n         n5/WsN4ykBxEwMWqsL0/UiVXGIt+r3cpcfC8SsSvv6g0rtAT1EBluZ5ykn13m2UV2A50\r\n         aTMg==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=cAjQ1RIiezrrYDBA5RpDW2snLtj821m+C7yv28PRyI4=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=iOmyayC5cKeKe07XE09wSvpXackf7O/qquTH1aj7vG+qA05LjdU7nLOPXEvGC6ylO7\r\n         92efs42XTIblIwJoYcxPwSfjU/m2ugZCBcayWRiP6K6afU0i7BtglRWkrKnaicGqbZnZ\r\n         RPvMrtYVn3e1dsLWkyvIG1148P52d2Iui4PiJEuzZIVM/hSmTvZiNN5Lf1doOZbJDYXN\r\n         EHQYvUrrnSqTJCpVb9a7fnkU+qeyd7Qrfw2RP/Gg+yLYnIXcytHisCJyl8I+3ggdeyn5\r\n         bdtjZYVbvs89ZFejp6x6hMOhfqK4Bm0vkNYuUH7Yd7AR2cragwdnrd1C5N1I8ml75bmz\r\n         jMZw==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=dFUW2+UY;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=CP0BcoHN;\r\n       spf=pass (google.com: domain of 0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) client-ip=69.169.224.18;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=dFUW2+UY;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=CP0BcoHN;\r\n       spf=pass (google.com: domain of 0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1786214533;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=htJaBcUyU6uhKCA3oswwolVA+cHXQ0Pm8hFo6Fm8xCg=;\r\n\tb=CP0BcoHNFLXoWeVzNT1qstkG3JrH7uj15mOc85W1/8Vuq9pN2RKuIa6kRRow8ngM\r\n\tcVGhxKkOyVs9lJshdgsiFym4Vel4GTfC9QtyBi1kBnyQoPk0v4WJT0ycM+83wuoXRFz\r\n\tx2Fho6L02z0ZPuJKGiTalT3wqy1VuR94pSB6pWcs=",
-            "date": "Date: Sat, 8 Aug 2026 18:42:13 +0000",
-            "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
-            "to": "To: deutschesedelsteinhaus@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_puchallasabine@gm?=\r\n =?UTF-8?Q?ail.com,_Online_Vortrag:_Die_gr?=\r\n =?UTF-8?Q?=C3=B6=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
-            "mime-version": "MIME-Version: 1.0",
-            "content-type": "Content-Type: text/html; charset=UTF-8",
-            "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com>",
-            "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.08-69.169.224.18"
-          },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die puchallasabine@gmail.com im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Puchalla Sabine<br>\n Nachname: <br>\n E-Mail: puchallasabine@gmail.com<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_AS_WEBIGGv7_Langemann_YT_WEBIGG-LM81<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 07.08.2026 17:39<br>\n Webinarzeit: 08.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 08.08.2026 19:00<br>\n Logout-Zeit: 08.08.2026 20:40<br>\n Chat:<br>\n 1: Puchalla Sabine  (08.08.2026 20:07): Diamanten ---  erworben - ohne Sklavenarbeit und Ausbeutung des Landes? und - danke für die wichtigen Infos.<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (08.08.2026 20:42)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die puchallasabine@gmail.com im\nWebinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen\nhat.\n\nVorname: Puchalla Sabine\nNachname:\nE-Mail: puchallasabine@gmail.com\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_AS_WEBIGGv7_Langemann_YT_WEBIGG-LM81\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 07.08.2026 17:39\nWebinarzeit: 08.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 08.08.2026 19:00\nLogout-Zeit: 08.08.2026 20:40\nChat:\n1: Puchalla Sabine (08.08.2026 20:07): Diamanten --- erworben - ohne\nSklavenarbeit und Ausbeutung des Landes? und - danke für die wichtigen Infos.\n\n\n\n\nViele Grüße,\n\nWebinaris (08.08.2026 20:42)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:puchallasabine@gmail.com\">puchallasabine@gmail.com</a> im<br/>Webinar &quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen<br/>hat.</p><p>Vorname: Puchalla Sabine<br/>Nachname:<br/>E-Mail: <a href=\"mailto:puchallasabine@gmail.com\">puchallasabine@gmail.com</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_AS_WEBIGGv7_Langemann_YT_WEBIGG-LM81<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 07.08.2026 17:39<br/>Webinarzeit: 08.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 08.08.2026 19:00<br/>Logout-Zeit: 08.08.2026 20:40<br/>Chat:<br/>1: Puchalla Sabine (08.08.2026 20:07): Diamanten --- erworben - ohne<br/>Sklavenarbeit und Ausbeutung des Landes? und - danke f&uuml;r die wichtigen Infos.</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (08.08.2026 20:42)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: puchallasabine@gmail.com, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
-          "date": "2026-08-08T18:42:13.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "deutschesedelsteinhaus@gmail.com",
-                "name": ""
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><a href=\"mailto:deutschesedelsteinhaus@gmail.com\" class=\"mp_address_email\">deutschesedelsteinhaus@gmail.com</a></span>",
-            "text": "deutschesedelsteinhaus@gmail.com"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "noreply-11551@webinaris.co",
-                "name": "Webinaris"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
-            "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
-          },
-          "messageId": "<0107019fe2aec84f-128d1cd6-4fba-411f-aa9f-39e42b414adb-000000@eu-central-1.amazonses.com>"
-        },
-        "pairedItem": {
-          "item": 2
-        }
-      },
-      {
-        "json": {
-          "id": "19fe2aec8c7a051c",
-          "threadId": "19fe2aec8c7a051c",
-          "labelIds": [
-            "UNREAD",
-            "IMPORTANT",
-            "CATEGORY_UPDATES",
-            "INBOX"
-          ],
-          "sizeEstimate": 6483,
-          "headers": {
-            "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from b224-14.smtp-out.eu-central-1.amazonses.com (b224-14.smtp-out.eu-central-1.amazonses.com. [69.169.224.14])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-480022708cesi9159584f8f.498.2026.08.08.11.42.13\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Sat, 08 Aug 2026 11:42:13 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6000:2487:b0:480:ca53:280f with SMTP id ffacd0b85a97d-480ca532883mr16895291f8f.2.1786214533607;\r\n        Sat, 08 Aug 2026 11:42:13 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1786214533; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=kwLLyMxXsnN9QQhfnl5Yqab4zJe5Ek6iHVRc/zGzdvJRu6V3UmXs+uLIoNkrifGtpN\r\n         0X1/U5spYsYMYCrrvFOBTlPBt5KFERxt+k2d4BIWpizENssKejDFXBNMIEuLfaeJdkP/\r\n         U0Hjo/Z4E2TjWF8kI1qk8E4syMv8CxSBYSlSlpqUVgEGPE4SmY7IHEWN/AubzJx7dhE0\r\n         SGBf9InxroO6wsUg1ax3P+HUDhu9QdGsVjd+Vt+e7XRuc/uHzY4PmVOVUhozDPHanFYm\r\n         uscTVqhHoTS82DVuBFNilqk4djBinCFFOmR65IZaa6pZj9a9QUykic0dB3+bacV9HtP5\r\n         t0MA==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=lYZRHWegQqcmE9vC0W+K3WFjxj5SdRuthmWBinduWTo=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=LvnVaQdHmjAUf4rRv5eEuruU63n51Jacmsd6kJrLezH4A0+oFBL0YzLv8ZFc8yeBc6\r\n         /1P2L4nFe8EzLEUK0nhIxDf6TH+Rbt48ccbd+snRxlwsZXiizFAIBQls+di0zDLL/VmQ\r\n         /FTSGby55Xb1G5dSYDhJ37DSCwc+RCIZ6PPma3OurFZ6JhCDiQbsYYZszek9SpkHI3gi\r\n         CnY5AMD2F64Dw0IyEPnpjyJXdDInYfjU82xJvaMFvyVWR+5cyZhCkMywJE5e85BESRRd\r\n         XF4r8B8rlaaTSyBcPjF32bXLU7f0QmbO1rHHk8xLHy0cWupLafaC9thxxVjxntt5e+nK\r\n         bURQ==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=P0SQ4NOP;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=a6PTTe0s;\r\n       spf=pass (google.com: domain of 0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com designates 69.169.224.14 as permitted sender) smtp.mailfrom=0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com designates 69.169.224.14 as permitted sender) client-ip=69.169.224.14;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=P0SQ4NOP;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=a6PTTe0s;\r\n       spf=pass (google.com: domain of 0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com designates 69.169.224.14 as permitted sender) smtp.mailfrom=0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1786214533;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=lHMDnTCcRkngMXSc5Uqua+vHvYk9i9o3+KMAq7i0RoI=;\r\n\tb=a6PTTe0sPp/ah5+8LNlnGE6iQ1YAYTCH55YZ38BIW2wuQuFiUgCFVCVGV9wud+jk\r\n\tOBuSSpJ0UJdKCeQ+0DtFpnxmSOB6jbUhW594Y9K7f8rprETKQoReocK2hbQPhfL/Tyx\r\n\tfQ1/5QxWvuxQByB1vVogObygkKCfRIWTEcTuIwVM=",
-            "date": "Date: Sat, 8 Aug 2026 18:42:13 +0000",
-            "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
-            "to": "To: deutschesedelsteinhaus@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_j.butz@kabelma?=\r\n =?UTF-8?Q?il.de,_Online_Vortrag:_Die_gr=C3=B6?=\r\n =?UTF-8?Q?=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
-            "mime-version": "MIME-Version: 1.0",
-            "content-type": "Content-Type: text/html; charset=UTF-8",
-            "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com>",
-            "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.08-69.169.224.14"
-          },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die j.butz@kabelmail.de im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Josef<br>\n Nachname: <br>\n E-Mail: j.butz@kabelmail.de<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 07.08.2026 15:02<br>\n Webinarzeit: 08.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 08.08.2026 19:00<br>\n Logout-Zeit: 08.08.2026 20:23<br>\n Chat:<br>\n 1: Josef  (08.08.2026 19:00): Hallo zusammen<br/>2: Josef  (08.08.2026 19:01): Alles perfekt<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (08.08.2026 20:42)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die j.butz@kabelmail.de im Webinar\n\"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Josef\nNachname:\nE-Mail: j.butz@kabelmail.de\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 07.08.2026 15:02\nWebinarzeit: 08.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 08.08.2026 19:00\nLogout-Zeit: 08.08.2026 20:23\nChat:\n1: Josef (08.08.2026 19:00): Hallo zusammen\n2: Josef (08.08.2026 19:01): Alles perfekt\n\n\n\n\nViele Grüße,\n\nWebinaris (08.08.2026 20:42)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:j.butz@kabelmail.de\">j.butz@kabelmail.de</a> im Webinar<br/>&quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Josef<br/>Nachname:<br/>E-Mail: <a href=\"mailto:j.butz@kabelmail.de\">j.butz@kabelmail.de</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 07.08.2026 15:02<br/>Webinarzeit: 08.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 08.08.2026 19:00<br/>Logout-Zeit: 08.08.2026 20:23<br/>Chat:<br/>1: Josef (08.08.2026 19:00): Hallo zusammen<br/>2: Josef (08.08.2026 19:01): Alles perfekt</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (08.08.2026 20:42)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: j.butz@kabelmail.de, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
-          "date": "2026-08-08T18:42:13.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "deutschesedelsteinhaus@gmail.com",
-                "name": ""
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><a href=\"mailto:deutschesedelsteinhaus@gmail.com\" class=\"mp_address_email\">deutschesedelsteinhaus@gmail.com</a></span>",
-            "text": "deutschesedelsteinhaus@gmail.com"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "noreply-11551@webinaris.co",
-                "name": "Webinaris"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
-            "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
-          },
-          "messageId": "<0107019fe2aec84f-8ebf7499-ac90-4dca-9157-cd9bf9cb7730-000000@eu-central-1.amazonses.com>"
-        },
-        "pairedItem": {
-          "item": 3
-        }
       }
     ]
   },
-  "versionId": "9e5983fd-045b-48f2-b95a-889a26731e3d",
-  "activeVersionId": "68595ef2-f1fe-447b-9137-eceb1011054d",
+  "versionId": "eb8b7175-334b-4f50-9983-e56e014633da",
+  "activeVersionId": "eb8b7175-334b-4f50-9983-e56e014633da",
   "triggerCount": 1,
   "shared": [
     {
@@ -2508,9 +2382,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-07-09T20:16:41.000Z",
-    "createdAt": "2026-07-09T20:16:36.713Z",
-    "versionId": "68595ef2-f1fe-447b-9137-eceb1011054d",
+    "updatedAt": "2026-08-10T00:48:55.000Z",
+    "createdAt": "2026-08-10T00:48:53.098Z",
+    "versionId": "eb8b7175-334b-4f50-9983-e56e014633da",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -2769,7 +2643,8 @@
       },
       {
         "parameters": {
-          "jsCode": "// Get email text\nconst text = $json.text || $input.first().json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSectionRaw = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Normalize chat section before parsing\n// HTML emails often use <br> instead of line breaks.\n// --------------------------------------\nlet chatSection = chatSectionRaw\n  .replace(/<br\\s*\\/?>/gi, \"\\n\")\n  .replace(/<\\/p>/gi, \"\\n\")\n  .replace(/<[^>]+>/g, \" \")\n  .replace(/\\r/g, \"\")\n  .replace(/[ \\t]+\\n/g, \"\\n\")\n  .replace(/\\n{2,}/g, \"\\n\")\n  .trim();\n\n// Webinar notification emails often append signoff/footer text directly\n// after the chat block. Truncate at the first obvious footer marker so the\n// last question does not absorb \"Viele Grüße\", \"Webinaris\", \"Hinweis:\", etc.\nchatSection = chatSection.split(\n  /\\n(?=(?:Von|From|An|To|Datum|Date):|Viele Grüße,?|Webinaris\\s*\\(|Hinweis:|Wenn du keine Benachrichtigungs-Mails)/i\n)[0].trim();\n\n// --------------------------------------\n// Parse questions\n// Keeps the same output contract as the current node\n// --------------------------------------\nconst questions = [];\n\nfunction isRealQuestion(q) {\n  const text = q.trim();\n\n  if (!text) {\n    return false;\n  }\n\n  // Reject emoji-only or symbol-only messages like \"👍🏻\"\n  if (/^[\\p{Emoji}\\p{Symbol}\\s]+$/u.test(text)) {\n    return false;\n  }\n\n  // Reject short acknowledgements and feedback that are not actionable questions\n  if (/^(ja|nein|ok|okay|danke|danke schön|dankeschön|super|perfekt|top|gut)$/i.test(text)) {\n    return false;\n  }\n\n  // A question mark is the clearest signal that this should pass through\n  if (text.includes(\"?\")) {\n    return true;\n  }\n\n  // Reject very short fragments even if they are not in the explicit stoplist\n  if (text.length < 12) {\n    return false;\n  }\n\n  // Keep longer sentence-like inputs for now, even if they omit '?'\n  return /\\s/.test(text);\n}\n\n// Split on numbered chat entries like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst parts = chatSection.split(/\\n(?=\\d+:\\s.*?\\):\\s*)/);\n\nfor (const part of parts) {\n  const match = part.match(/^\\d+:\\s.*?\\):\\s*([\\s\\S]*)$/);\n  if (!match) {\n    continue;\n  }\n\n  let q = match[1].replace(/\\s+/g, \" \").trim();\n\n  // Skip clear footer/signoff lines but do not stop parsing entirely.\n  if (!q) {\n    continue;\n  }\n\n  if (/^(Vielen Dank|Thank you in advance|Best regards|Kind regards|Hinweis:|Note:)/i.test(q)) {\n    continue;\n  }\n\n  if (isRealQuestion(q)) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n  threadId: $input.first().json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};\n"
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Get email text\n const text = $json.text || $json.test_email || \"\";\n\n// --------------------------------------\n// Extract first / last name\n// Supports both German and English labels\n// --------------------------------------\nconst firstMatch = text.match(/(?:Vorname|First name):\\s*([^<\\n\\r]*)/i);\nconst lastMatch = text.match(/(?:Nachname|Last name):\\s*([^<\\n\\r]*)/i);\n\nconst firstname = firstMatch ? firstMatch[1].trim() : \"\";\n\nlet lastname = \"\";\nif (lastMatch && lastMatch[1]) {\n  const rawLast = lastMatch[1].trim();\n\n  // Avoid accidentally grabbing the next field if lastname is blank\n  if (!/^(E-Mail|Email|Phone|Telefon|Callback|Note|Hinweis)/i.test(rawLast)) {\n    lastname = rawLast;\n  }\n}\n\n// Build fullname\nlet fullname = firstname;\nif (lastname) {\n  fullname = `${firstname} ${lastname}`;\n}\n\n// --------------------------------------\n// Extract attendee email address\n// Supports:\n// Email:\n// E-Mail:\n// mailto:\n// plain email fallback\n// --------------------------------------\nlet replyTo = null;\n\n// 1. Prefer labeled Email / E-Mail field\nlet emailMatch = text.match(\n  /(?:E-Mail|Email):\\s*(?:<a[^>]*href=[\"']mailto:)?([^\\s<>\"']+@[^\\s<>\"']+)/i\n);\n\n// 2. Fallback: any mailto link\nif (!emailMatch) {\n  emailMatch = text.match(/mailto:([^\\s<>\"']+@[^\\s<>\"']+)/i);\n}\n\n// 3. Last fallback: any email address in the body\nif (!emailMatch) {\n  emailMatch = text.match(/([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})/i);\n}\n\nif (emailMatch) {\n  replyTo = emailMatch[1]\n    .trim()\n    .replace(/[.,;]+$/, \"\")\n    .toLowerCase();\n}\n\n// --------------------------------------\n// Extract \"Chat:\" section only\n// --------------------------------------\nconst chatSectionRaw = text.split(/Chat:/i)[1] || \"\";\n\n// --------------------------------------\n// Normalize chat section before parsing\n// HTML emails often use <br> instead of line breaks.\n// --------------------------------------\nlet chatSection = chatSectionRaw\n  .replace(/<br\\s*\\/?>/gi, \"\\n\")\n  .replace(/<\\/p>/gi, \"\\n\")\n  .replace(/<[^>]+>/g, \" \")\n  .replace(/\\r/g, \"\")\n  .replace(/[ \\t]+\\n/g, \"\\n\")\n  .replace(/\\n{2,}/g, \"\\n\")\n  .trim();\n\n// Webinar notification emails often append signoff/footer text directly\n// after the chat block. Truncate at the first obvious footer marker so the\n// last question does not absorb \"Viele Grüße\", \"Webinaris\", \"Hinweis:\", etc.\nchatSection = chatSection.split(\n  /\\n(?=(?:Von|From|An|To|Datum|Date):|Viele Grüße,?|Webinaris\\s*\\(|Hinweis:|Wenn du keine Benachrichtigungs-Mails)/i\n)[0].trim();\n\n// --------------------------------------\n// Parse questions\n// Keeps the same output contract as the current node\n// --------------------------------------\nconst questions = [];\n\nfunction isRealQuestion(q) {\n  const text = q.trim();\n\n  if (!text) {\n    return false;\n  }\n\n  // Reject emoji-only or symbol-only messages like \"👍🏻\"\n  if (/^[\\p{Emoji}\\p{Symbol}\\s]+$/u.test(text)) {\n    return false;\n  }\n\n  // Reject short acknowledgements and feedback that are not actionable questions\n  if (/^(ja|nein|ok|okay|danke|danke schön|dankeschön|super|perfekt|top|gut)$/i.test(text)) {\n    return false;\n  }\n\n  // A question mark is the clearest signal that this should pass through\n  if (text.includes(\"?\")) {\n    return true;\n  }\n\n  // Reject very short fragments even if they are not in the explicit stoplist\n  if (text.length < 12) {\n    return false;\n  }\n\n  // Keep longer sentence-like inputs for now, even if they omit '?'\n  return /\\s/.test(text);\n}\n\n// Split on numbered chat entries like:\n// 1: Tatjana (10/09/2025 10:58): Question text...\nconst parts = chatSection.split(/\\n(?=\\d+:\\s.*?\\):\\s*)/);\n\nfor (const part of parts) {\n  const match = part.match(/^\\d+:\\s.*?\\):\\s*([\\s\\S]*)$/);\n  if (!match) {\n    continue;\n  }\n\n  let q = match[1].replace(/\\s+/g, \" \").trim();\n\n  // Skip clear footer/signoff lines but do not stop parsing entirely.\n  if (!q) {\n    continue;\n  }\n\n  if (/^(Vielen Dank|Thank you in advance|Best regards|Kind regards|Hinweis:|Note:)/i.test(q)) {\n    continue;\n  }\n\n  if (isRealQuestion(q)) {\n    questions.push({ question: q });\n  }\n}\n\n// --------------------------------------\n// Return data\n// IMPORTANT: keeps top-level \"questions\"\n// --------------------------------------\nreturn {\n threadId: $json.threadId || \"none\",\n  replyTo: replyTo || \"not_found@example.com\",\n  replyToName: {\n    fullname,\n    firstname,\n    lastname\n  },\n  questions: questions.map(q => ({ json: q }))\n};\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -2811,7 +2686,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          2288,
+          2368,
           -16
         ],
         "id": "975f770e-1c1f-4b4a-a237-9228b0e99953",
@@ -2853,7 +2728,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          2064,
+          2144,
           -16
         ],
         "id": "ebf84add-dfbb-458c-9415-8a043c40d877",
@@ -2890,7 +2765,7 @@
         "typeVersion": 1.8,
         "position": [
           1280,
-          224
+          272
         ],
         "id": "4fc5f1d9-4770-41aa-9f20-bbb186c03db3",
         "name": "Generate Email Reply Segment",
@@ -2909,11 +2784,12 @@
         "type": "n8n-nodes-base.splitOut",
         "typeVersion": 1,
         "position": [
-          1856,
+          1936,
           -16
         ],
         "id": "70a7b9ea-11da-4987-bac7-9230262e8aa6",
-        "name": "Split Out"
+        "name": "Split Out",
+        "alwaysOutputData": true
       },
       {
         "parameters": {
@@ -3046,7 +2922,7 @@
         "typeVersion": 4.7,
         "position": [
           1648,
-          224
+          272
         ],
         "id": "099f0d19-927b-4d0d-90d6-4a1ea0a18cb0",
         "name": "Append or update row in sheet",
@@ -3210,7 +3086,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 68595ef2",
+    "name": "Version eb8b7175",
     "description": "",
     "autosaved": true
   },
