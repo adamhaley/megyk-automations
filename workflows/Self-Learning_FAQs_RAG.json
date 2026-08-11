@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-10T00:58:00.368Z",
+  "updatedAt": "2026-08-11T01:13:30.522Z",
   "createdAt": "2025-09-11T19:49:07.661Z",
   "id": "lLmdtJWpmMd86l0W",
   "name": "Self-Learning FAQs RAG",
@@ -408,7 +408,7 @@
       ],
       "id": "70a7b9ea-11da-4987-bac7-9230262e8aa6",
       "name": "Split Out",
-      "alwaysOutputData": true
+      "alwaysOutputData": false
     },
     {
       "parameters": {
@@ -713,10 +713,10 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1786390931,
+        "lastTimeChecked": 1786480934,
         "possibleDuplicates": [
-          "19fed326a3caaa66",
-          "19fecfb8070e5eff"
+          "19ff28fc0639babd",
+          "19ff10f372bd0701"
         ]
       }
     },
@@ -2241,42 +2241,42 @@
     "Gmail Trigger": [
       {
         "json": {
-          "id": "19fc8f1c488b7156",
-          "threadId": "19fc8f1c488b7156",
+          "id": "19fed326a3caaa66",
+          "threadId": "19fed326a3caaa66",
           "labelIds": [
             "UNREAD",
             "IMPORTANT",
             "CATEGORY_UPDATES",
             "INBOX"
           ],
-          "sizeEstimate": 6457,
+          "sizeEstimate": 6460,
           "headers": {
             "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from b224-18.smtp-out.eu-central-1.amazonses.com (b224-18.smtp-out.eu-central-1.amazonses.com. [69.169.224.18])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-47fd41dc1a6si18244780f8f.2.2026.08.03.11.45.15\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Mon, 03 Aug 2026 11:45:15 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6000:4613:b0:47f:93be:dabd with SMTP id ffacd0b85a97d-47fd72f193dmr26769040f8f.28.1785782715668;\r\n        Mon, 03 Aug 2026 11:45:15 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1785782715; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=i94h1fHEq17lnpTsu3OQ7eyD70bkj2jBQG4x/cgufXxMQ6c7oLoPz+PnagO5bsiPD1\r\n         88Ap6WqD3FVfUjg5XQQLgEatPHhqKKWMUw/p9TtxdvnWMWwHaWgZV7ej2D7EwNczJWha\r\n         xi4jvSonOsAz+RaJ2tfHa6x0gbqDQY9CAUcq4uWdjBXkbN2/EQTP2+BToR2t0oD8TuWg\r\n         l9B/94wm4m6DlJ542YeoMFm6QsDVURTI1DrkZDYtmmYwI2vuzEPaHLDR5FLPIMka3YAc\r\n         XrHfBgzv5Mm+KrrJ5i9jGmXAHKbjCWy1BnTM/tE3AkytC5SzRe+NM5Z65oMCuy+EeUeH\r\n         HWLA==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=d+ozw2pbvlL5gcrmvCFc/HTIbVM680uaegDiF/gWgL0=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=QlqMfGdQQTxaXmC5FsX7XF7KeDoY2H+FmWGY4iVDssqMSibhRt77DXppMKnzJn7MOi\r\n         lc7Wfp7Wk4zGTuOhgjyC2xN5BACj0+DFEBHkyYQfHaXHHxhyBEnQG/E8jAaKIM9lG2Wo\r\n         lH3FOAcWaMgJQ3ieF6h/0IC1rECbZmOKNfWRmXi/tR2Su/kr6y4aHYY3O/ygs3b+SbAO\r\n         0USANfebzZoYsXX+Rxd7HiSxG20ixeDn+v278r1IOkoqjEpb0z7REBvr9Hxlc8lUtS5X\r\n         EzIr2mj7LkzX0aB8RRcjuSEp75wNwQ6NAwFTO4usbZglmjsChLXmnzUrlWB96GqsbgMN\r\n         mbYQ==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=\"n/nIPc+T\";\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=h4oi6Gc4;\r\n       spf=pass (google.com: domain of 0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) client-ip=69.169.224.18;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=\"n/nIPc+T\";\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=h4oi6Gc4;\r\n       spf=pass (google.com: domain of 0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com designates 69.169.224.18 as permitted sender) smtp.mailfrom=0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1785782715;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=iS3WJjpYpJHfaIXN2HurDrOp8puEybDoUTMB84oZHrs=;\r\n\tb=h4oi6Gc4zL4740phz6Jfiv7OcmlzR1/jcdS0jZAcma2KRYFTTWq5RcEmkBxsPCwt\r\n\tQKLhQId7MDGXFjM+0Dcr7wy9+AXSsCEya1F3d+vZeLD4B80MUDKmG0WUspMTCIbtP6L\r\n\tfn0OIbleFoYNQMG30JWtZYzjvojtJQGLVSPjdaqQ=",
-            "date": "Date: Mon, 3 Aug 2026 18:45:15 +0000",
+            "received": "Received: from b224-13.smtp-out.eu-central-1.amazonses.com (b224-13.smtp-out.eu-central-1.amazonses.com. [69.169.224.13])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-480022457eesi19058288f8f.244.2026.08.10.12.42.12\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Mon, 10 Aug 2026 12:42:12 -0700 (PDT)",
+            "x-received": "X-Received: by 2002:a05:600c:3516:b0:499:5282:f8d1 with SMTP id 5b1f17b1804b1-49973833f06mr27078375e9.12.1786390932286;\r\n        Mon, 10 Aug 2026 12:42:12 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1786390932; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=L8asVaj5io+AGZWBzjRuhWX2/frl+Hw5MbdTrq7TZ9VHZMwY47WsuL60kjVEQDksAL\r\n         aIV5sZ4gaF75EvQ+9zS/5h8Wbjgns1fDBiF/x2XsSJQHmB0VjxECND1n2uottm6cfgQa\r\n         dgYg598EOFamEB9e06aTAVs66jlr7WtSsGRqZSwPrs7s8/u4g1g/w//T53FXd4TpjwWH\r\n         BCp48ue+N05vX8VcF3f0hKGQKnd0yRnx0CWH7bnERH5l3Q6rfT0wbamJmvIJgx+g6XNp\r\n         vQIEHUkg6MrP9JM+BdK2UMWAlfojih4uVFRMM9m8q6YtPIoh7uVmnDD88v2XmClv0e9l\r\n         HMow==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=jMBepC6q2BLxyb6DZW0hxgretluKFS6N54CN3doSbXM=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=sZz5VDOD68B4qnvtpcXkC8HJe42VRPMACZOBoG3qZvR6RwIVp626N8WtnS8k/TGI44\r\n         7B+/hcjEmvybls1zFKyIcF9xlZxKDaqR9LgIQyw1RiU77nyaHOTCKJoO3BWG07DNjXxQ\r\n         nWDGGHsn3YB/Hyzys1bbTbYK46W0EO1lKTA4k/m70tRtf29wJEzrxt9C2Ws8gY4GTctn\r\n         pHT+nNFhQTX72yu/s2BWBWBSPmVCSwrGzXEt6kquSUk7ALAFSklFHGPjjSLnh7aRpHpg\r\n         893Wolv2umD7DWADeygm/h3FZ8w/tmZCJxmzruU8Eu/NMP0TY/mNHzdHV/0WXKTDw7wv\r\n         rwRg==;\r\n        dara=google.com",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=I6iv+tV1;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=aJZEHJgN;\r\n       spf=pass (google.com: domain of 0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) smtp.mailfrom=0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
+            "return-path": "Return-Path: <0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) client-ip=69.169.224.13;",
+            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=I6iv+tV1;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=aJZEHJgN;\r\n       spf=pass (google.com: domain of 0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) smtp.mailfrom=0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1786390932;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=zrfoG9zUM3/QDtQuhn7LFvd7AHfuIIHnPtFg2aBDJCM=;\r\n\tb=aJZEHJgNQn97LF+tjb+BnXqasBDzB/9sQTF6ZQuKLas5guxqwzAWrD2huluJrZy9\r\n\tOFCWqX2FTSVlk58eiDaMO8v7bB4tMggsZ8t9SLhro0I6kB5h4J/XLCBlNlTqZcMH58N\r\n\tkWdaHfO7sVrMr5RkUJSOkfreKalUqIZERq/AL2kE=",
+            "date": "Date: Mon, 10 Aug 2026 19:42:11 +0000",
             "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
             "to": "To: deutschesedelsteinhaus@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_juttakratzat@w?=\r\n =?UTF-8?Q?eb.de,_Online_Vortrag:_Die_gr=C3=B6?=\r\n =?UTF-8?Q?=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
+            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_astakwh@gmx.?=\r\n =?UTF-8?Q?de,_Online_Vortrag:_Die_gr=C3=B6=C3=9F?=\r\n =?UTF-8?Q?ten_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
             "mime-version": "MIME-Version: 1.0",
             "content-type": "Content-Type: text/html; charset=UTF-8",
             "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com>",
+            "message-id": "Message-ID: <0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com>",
             "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.03-69.169.224.18"
+            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.10-69.169.224.13"
           },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die juttakratzat@web.de im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Jutta Kratzat<br>\n Nachname: <br>\n E-Mail: juttakratzat@web.de<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_kwINF_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 01.08.2026 04:12<br>\n Webinarzeit: 03.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 03.08.2026 19:00<br>\n Logout-Zeit: 03.08.2026 20:44<br>\n Chat:<br>\n 1: Jutta Kratzat  (03.08.2026 19:00): ja<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (03.08.2026 20:45)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die juttakratzat@web.de im Webinar\n\"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Jutta Kratzat\nNachname:\nE-Mail: juttakratzat@web.de\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_kwINF_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 01.08.2026 04:12\nWebinarzeit: 03.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 03.08.2026 19:00\nLogout-Zeit: 03.08.2026 20:44\nChat:\n1: Jutta Kratzat (03.08.2026 19:00): ja\n\n\n\n\nViele Grüße,\n\nWebinaris (03.08.2026 20:45)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:juttakratzat@web.de\">juttakratzat@web.de</a> im Webinar<br/>&quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Jutta Kratzat<br/>Nachname:<br/>E-Mail: <a href=\"mailto:juttakratzat@web.de\">juttakratzat@web.de</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_LD_RET_WEBIGGv7_INFEED_BLD_kwINF_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 01.08.2026 04:12<br/>Webinarzeit: 03.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 03.08.2026 19:00<br/>Logout-Zeit: 03.08.2026 20:44<br/>Chat:<br/>1: Jutta Kratzat (03.08.2026 19:00): ja</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (03.08.2026 20:45)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: juttakratzat@web.de, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
-          "date": "2026-08-03T18:45:15.000Z",
+          "html": "<p>Nachfolgend findest du die Chatnachrichten, die astakwh@gmx.de im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Asta<br>\n Nachname: <br>\n E-Mail: astakwh@gmx.de<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_AS_WEBIGGv7_kwRET_WEBIGG-LM81<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 10.08.2026 19:39<br>\n Webinarzeit: 10.08.2026 20:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 10.08.2026 20:03<br>\n Logout-Zeit: 10.08.2026 21:25<br>\n Chat:<br>\n 1: Asta  (10.08.2026 21:25): Vielen Dank für diesen interessanten Beitrag<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (10.08.2026 21:42)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
+          "text": "Nachfolgend findest du die Chatnachrichten, die astakwh@gmx.de im Webinar\n\"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.\n\nVorname: Asta\nNachname:\nE-Mail: astakwh@gmx.de\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_AS_WEBIGGv7_kwRET_WEBIGG-LM81\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 10.08.2026 19:39\nWebinarzeit: 10.08.2026 20:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 10.08.2026 20:03\nLogout-Zeit: 10.08.2026 21:25\nChat:\n1: Asta (10.08.2026 21:25): Vielen Dank für diesen interessanten Beitrag\n\n\n\n\nViele Grüße,\n\nWebinaris (10.08.2026 21:42)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
+          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:astakwh@gmx.de\">astakwh@gmx.de</a> im Webinar<br/>&quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen hat.</p><p>Vorname: Asta<br/>Nachname:<br/>E-Mail: <a href=\"mailto:astakwh@gmx.de\">astakwh@gmx.de</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_AS_WEBIGGv7_kwRET_WEBIGG-LM81<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 10.08.2026 19:39<br/>Webinarzeit: 10.08.2026 20:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 10.08.2026 20:03<br/>Logout-Zeit: 10.08.2026 21:25<br/>Chat:<br/>1: Asta (10.08.2026 21:25): Vielen Dank f&uuml;r diesen interessanten Beitrag</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (10.08.2026 21:42)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
+          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: astakwh@gmx.de, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
+          "date": "2026-08-10T19:42:11.000Z",
           "to": {
             "value": [
               {
@@ -2297,80 +2297,16 @@
             "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
             "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
           },
-          "messageId": "<0107019fc8f1c3b1-5a932de1-3b4e-4a00-8ee5-32949f8d94ef-000000@eu-central-1.amazonses.com>"
+          "messageId": "<0107019fed3269c0-647df3f7-306d-4adb-badb-bb28bd975178-000000@eu-central-1.amazonses.com>"
         },
         "pairedItem": {
           "item": 0
         }
-      },
-      {
-        "json": {
-          "id": "19fc8f1b9f56d679",
-          "threadId": "19fc8f1b9f56d679",
-          "labelIds": [
-            "UNREAD",
-            "IMPORTANT",
-            "CATEGORY_UPDATES",
-            "INBOX"
-          ],
-          "sizeEstimate": 7007,
-          "headers": {
-            "delivered-to": "Delivered-To: deutschesedelsteinhaus@gmail.com",
-            "received": "Received: from b224-13.smtp-out.eu-central-1.amazonses.com (b224-13.smtp-out.eu-central-1.amazonses.com. [69.169.224.13])\r\n        by mx.google.com with ESMTPS id ffacd0b85a97d-47fd41db474si18691741f8f.83.2026.08.03.11.45.12\r\n        for <deutschesedelsteinhaus@gmail.com>\r\n        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);\r\n        Mon, 03 Aug 2026 11:45:12 -0700 (PDT)",
-            "x-received": "X-Received: by 2002:a05:6000:46cb:b0:47f:8abb:7476 with SMTP id ffacd0b85a97d-47fd72d47cbmr21832789f8f.19.1785782712552;\r\n        Mon, 03 Aug 2026 11:45:12 -0700 (PDT)",
-            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1785782712; cv=none;\r\n        d=google.com; s=arc-20260327;\r\n        b=K6T9NxkqD/TU6cBAjzCx6/xYLZDcA9nhbRtHcSYAXb38tm6fny+0VwjEemlphZTd7Z\r\n         +OcgvTlqroHQfoFNvYVnJ/bKfEjZbmhHAmhbxkeGWXXK5vl0W9yFhvVu62h9NoIeQRaT\r\n         npFu6WRdcNX/NzpZQ+d7/39CjEyUY8DgUJgGso8W2rjk5XbhIgPgpfvqjBrd7zMeLNYv\r\n         Y4SMfMZuTUg3sw7T9Yoh/P17AAILd0g8ApWrte1R+PY3o0bTTLL0jdqcE7s1s6LUxj4a\r\n         uojPpPgfrFii+he4o+KtJpxKjGtxJmWIAIt5JhHazVzud4WTAek5PNaIfTpYZKQacOmX\r\n         6Fcw==",
-            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;\r\n        h=feedback-id:message-id:content-transfer-encoding:mime-version\r\n         :subject:to:from:date:dkim-signature:dkim-signature;\r\n        bh=p8YO6V4MwVvx7bQe0Il/SdfnzRXlNccnORgg09XZjFA=;\r\n        fh=GbV1lnNPMan96VqQwZII2bBQvCerP78ZhomQaQ/p8ko=;\r\n        b=lLxVARqkPtzkMeIGvFNo2ZCrirll5+Gteh5wht6fAZ98tZAjAOrNd7hu8pEossZyjc\r\n         y49+bIcA0GIow2IPLrG0bMQ5DfnvJglaHnxb+BUmd0/yr2qVZbZ51UBddWlAfEiyILj3\r\n         dmUQIWo7/621TQj2YfM0BwvmeY2esUjb8W1nKYGDpf60pbznrqMTjz7j7rxWkvXwPJRg\r\n         81qg1uS8a/43eIWG4UDNWCYeDnqm06PxFxDKF47udm5weG8D1qyvNv/U4/tjdXwNpFqa\r\n         CWxDsaaPsIYLv+d1nSRFFFf1bovdRH/HWOXQz48+wpLGQUpBg15VC8J1GLqxN0p9Gy4E\r\n         xJkQ==;\r\n        dara=google.com",
-            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=Yhd8IlfG;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=GHnrZqBb;\r\n       spf=pass (google.com: domain of 0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) smtp.mailfrom=0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "return-path": "Return-Path: <0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com>",
-            "received-spf": "Received-SPF: pass (google.com: domain of 0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) client-ip=69.169.224.13;",
-            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@webinaris.co header.s=fafc4rbjmgzkgokrn3xop3cdh6pc4454 header.b=Yhd8IlfG;\r\n       dkim=pass header.i=@amazonses.com header.s=sokbgaaqhfgd6qjht2wmdajpuuanpimv header.b=GHnrZqBb;\r\n       spf=pass (google.com: domain of 0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com designates 69.169.224.13 as permitted sender) smtp.mailfrom=0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com;\r\n       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=webinaris.co",
-            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;\r\n\ts=sokbgaaqhfgd6qjht2wmdajpuuanpimv; d=amazonses.com; t=1785782712;\r\n\th=Date:From:To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;\r\n\tbh=hAU9jUL63uI1pNPiwp3SDVZgBzPnqOVZHHGkfWVInZg=;\r\n\tb=GHnrZqBb6/pUavzwfGXHEj+Fgc0sLLOdrfJAk4xWfLdnoNhdUoq/HygURl779jU7\r\n\th8MirilO9LdR4TxUO2jncSQ7TdNp1cJWe622PfgK3xtOgV6k8RCTF+TV2kmabuQLH3C\r\n\tQKKOjc+vKdcbcgYqUsqb89CCGXYfHe6WMLI8z9aI=",
-            "date": "Date: Mon, 3 Aug 2026 18:45:11 +0000",
-            "from": "From: =?utf-8?B?V2ViaW5hcmlz?= <noreply-11551@webinaris.co>",
-            "to": "To: deutschesedelsteinhaus@gmail.com",
-            "subject": "Subject: =?UTF-8?Q?[Webinar_Benachrichtigung]_Chat-Nachrichten:_tap.zaiser@google?=\r\n =?UTF-8?Q?mail.com,_Online_Vortrag:_Die_g?=\r\n =?UTF-8?Q?r=C3=B6=C3=9Ften_Gefahren_f=C3=BCr_Ihr_Verm=C3=B6gen?=",
-            "mime-version": "MIME-Version: 1.0",
-            "content-type": "Content-Type: text/html; charset=UTF-8",
-            "content-transfer-encoding": "Content-Transfer-Encoding: quoted-printable",
-            "message-id": "Message-ID: <0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com>",
-            "feedback-id": "Feedback-ID: ::1.eu-central-1.7Nk4aRZTThorPbnPC0WBIr0BWEE2TNJKTHAo99XpdBA=:AmazonSES",
-            "x-ses-outgoing": "X-SES-Outgoing: 2026.08.03-69.169.224.13"
-          },
-          "html": "<p>Nachfolgend findest du die Chatnachrichten, die tap.zaiser@googlemail.com im Webinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen hat.<br><br>\n \n Vorname: Thomas Zaiser<br>\n Nachname: <br>\n E-Mail: tap.zaiser@googlemail.com<br>\n Telefonnummer: <br>\n Rückruf-Bitte: Nein<br>\n Rückruf-Nummer: <br>\n Notiz: <br>\n Source ID: <br>\n Affiliate ID: <br>\n UTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m<br>\n UTM Medium: <br>\n UTM Campaign: <br>\n UTM Term: b_verhuellt<br>\n UTM Content: <br>\n Webinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)<br>\n Anmeldezeit: 01.08.2026 05:44<br>\n Webinarzeit: 03.08.2026 19:00<br>\n Geklickte Buttons: <br>\n Beantwortete Umfragen: <br>\n Login-Zeit: 03.08.2026 19:00<br>\n Logout-Zeit: 03.08.2026 20:43<br>\n Chat:<br>\n 1: Thomas Zaiser  (03.08.2026 19:30): ..<br/>2: Thomas Zaiser  (03.08.2026 19:31): Meine Annahme ist: Wenn ich Schulen bei der Bank habe, weil meine Immobilie noch nicht vollständig abbezahlt ist, habe ich bei einer schleichenden und gemäßigten Inflation eher Vorteile. Der Wert des Geldes sinkt, ich muss bei einem Baudarlehen, Annuitätendarlehen, immer den gleichen monatlichen Betrag zurückzahlen.\n\nFragen: \nIst die Annahme richtig? \nWas ändert sich bei einer Hyperinflation? Welche (gravierenden) Nachteile können entstehen?<br/><br/><br/><br><br>\n \n Viele Grüße,<br><br>\n Webinaris (03.08.2026 20:45)<br><br>\n \n Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p>\n \n <p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten möchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im Menü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.</p>\n",
-          "text": "Nachfolgend findest du die Chatnachrichten, die tap.zaiser@googlemail.com im\nWebinar \"Online Vortrag: Die größten Gefahren für Ihr Vermögen\" hinterlassen\nhat.\n\nVorname: Thomas Zaiser\nNachname:\nE-Mail: tap.zaiser@googlemail.com\nTelefonnummer:\nRückruf-Bitte: Nein\nRückruf-Nummer:\nNotiz:\nSource ID:\nAffiliate ID:\nUTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m\nUTM Medium:\nUTM Campaign:\nUTM Term: b_verhuellt\nUTM Content:\nWebinar: Online Vortrag: Die größten Gefahren für Ihr Vermögen (WEBIGG)\nAnmeldezeit: 01.08.2026 05:44\nWebinarzeit: 03.08.2026 19:00\nGeklickte Buttons:\nBeantwortete Umfragen:\nLogin-Zeit: 03.08.2026 19:00\nLogout-Zeit: 03.08.2026 20:43\nChat:\n1: Thomas Zaiser (03.08.2026 19:30): ..\n2: Thomas Zaiser (03.08.2026 19:31): Meine Annahme ist: Wenn ich Schulen bei der\nBank habe, weil meine Immobilie noch nicht vollständig abbezahlt ist, habe ich\nbei einer schleichenden und gemäßigten Inflation eher Vorteile. Der Wert des\nGeldes sinkt, ich muss bei einem Baudarlehen, Annuitätendarlehen, immer den\ngleichen monatlichen Betrag zurückzahlen. Fragen: Ist die Annahme richtig? Was\nändert sich bei einer Hyperinflation? Welche (gravierenden) Nachteile können\nentstehen?\n\n\n\n\nViele Grüße,\n\nWebinaris (03.08.2026 20:45)\n\nHinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.\n\nHinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten\nmöchtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im\nMenü \\'Experten-Einstellungen -> Benachrichtigungen\\' deaktivieren.",
-          "textAsHtml": "<p>Nachfolgend findest du die Chatnachrichten, die <a href=\"mailto:tap.zaiser@googlemail.com\">tap.zaiser@googlemail.com</a> im<br/>Webinar &quot;Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen&quot; hinterlassen<br/>hat.</p><p>Vorname: Thomas Zaiser<br/>Nachname:<br/>E-Mail: <a href=\"mailto:tap.zaiser@googlemail.com\">tap.zaiser@googlemail.com</a><br/>Telefonnummer:<br/>R&uuml;ckruf-Bitte: Nein<br/>R&uuml;ckruf-Nummer:<br/>Notiz:<br/>Source ID:<br/>Affiliate ID:<br/>UTM Source: PPCYT_AS_WEBIGGv7_kwGOLD_LMI2-1m<br/>UTM Medium:<br/>UTM Campaign:<br/>UTM Term: b_verhuellt<br/>UTM Content:<br/>Webinar: Online Vortrag: Die gr&ouml;&szlig;ten Gefahren f&uuml;r Ihr Verm&ouml;gen (WEBIGG)<br/>Anmeldezeit: 01.08.2026 05:44<br/>Webinarzeit: 03.08.2026 19:00<br/>Geklickte Buttons:<br/>Beantwortete Umfragen:<br/>Login-Zeit: 03.08.2026 19:00<br/>Logout-Zeit: 03.08.2026 20:43<br/>Chat:<br/>1: Thomas Zaiser (03.08.2026 19:30): ..<br/>2: Thomas Zaiser (03.08.2026 19:31): Meine Annahme ist: Wenn ich Schulen bei der<br/>Bank habe, weil meine Immobilie noch nicht vollst&auml;ndig abbezahlt ist, habe ich<br/>bei einer schleichenden und gem&auml;&szlig;igten Inflation eher Vorteile. Der Wert des<br/>Geldes sinkt, ich muss bei einem Baudarlehen, Annuit&auml;tendarlehen, immer den<br/>gleichen monatlichen Betrag zur&uuml;ckzahlen. Fragen: Ist die Annahme richtig? Was<br/>&auml;ndert sich bei einer Hyperinflation? Welche (gravierenden) Nachteile k&ouml;nnen<br/>entstehen?</p><p>Viele Gr&uuml;&szlig;e,</p><p>Webinaris (03.08.2026 20:45)</p><p>Hinweis: Alle Zeiten sind in der Zeitzone UTC+2 angegeben.</p><p>Hinweis: Wenn du keine Benachrichtigungs-Mails mehr zu diesem Webinar erhalten<br/>m&ouml;chtest, kannst du sie in deinem Webinaris Account beim jeweiligen Webinar im<br/>Men&uuml; \\&apos;Experten-Einstellungen -&gt; Benachrichtigungen\\&apos; deaktivieren.</p>",
-          "subject": "[Webinar Benachrichtigung] Chat-Nachrichten: tap.zaiser@googlemail.com, Online Vortrag: Die größten Gefahren für Ihr Vermögen",
-          "date": "2026-08-03T18:45:11.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "deutschesedelsteinhaus@gmail.com",
-                "name": ""
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><a href=\"mailto:deutschesedelsteinhaus@gmail.com\" class=\"mp_address_email\">deutschesedelsteinhaus@gmail.com</a></span>",
-            "text": "deutschesedelsteinhaus@gmail.com"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "noreply-11551@webinaris.co",
-                "name": "Webinaris"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Webinaris</span> &lt;<a href=\"mailto:noreply-11551@webinaris.co\" class=\"mp_address_email\">noreply-11551@webinaris.co</a>&gt;</span>",
-            "text": "\"Webinaris\" <noreply-11551@webinaris.co>"
-          },
-          "messageId": "<0107019fc8f1b6a8-280ba75c-2709-4c43-92b1-f35fb61c71c4-000000@eu-central-1.amazonses.com>"
-        },
-        "pairedItem": {
-          "item": 1
-        }
       }
     ]
   },
-  "versionId": "eb8b7175-334b-4f50-9983-e56e014633da",
-  "activeVersionId": "eb8b7175-334b-4f50-9983-e56e014633da",
+  "versionId": "d419b11e-7adc-46df-9d4e-bcf6e662cfaf",
+  "activeVersionId": "d419b11e-7adc-46df-9d4e-bcf6e662cfaf",
   "triggerCount": 1,
   "shared": [
     {
@@ -2382,9 +2318,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-10T00:48:55.000Z",
-    "createdAt": "2026-08-10T00:48:53.098Z",
-    "versionId": "eb8b7175-334b-4f50-9983-e56e014633da",
+    "updatedAt": "2026-08-11T01:13:32.000Z",
+    "createdAt": "2026-08-11T01:13:30.526Z",
+    "versionId": "d419b11e-7adc-46df-9d4e-bcf6e662cfaf",
     "workflowId": "lLmdtJWpmMd86l0W",
     "nodes": [
       {
@@ -2789,7 +2725,7 @@
         ],
         "id": "70a7b9ea-11da-4987-bac7-9230262e8aa6",
         "name": "Split Out",
-        "alwaysOutputData": true
+        "alwaysOutputData": false
       },
       {
         "parameters": {
@@ -3086,7 +3022,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version eb8b7175",
+    "name": "Version d419b11e",
     "description": "",
     "autosaved": true
   },
