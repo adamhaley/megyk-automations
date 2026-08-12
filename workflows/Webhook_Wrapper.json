@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-07T18:39:52.629Z",
+  "updatedAt": "2026-08-12T16:33:09.084Z",
   "createdAt": "2026-07-30T21:58:34.595Z",
   "id": "YrH2B4FIWMbjzq5I",
   "name": "Webhook Wrapper",
@@ -16,10 +16,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -176,
-        -16
+        -336,
+        464
       ],
-      "id": "2b5dadb2-b89e-4043-bd27-21fce09dfa00",
+      "id": "7e8b0669-3bd5-42ca-a966-1de02a75228b",
       "name": "Webhook",
       "webhookId": "fe28dcfc-b0d2-4c67-b447-c5225b82f8dd"
     },
@@ -38,23 +38,23 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        944,
-        -16
+        800,
+        464
       ],
-      "id": "a616a3cd-5358-4afc-adb9-0ed5c67520e6",
+      "id": "bda56f1d-f716-45a5-8103-308eb27a29b7",
       "name": "Respond to Webhook"
     },
     {
       "parameters": {
-        "jsCode": "// HTML Generator Code node\n// Supported delivery modes: \"vimeo\" and \"rendered\".\nconst DELIVERY_MODE = 'rendered';\nconst RENDER_NODE_NAME = 'Render Video';\n\nconst resolved = $('Call').first().json;\nconst oembed = $('Get Thumbnail URL').first().json;\nconst isRendered = DELIVERY_MODE === 'rendered';\n\nconst sequence = resolved.sequence || [];\nconst videoIds = sequence\n  .map((item) => String(item.videoId || '').trim())\n  .filter(Boolean);\nconst thumbnailUrl = String(oembed.thumbnail_url_with_play_button || '').trim();\n\nlet renderedVideoUrl = '';\n\nif (isRendered) {\n  const renderResult = $(RENDER_NODE_NAME).first().json;\n  renderedVideoUrl = String(renderResult.videoUrl || '').trim();\n\n  if (!renderedVideoUrl) {\n    throw new Error(`No videoUrl returned by ${RENDER_NODE_NAME}`);\n  }\n} else if (!videoIds.length) {\n  throw new Error('No videos provided');\n}\n\nconst embedUrls = videoIds.map((videoId) =>\n  `https://player.vimeo.com/video/${videoId}?autoplay=1&autopause=0&controls=0&keyboard=0&title=0&byline=0&portrait=0`\n);\n\nconst mediaMarkup = isRendered\n  ? '<video id=\"video\" playsinline preload=\"metadata\"></video>'\n  : '<div id=\"player\"></div>';\nconst videoToggleMarkup = '<button id=\"videoToggle\" class=\"video-toggle\" type=\"button\" aria-label=\"Pause video\" hidden></button>';\n\nconst vimeoApiScript = isRendered\n  ? ''\n  : '<script src=\"https://player.vimeo.com/api/player.js\"></script>';\n\nconst clientScript = `\n    const deliveryMode = ${JSON.stringify(DELIVERY_MODE)};\n    const embedUrls = ${JSON.stringify(embedUrls)};\n    const renderedVideoUrl = ${JSON.stringify(renderedVideoUrl)};\n    const AUDIO_PREFERENCE_KEY = 'rsc-video-audio-enabled';\n\n    let index = 0;\n    let player;\n    let shouldPlayWithAudio = false;\n\n    try {\n      shouldPlayWithAudio = window.sessionStorage.getItem(AUDIO_PREFERENCE_KEY) === 'true';\n    } catch {\n      shouldPlayWithAudio = false;\n    }\n\n    const poster = document.getElementById('poster');\n    const videoElement = document.getElementById('video');\n    const videoToggle = document.getElementById('videoToggle');\n\n    function rememberAudioPreference(muted, volume) {\n      if (muted === false && Number(volume || 0) > 0) {\n        shouldPlayWithAudio = true;\n        try {\n          window.sessionStorage.setItem(AUDIO_PREFERENCE_KEY, 'true');\n        } catch {}\n      }\n    }\n\n    function showReplay() {\n      hideVideoToggle();\n    }\n\n    function hidePoster() {\n      poster.style.display = 'none';\n    }\n\n    function showPoster() {\n      poster.style.display = 'block';\n    }\n\n    function showVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = false;\n      }\n    }\n\n    function hideVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = true;\n      }\n    }\n\n    function updateVideoToggle(isPlaying) {\n      if (!videoToggle) {\n        return;\n      }\n\n      videoToggle.setAttribute('aria-label', isPlaying ? 'Pause video' : 'Play video');\n    }\n\n    function destroyPlayer() {\n      if (!player) {\n        return Promise.resolve();\n      }\n\n      const activePlayer = player;\n      player = null;\n      hideVideoToggle();\n      return activePlayer.destroy().catch(() => {});\n    }\n\n    function handlePlayFailure(error) {\n      showPoster();\n      console.error(error);\n    }\n\n    function mountVimeoPlayer() {\n      player = new Vimeo.Player('player', {\n        url: embedUrls[index],\n        autoplay: true,\n        muted: !shouldPlayWithAudio,\n        byline: false,\n        title: false,\n        portrait: false\n      });\n      showVideoToggle();\n      updateVideoToggle(false);\n\n      player.on('play', () => updateVideoToggle(true));\n      player.on('pause', () => updateVideoToggle(false));\n\n      player.on('volumechange', (data) => {\n        rememberAudioPreference(data.muted, data.volume);\n      });\n\n      player.on('ended', () => {\n        index += 1;\n\n        if (index < embedUrls.length) {\n          destroyPlayer().then(() => {\n            mountVimeoPlayer();\n            player.play().catch(handlePlayFailure);\n          });\n        } else {\n          destroyPlayer().then(showReplay);\n        }\n      });\n    }\n\n    function startRenderedVideo() {\n      videoElement.src = renderedVideoUrl;\n      videoElement.muted = !shouldPlayWithAudio;\n      videoElement.load();\n      showVideoToggle();\n      updateVideoToggle(false);\n      videoElement.play().catch(handlePlayFailure);\n    }\n\n    function startSequence() {\n      index = 0;\n      hidePoster();\n      hideVideoToggle();\n\n      if (deliveryMode === 'rendered') {\n        startRenderedVideo();\n        return;\n      }\n\n      destroyPlayer().then(() => {\n        mountVimeoPlayer();\n        player.play().catch(handlePlayFailure);\n      });\n    }\n\n    if (videoElement) {\n      videoElement.addEventListener('play', () => updateVideoToggle(true));\n      videoElement.addEventListener('pause', () => updateVideoToggle(false));\n\n      videoElement.addEventListener('volumechange', () => {\n        rememberAudioPreference(videoElement.muted, videoElement.volume);\n      });\n\n      videoElement.addEventListener('ended', showReplay);\n    }\n\n    poster.addEventListener('click', startSequence);\n\n    if (videoToggle) {\n      videoToggle.addEventListener('click', () => {\n        if (deliveryMode === 'rendered') {\n          const playback = videoElement.paused\n            ? videoElement.play()\n            : videoElement.pause();\n          playback?.catch(handlePlayFailure);\n          return;\n        }\n\n        const activePlayer = player;\n\n        if (!activePlayer) {\n          return;\n        }\n\n        activePlayer.getPaused().then((isPaused) => {\n          const playback = isPaused ? activePlayer.play() : activePlayer.pause();\n          return playback.catch(handlePlayFailure);\n        }).catch(handlePlayFailure);\n      });\n    }\n\n    startSequence();\n`;\n\nconst html = `<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Video Sequence</title>\n  <style>\n    :root {\n      --text: #f5f1e8;\n      --muted: #b8b1a3;\n      --accent: #d7a84a;\n      --accent-hover: #e6bb67;\n    }\n\n    * {\n      box-sizing: border-box;\n    }\n\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: grid;\n      place-items: center;\n      background:\n        radial-gradient(circle at top, rgba(215, 168, 74, 0.16), transparent 32rem),\n        linear-gradient(180deg, #0a0a0a 0%, #000 100%);\n      color: var(--text);\n      font-family: Georgia, \"Times New Roman\", serif;\n    }\n\n    .shell {\n      width: min(96vw, 960px);\n      display: grid;\n      gap: 1rem;\n    }\n\n    .frame {\n      position: relative;\n      width: 100%;\n      aspect-ratio: 16 / 9;\n      background: #000;\n      border: 1px solid rgba(255, 255, 255, 0.08);\n      border-radius: 18px;\n      overflow: hidden;\n      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);\n    }\n\n    .poster {\n      position: absolute;\n      inset: 0;\n      background-color: #000;\n      background-image: url('${thumbnailUrl}');\n      background-size: cover;\n      background-position: center;\n      z-index: 2;\n      cursor: pointer;\n    }\n\n    #player,\n    #video {\n      position: absolute;\n      inset: 0;\n      width: 100%;\n      height: 100%;\n      z-index: 1;\n    }\n\n    #player iframe {\n      width: 100%;\n      height: 100%;\n      border: 0;\n    }\n\n    #video {\n      object-fit: contain;\n      background: #000;\n    }\n\n    .video-toggle {\n      position: absolute;\n      inset: 0;\n      z-index: 3;\n      width: 100%;\n      height: 100%;\n      padding: 0;\n      border: 0;\n      background: transparent;\n      cursor: pointer;\n    }\n\n    .video-toggle:focus-visible {\n      outline: 3px solid var(--accent);\n      outline-offset: -6px;\n    }\n\n  </style>\n</head>\n<body>\n  <div class=\"shell\">\n    <div class=\"frame\">\n      <div id=\"poster\" class=\"poster\"></div>\n      ${mediaMarkup}\n      ${videoToggleMarkup}\n    </div>\n\n  </div>\n\n  ${vimeoApiScript}\n  <script>\n${clientScript}\n  </script>\n</body>\n</html>`;\n\nreturn [\n  {\n    json: {\n      html,\n      deliveryMode: DELIVERY_MODE,\n    },\n  },\n];\n"
+        "jsCode": "// HTML Generator Code node\n// Supported delivery modes: \"vimeo\" and \"rendered\".\nconst DELIVERY_MODE = 'rendered';\nconst RENDER_NODE_NAME = 'Render Video';\nconst RENDER_STATUS_BASE_URL = 'https://renders.megyk.com';\nconst PROGRESS_MESSAGE = 'Ihre individuelle Auswertung wird in Echtzeit erstellt. Bitte um einen Moment Geduld. Es zahlt sich aus.';\n\nconst resolved = $('Call').first().json;\nconst oembed = $('Get Thumbnail URL').first().json;\nconst isRendered = DELIVERY_MODE === 'rendered';\n\nconst sequence = resolved.sequence || [];\nconst videoIds = sequence\n  .map((item) => String(item.videoId || '').trim())\n  .filter(Boolean);\nconst thumbnailUrl = String(oembed.thumbnail_url_with_play_button || '').trim();\n\nlet renderJobId = '';\nlet renderStatusUrl = '';\n\nif (isRendered) {\n  const renderResult = $(RENDER_NODE_NAME).first().json;\n  renderJobId = String(renderResult.jobId || '').trim();\n\n  if (!renderJobId) {\n    throw new Error(`No jobId returned by ${RENDER_NODE_NAME}`);\n  }\n\n  renderStatusUrl = `${RENDER_STATUS_BASE_URL}/render/jobs/${encodeURIComponent(renderJobId)}`;\n} else if (!videoIds.length) {\n  throw new Error('No videos provided');\n}\n\nconst embedUrls = videoIds.map((videoId) =>\n  `https://player.vimeo.com/video/${videoId}?autoplay=1&autopause=0&controls=0&keyboard=0&title=0&byline=0&portrait=0`\n);\n\nconst mediaMarkup = isRendered\n  ? '<video id=\"video\" playsinline preload=\"metadata\"></video>'\n  : '<div id=\"player\"></div>';\nconst posterMarkup = isRendered\n  ? '<div id=\"poster\" class=\"poster\" style=\"display:none\"></div>'\n  : '<div id=\"poster\" class=\"poster\"></div>';\nconst videoToggleMarkup = '<button id=\"videoToggle\" class=\"video-toggle\" type=\"button\" aria-label=\"Pause video\" hidden></button>';\n\nconst vimeoApiScript = isRendered\n  ? ''\n  : '<script src=\"https://player.vimeo.com/api/player.js\"></script>';\n\nconst clientScript = `\n    const deliveryMode = ${JSON.stringify(DELIVERY_MODE)};\n    const embedUrls = ${JSON.stringify(embedUrls)};\n    const renderJobId = ${JSON.stringify(renderJobId)};\n    const renderStatusUrl = ${JSON.stringify(renderStatusUrl)};\n    const AUDIO_PREFERENCE_KEY = 'rsc-video-audio-enabled';\n\n    let index = 0;\n    let player;\n    let shouldPlayWithAudio = false;\n\n    try {\n      shouldPlayWithAudio = window.sessionStorage.getItem(AUDIO_PREFERENCE_KEY) === 'true';\n    } catch {\n      shouldPlayWithAudio = false;\n    }\n\n    const poster = document.getElementById('poster');\n    const videoElement = document.getElementById('video');\n    const videoToggle = document.getElementById('videoToggle');\n    const progressPanel = document.getElementById('progressPanel');\n    const progressBar = document.getElementById('progressBar');\n    const progressLabel = document.getElementById('progressLabel');\n    const progressStage = document.getElementById('progressStage');\n\n    function rememberAudioPreference(muted, volume) {\n      if (muted === false && Number(volume || 0) > 0) {\n        shouldPlayWithAudio = true;\n        try {\n          window.sessionStorage.setItem(AUDIO_PREFERENCE_KEY, 'true');\n        } catch {}\n      }\n    }\n\n    function showReplay() {\n      hideVideoToggle();\n    }\n\n    function updateProgress(data) {\n      const percentage = Math.max(0, Math.min(100, Number(data.percentage || 0)));\n      progressBar.value = percentage;\n      progressLabel.textContent = percentage + '%';\n      progressStage.textContent = ${JSON.stringify(PROGRESS_MESSAGE)};\n    }\n\n    async function pollRenderJob() {\n      while (true) {\n        const response = await fetch(renderStatusUrl, { headers: { Accept: 'application/json' } });\n        if (!response.ok) {\n          throw new Error('Could not read render progress');\n        }\n\n        const data = await response.json();\n        updateProgress(data);\n\n        if (data.status === 'complete' && data.videoUrl) {\n          progressPanel.hidden = true;\n          videoElement.src = data.videoUrl;\n          videoElement.muted = !shouldPlayWithAudio;\n          videoElement.load();\n          showVideoToggle();\n          updateVideoToggle(false);\n          videoElement.play().catch(handlePlayFailure);\n          return;\n        }\n\n        if (data.status === 'error') {\n          throw new Error(data.error || 'Video rendering failed');\n        }\n\n        await new Promise((resolve) => setTimeout(resolve, 1500));\n      }\n    }\n\n    function hidePoster() {\n      poster.style.display = 'none';\n    }\n\n    function showPoster() {\n      poster.style.display = 'block';\n    }\n\n    function showVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = false;\n      }\n    }\n\n    function hideVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = true;\n      }\n    }\n\n    function updateVideoToggle(isPlaying) {\n      if (!videoToggle) {\n        return;\n      }\n\n      videoToggle.setAttribute('aria-label', isPlaying ? 'Pause video' : 'Play video');\n    }\n\n    function destroyPlayer() {\n      if (!player) {\n        return Promise.resolve();\n      }\n\n      const activePlayer = player;\n      player = null;\n      hideVideoToggle();\n      return activePlayer.destroy().catch(() => {});\n    }\n\n    function handlePlayFailure(error) {\n      showPoster();\n      console.error(error);\n    }\n\n    function mountVimeoPlayer() {\n      player = new Vimeo.Player('player', {\n        url: embedUrls[index],\n        autoplay: true,\n        muted: !shouldPlayWithAudio,\n        byline: false,\n        title: false,\n        portrait: false\n      });\n      showVideoToggle();\n      updateVideoToggle(false);\n\n      player.on('play', () => updateVideoToggle(true));\n      player.on('pause', () => updateVideoToggle(false));\n\n      player.on('volumechange', (data) => {\n        rememberAudioPreference(data.muted, data.volume);\n      });\n\n      player.on('ended', () => {\n        index += 1;\n\n        if (index < embedUrls.length) {\n          destroyPlayer().then(() => {\n            mountVimeoPlayer();\n            player.play().catch(handlePlayFailure);\n          });\n        } else {\n          destroyPlayer().then(showReplay);\n        }\n      });\n    }\n\n    function startSequence() {\n      index = 0;\n      hidePoster();\n      hideVideoToggle();\n\n      if (deliveryMode === 'rendered') {\n        pollRenderJob().catch(handlePlayFailure);\n        return;\n      }\n\n      destroyPlayer().then(() => {\n        mountVimeoPlayer();\n        player.play().catch(handlePlayFailure);\n      });\n    }\n\n    if (videoElement) {\n      videoElement.addEventListener('play', () => updateVideoToggle(true));\n      videoElement.addEventListener('pause', () => updateVideoToggle(false));\n\n      videoElement.addEventListener('volumechange', () => {\n        rememberAudioPreference(videoElement.muted, videoElement.volume);\n      });\n\n      videoElement.addEventListener('ended', showReplay);\n    }\n\n    poster.addEventListener('click', startSequence);\n\n    if (videoToggle) {\n      videoToggle.addEventListener('click', () => {\n        if (deliveryMode === 'rendered') {\n          const playback = videoElement.paused\n            ? videoElement.play()\n            : videoElement.pause();\n          playback?.catch(handlePlayFailure);\n          return;\n        }\n\n        const activePlayer = player;\n\n        if (!activePlayer) {\n          return;\n        }\n\n        activePlayer.getPaused().then((isPaused) => {\n          const playback = isPaused ? activePlayer.play() : activePlayer.pause();\n          return playback.catch(handlePlayFailure);\n        }).catch(handlePlayFailure);\n      });\n    }\n\n    if (deliveryMode === 'rendered') {\n      updateProgress({ percentage: 0 });\n      pollRenderJob().catch(handlePlayFailure);\n    } else {\n      startSequence();\n    }\n`;\n\nconst html = `<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Video Sequence</title>\n  <style>\n    :root {\n      --text: #f5f1e8;\n      --muted: #b8b1a3;\n      --accent: #d7a84a;\n      --accent-hover: #e6bb67;\n    }\n\n    * {\n      box-sizing: border-box;\n    }\n\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: grid;\n      place-items: center;\n      background:\n        radial-gradient(circle at top, rgba(215, 168, 74, 0.16), transparent 32rem),\n        linear-gradient(180deg, #0a0a0a 0%, #000 100%);\n      color: var(--text);\n      font-family: Georgia, \"Times New Roman\", serif;\n    }\n\n    .shell {\n      width: min(96vw, 960px);\n      display: grid;\n      gap: 1rem;\n    }\n\n    .frame {\n      position: relative;\n      width: 100%;\n      aspect-ratio: 16 / 9;\n      background: #000;\n      border: 1px solid rgba(255, 255, 255, 0.08);\n      border-radius: 18px;\n      overflow: hidden;\n      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);\n    }\n\n    .poster {\n      position: absolute;\n      inset: 0;\n      background-color: #000;\n      background-image: url('${thumbnailUrl}');\n      background-size: cover;\n      background-position: center;\n      z-index: 2;\n      cursor: pointer;\n    }\n\n    #player,\n    #video {\n      position: absolute;\n      inset: 0;\n      width: 100%;\n      height: 100%;\n      z-index: 1;\n    }\n\n    #player iframe {\n      width: 100%;\n      height: 100%;\n      border: 0;\n    }\n\n    #video {\n      object-fit: contain;\n      background: #000;\n    }\n\n    .video-toggle {\n      position: absolute;\n      inset: 0;\n      z-index: 3;\n      width: 100%;\n      height: 100%;\n      padding: 0;\n      border: 0;\n      background: transparent;\n      cursor: pointer;\n    }\n\n    .video-toggle:focus-visible {\n      outline: 3px solid var(--accent);\n      outline-offset: -6px;\n    }\n\n    .render-progress {\n      position: absolute;\n      inset: 50% 10% auto;\n      z-index: 4;\n      transform: translateY(-50%);\n      color: #f5f1e8;\n      text-align: center;\n    }\n\n    .render-progress[hidden] {\n      display: none;\n    }\n\n    .render-progress progress {\n      display: block;\n      width: 100%;\n      height: 0.75rem;\n      margin: 0.75rem 0;\n      accent-color: #d7a84a;\n    }\n\n  </style>\n</head>\n<body>\n  <div class=\"shell\">\n    <div class=\"frame\">\n      ${posterMarkup}\n      ${mediaMarkup}\n      ${videoToggleMarkup}\n      <div id=\"progressPanel\" class=\"render-progress\" role=\"status\" aria-live=\"polite\">\n        <strong id=\"progressStage\">${PROGRESS_MESSAGE}</strong>\n        <progress id=\"progressBar\" max=\"100\" value=\"0\"></progress>\n        <span id=\"progressLabel\">0%</span>\n      </div>\n    </div>\n\n  </div>\n\n  ${vimeoApiScript}\n  <script>\n${clientScript}\n  </script>\n</body>\n</html>`;\n\nreturn [\n  {\n    json: {\n      html,\n      deliveryMode: DELIVERY_MODE,\n    },\n  },\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        720,
-        -16
+        576,
+        464
       ],
-      "id": "2464ae73-c7d4-43f4-b080-6cc0fb718cb5",
+      "id": "4f330817-4045-459f-b929-75b29e136867",
       "name": "Generate Answer Page"
     },
     {
@@ -65,10 +65,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        496,
-        -16
+        352,
+        464
       ],
-      "id": "3e8ed93e-c113-4b6a-a3a3-68e84f685d48",
+      "id": "882e6328-ef33-4af0-af7d-bf5ea5333623",
       "name": "Get Thumbnail URL"
     },
     {
@@ -248,16 +248,16 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        48,
-        -16
+        -112,
+        464
       ],
-      "id": "9f0079ae-ae0b-43d7-9634-9b9ab0fc8476",
+      "id": "f30a1020-1849-401c-b634-9eddb9698b91",
       "name": "Call"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://renders.megyk.com/render",
+        "url": "https://renders.megyk.com/render/jobs",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
@@ -277,10 +277,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        272,
-        -16
+        128,
+        464
       ],
-      "id": "db717b97-1102-4024-bb14-82e8ed858b6e",
+      "id": "e5b81e42-ea00-4297-8832-486419d20f56",
       "name": "Render Video",
       "credentials": {
         "httpHeaderAuth": {
@@ -416,8 +416,8 @@
       }
     ]
   },
-  "versionId": "e36b0a80-7113-4946-8fdd-ad0efee6708c",
-  "activeVersionId": "e36b0a80-7113-4946-8fdd-ad0efee6708c",
+  "versionId": "24df80f8-3fee-45f0-90f5-da44dca6fc0f",
+  "activeVersionId": "24df80f8-3fee-45f0-90f5-da44dca6fc0f",
   "triggerCount": 1,
   "shared": [
     {
@@ -429,9 +429,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-07T18:39:55.000Z",
-    "createdAt": "2026-08-07T18:39:52.636Z",
-    "versionId": "e36b0a80-7113-4946-8fdd-ad0efee6708c",
+    "updatedAt": "2026-08-12T16:33:23.000Z",
+    "createdAt": "2026-08-12T16:33:09.086Z",
+    "versionId": "24df80f8-3fee-45f0-90f5-da44dca6fc0f",
     "workflowId": "YrH2B4FIWMbjzq5I",
     "nodes": [
       {
@@ -444,10 +444,10 @@
         "type": "n8n-nodes-base.webhook",
         "typeVersion": 2.1,
         "position": [
-          -176,
-          -16
+          -336,
+          464
         ],
-        "id": "2b5dadb2-b89e-4043-bd27-21fce09dfa00",
+        "id": "7e8b0669-3bd5-42ca-a966-1de02a75228b",
         "name": "Webhook",
         "webhookId": "fe28dcfc-b0d2-4c67-b447-c5225b82f8dd"
       },
@@ -466,23 +466,23 @@
         "type": "n8n-nodes-base.respondToWebhook",
         "typeVersion": 1.5,
         "position": [
-          944,
-          -16
+          800,
+          464
         ],
-        "id": "a616a3cd-5358-4afc-adb9-0ed5c67520e6",
+        "id": "bda56f1d-f716-45a5-8103-308eb27a29b7",
         "name": "Respond to Webhook"
       },
       {
         "parameters": {
-          "jsCode": "// HTML Generator Code node\n// Supported delivery modes: \"vimeo\" and \"rendered\".\nconst DELIVERY_MODE = 'rendered';\nconst RENDER_NODE_NAME = 'Render Video';\n\nconst resolved = $('Call').first().json;\nconst oembed = $('Get Thumbnail URL').first().json;\nconst isRendered = DELIVERY_MODE === 'rendered';\n\nconst sequence = resolved.sequence || [];\nconst videoIds = sequence\n  .map((item) => String(item.videoId || '').trim())\n  .filter(Boolean);\nconst thumbnailUrl = String(oembed.thumbnail_url_with_play_button || '').trim();\n\nlet renderedVideoUrl = '';\n\nif (isRendered) {\n  const renderResult = $(RENDER_NODE_NAME).first().json;\n  renderedVideoUrl = String(renderResult.videoUrl || '').trim();\n\n  if (!renderedVideoUrl) {\n    throw new Error(`No videoUrl returned by ${RENDER_NODE_NAME}`);\n  }\n} else if (!videoIds.length) {\n  throw new Error('No videos provided');\n}\n\nconst embedUrls = videoIds.map((videoId) =>\n  `https://player.vimeo.com/video/${videoId}?autoplay=1&autopause=0&controls=0&keyboard=0&title=0&byline=0&portrait=0`\n);\n\nconst mediaMarkup = isRendered\n  ? '<video id=\"video\" playsinline preload=\"metadata\"></video>'\n  : '<div id=\"player\"></div>';\nconst videoToggleMarkup = '<button id=\"videoToggle\" class=\"video-toggle\" type=\"button\" aria-label=\"Pause video\" hidden></button>';\n\nconst vimeoApiScript = isRendered\n  ? ''\n  : '<script src=\"https://player.vimeo.com/api/player.js\"></script>';\n\nconst clientScript = `\n    const deliveryMode = ${JSON.stringify(DELIVERY_MODE)};\n    const embedUrls = ${JSON.stringify(embedUrls)};\n    const renderedVideoUrl = ${JSON.stringify(renderedVideoUrl)};\n    const AUDIO_PREFERENCE_KEY = 'rsc-video-audio-enabled';\n\n    let index = 0;\n    let player;\n    let shouldPlayWithAudio = false;\n\n    try {\n      shouldPlayWithAudio = window.sessionStorage.getItem(AUDIO_PREFERENCE_KEY) === 'true';\n    } catch {\n      shouldPlayWithAudio = false;\n    }\n\n    const poster = document.getElementById('poster');\n    const videoElement = document.getElementById('video');\n    const videoToggle = document.getElementById('videoToggle');\n\n    function rememberAudioPreference(muted, volume) {\n      if (muted === false && Number(volume || 0) > 0) {\n        shouldPlayWithAudio = true;\n        try {\n          window.sessionStorage.setItem(AUDIO_PREFERENCE_KEY, 'true');\n        } catch {}\n      }\n    }\n\n    function showReplay() {\n      hideVideoToggle();\n    }\n\n    function hidePoster() {\n      poster.style.display = 'none';\n    }\n\n    function showPoster() {\n      poster.style.display = 'block';\n    }\n\n    function showVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = false;\n      }\n    }\n\n    function hideVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = true;\n      }\n    }\n\n    function updateVideoToggle(isPlaying) {\n      if (!videoToggle) {\n        return;\n      }\n\n      videoToggle.setAttribute('aria-label', isPlaying ? 'Pause video' : 'Play video');\n    }\n\n    function destroyPlayer() {\n      if (!player) {\n        return Promise.resolve();\n      }\n\n      const activePlayer = player;\n      player = null;\n      hideVideoToggle();\n      return activePlayer.destroy().catch(() => {});\n    }\n\n    function handlePlayFailure(error) {\n      showPoster();\n      console.error(error);\n    }\n\n    function mountVimeoPlayer() {\n      player = new Vimeo.Player('player', {\n        url: embedUrls[index],\n        autoplay: true,\n        muted: !shouldPlayWithAudio,\n        byline: false,\n        title: false,\n        portrait: false\n      });\n      showVideoToggle();\n      updateVideoToggle(false);\n\n      player.on('play', () => updateVideoToggle(true));\n      player.on('pause', () => updateVideoToggle(false));\n\n      player.on('volumechange', (data) => {\n        rememberAudioPreference(data.muted, data.volume);\n      });\n\n      player.on('ended', () => {\n        index += 1;\n\n        if (index < embedUrls.length) {\n          destroyPlayer().then(() => {\n            mountVimeoPlayer();\n            player.play().catch(handlePlayFailure);\n          });\n        } else {\n          destroyPlayer().then(showReplay);\n        }\n      });\n    }\n\n    function startRenderedVideo() {\n      videoElement.src = renderedVideoUrl;\n      videoElement.muted = !shouldPlayWithAudio;\n      videoElement.load();\n      showVideoToggle();\n      updateVideoToggle(false);\n      videoElement.play().catch(handlePlayFailure);\n    }\n\n    function startSequence() {\n      index = 0;\n      hidePoster();\n      hideVideoToggle();\n\n      if (deliveryMode === 'rendered') {\n        startRenderedVideo();\n        return;\n      }\n\n      destroyPlayer().then(() => {\n        mountVimeoPlayer();\n        player.play().catch(handlePlayFailure);\n      });\n    }\n\n    if (videoElement) {\n      videoElement.addEventListener('play', () => updateVideoToggle(true));\n      videoElement.addEventListener('pause', () => updateVideoToggle(false));\n\n      videoElement.addEventListener('volumechange', () => {\n        rememberAudioPreference(videoElement.muted, videoElement.volume);\n      });\n\n      videoElement.addEventListener('ended', showReplay);\n    }\n\n    poster.addEventListener('click', startSequence);\n\n    if (videoToggle) {\n      videoToggle.addEventListener('click', () => {\n        if (deliveryMode === 'rendered') {\n          const playback = videoElement.paused\n            ? videoElement.play()\n            : videoElement.pause();\n          playback?.catch(handlePlayFailure);\n          return;\n        }\n\n        const activePlayer = player;\n\n        if (!activePlayer) {\n          return;\n        }\n\n        activePlayer.getPaused().then((isPaused) => {\n          const playback = isPaused ? activePlayer.play() : activePlayer.pause();\n          return playback.catch(handlePlayFailure);\n        }).catch(handlePlayFailure);\n      });\n    }\n\n    startSequence();\n`;\n\nconst html = `<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Video Sequence</title>\n  <style>\n    :root {\n      --text: #f5f1e8;\n      --muted: #b8b1a3;\n      --accent: #d7a84a;\n      --accent-hover: #e6bb67;\n    }\n\n    * {\n      box-sizing: border-box;\n    }\n\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: grid;\n      place-items: center;\n      background:\n        radial-gradient(circle at top, rgba(215, 168, 74, 0.16), transparent 32rem),\n        linear-gradient(180deg, #0a0a0a 0%, #000 100%);\n      color: var(--text);\n      font-family: Georgia, \"Times New Roman\", serif;\n    }\n\n    .shell {\n      width: min(96vw, 960px);\n      display: grid;\n      gap: 1rem;\n    }\n\n    .frame {\n      position: relative;\n      width: 100%;\n      aspect-ratio: 16 / 9;\n      background: #000;\n      border: 1px solid rgba(255, 255, 255, 0.08);\n      border-radius: 18px;\n      overflow: hidden;\n      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);\n    }\n\n    .poster {\n      position: absolute;\n      inset: 0;\n      background-color: #000;\n      background-image: url('${thumbnailUrl}');\n      background-size: cover;\n      background-position: center;\n      z-index: 2;\n      cursor: pointer;\n    }\n\n    #player,\n    #video {\n      position: absolute;\n      inset: 0;\n      width: 100%;\n      height: 100%;\n      z-index: 1;\n    }\n\n    #player iframe {\n      width: 100%;\n      height: 100%;\n      border: 0;\n    }\n\n    #video {\n      object-fit: contain;\n      background: #000;\n    }\n\n    .video-toggle {\n      position: absolute;\n      inset: 0;\n      z-index: 3;\n      width: 100%;\n      height: 100%;\n      padding: 0;\n      border: 0;\n      background: transparent;\n      cursor: pointer;\n    }\n\n    .video-toggle:focus-visible {\n      outline: 3px solid var(--accent);\n      outline-offset: -6px;\n    }\n\n  </style>\n</head>\n<body>\n  <div class=\"shell\">\n    <div class=\"frame\">\n      <div id=\"poster\" class=\"poster\"></div>\n      ${mediaMarkup}\n      ${videoToggleMarkup}\n    </div>\n\n  </div>\n\n  ${vimeoApiScript}\n  <script>\n${clientScript}\n  </script>\n</body>\n</html>`;\n\nreturn [\n  {\n    json: {\n      html,\n      deliveryMode: DELIVERY_MODE,\n    },\n  },\n];\n"
+          "jsCode": "// HTML Generator Code node\n// Supported delivery modes: \"vimeo\" and \"rendered\".\nconst DELIVERY_MODE = 'rendered';\nconst RENDER_NODE_NAME = 'Render Video';\nconst RENDER_STATUS_BASE_URL = 'https://renders.megyk.com';\nconst PROGRESS_MESSAGE = 'Ihre individuelle Auswertung wird in Echtzeit erstellt. Bitte um einen Moment Geduld. Es zahlt sich aus.';\n\nconst resolved = $('Call').first().json;\nconst oembed = $('Get Thumbnail URL').first().json;\nconst isRendered = DELIVERY_MODE === 'rendered';\n\nconst sequence = resolved.sequence || [];\nconst videoIds = sequence\n  .map((item) => String(item.videoId || '').trim())\n  .filter(Boolean);\nconst thumbnailUrl = String(oembed.thumbnail_url_with_play_button || '').trim();\n\nlet renderJobId = '';\nlet renderStatusUrl = '';\n\nif (isRendered) {\n  const renderResult = $(RENDER_NODE_NAME).first().json;\n  renderJobId = String(renderResult.jobId || '').trim();\n\n  if (!renderJobId) {\n    throw new Error(`No jobId returned by ${RENDER_NODE_NAME}`);\n  }\n\n  renderStatusUrl = `${RENDER_STATUS_BASE_URL}/render/jobs/${encodeURIComponent(renderJobId)}`;\n} else if (!videoIds.length) {\n  throw new Error('No videos provided');\n}\n\nconst embedUrls = videoIds.map((videoId) =>\n  `https://player.vimeo.com/video/${videoId}?autoplay=1&autopause=0&controls=0&keyboard=0&title=0&byline=0&portrait=0`\n);\n\nconst mediaMarkup = isRendered\n  ? '<video id=\"video\" playsinline preload=\"metadata\"></video>'\n  : '<div id=\"player\"></div>';\nconst posterMarkup = isRendered\n  ? '<div id=\"poster\" class=\"poster\" style=\"display:none\"></div>'\n  : '<div id=\"poster\" class=\"poster\"></div>';\nconst videoToggleMarkup = '<button id=\"videoToggle\" class=\"video-toggle\" type=\"button\" aria-label=\"Pause video\" hidden></button>';\n\nconst vimeoApiScript = isRendered\n  ? ''\n  : '<script src=\"https://player.vimeo.com/api/player.js\"></script>';\n\nconst clientScript = `\n    const deliveryMode = ${JSON.stringify(DELIVERY_MODE)};\n    const embedUrls = ${JSON.stringify(embedUrls)};\n    const renderJobId = ${JSON.stringify(renderJobId)};\n    const renderStatusUrl = ${JSON.stringify(renderStatusUrl)};\n    const AUDIO_PREFERENCE_KEY = 'rsc-video-audio-enabled';\n\n    let index = 0;\n    let player;\n    let shouldPlayWithAudio = false;\n\n    try {\n      shouldPlayWithAudio = window.sessionStorage.getItem(AUDIO_PREFERENCE_KEY) === 'true';\n    } catch {\n      shouldPlayWithAudio = false;\n    }\n\n    const poster = document.getElementById('poster');\n    const videoElement = document.getElementById('video');\n    const videoToggle = document.getElementById('videoToggle');\n    const progressPanel = document.getElementById('progressPanel');\n    const progressBar = document.getElementById('progressBar');\n    const progressLabel = document.getElementById('progressLabel');\n    const progressStage = document.getElementById('progressStage');\n\n    function rememberAudioPreference(muted, volume) {\n      if (muted === false && Number(volume || 0) > 0) {\n        shouldPlayWithAudio = true;\n        try {\n          window.sessionStorage.setItem(AUDIO_PREFERENCE_KEY, 'true');\n        } catch {}\n      }\n    }\n\n    function showReplay() {\n      hideVideoToggle();\n    }\n\n    function updateProgress(data) {\n      const percentage = Math.max(0, Math.min(100, Number(data.percentage || 0)));\n      progressBar.value = percentage;\n      progressLabel.textContent = percentage + '%';\n      progressStage.textContent = ${JSON.stringify(PROGRESS_MESSAGE)};\n    }\n\n    async function pollRenderJob() {\n      while (true) {\n        const response = await fetch(renderStatusUrl, { headers: { Accept: 'application/json' } });\n        if (!response.ok) {\n          throw new Error('Could not read render progress');\n        }\n\n        const data = await response.json();\n        updateProgress(data);\n\n        if (data.status === 'complete' && data.videoUrl) {\n          progressPanel.hidden = true;\n          videoElement.src = data.videoUrl;\n          videoElement.muted = !shouldPlayWithAudio;\n          videoElement.load();\n          showVideoToggle();\n          updateVideoToggle(false);\n          videoElement.play().catch(handlePlayFailure);\n          return;\n        }\n\n        if (data.status === 'error') {\n          throw new Error(data.error || 'Video rendering failed');\n        }\n\n        await new Promise((resolve) => setTimeout(resolve, 1500));\n      }\n    }\n\n    function hidePoster() {\n      poster.style.display = 'none';\n    }\n\n    function showPoster() {\n      poster.style.display = 'block';\n    }\n\n    function showVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = false;\n      }\n    }\n\n    function hideVideoToggle() {\n      if (videoToggle) {\n        videoToggle.hidden = true;\n      }\n    }\n\n    function updateVideoToggle(isPlaying) {\n      if (!videoToggle) {\n        return;\n      }\n\n      videoToggle.setAttribute('aria-label', isPlaying ? 'Pause video' : 'Play video');\n    }\n\n    function destroyPlayer() {\n      if (!player) {\n        return Promise.resolve();\n      }\n\n      const activePlayer = player;\n      player = null;\n      hideVideoToggle();\n      return activePlayer.destroy().catch(() => {});\n    }\n\n    function handlePlayFailure(error) {\n      showPoster();\n      console.error(error);\n    }\n\n    function mountVimeoPlayer() {\n      player = new Vimeo.Player('player', {\n        url: embedUrls[index],\n        autoplay: true,\n        muted: !shouldPlayWithAudio,\n        byline: false,\n        title: false,\n        portrait: false\n      });\n      showVideoToggle();\n      updateVideoToggle(false);\n\n      player.on('play', () => updateVideoToggle(true));\n      player.on('pause', () => updateVideoToggle(false));\n\n      player.on('volumechange', (data) => {\n        rememberAudioPreference(data.muted, data.volume);\n      });\n\n      player.on('ended', () => {\n        index += 1;\n\n        if (index < embedUrls.length) {\n          destroyPlayer().then(() => {\n            mountVimeoPlayer();\n            player.play().catch(handlePlayFailure);\n          });\n        } else {\n          destroyPlayer().then(showReplay);\n        }\n      });\n    }\n\n    function startSequence() {\n      index = 0;\n      hidePoster();\n      hideVideoToggle();\n\n      if (deliveryMode === 'rendered') {\n        pollRenderJob().catch(handlePlayFailure);\n        return;\n      }\n\n      destroyPlayer().then(() => {\n        mountVimeoPlayer();\n        player.play().catch(handlePlayFailure);\n      });\n    }\n\n    if (videoElement) {\n      videoElement.addEventListener('play', () => updateVideoToggle(true));\n      videoElement.addEventListener('pause', () => updateVideoToggle(false));\n\n      videoElement.addEventListener('volumechange', () => {\n        rememberAudioPreference(videoElement.muted, videoElement.volume);\n      });\n\n      videoElement.addEventListener('ended', showReplay);\n    }\n\n    poster.addEventListener('click', startSequence);\n\n    if (videoToggle) {\n      videoToggle.addEventListener('click', () => {\n        if (deliveryMode === 'rendered') {\n          const playback = videoElement.paused\n            ? videoElement.play()\n            : videoElement.pause();\n          playback?.catch(handlePlayFailure);\n          return;\n        }\n\n        const activePlayer = player;\n\n        if (!activePlayer) {\n          return;\n        }\n\n        activePlayer.getPaused().then((isPaused) => {\n          const playback = isPaused ? activePlayer.play() : activePlayer.pause();\n          return playback.catch(handlePlayFailure);\n        }).catch(handlePlayFailure);\n      });\n    }\n\n    if (deliveryMode === 'rendered') {\n      updateProgress({ percentage: 0 });\n      pollRenderJob().catch(handlePlayFailure);\n    } else {\n      startSequence();\n    }\n`;\n\nconst html = `<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Video Sequence</title>\n  <style>\n    :root {\n      --text: #f5f1e8;\n      --muted: #b8b1a3;\n      --accent: #d7a84a;\n      --accent-hover: #e6bb67;\n    }\n\n    * {\n      box-sizing: border-box;\n    }\n\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: grid;\n      place-items: center;\n      background:\n        radial-gradient(circle at top, rgba(215, 168, 74, 0.16), transparent 32rem),\n        linear-gradient(180deg, #0a0a0a 0%, #000 100%);\n      color: var(--text);\n      font-family: Georgia, \"Times New Roman\", serif;\n    }\n\n    .shell {\n      width: min(96vw, 960px);\n      display: grid;\n      gap: 1rem;\n    }\n\n    .frame {\n      position: relative;\n      width: 100%;\n      aspect-ratio: 16 / 9;\n      background: #000;\n      border: 1px solid rgba(255, 255, 255, 0.08);\n      border-radius: 18px;\n      overflow: hidden;\n      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);\n    }\n\n    .poster {\n      position: absolute;\n      inset: 0;\n      background-color: #000;\n      background-image: url('${thumbnailUrl}');\n      background-size: cover;\n      background-position: center;\n      z-index: 2;\n      cursor: pointer;\n    }\n\n    #player,\n    #video {\n      position: absolute;\n      inset: 0;\n      width: 100%;\n      height: 100%;\n      z-index: 1;\n    }\n\n    #player iframe {\n      width: 100%;\n      height: 100%;\n      border: 0;\n    }\n\n    #video {\n      object-fit: contain;\n      background: #000;\n    }\n\n    .video-toggle {\n      position: absolute;\n      inset: 0;\n      z-index: 3;\n      width: 100%;\n      height: 100%;\n      padding: 0;\n      border: 0;\n      background: transparent;\n      cursor: pointer;\n    }\n\n    .video-toggle:focus-visible {\n      outline: 3px solid var(--accent);\n      outline-offset: -6px;\n    }\n\n    .render-progress {\n      position: absolute;\n      inset: 50% 10% auto;\n      z-index: 4;\n      transform: translateY(-50%);\n      color: #f5f1e8;\n      text-align: center;\n    }\n\n    .render-progress[hidden] {\n      display: none;\n    }\n\n    .render-progress progress {\n      display: block;\n      width: 100%;\n      height: 0.75rem;\n      margin: 0.75rem 0;\n      accent-color: #d7a84a;\n    }\n\n  </style>\n</head>\n<body>\n  <div class=\"shell\">\n    <div class=\"frame\">\n      ${posterMarkup}\n      ${mediaMarkup}\n      ${videoToggleMarkup}\n      <div id=\"progressPanel\" class=\"render-progress\" role=\"status\" aria-live=\"polite\">\n        <strong id=\"progressStage\">${PROGRESS_MESSAGE}</strong>\n        <progress id=\"progressBar\" max=\"100\" value=\"0\"></progress>\n        <span id=\"progressLabel\">0%</span>\n      </div>\n    </div>\n\n  </div>\n\n  ${vimeoApiScript}\n  <script>\n${clientScript}\n  </script>\n</body>\n</html>`;\n\nreturn [\n  {\n    json: {\n      html,\n      deliveryMode: DELIVERY_MODE,\n    },\n  },\n];\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          720,
-          -16
+          576,
+          464
         ],
-        "id": "2464ae73-c7d4-43f4-b080-6cc0fb718cb5",
+        "id": "4f330817-4045-459f-b929-75b29e136867",
         "name": "Generate Answer Page"
       },
       {
@@ -493,10 +493,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.4,
         "position": [
-          496,
-          -16
+          352,
+          464
         ],
-        "id": "3e8ed93e-c113-4b6a-a3a3-68e84f685d48",
+        "id": "882e6328-ef33-4af0-af7d-bf5ea5333623",
         "name": "Get Thumbnail URL"
       },
       {
@@ -676,16 +676,16 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.3,
         "position": [
-          48,
-          -16
+          -112,
+          464
         ],
-        "id": "9f0079ae-ae0b-43d7-9634-9b9ab0fc8476",
+        "id": "f30a1020-1849-401c-b634-9eddb9698b91",
         "name": "Call"
       },
       {
         "parameters": {
           "method": "POST",
-          "url": "https://renders.megyk.com/render",
+          "url": "https://renders.megyk.com/render/jobs",
           "authentication": "genericCredentialType",
           "genericAuthType": "httpHeaderAuth",
           "sendBody": true,
@@ -705,10 +705,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.4,
         "position": [
-          272,
-          -16
+          128,
+          464
         ],
-        "id": "db717b97-1102-4024-bb14-82e8ed858b6e",
+        "id": "e5b81e42-ea00-4297-8832-486419d20f56",
         "name": "Render Video",
         "credentials": {
           "httpHeaderAuth": {
@@ -777,7 +777,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version e36b0a80",
+    "name": "Version 24df80f8",
     "description": "",
     "autosaved": true
   },
