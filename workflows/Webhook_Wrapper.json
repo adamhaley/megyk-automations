@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-21T16:45:41.425Z",
+  "updatedAt": "2026-08-22T14:11:47.416Z",
   "createdAt": "2026-07-30T21:58:34.595Z",
   "id": "YrH2B4FIWMbjzq5I",
   "name": "Webhook Wrapper",
@@ -499,8 +499,8 @@
       }
     ]
   },
-  "versionId": "928d5443-3a71-43b2-84bd-f4354ef1fc67",
-  "activeVersionId": "928d5443-3a71-43b2-84bd-f4354ef1fc67",
+  "versionId": "a3b7a06b-edf7-4c30-863a-f8db561ab0f1",
+  "activeVersionId": "a3b7a06b-edf7-4c30-863a-f8db561ab0f1",
   "triggerCount": 1,
   "shared": [
     {
@@ -512,9 +512,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-21T16:45:43.000Z",
-    "createdAt": "2026-08-21T16:45:41.427Z",
-    "versionId": "928d5443-3a71-43b2-84bd-f4354ef1fc67",
+    "updatedAt": "2026-08-22T14:11:48.000Z",
+    "createdAt": "2026-08-22T14:11:47.419Z",
+    "versionId": "a3b7a06b-edf7-4c30-863a-f8db561ab0f1",
     "workflowId": "YrH2B4FIWMbjzq5I",
     "nodes": [
       {
@@ -943,7 +943,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 928d5443",
+    "name": "Version a3b7a06b",
     "description": "",
     "autosaved": true
   },
