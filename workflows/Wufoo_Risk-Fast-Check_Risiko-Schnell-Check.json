@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-14T18:52:53.311Z",
+  "updatedAt": "2026-08-31T19:51:12.813Z",
   "createdAt": "2026-07-10T22:16:26.074Z",
   "id": "ryhu6xynPYdjdgD7",
   "name": "Wufoo Risk-Fast-Check Risiko-Schnell-Check",
@@ -61,7 +61,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const resolved = $('Resolve Pitch').first().json;\n\nconst selectionSequence = (resolved.selections || []).map((item, index) => ({\n  type: 'answer',\n  order: index + 1,\n  stepNumber: item.stepNumber,\n  stepName: item.stepName,\n  label: item.key,\n  videoId: String(item.videoId || '').trim(),\n}));\n\nconst pitchSequenceItem = {\n  type: 'pitch',\n  order: selectionSequence.length + 1,\n  label: resolved.pitch.key,\n  videoId: String(resolved.pitch.videoId || '').trim(),\n};\n\nconst sequence = [...selectionSequence, pitchSequenceItem];\n\nconst missingVideo = sequence.find((item) => !item.videoId);\n\nif (missingVideo) {\n  throw new Error(`Sequence item is missing a videoId: ${missingVideo.label}`);\n}\n\nreturn [\n  {\n    json: {\n      ...resolved,\n      sequence,\n      sequenceVideoIds: sequence.map((item) => item.videoId),\n    },\n  },\n];\n"
+        "jsCode": "const resolved = $('Resolve Pitch').first().json;\n\nconst selectionSequence = (resolved.selections || []).map((item, index) => ({\n  type: 'answer',\n  order: index + 1,\n  stepNumber: item.stepNumber,\n  stepName: item.stepName,\n  label: item.key,\n  videoId: String(item.videoId || '').trim(),\n}));\n\nconst pitchSequenceItem = {\n  type: 'pitch',\n  order: selectionSequence.length + 1,\n  label: resolved.pitch.key,\n  videoId: String(resolved.pitch.videoId || '').trim(),\n};\n\nconst sequence = [...selectionSequence, pitchSequenceItem];\n\nconst missingVideo = sequence.find((item) => !item.videoId);\n\nif (missingVideo) {\n  throw new Error(`Sequence item is missing a videoId: ${missingVideo.label}`);\n}\n\n// The render service only ever stitches the answer clips now — the pitch\n// plays directly from Vimeo after, so it's never sent to /render/jobs.\n// `sequence` is kept as the full canonical order for anything that still\n// wants pitch included (display, tracking); `renderSequence` is what the\n// \"Render Video\" HTTP node in the n8n wrapper should be pointed at.\nconst renderSequence = selectionSequence;\n\nreturn [\n  {\n    json: {\n      ...resolved,\n      sequence,\n      sequenceVideoIds: sequence.map((item) => item.videoId),\n      renderSequence,\n    },\n  },\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -159,8 +159,8 @@
       }
     ]
   },
-  "versionId": "314c6b37-e626-4058-9493-e36fe918642a",
-  "activeVersionId": "314c6b37-e626-4058-9493-e36fe918642a",
+  "versionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
+  "activeVersionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
   "triggerCount": 0,
   "shared": [
     {
@@ -172,9 +172,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-14T18:52:55.000Z",
-    "createdAt": "2026-08-14T18:52:53.314Z",
-    "versionId": "314c6b37-e626-4058-9493-e36fe918642a",
+    "updatedAt": "2026-08-31T19:51:15.000Z",
+    "createdAt": "2026-08-31T19:51:12.815Z",
+    "versionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
     "workflowId": "ryhu6xynPYdjdgD7",
     "nodes": [
       {
@@ -232,7 +232,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const resolved = $('Resolve Pitch').first().json;\n\nconst selectionSequence = (resolved.selections || []).map((item, index) => ({\n  type: 'answer',\n  order: index + 1,\n  stepNumber: item.stepNumber,\n  stepName: item.stepName,\n  label: item.key,\n  videoId: String(item.videoId || '').trim(),\n}));\n\nconst pitchSequenceItem = {\n  type: 'pitch',\n  order: selectionSequence.length + 1,\n  label: resolved.pitch.key,\n  videoId: String(resolved.pitch.videoId || '').trim(),\n};\n\nconst sequence = [...selectionSequence, pitchSequenceItem];\n\nconst missingVideo = sequence.find((item) => !item.videoId);\n\nif (missingVideo) {\n  throw new Error(`Sequence item is missing a videoId: ${missingVideo.label}`);\n}\n\nreturn [\n  {\n    json: {\n      ...resolved,\n      sequence,\n      sequenceVideoIds: sequence.map((item) => item.videoId),\n    },\n  },\n];\n"
+          "jsCode": "const resolved = $('Resolve Pitch').first().json;\n\nconst selectionSequence = (resolved.selections || []).map((item, index) => ({\n  type: 'answer',\n  order: index + 1,\n  stepNumber: item.stepNumber,\n  stepName: item.stepName,\n  label: item.key,\n  videoId: String(item.videoId || '').trim(),\n}));\n\nconst pitchSequenceItem = {\n  type: 'pitch',\n  order: selectionSequence.length + 1,\n  label: resolved.pitch.key,\n  videoId: String(resolved.pitch.videoId || '').trim(),\n};\n\nconst sequence = [...selectionSequence, pitchSequenceItem];\n\nconst missingVideo = sequence.find((item) => !item.videoId);\n\nif (missingVideo) {\n  throw new Error(`Sequence item is missing a videoId: ${missingVideo.label}`);\n}\n\n// The render service only ever stitches the answer clips now — the pitch\n// plays directly from Vimeo after, so it's never sent to /render/jobs.\n// `sequence` is kept as the full canonical order for anything that still\n// wants pitch included (display, tracking); `renderSequence` is what the\n// \"Render Video\" HTTP node in the n8n wrapper should be pointed at.\nconst renderSequence = selectionSequence;\n\nreturn [\n  {\n    json: {\n      ...resolved,\n      sequence,\n      sequenceVideoIds: sequence.map((item) => item.videoId),\n      renderSequence,\n    },\n  },\n];\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -292,7 +292,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 314c6b37",
+    "name": "Version 7ec7197b",
     "description": "",
     "autosaved": true
   },
