@@ -1,0 +1,301 @@
+{
+  "updatedAt": "2026-09-15T00:21:49.783Z",
+  "createdAt": "2026-09-14T21:56:40.143Z",
+  "id": "v5ynWgAiQAp5usWU",
+  "name": "RSC Tracking",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nconst rawTimestamp = body.timestamp || new Date().toISOString();\nconst parsedDate = new Date(rawTimestamp);\nconst timestamp = Number.isNaN(parsedDate.getTime())\n  ? new Date().toISOString()\n  : parsedDate.toISOString();\n\nconst berlinDate = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'Europe/Berlin',\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n}).format(new Date(timestamp));\n\nreturn [\n  {\n    json: {\n      timestamp,\n      date: berlinDate,\n      step: String(body.step || '').trim(),\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -208
+      ],
+      "id": "ead447bd-5b18-4a58-b14e-a3342161226a",
+      "name": "Normalize Step View"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "adb27565-9057-43a3-b9a9-f74a26a00427",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        -208
+      ],
+      "id": "cb0d8881-ff5a-44a6-ae8f-f4911b864abd",
+      "name": "Webhook1",
+      "webhookId": "adb27565-9057-43a3-b9a9-f74a26a00427"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1K_hF6Ur5UqxjJA8rh8IkJn9A6lf2S5g5kWeUiFwPV5o",
+          "mode": "list",
+          "cachedResultName": "RSC Tracking",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K_hF6Ur5UqxjJA8rh8IkJn9A6lf2S5g5kWeUiFwPV5o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K_hF6Ur5UqxjJA8rh8IkJn9A6lf2S5g5kWeUiFwPV5o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $json.timestamp }}",
+            "date": "={{ $json.date }}",
+            "step": "={{ $json.step }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "step",
+              "displayName": "step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        -208
+      ],
+      "id": "58adf586-2779-468d-96cf-6270f88a64b2",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qJ5ck4AVx9Jx37Fr",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Normalize Step View": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Normalize Step View",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "2ea9a2b2-a8e0-4cce-98fe-decdd3bb9c5b",
+  "activeVersionId": "2ea9a2b2-a8e0-4cce-98fe-decdd3bb9c5b",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-09-14T21:56:40.147Z",
+      "createdAt": "2026-09-14T21:56:40.147Z",
+      "role": "workflow:owner",
+      "workflowId": "v5ynWgAiQAp5usWU",
+      "projectId": "B7QJE85HA2Vij1it"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-09-15T00:21:11.000Z",
+    "createdAt": "2026-09-15T00:21:07.383Z",
+    "versionId": "2ea9a2b2-a8e0-4cce-98fe-decdd3bb9c5b",
+    "workflowId": "v5ynWgAiQAp5usWU",
+    "nodes": [
+      {
+        "parameters": {
+          "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nconst rawTimestamp = body.timestamp || new Date().toISOString();\nconst parsedDate = new Date(rawTimestamp);\nconst timestamp = Number.isNaN(parsedDate.getTime())\n  ? new Date().toISOString()\n  : parsedDate.toISOString();\n\nconst berlinDate = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'Europe/Berlin',\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n}).format(new Date(timestamp));\n\nreturn [\n  {\n    json: {\n      timestamp,\n      date: berlinDate,\n      step: String(body.step || '').trim(),\n    },\n  },\n];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          -208
+        ],
+        "id": "ead447bd-5b18-4a58-b14e-a3342161226a",
+        "name": "Normalize Step View"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "adb27565-9057-43a3-b9a9-f74a26a00427",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -368,
+          -208
+        ],
+        "id": "cb0d8881-ff5a-44a6-ae8f-f4911b864abd",
+        "name": "Webhook1",
+        "webhookId": "adb27565-9057-43a3-b9a9-f74a26a00427"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1K_hF6Ur5UqxjJA8rh8IkJn9A6lf2S5g5kWeUiFwPV5o",
+            "mode": "list",
+            "cachedResultName": "RSC Tracking",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K_hF6Ur5UqxjJA8rh8IkJn9A6lf2S5g5kWeUiFwPV5o/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K_hF6Ur5UqxjJA8rh8IkJn9A6lf2S5g5kWeUiFwPV5o/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "timestamp": "={{ $json.timestamp }}",
+              "date": "={{ $json.date }}",
+              "step": "={{ $json.step }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "timestamp",
+                "displayName": "timestamp",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "date",
+                "displayName": "date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "step",
+                "displayName": "step",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          48,
+          -208
+        ],
+        "id": "58adf586-2779-468d-96cf-6270f88a64b2",
+        "name": "Append row in sheet1",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "qJ5ck4AVx9Jx37Fr",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Normalize Step View": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook1": {
+        "main": [
+          [
+            {
+              "node": "Normalize Step View",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "Gordan Kljajic",
+    "name": "Version 2ea9a2b2",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
