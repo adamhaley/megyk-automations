@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15T00:21:49.783Z",
+  "updatedAt": "2026-09-17T18:40:05.113Z",
   "createdAt": "2026-09-14T21:56:40.143Z",
   "id": "v5ynWgAiQAp5usWU",
   "name": "RSC Tracking",
@@ -8,7 +8,7 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nconst rawTimestamp = body.timestamp || new Date().toISOString();\nconst parsedDate = new Date(rawTimestamp);\nconst timestamp = Number.isNaN(parsedDate.getTime())\n  ? new Date().toISOString()\n  : parsedDate.toISOString();\n\nconst berlinDate = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'Europe/Berlin',\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n}).format(new Date(timestamp));\n\nreturn [\n  {\n    json: {\n      timestamp,\n      date: berlinDate,\n      step: String(body.step || '').trim(),\n    },\n  },\n];\n"
+        "jsCode": "// Mirror of the \"Normalize Step View\" Code node in the \"RSC Tracking\" n8n\n// workflow (RSC Tracking.json), kept here purely for readability/diffing\n// outside n8n's UI -- see markusdan repo AGENTS.md/CLAUDE.md for the sync\n// process. Editing this file does nothing in production by itself: the\n// owner copy-pastes it into the matching n8n Code node, then re-exports the\n// workflow, which overwrites RSC Tracking.json in this repo.\nconst item = $input.first().json;\nconst body = item.body || item;\n\nconst rawTimestamp = body.timestamp || new Date().toISOString();\nconst parsedDate = new Date(rawTimestamp);\nconst timestamp = Number.isNaN(parsedDate.getTime())\n  ? new Date().toISOString()\n  : parsedDate.toISOString();\n\nconst berlinDate = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'Europe/Berlin',\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n}).format(new Date(timestamp));\n\nreturn [\n  {\n    json: {\n      timestamp,\n      date: berlinDate,\n      step: String(body.step || '').trim(),\n      // Added for the Variant B branching-flow A/B test (see llm-wiki plan\n      // 2026-09-17) -- defaults to \"A\" so older requests that predate the\n      // variant field still log consistently.\n      variant: String(body.variant || 'A').trim(),\n    },\n  },\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -57,7 +57,8 @@
           "value": {
             "timestamp": "={{ $json.timestamp }}",
             "date": "={{ $json.date }}",
-            "step": "={{ $json.step }}"
+            "step": "={{ $json.step }}",
+            "variant": "={{ $json.variant }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -68,7 +69,8 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": false
             },
             {
               "id": "date",
@@ -77,7 +79,8 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": false
             },
             {
               "id": "step",
@@ -86,7 +89,18 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "variant",
+              "displayName": "variant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -145,8 +159,8 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "2ea9a2b2-a8e0-4cce-98fe-decdd3bb9c5b",
-  "activeVersionId": "2ea9a2b2-a8e0-4cce-98fe-decdd3bb9c5b",
+  "versionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
+  "activeVersionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
   "triggerCount": 1,
   "shared": [
     {
@@ -158,14 +172,14 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-09-15T00:21:11.000Z",
-    "createdAt": "2026-09-15T00:21:07.383Z",
-    "versionId": "2ea9a2b2-a8e0-4cce-98fe-decdd3bb9c5b",
+    "updatedAt": "2026-09-17T18:40:08.000Z",
+    "createdAt": "2026-09-17T18:40:05.144Z",
+    "versionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
     "workflowId": "v5ynWgAiQAp5usWU",
     "nodes": [
       {
         "parameters": {
-          "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nconst rawTimestamp = body.timestamp || new Date().toISOString();\nconst parsedDate = new Date(rawTimestamp);\nconst timestamp = Number.isNaN(parsedDate.getTime())\n  ? new Date().toISOString()\n  : parsedDate.toISOString();\n\nconst berlinDate = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'Europe/Berlin',\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n}).format(new Date(timestamp));\n\nreturn [\n  {\n    json: {\n      timestamp,\n      date: berlinDate,\n      step: String(body.step || '').trim(),\n    },\n  },\n];\n"
+          "jsCode": "// Mirror of the \"Normalize Step View\" Code node in the \"RSC Tracking\" n8n\n// workflow (RSC Tracking.json), kept here purely for readability/diffing\n// outside n8n's UI -- see markusdan repo AGENTS.md/CLAUDE.md for the sync\n// process. Editing this file does nothing in production by itself: the\n// owner copy-pastes it into the matching n8n Code node, then re-exports the\n// workflow, which overwrites RSC Tracking.json in this repo.\nconst item = $input.first().json;\nconst body = item.body || item;\n\nconst rawTimestamp = body.timestamp || new Date().toISOString();\nconst parsedDate = new Date(rawTimestamp);\nconst timestamp = Number.isNaN(parsedDate.getTime())\n  ? new Date().toISOString()\n  : parsedDate.toISOString();\n\nconst berlinDate = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'Europe/Berlin',\n  year: 'numeric',\n  month: '2-digit',\n  day: '2-digit',\n}).format(new Date(timestamp));\n\nreturn [\n  {\n    json: {\n      timestamp,\n      date: berlinDate,\n      step: String(body.step || '').trim(),\n      // Added for the Variant B branching-flow A/B test (see llm-wiki plan\n      // 2026-09-17) -- defaults to \"A\" so older requests that predate the\n      // variant field still log consistently.\n      variant: String(body.variant || 'A').trim(),\n    },\n  },\n];\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -214,7 +228,8 @@
             "value": {
               "timestamp": "={{ $json.timestamp }}",
               "date": "={{ $json.date }}",
-              "step": "={{ $json.step }}"
+              "step": "={{ $json.step }}",
+              "variant": "={{ $json.variant }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -225,7 +240,8 @@
                 "defaultMatch": false,
                 "display": true,
                 "type": "string",
-                "canBeUsedToMatch": true
+                "canBeUsedToMatch": true,
+                "removed": false
               },
               {
                 "id": "date",
@@ -234,7 +250,8 @@
                 "defaultMatch": false,
                 "display": true,
                 "type": "string",
-                "canBeUsedToMatch": true
+                "canBeUsedToMatch": true,
+                "removed": false
               },
               {
                 "id": "step",
@@ -243,7 +260,18 @@
                 "defaultMatch": false,
                 "display": true,
                 "type": "string",
-                "canBeUsedToMatch": true
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "variant",
+                "displayName": "variant",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
               }
             ],
             "attemptToConvertTypes": false,
@@ -293,7 +321,7 @@
     },
     "nodeGroups": [],
     "authors": "Gordan Kljajic",
-    "name": "Version 2ea9a2b2",
+    "name": "Version 57facb34",
     "description": "",
     "autosaved": true
   },
