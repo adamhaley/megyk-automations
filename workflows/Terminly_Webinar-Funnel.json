@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-02-18T13:17:07.581Z",
-  "createdAt": "2025-09-18T07:09:02.634Z",
   "id": "j3yPDFyXTPfsW2Od",
   "name": "Terminly Webinar-Funnel",
   "active": true,
+  "activeVersionId": "260bc49c-3044-4bc6-909d-bfd064b70930",
+  "createdAt": "2025-09-18T07:09:02.634Z",
+  "updatedAt": "2026-02-18T13:17:07.581Z",
   "isArchived": false,
+  "versionId": "260bc49c-3044-4bc6-909d-bfd064b70930",
+  "triggerCount": 2,
   "nodes": [
     {
       "parameters": {
@@ -181,28 +184,24 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {},
-  "versionId": "260bc49c-3044-4bc6-909d-bfd064b70930",
-  "activeVersionId": "260bc49c-3044-4bc6-909d-bfd064b70930",
-  "triggerCount": 2,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-09-18T07:09:02.644Z",
-      "createdAt": "2025-09-18T07:09:02.644Z",
       "role": "workflow:owner",
       "workflowId": "j3yPDFyXTPfsW2Od",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-09-18T07:09:02.644Z",
+      "updatedAt": "2025-09-18T07:09:02.644Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-18T13:17:12.000Z",
-    "createdAt": "2026-02-18T13:17:07.583Z",
     "versionId": "260bc49c-3044-4bc6-909d-bfd064b70930",
     "workflowId": "j3yPDFyXTPfsW2Od",
     "nodes": [
@@ -385,7 +384,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 260bc49c",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-02-18T13:17:07.583Z",
+    "updatedAt": "2026-02-18T13:17:12.000Z"
+  }
 }
