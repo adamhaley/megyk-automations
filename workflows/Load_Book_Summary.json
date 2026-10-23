@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-09T22:58:47.036Z",
-  "createdAt": "2025-12-05T14:39:39.243Z",
   "id": "TFbZMklKeSxB7159",
   "name": "Load Book Summary",
   "active": true,
+  "activeVersionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
+  "createdAt": "2025-12-05T14:39:39.243Z",
+  "updatedAt": "2026-05-09T22:58:47.036Z",
   "isArchived": false,
+  "versionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -219,15 +222,12 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "When Executed by Another Workflow": [
       {
@@ -242,21 +242,20 @@
       }
     ]
   },
-  "versionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
-  "activeVersionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-05T14:39:39.260Z",
-      "createdAt": "2025-12-05T14:39:39.260Z",
       "role": "workflow:owner",
       "workflowId": "TFbZMklKeSxB7159",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-05T14:39:39.260Z",
+      "updatedAt": "2025-12-05T14:39:39.260Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-09T22:58:49.000Z",
-    "createdAt": "2026-05-09T22:58:47.037Z",
     "versionId": "f5214abf-55c5-4016-8ce1-014f8ea42232",
     "workflowId": "TFbZMklKeSxB7159",
     "nodes": [
@@ -477,7 +476,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version f5214abf",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-09T22:58:47.037Z",
+    "updatedAt": "2026-05-09T22:58:49.000Z"
+  }
 }
