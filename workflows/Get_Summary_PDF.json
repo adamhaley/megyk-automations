@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-04-05T18:26:26.517Z",
-  "createdAt": "2025-12-05T14:56:11.765Z",
   "id": "zt2Pn3aOIpVbXuwC",
   "name": "Get Summary PDF",
   "active": true,
+  "activeVersionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
+  "createdAt": "2025-12-05T14:56:11.765Z",
+  "updatedAt": "2026-04-05T18:26:26.517Z",
   "isArchived": false,
+  "versionId": "e7b24536-f592-4adc-8d94-d507a0b7d678",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -453,13 +456,12 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {
     "Webhook": [
       {
@@ -495,21 +497,18 @@
       }
     ]
   },
-  "versionId": "e7b24536-f592-4adc-8d94-d507a0b7d678",
-  "activeVersionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-05T14:56:11.790Z",
-      "createdAt": "2025-12-05T14:56:11.790Z",
       "role": "workflow:owner",
       "workflowId": "zt2Pn3aOIpVbXuwC",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-05T14:56:11.790Z",
+      "updatedAt": "2025-12-05T14:56:11.790Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-13T01:55:52.330Z",
-    "createdAt": "2025-12-13T01:55:52.330Z",
     "versionId": "8205e28e-665e-446b-b8b0-3f0ab81a171e",
     "workflowId": "zt2Pn3aOIpVbXuwC",
     "nodes": [
@@ -923,7 +922,8 @@
     "authors": "Gordan Kljajic",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-12-13T01:55:52.330Z",
+    "updatedAt": "2025-12-13T01:55:52.330Z"
+  }
 }
