@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-09T22:38:43.560Z",
-  "createdAt": "2025-12-02T18:16:18.743Z",
   "id": "GWuurQa44UzlbQ08",
   "name": "Book Enrichment Endpoint",
   "active": true,
+  "activeVersionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
+  "createdAt": "2025-12-02T18:16:18.743Z",
+  "updatedAt": "2026-05-09T22:38:43.560Z",
   "isArchived": false,
+  "versionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -150,15 +153,12 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Webhook": [
       {
@@ -188,21 +188,20 @@
       }
     ]
   },
-  "versionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
-  "activeVersionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-02T18:16:18.796Z",
-      "createdAt": "2025-12-02T18:16:18.796Z",
       "role": "workflow:owner",
       "workflowId": "GWuurQa44UzlbQ08",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-02T18:16:18.796Z",
+      "updatedAt": "2025-12-02T18:16:18.796Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-09T22:38:47.000Z",
-    "createdAt": "2026-05-09T22:38:43.561Z",
     "versionId": "f4fb8d3b-bb61-49a9-8d87-eb3f2fcd92e8",
     "workflowId": "GWuurQa44UzlbQ08",
     "nodes": [
@@ -354,7 +353,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version f4fb8d3b",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-09T22:38:43.561Z",
+    "updatedAt": "2026-05-09T22:38:47.000Z"
+  }
 }
