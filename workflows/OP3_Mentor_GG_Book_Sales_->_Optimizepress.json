@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-11-16T19:24:46.000Z",
-  "createdAt": "2025-07-24T15:56:13.547Z",
   "id": "BFkLqWhDRcMnrzje",
   "name": "OP3 Mentor GG Book Sales -> Optimizepress",
   "active": true,
+  "activeVersionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
+  "createdAt": "2025-07-24T15:56:13.547Z",
+  "updatedAt": "2025-11-16T19:24:46.000Z",
   "isArchived": false,
+  "versionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -78,14 +81,13 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": "WbISMAIlclQfzorG"
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {
     "Digistore On Order": [
       {
@@ -147,21 +149,18 @@
       }
     ]
   },
-  "versionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
-  "activeVersionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-07-24T15:56:13.552Z",
-      "createdAt": "2025-07-24T15:56:13.552Z",
       "role": "workflow:owner",
       "workflowId": "BFkLqWhDRcMnrzje",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-07-24T15:56:13.552Z",
+      "updatedAt": "2025-07-24T15:56:13.552Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-26T20:39:59.471Z",
-    "createdAt": "2025-11-26T20:39:59.471Z",
     "versionId": "9264a36e-2a8a-4cc1-87dc-eede34a5a075",
     "workflowId": "BFkLqWhDRcMnrzje",
     "nodes": [
@@ -241,7 +240,8 @@
     "authors": "system migration",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "updatedAt": "2025-11-26T20:39:59.471Z"
+  }
 }
