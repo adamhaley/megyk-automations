@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-04-29T04:17:02.636Z",
-  "createdAt": "2026-04-28T04:29:27.497Z",
   "id": "D2UvOxh5IaJH1B7O",
   "name": "[YT_ALEXANDER STREEB] - Youtube_Video_Shorts_Uploader_Automation_V1.0.1",
   "active": true,
+  "activeVersionId": "9f7712be-4987-447c-8631-48546e7064b6",
+  "createdAt": "2026-04-28T04:29:27.497Z",
+  "updatedAt": "2026-04-29T04:17:02.636Z",
   "isArchived": false,
+  "versionId": "9f7712be-4987-447c-8631-48546e7064b6",
+  "triggerCount": 2,
   "nodes": [
     {
       "parameters": {
@@ -2298,6 +2301,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -2322,26 +2326,21 @@
       ]
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "9f7712be-4987-447c-8631-48546e7064b6",
-  "activeVersionId": "9f7712be-4987-447c-8631-48546e7064b6",
-  "triggerCount": 2,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-04-28T04:29:27.503Z",
-      "createdAt": "2026-04-28T04:29:27.503Z",
       "role": "workflow:owner",
       "workflowId": "D2UvOxh5IaJH1B7O",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-04-28T04:29:27.503Z",
+      "updatedAt": "2026-04-28T04:29:27.503Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-24T16:28:20.000Z",
-    "createdAt": "2026-04-29T04:17:02.647Z",
     "versionId": "9f7712be-4987-447c-8631-48546e7064b6",
     "workflowId": "D2UvOxh5IaJH1B7O",
     "nodes": [
@@ -4641,7 +4640,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 9f7712be",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-04-29T04:17:02.647Z",
+    "updatedAt": "2026-05-24T16:28:20.000Z"
+  }
 }
