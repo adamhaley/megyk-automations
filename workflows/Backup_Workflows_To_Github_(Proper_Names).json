@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-12-23T01:51:31.152Z",
-  "createdAt": "2025-12-11T00:55:14.379Z",
   "id": "Mu7fMoOkpLXeZKCU",
   "name": "Backup Workflows To Github (Proper Names)",
   "active": true,
+  "activeVersionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
+  "createdAt": "2025-12-11T00:55:14.379Z",
+  "updatedAt": "2025-12-23T01:51:31.152Z",
   "isArchived": false,
+  "versionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -419,6 +422,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "timeSavedMode": "fixed",
@@ -436,26 +440,21 @@
       ]
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
-  "activeVersionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
-  "triggerCount": 1,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-11T00:55:14.388Z",
-      "createdAt": "2025-12-11T00:55:14.388Z",
       "role": "workflow:owner",
       "workflowId": "Mu7fMoOkpLXeZKCU",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-11T00:55:14.388Z",
+      "updatedAt": "2025-12-11T00:55:14.388Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-23T01:51:33.000Z",
-    "createdAt": "2025-12-21T17:19:52.286Z",
     "versionId": "f3c47bee-22de-4348-88eb-dc30f2553488",
     "workflowId": "Mu7fMoOkpLXeZKCU",
     "nodes": [
@@ -876,7 +875,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version f3c47bee",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-12-21T17:19:52.286Z",
+    "updatedAt": "2025-12-23T01:51:33.000Z"
+  }
 }
