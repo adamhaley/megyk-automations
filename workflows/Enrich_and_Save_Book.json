@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-12-05T14:35:12.000Z",
-  "createdAt": "2025-12-01T03:11:56.801Z",
   "id": "JWGYGW2xxbrjdi13",
   "name": "Enrich and Save Book",
   "active": true,
+  "activeVersionId": "4b612806-321b-49db-914c-a28a63b646d1",
+  "createdAt": "2025-12-01T03:11:56.801Z",
+  "updatedAt": "2025-12-05T14:35:12.000Z",
   "isArchived": false,
+  "versionId": "4b612806-321b-49db-914c-a28a63b646d1",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -266,14 +269,11 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Start": [
       {
@@ -283,21 +283,20 @@
       }
     ]
   },
-  "versionId": "4b612806-321b-49db-914c-a28a63b646d1",
-  "activeVersionId": "4b612806-321b-49db-914c-a28a63b646d1",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-01T03:11:56.816Z",
-      "createdAt": "2025-12-01T03:11:56.816Z",
       "role": "workflow:owner",
       "workflowId": "JWGYGW2xxbrjdi13",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-01T03:11:56.816Z",
+      "updatedAt": "2025-12-01T03:11:56.816Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-05T14:35:12.452Z",
-    "createdAt": "2025-12-05T14:35:12.452Z",
     "versionId": "4b612806-321b-49db-914c-a28a63b646d1",
     "workflowId": "JWGYGW2xxbrjdi13",
     "nodes": [
@@ -565,7 +564,8 @@
     "authors": "Gordan Kljajic",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-12-05T14:35:12.452Z",
+    "updatedAt": "2025-12-05T14:35:12.452Z"
+  }
 }
