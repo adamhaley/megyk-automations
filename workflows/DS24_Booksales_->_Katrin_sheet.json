@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-11-16T19:24:55.000Z",
-  "createdAt": "2025-07-24T15:53:06.520Z",
   "id": "hif0lubhZ1LbCVDX",
   "name": "DS24 Booksales -> Katrin sheet",
   "active": true,
+  "activeVersionId": "fd286ba0-e128-439a-afef-51dc300c50fc",
+  "createdAt": "2025-07-24T15:53:06.520Z",
+  "updatedAt": "2025-11-16T19:24:55.000Z",
   "isArchived": false,
+  "versionId": "fd286ba0-e128-439a-afef-51dc300c50fc",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -670,6 +673,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
@@ -685,10 +689,6 @@
       ]
     }
   },
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Schedule Trigger": [
       {
@@ -708,21 +708,20 @@
       }
     ]
   },
-  "versionId": "fd286ba0-e128-439a-afef-51dc300c50fc",
-  "activeVersionId": "fd286ba0-e128-439a-afef-51dc300c50fc",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-07-24T15:53:06.537Z",
-      "createdAt": "2025-07-24T15:53:06.537Z",
       "role": "workflow:owner",
       "workflowId": "hif0lubhZ1LbCVDX",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-07-24T15:53:06.537Z",
+      "updatedAt": "2025-07-24T15:53:06.537Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-26T20:39:59.471Z",
-    "createdAt": "2025-11-26T20:39:59.471Z",
     "versionId": "fd286ba0-e128-439a-afef-51dc300c50fc",
     "workflowId": "hif0lubhZ1LbCVDX",
     "nodes": [
@@ -1394,7 +1393,8 @@
     "authors": "system migration",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "updatedAt": "2025-11-26T20:39:59.471Z"
+  }
 }
