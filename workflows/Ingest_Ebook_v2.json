@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-12-03T05:02:16.000Z",
-  "createdAt": "2025-11-29T00:15:28.375Z",
   "id": "axrCYk80eH1vcZvp",
   "name": "Ingest Ebook v2",
   "active": true,
+  "activeVersionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
+  "createdAt": "2025-11-29T00:15:28.375Z",
+  "updatedAt": "2025-12-03T05:02:16.000Z",
   "isArchived": false,
+  "versionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -797,14 +800,11 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Start": [
       {
@@ -1752,21 +1752,20 @@
       }
     ]
   },
-  "versionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
-  "activeVersionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-11-29T00:15:28.391Z",
-      "createdAt": "2025-11-29T00:15:28.391Z",
       "role": "workflow:owner",
       "workflowId": "axrCYk80eH1vcZvp",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-11-29T00:15:28.391Z",
+      "updatedAt": "2025-11-29T00:15:28.391Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-29T03:50:17.108Z",
-    "createdAt": "2025-11-29T03:50:17.108Z",
     "versionId": "8da2b91b-8eee-46be-a5de-c7b95718577a",
     "workflowId": "axrCYk80eH1vcZvp",
     "nodes": [
@@ -2565,7 +2564,8 @@
     "authors": "Gordan Kljajic",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-11-29T03:50:17.108Z",
+    "updatedAt": "2025-11-29T03:50:17.108Z"
+  }
 }
