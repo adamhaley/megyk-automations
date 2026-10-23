@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-12-03T16:31:07.000Z",
-  "createdAt": "2025-10-11T05:01:27.901Z",
   "id": "HMsQ8Guu6LkHJ85Q",
   "name": "Summarize Book",
   "active": true,
+  "activeVersionId": "e3dea5e4-1c56-4559-adee-539ef895c7ca",
+  "createdAt": "2025-10-11T05:01:27.901Z",
+  "updatedAt": "2025-12-03T16:31:07.000Z",
   "isArchived": false,
+  "versionId": "e3dea5e4-1c56-4559-adee-539ef895c7ca",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -851,14 +854,11 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Webhook": [
       {
@@ -894,21 +894,20 @@
       }
     ]
   },
-  "versionId": "e3dea5e4-1c56-4559-adee-539ef895c7ca",
-  "activeVersionId": "e3dea5e4-1c56-4559-adee-539ef895c7ca",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-10-11T05:01:27.921Z",
-      "createdAt": "2025-10-11T05:01:27.921Z",
       "role": "workflow:owner",
       "workflowId": "HMsQ8Guu6LkHJ85Q",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-10-11T05:01:27.921Z",
+      "updatedAt": "2025-10-11T05:01:27.921Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-03T16:31:07.040Z",
-    "createdAt": "2025-12-03T16:31:07.040Z",
     "versionId": "e3dea5e4-1c56-4559-adee-539ef895c7ca",
     "workflowId": "HMsQ8Guu6LkHJ85Q",
     "nodes": [
@@ -1761,7 +1760,8 @@
     "authors": "Gordan Kljajic",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-12-03T16:31:07.040Z",
+    "updatedAt": "2025-12-03T16:31:07.040Z"
+  }
 }
