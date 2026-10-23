@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-10T00:08:24.470Z",
-  "createdAt": "2026-01-04T00:37:36.306Z",
   "id": "ZIqLGdvpuQRGveHM",
   "name": "AppSignups",
   "active": true,
+  "activeVersionId": "fe70f472-56ac-43b8-ae4c-ef1fa740877c",
+  "createdAt": "2026-01-04T00:37:36.306Z",
+  "updatedAt": "2026-05-10T00:08:24.470Z",
   "isArchived": false,
+  "versionId": "5fd3c443-3203-495e-8725-9dcf6cf3865d",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -273,16 +276,13 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false,
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Webhook": [
       {
@@ -319,21 +319,20 @@
       }
     ]
   },
-  "versionId": "5fd3c443-3203-495e-8725-9dcf6cf3865d",
-  "activeVersionId": "fe70f472-56ac-43b8-ae4c-ef1fa740877c",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-01-04T00:37:36.319Z",
-      "createdAt": "2026-01-04T00:37:36.319Z",
       "role": "workflow:owner",
       "workflowId": "ZIqLGdvpuQRGveHM",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-01-04T00:37:36.319Z",
+      "updatedAt": "2026-01-04T00:37:36.319Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-03-30T15:10:11.000Z",
-    "createdAt": "2026-03-30T15:10:00.906Z",
     "versionId": "fe70f472-56ac-43b8-ae4c-ef1fa740877c",
     "workflowId": "ZIqLGdvpuQRGveHM",
     "nodes": [
@@ -601,7 +600,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version fe70f472",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-03-30T15:10:00.906Z",
+    "updatedAt": "2026-03-30T15:10:11.000Z"
+  }
 }
