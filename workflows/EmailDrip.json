@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-01-08T02:02:33.451Z",
-  "createdAt": "2026-01-06T21:53:12.032Z",
   "id": "qjvsvAd7YcchJ1eF",
   "name": "EmailDrip",
   "active": true,
+  "activeVersionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
+  "createdAt": "2026-01-06T21:53:12.032Z",
+  "updatedAt": "2026-01-08T02:02:33.451Z",
   "isArchived": false,
+  "versionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -208,15 +211,12 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "When Executed by Another Workflow": [
       {
@@ -229,21 +229,20 @@
       }
     ]
   },
-  "versionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
-  "activeVersionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-01-06T21:53:12.041Z",
-      "createdAt": "2026-01-06T21:53:12.041Z",
       "role": "workflow:owner",
       "workflowId": "qjvsvAd7YcchJ1eF",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-01-06T21:53:12.041Z",
+      "updatedAt": "2026-01-06T21:53:12.041Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-08T02:02:36.000Z",
-    "createdAt": "2026-01-08T02:02:33.452Z",
     "versionId": "a5069dcf-a539-446f-9b7c-57fb80782545",
     "workflowId": "qjvsvAd7YcchJ1eF",
     "nodes": [
@@ -453,7 +452,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version a5069dcf",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2026-01-08T02:02:33.452Z",
+    "updatedAt": "2026-01-08T02:02:36.000Z"
+  }
 }
