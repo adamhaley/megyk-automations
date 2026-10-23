@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-01-29T12:26:01.856Z",
-  "createdAt": "2025-10-20T07:06:36.569Z",
   "id": "OuQszsYYC27GC7YO",
   "name": "Lead Transfer Fr. Elstner",
   "active": true,
+  "activeVersionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
+  "createdAt": "2025-10-20T07:06:36.569Z",
+  "updatedAt": "2026-01-29T12:26:01.856Z",
   "isArchived": false,
+  "versionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -162,30 +165,26 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
-  "activeVersionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
-  "triggerCount": 1,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-10-20T07:06:36.593Z",
-      "createdAt": "2025-10-20T07:06:36.593Z",
       "role": "workflow:owner",
       "workflowId": "OuQszsYYC27GC7YO",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-10-20T07:06:36.593Z",
+      "updatedAt": "2025-10-20T07:06:36.593Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-29T12:26:06.000Z",
-    "createdAt": "2026-01-29T12:26:01.860Z",
     "versionId": "cef207cd-fc09-4aaa-b0e7-19c4a74a2d4e",
     "workflowId": "OuQszsYYC27GC7YO",
     "nodes": [
@@ -349,7 +348,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version cef207cd",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-01-29T12:26:01.860Z",
+    "updatedAt": "2026-01-29T12:26:06.000Z"
+  }
 }
