@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-01-18T19:26:33.483Z",
-  "createdAt": "2025-12-02T18:46:42.377Z",
   "id": "ZQp61SzkePFnnurz",
   "name": "Enrich Book by ID",
   "active": true,
+  "activeVersionId": "37e3109c-c1bc-4cb1-a389-0e52ac834d57",
+  "createdAt": "2025-12-02T18:46:42.377Z",
+  "updatedAt": "2026-01-18T19:26:33.483Z",
   "isArchived": false,
+  "versionId": "b063f825-0177-429b-881a-ffe20d6f68e7",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -229,14 +232,11 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Start": [
       {
@@ -246,21 +246,20 @@
       }
     ]
   },
-  "versionId": "b063f825-0177-429b-881a-ffe20d6f68e7",
-  "activeVersionId": "37e3109c-c1bc-4cb1-a389-0e52ac834d57",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-02T18:46:42.387Z",
-      "createdAt": "2025-12-02T18:46:42.387Z",
       "role": "workflow:owner",
       "workflowId": "ZQp61SzkePFnnurz",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-02T18:46:42.387Z",
+      "updatedAt": "2025-12-02T18:46:42.387Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-18T17:38:36.000Z",
-    "createdAt": "2026-01-18T17:38:34.190Z",
     "versionId": "37e3109c-c1bc-4cb1-a389-0e52ac834d57",
     "workflowId": "ZQp61SzkePFnnurz",
     "nodes": [
@@ -491,7 +490,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 37e3109c",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2026-01-18T17:38:34.190Z",
+    "updatedAt": "2026-01-18T17:38:36.000Z"
+  }
 }
