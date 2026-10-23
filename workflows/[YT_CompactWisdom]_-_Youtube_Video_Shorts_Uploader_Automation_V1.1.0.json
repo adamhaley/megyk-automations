@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-04-21T15:34:34.333Z",
-  "createdAt": "2026-04-21T11:38:07.548Z",
   "id": "WqC1KkFHi6uHMj3t",
   "name": "[YT_CompactWisdom] - Youtube_Video_Shorts_Uploader_Automation_V1.1.0",
   "active": true,
+  "activeVersionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
+  "createdAt": "2026-04-21T11:38:07.548Z",
+  "updatedAt": "2026-04-21T15:34:34.333Z",
   "isArchived": false,
+  "versionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
+  "triggerCount": 2,
   "nodes": [
     {
       "parameters": {
@@ -2046,6 +2049,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -2070,26 +2074,21 @@
       ]
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
-  "activeVersionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
-  "triggerCount": 2,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-04-21T11:38:07.558Z",
-      "createdAt": "2026-04-21T11:38:07.558Z",
       "role": "workflow:owner",
       "workflowId": "WqC1KkFHi6uHMj3t",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-04-21T11:38:07.558Z",
+      "updatedAt": "2026-04-21T11:38:07.558Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-04-21T15:35:38.000Z",
-    "createdAt": "2026-04-21T15:34:33.205Z",
     "versionId": "8ad8a9a1-3b57-4cc6-9499-13e1cb212ea2",
     "workflowId": "WqC1KkFHi6uHMj3t",
     "nodes": [
@@ -4137,7 +4136,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 8ad8a9a1",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2026-04-21T15:34:33.205Z",
+    "updatedAt": "2026-04-21T15:35:38.000Z"
+  }
 }
