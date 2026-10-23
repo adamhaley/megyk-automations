@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-01-11T19:20:28.709Z",
-  "createdAt": "2025-12-02T21:06:00.144Z",
   "id": "3r45bGjleYIz8OiW",
   "name": "v3 Summarize Loop",
   "active": true,
+  "activeVersionId": "36ffde41-deb7-4d82-9a6d-7662b912af34",
+  "createdAt": "2025-12-02T21:06:00.144Z",
+  "updatedAt": "2026-01-11T19:20:28.709Z",
   "isArchived": false,
+  "versionId": "36ffde41-deb7-4d82-9a6d-7662b912af34",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -387,6 +390,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
@@ -400,10 +404,6 @@
       ]
     }
   },
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Schedule Trigger": [
       {
@@ -413,21 +413,20 @@
       }
     ]
   },
-  "versionId": "36ffde41-deb7-4d82-9a6d-7662b912af34",
-  "activeVersionId": "36ffde41-deb7-4d82-9a6d-7662b912af34",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-02T21:06:00.172Z",
-      "createdAt": "2025-12-02T21:06:00.172Z",
       "role": "workflow:owner",
       "workflowId": "3r45bGjleYIz8OiW",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-02T21:06:00.172Z",
+      "updatedAt": "2025-12-02T21:06:00.172Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-01-11T19:20:31.000Z",
-    "createdAt": "2026-01-11T19:20:28.711Z",
     "versionId": "36ffde41-deb7-4d82-9a6d-7662b912af34",
     "workflowId": "3r45bGjleYIz8OiW",
     "nodes": [
@@ -816,7 +815,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 36ffde41",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2026-01-11T19:20:28.711Z",
+    "updatedAt": "2026-01-11T19:20:31.000Z"
+  }
 }
