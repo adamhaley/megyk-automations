@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-02T21:07:32.132Z",
-  "createdAt": "2026-05-02T20:27:19.174Z",
   "id": "3SMNUAbJJAqsQcI9",
   "name": "Monthly Credit Reset",
   "active": true,
+  "activeVersionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
+  "createdAt": "2026-05-02T20:27:19.174Z",
+  "updatedAt": "2026-05-02T21:07:32.132Z",
   "isArchived": false,
+  "versionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -118,6 +121,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -139,24 +143,19 @@
       ]
     }
   },
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {},
-  "versionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
-  "activeVersionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-05-02T20:27:19.180Z",
-      "createdAt": "2026-05-02T20:27:19.180Z",
       "role": "workflow:owner",
       "workflowId": "3SMNUAbJJAqsQcI9",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-05-02T20:27:19.180Z",
+      "updatedAt": "2026-05-02T20:27:19.180Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-02T21:07:44.000Z",
-    "createdAt": "2026-05-02T21:07:32.135Z",
     "versionId": "b9a0c5e9-0a98-48cd-87b9-f16c3fa14100",
     "workflowId": "3SMNUAbJJAqsQcI9",
     "nodes": [
@@ -276,7 +275,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version b9a0c5e9",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-02T21:07:32.135Z",
+    "updatedAt": "2026-05-02T21:07:44.000Z"
+  }
 }
