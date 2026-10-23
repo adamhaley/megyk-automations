@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-24T16:14:59.902Z",
-  "createdAt": "2026-04-29T04:24:59.915Z",
   "id": "gury2D7XYEtsNXiF",
   "name": "[YT_FinanzNews] - Youtube_Video_Shorts_Uploader_Automation_V1.0.1",
   "active": true,
+  "activeVersionId": "752a4008-b748-48a0-beac-ba1885205cdd",
+  "createdAt": "2026-04-29T04:24:59.915Z",
+  "updatedAt": "2026-05-24T16:14:59.902Z",
   "isArchived": false,
+  "versionId": "752a4008-b748-48a0-beac-ba1885205cdd",
+  "triggerCount": 2,
   "nodes": [
     {
       "parameters": {
@@ -2301,6 +2304,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -2325,26 +2329,21 @@
       ]
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "752a4008-b748-48a0-beac-ba1885205cdd",
-  "activeVersionId": "752a4008-b748-48a0-beac-ba1885205cdd",
-  "triggerCount": 2,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-04-29T04:24:59.922Z",
-      "createdAt": "2026-04-29T04:24:59.922Z",
       "role": "workflow:owner",
       "workflowId": "gury2D7XYEtsNXiF",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-04-29T04:24:59.922Z",
+      "updatedAt": "2026-04-29T04:24:59.922Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-24T16:28:37.000Z",
-    "createdAt": "2026-05-24T16:14:59.904Z",
     "versionId": "752a4008-b748-48a0-beac-ba1885205cdd",
     "workflowId": "gury2D7XYEtsNXiF",
     "nodes": [
@@ -4647,7 +4646,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 752a4008",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-24T16:14:59.904Z",
+    "updatedAt": "2026-05-24T16:28:37.000Z"
+  }
 }
