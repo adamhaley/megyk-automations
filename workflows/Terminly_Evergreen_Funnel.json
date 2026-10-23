@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-04T11:25:04.152Z",
-  "createdAt": "2026-04-24T11:06:58.446Z",
   "id": "sKPpwffyytwiFM33",
   "name": "Terminly Evergreen Funnel",
   "active": true,
+  "activeVersionId": "b14b0cbf-1d96-4d4f-98c6-a4b72d000509",
+  "createdAt": "2026-04-24T11:06:58.446Z",
+  "updatedAt": "2026-05-04T11:25:04.152Z",
   "isArchived": false,
+  "versionId": "b14b0cbf-1d96-4d4f-98c6-a4b72d000509",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -99,30 +102,26 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false,
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {},
-  "versionId": "b14b0cbf-1d96-4d4f-98c6-a4b72d000509",
-  "activeVersionId": "b14b0cbf-1d96-4d4f-98c6-a4b72d000509",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-04-24T11:06:58.453Z",
-      "createdAt": "2026-04-24T11:06:58.453Z",
       "role": "workflow:owner",
       "workflowId": "sKPpwffyytwiFM33",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-04-24T11:06:58.453Z",
+      "updatedAt": "2026-04-24T11:06:58.453Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-04T11:27:41.000Z",
-    "createdAt": "2026-05-04T11:25:04.153Z",
     "versionId": "b14b0cbf-1d96-4d4f-98c6-a4b72d000509",
     "workflowId": "sKPpwffyytwiFM33",
     "nodes": [
@@ -223,7 +222,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version b14b0cbf",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-04T11:25:04.153Z",
+    "updatedAt": "2026-05-04T11:27:41.000Z"
+  }
 }
