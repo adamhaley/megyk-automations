@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-09-15T00:21:37.907Z",
-  "createdAt": "2026-08-30T17:47:04.810Z",
   "id": "Qmirm6zEYQzm83xw",
   "name": "RSC Anna Calendly to Google Sheet",
   "active": true,
+  "activeVersionId": "7a460f51-7070-4df3-bf52-45c094014058",
+  "createdAt": "2026-08-30T17:47:04.810Z",
+  "updatedAt": "2026-09-15T00:21:37.907Z",
   "isArchived": false,
+  "versionId": "7a460f51-7070-4df3-bf52-45c094014058",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -254,6 +257,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -265,26 +269,21 @@
       "webhookSecret": "0052b67bfe8403bf71c60c213d76aa03fe99fb3182e5f7eee8811279fcb7ca9e"
     }
   },
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "7a460f51-7070-4df3-bf52-45c094014058",
-  "activeVersionId": "7a460f51-7070-4df3-bf52-45c094014058",
-  "triggerCount": 1,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-08-30T17:47:04.820Z",
-      "createdAt": "2026-08-30T17:47:04.820Z",
       "role": "workflow:owner",
       "workflowId": "Qmirm6zEYQzm83xw",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-08-30T17:47:04.820Z",
+      "updatedAt": "2026-08-30T17:47:04.820Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-30T19:18:50.000Z",
-    "createdAt": "2026-08-30T19:18:47.461Z",
     "versionId": "7a460f51-7070-4df3-bf52-45c094014058",
     "workflowId": "Qmirm6zEYQzm83xw",
     "nodes": [
@@ -540,7 +539,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 7a460f51",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-08-30T19:18:47.461Z",
+    "updatedAt": "2026-08-30T19:18:50.000Z"
+  }
 }
