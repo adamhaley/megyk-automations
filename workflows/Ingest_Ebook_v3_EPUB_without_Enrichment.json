@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-10T22:23:27.377Z",
-  "createdAt": "2025-12-01T03:12:48.978Z",
   "id": "Pug5aBaVAObe9dkO",
   "name": "Ingest Ebook v3 EPUB without Enrichment",
   "active": true,
+  "activeVersionId": "9de9297c-42ed-4cd3-95ad-2e3ff4351b3a",
+  "createdAt": "2025-12-01T03:12:48.978Z",
+  "updatedAt": "2026-05-10T22:23:27.377Z",
   "isArchived": false,
+  "versionId": "9de9297c-42ed-4cd3-95ad-2e3ff4351b3a",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -922,15 +925,12 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Start": [
       {
@@ -945,21 +945,20 @@
       }
     ]
   },
-  "versionId": "9de9297c-42ed-4cd3-95ad-2e3ff4351b3a",
-  "activeVersionId": "9de9297c-42ed-4cd3-95ad-2e3ff4351b3a",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-01T03:12:48.987Z",
-      "createdAt": "2025-12-01T03:12:48.987Z",
       "role": "workflow:owner",
       "workflowId": "Pug5aBaVAObe9dkO",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-01T03:12:48.987Z",
+      "updatedAt": "2025-12-01T03:12:48.987Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-10T22:23:29.000Z",
-    "createdAt": "2026-05-10T22:23:27.378Z",
     "versionId": "9de9297c-42ed-4cd3-95ad-2e3ff4351b3a",
     "workflowId": "Pug5aBaVAObe9dkO",
     "nodes": [
@@ -1883,7 +1882,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 9de9297c",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-10T22:23:27.378Z",
+    "updatedAt": "2026-05-10T22:23:29.000Z"
+  }
 }
