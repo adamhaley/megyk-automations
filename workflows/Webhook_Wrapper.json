@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-08-31T19:53:41.795Z",
-  "createdAt": "2026-07-30T21:58:34.595Z",
   "id": "YrH2B4FIWMbjzq5I",
   "name": "Webhook Wrapper",
   "active": true,
+  "activeVersionId": "934c2f3a-c115-4b24-91ae-f4e4870360fc",
+  "createdAt": "2026-07-30T21:58:34.595Z",
+  "updatedAt": "2026-08-31T19:53:41.795Z",
   "isArchived": false,
+  "versionId": "934c2f3a-c115-4b24-91ae-f4e4870360fc",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -429,14 +432,13 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {
     "Webhook": [
       {
@@ -498,21 +500,18 @@
       }
     ]
   },
-  "versionId": "934c2f3a-c115-4b24-91ae-f4e4870360fc",
-  "activeVersionId": "934c2f3a-c115-4b24-91ae-f4e4870360fc",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-07-30T21:58:34.598Z",
-      "createdAt": "2026-07-30T21:58:34.598Z",
       "role": "workflow:owner",
       "workflowId": "YrH2B4FIWMbjzq5I",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-07-30T21:58:34.598Z",
+      "updatedAt": "2026-07-30T21:58:34.598Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-31T19:53:43.000Z",
-    "createdAt": "2026-08-31T19:53:41.797Z",
     "versionId": "934c2f3a-c115-4b24-91ae-f4e4870360fc",
     "workflowId": "YrH2B4FIWMbjzq5I",
     "nodes": [
@@ -943,7 +942,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 934c2f3a",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-08-31T19:53:41.797Z",
+    "updatedAt": "2026-08-31T19:53:43.000Z"
+  }
 }
