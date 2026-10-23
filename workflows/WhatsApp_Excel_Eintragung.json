@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-02-20T07:14:05.580Z",
-  "createdAt": "2026-02-19T08:47:37.550Z",
   "id": "NuWp-BsWMEjznUFaWTjkQ",
   "name": "WhatsApp Excel Eintragung",
   "active": true,
+  "activeVersionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
+  "createdAt": "2026-02-19T08:47:37.550Z",
+  "updatedAt": "2026-02-20T07:14:05.580Z",
   "isArchived": false,
+  "versionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -142,32 +145,28 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
-  "activeVersionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
-  "triggerCount": 1,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-02-19T08:47:37.556Z",
-      "createdAt": "2026-02-19T08:47:37.556Z",
       "role": "workflow:owner",
       "workflowId": "NuWp-BsWMEjznUFaWTjkQ",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-02-19T08:47:37.556Z",
+      "updatedAt": "2026-02-19T08:47:37.556Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-20T07:14:08.000Z",
-    "createdAt": "2026-02-20T07:14:05.581Z",
     "versionId": "b5472bd8-d0bb-4d31-b66a-3bb4c10079bd",
     "workflowId": "NuWp-BsWMEjznUFaWTjkQ",
     "nodes": [
@@ -311,7 +310,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version b5472bd8",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-02-20T07:14:05.581Z",
+    "updatedAt": "2026-02-20T07:14:08.000Z"
+  }
 }
