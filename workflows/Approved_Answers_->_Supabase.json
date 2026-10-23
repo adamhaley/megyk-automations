@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-14T17:45:47.024Z",
-  "createdAt": "2026-05-14T17:45:07.281Z",
   "id": "76QZZ5EoInYGmdfO",
   "name": "Approved Answers -> Supabase",
   "active": true,
+  "activeVersionId": "90857087-df6c-4360-9fa1-a07aae7534df",
+  "createdAt": "2026-05-14T17:45:07.281Z",
+  "updatedAt": "2026-05-14T17:45:47.024Z",
   "isArchived": false,
+  "versionId": "90857087-df6c-4360-9fa1-a07aae7534df",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -149,6 +152,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -165,24 +169,19 @@
       "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=10SIcM35jm94h3eTcdFzzLfxM4e-9_Enseu9R6oYAE50&revision=473&exportFormat=xlsx"
     }
   },
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {},
-  "versionId": "90857087-df6c-4360-9fa1-a07aae7534df",
-  "activeVersionId": "90857087-df6c-4360-9fa1-a07aae7534df",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-05-14T17:45:07.307Z",
-      "createdAt": "2026-05-14T17:45:07.307Z",
       "role": "workflow:owner",
       "workflowId": "76QZZ5EoInYGmdfO",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-05-14T17:45:07.307Z",
+      "updatedAt": "2026-05-14T17:45:07.307Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-14T17:45:37.000Z",
-    "createdAt": "2026-05-14T17:45:32.004Z",
     "versionId": "90857087-df6c-4360-9fa1-a07aae7534df",
     "workflowId": "76QZZ5EoInYGmdfO",
     "nodes": [
@@ -333,7 +332,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 90857087",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-14T17:45:32.004Z",
+    "updatedAt": "2026-05-14T17:45:37.000Z"
+  }
 }
