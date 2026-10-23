@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-11-19T02:02:33.000Z",
-  "createdAt": "2025-07-24T15:57:19.967Z",
   "id": "JMthBLb0QjUIuNUI",
   "name": "Q4-Vermögensschutz Schnellcheck SCHRITT 1 - WUFOO",
   "active": true,
+  "activeVersionId": "67f4a999-f819-4600-9848-d68416f245a3",
+  "createdAt": "2025-07-24T15:57:19.967Z",
+  "updatedAt": "2025-11-19T02:02:33.000Z",
   "isArchived": false,
+  "versionId": "67f4a999-f819-4600-9848-d68416f245a3",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -883,6 +886,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
@@ -890,14 +894,10 @@
   },
   "staticData": {
     "node:Wufoo Trigger": {
-      "handshakeKey": "b47f366d4893f29c6cf153fde0cf38ebab1eb938",
+      "handshakeKey": "5de27263075cbff36094e4f91a60afefc374a4c5",
       "webhookId": "mqhpg7d0p203ml"
     }
   },
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Wufoo Trigger": [
       {
@@ -954,21 +954,20 @@
       }
     ]
   },
-  "versionId": "67f4a999-f819-4600-9848-d68416f245a3",
-  "activeVersionId": "67f4a999-f819-4600-9848-d68416f245a3",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-07-24T15:57:19.972Z",
-      "createdAt": "2025-07-24T15:57:19.972Z",
       "role": "workflow:owner",
       "workflowId": "JMthBLb0QjUIuNUI",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-07-24T15:57:19.972Z",
+      "updatedAt": "2025-07-24T15:57:19.972Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-26T20:39:59.471Z",
-    "createdAt": "2025-11-26T20:39:59.471Z",
     "versionId": "67f4a999-f819-4600-9848-d68416f245a3",
     "workflowId": "JMthBLb0QjUIuNUI",
     "nodes": [
@@ -1853,7 +1852,8 @@
     "authors": "system migration",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "updatedAt": "2025-11-26T20:39:59.471Z"
+  }
 }
