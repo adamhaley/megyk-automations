@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-09-17T18:40:05.113Z",
-  "createdAt": "2026-09-14T21:56:40.143Z",
   "id": "v5ynWgAiQAp5usWU",
   "name": "RSC Tracking",
   "active": true,
+  "activeVersionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
+  "createdAt": "2026-09-14T21:56:40.143Z",
+  "updatedAt": "2026-09-17T18:40:05.113Z",
   "isArchived": false,
+  "versionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -148,32 +151,28 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
-  "activeVersionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
-  "triggerCount": 1,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-09-14T21:56:40.147Z",
-      "createdAt": "2026-09-14T21:56:40.147Z",
       "role": "workflow:owner",
       "workflowId": "v5ynWgAiQAp5usWU",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-09-14T21:56:40.147Z",
+      "updatedAt": "2026-09-14T21:56:40.147Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-09-17T18:40:08.000Z",
-    "createdAt": "2026-09-17T18:40:05.144Z",
     "versionId": "57facb34-b5cc-4de2-891e-9cb1437a2476",
     "workflowId": "v5ynWgAiQAp5usWU",
     "nodes": [
@@ -323,7 +322,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 57facb34",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-09-17T18:40:05.144Z",
+    "updatedAt": "2026-09-17T18:40:08.000Z"
+  }
 }
