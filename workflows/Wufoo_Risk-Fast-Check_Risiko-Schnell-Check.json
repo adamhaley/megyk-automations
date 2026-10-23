@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-08-31T19:51:12.813Z",
-  "createdAt": "2026-07-10T22:16:26.074Z",
   "id": "ryhu6xynPYdjdgD7",
   "name": "Wufoo Risk-Fast-Check Risiko-Schnell-Check",
   "active": true,
+  "activeVersionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
+  "createdAt": "2026-07-10T22:16:26.074Z",
+  "updatedAt": "2026-08-31T19:51:12.813Z",
   "isArchived": false,
+  "versionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -119,6 +122,7 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
@@ -130,10 +134,6 @@
   "staticData": {
     "node:Wufoo Trigger": {}
   },
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "When Executed by Another Workflow": [
       {
@@ -159,21 +159,20 @@
       }
     ]
   },
-  "versionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
-  "activeVersionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-07-10T22:16:26.081Z",
-      "createdAt": "2026-07-10T22:16:26.081Z",
       "role": "workflow:owner",
       "workflowId": "ryhu6xynPYdjdgD7",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-07-10T22:16:26.081Z",
+      "updatedAt": "2026-07-10T22:16:26.081Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-08-31T19:51:15.000Z",
-    "createdAt": "2026-08-31T19:51:12.815Z",
     "versionId": "7ec7197b-e643-4fbe-ba18-65e7b00460d3",
     "workflowId": "ryhu6xynPYdjdgD7",
     "nodes": [
@@ -294,7 +293,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 7ec7197b",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-08-31T19:51:12.815Z",
+    "updatedAt": "2026-08-31T19:51:15.000Z"
+  }
 }
