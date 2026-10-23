@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-05-08T08:35:42.845Z",
-  "createdAt": "2025-09-17T11:41:57.696Z",
   "id": "NpNXqyFPZrmcWZLX",
   "name": "Terminly KI-Vertriebssystem",
   "active": true,
+  "activeVersionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
+  "createdAt": "2025-09-17T11:41:57.696Z",
+  "updatedAt": "2026-05-08T08:35:42.845Z",
   "isArchived": false,
+  "versionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
+  "triggerCount": 2,
   "nodes": [
     {
       "parameters": {
@@ -181,13 +184,12 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {
     "New Appointment": [
       {
@@ -282,21 +284,18 @@
       }
     ]
   },
-  "versionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
-  "activeVersionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
-  "triggerCount": 2,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-09-17T11:41:57.704Z",
-      "createdAt": "2025-09-17T11:41:57.704Z",
       "role": "workflow:owner",
       "workflowId": "NpNXqyFPZrmcWZLX",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-09-17T11:41:57.704Z",
+      "updatedAt": "2025-09-17T11:41:57.704Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-08T08:35:44.000Z",
-    "createdAt": "2026-05-08T08:35:42.846Z",
     "versionId": "a8f3bab2-8c25-4315-a3f4-ff92433927de",
     "workflowId": "NpNXqyFPZrmcWZLX",
     "nodes": [
@@ -479,7 +478,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version a8f3bab2",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-05-08T08:35:42.846Z",
+    "updatedAt": "2026-05-08T08:35:44.000Z"
+  }
 }
