@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-12-18T00:41:14.966Z",
-  "createdAt": "2025-12-02T21:18:37.241Z",
   "id": "qcWDGRq8GvKymxwu",
   "name": "Generate 3 X 3 Summaries",
   "active": true,
+  "activeVersionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
+  "createdAt": "2025-12-02T21:18:37.241Z",
+  "updatedAt": "2025-12-18T00:41:14.966Z",
   "isArchived": false,
+  "versionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
+  "triggerCount": 0,
   "nodes": [
     {
       "parameters": {
@@ -729,14 +732,11 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "When Executed by Another Workflow": [
       {
@@ -751,21 +751,20 @@
       }
     ]
   },
-  "versionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
-  "activeVersionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-02T21:18:37.348Z",
-      "createdAt": "2025-12-02T21:18:37.348Z",
       "role": "workflow:owner",
       "workflowId": "qcWDGRq8GvKymxwu",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-02T21:18:37.348Z",
+      "updatedAt": "2025-12-02T21:18:37.348Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-18T00:41:17.000Z",
-    "createdAt": "2025-12-18T00:41:14.969Z",
     "versionId": "42fede35-e02a-4a83-a039-673cd0b01c5d",
     "workflowId": "qcWDGRq8GvKymxwu",
     "nodes": [
@@ -1496,7 +1495,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version 42fede35",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-12-18T00:41:14.969Z",
+    "updatedAt": "2025-12-18T00:41:17.000Z"
+  }
 }
