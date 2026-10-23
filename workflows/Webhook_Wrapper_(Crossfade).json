@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-09-14T21:45:58.590Z",
-  "createdAt": "2026-08-31T21:47:30.585Z",
   "id": "EdLYgLPDDaqQ6Kwx",
   "name": "Webhook Wrapper (Crossfade)",
   "active": true,
+  "activeVersionId": "aef8561d-3a7e-4a19-a5e0-b42439097705",
+  "createdAt": "2026-08-31T21:47:30.585Z",
+  "updatedAt": "2026-09-14T21:45:58.590Z",
   "isArchived": false,
+  "versionId": "aef8561d-3a7e-4a19-a5e0-b42439097705",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -474,30 +477,26 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {},
-  "versionId": "aef8561d-3a7e-4a19-a5e0-b42439097705",
-  "activeVersionId": "aef8561d-3a7e-4a19-a5e0-b42439097705",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-08-31T21:47:30.589Z",
-      "createdAt": "2026-08-31T21:47:30.589Z",
       "role": "workflow:owner",
       "workflowId": "EdLYgLPDDaqQ6Kwx",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-08-31T21:47:30.589Z",
+      "updatedAt": "2026-08-31T21:47:30.589Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-09-14T21:46:05.000Z",
-    "createdAt": "2026-09-14T21:45:58.594Z",
     "versionId": "aef8561d-3a7e-4a19-a5e0-b42439097705",
     "workflowId": "EdLYgLPDDaqQ6Kwx",
     "nodes": [
@@ -973,7 +972,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version aef8561d",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-09-14T21:45:58.594Z",
+    "updatedAt": "2026-09-14T21:46:05.000Z"
+  }
 }
