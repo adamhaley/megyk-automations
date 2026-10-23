@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-11-16T19:24:15.000Z",
-  "createdAt": "2025-07-28T01:51:22.903Z",
   "id": "diyKJSuPvFg2r8uo",
   "name": "(5) OP3 Mentor GG Hörbuch Kauf",
   "active": true,
+  "activeVersionId": "1d619073-b2c3-4f69-8225-570fb1d0ea01",
+  "createdAt": "2025-07-28T01:51:22.903Z",
+  "updatedAt": "2025-11-16T19:24:15.000Z",
   "isArchived": false,
+  "versionId": "1d619073-b2c3-4f69-8225-570fb1d0ea01",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -100,14 +103,13 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": "WbISMAIlclQfzorG"
   },
   "staticData": null,
-  "meta": null,
-  "nodeGroups": [],
   "pinData": {
     "Digistore On Order": [
       {
@@ -169,21 +171,18 @@
       }
     ]
   },
-  "versionId": "1d619073-b2c3-4f69-8225-570fb1d0ea01",
-  "activeVersionId": "1d619073-b2c3-4f69-8225-570fb1d0ea01",
-  "triggerCount": 1,
+  "meta": null,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-07-28T01:51:22.906Z",
-      "createdAt": "2025-07-28T01:51:22.906Z",
       "role": "workflow:owner",
       "workflowId": "diyKJSuPvFg2r8uo",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-07-28T01:51:22.906Z",
+      "updatedAt": "2025-07-28T01:51:22.906Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-11-26T20:39:59.471Z",
-    "createdAt": "2025-11-26T20:39:59.471Z",
     "versionId": "1d619073-b2c3-4f69-8225-570fb1d0ea01",
     "workflowId": "diyKJSuPvFg2r8uo",
     "nodes": [
@@ -285,7 +284,8 @@
     "authors": "system migration",
     "name": null,
     "description": null,
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-11-26T20:39:59.471Z",
+    "updatedAt": "2025-11-26T20:39:59.471Z"
+  }
 }
