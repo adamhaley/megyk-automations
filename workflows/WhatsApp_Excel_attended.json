@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-02-20T07:09:48.049Z",
-  "createdAt": "2026-02-20T07:02:39.756Z",
   "id": "vnHcS21lzo8FUPObpuY2I",
   "name": "WhatsApp Excel attended",
   "active": true,
+  "activeVersionId": "c523913f-998a-40bf-8397-577a98679341",
+  "createdAt": "2026-02-20T07:02:39.756Z",
+  "updatedAt": "2026-02-20T07:09:48.049Z",
   "isArchived": false,
+  "versionId": "c523913f-998a-40bf-8397-577a98679341",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -142,32 +145,28 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
   "staticData": null,
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
-  "pinData": {},
-  "versionId": "c523913f-998a-40bf-8397-577a98679341",
-  "activeVersionId": "c523913f-998a-40bf-8397-577a98679341",
-  "triggerCount": 1,
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2026-02-20T07:02:39.766Z",
-      "createdAt": "2026-02-20T07:02:39.766Z",
       "role": "workflow:owner",
       "workflowId": "vnHcS21lzo8FUPObpuY2I",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2026-02-20T07:02:39.766Z",
+      "updatedAt": "2026-02-20T07:02:39.766Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-02-20T07:09:53.000Z",
-    "createdAt": "2026-02-20T07:09:48.050Z",
     "versionId": "c523913f-998a-40bf-8397-577a98679341",
     "workflowId": "vnHcS21lzo8FUPObpuY2I",
     "nodes": [
@@ -311,7 +310,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version c523913f",
     "description": "",
-    "autosaved": true
-  },
-  "tags": []
+    "autosaved": true,
+    "createdAt": "2026-02-20T07:09:48.050Z",
+    "updatedAt": "2026-02-20T07:09:53.000Z"
+  }
 }
