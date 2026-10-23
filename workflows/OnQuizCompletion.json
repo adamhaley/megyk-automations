@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2025-12-25T01:25:50.756Z",
-  "createdAt": "2025-12-20T02:45:16.977Z",
   "id": "DY9WaEz6iavgmQvY",
   "name": "OnQuizCompletion",
   "active": true,
+  "activeVersionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
+  "createdAt": "2025-12-20T02:45:16.977Z",
+  "updatedAt": "2025-12-25T01:25:50.756Z",
   "isArchived": false,
+  "versionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
+  "triggerCount": 1,
   "nodes": [
     {
       "parameters": {
@@ -163,14 +166,11 @@
       ]
     }
   },
+  "nodeGroups": [],
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [],
   "pinData": {
     "Webhook": [
       {
@@ -207,21 +207,20 @@
       }
     ]
   },
-  "versionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
-  "activeVersionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
-  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
   "shared": [
     {
-      "updatedAt": "2025-12-20T02:45:16.984Z",
-      "createdAt": "2025-12-20T02:45:16.984Z",
       "role": "workflow:owner",
       "workflowId": "DY9WaEz6iavgmQvY",
-      "projectId": "B7QJE85HA2Vij1it"
+      "projectId": "B7QJE85HA2Vij1it",
+      "createdAt": "2025-12-20T02:45:16.984Z",
+      "updatedAt": "2025-12-20T02:45:16.984Z"
     }
   ],
   "activeVersion": {
-    "updatedAt": "2025-12-25T01:25:54.000Z",
-    "createdAt": "2025-12-25T01:25:50.758Z",
     "versionId": "fbe10f36-5f25-429e-8c25-efcc717a440f",
     "workflowId": "DY9WaEz6iavgmQvY",
     "nodes": [
@@ -386,7 +385,8 @@
     "authors": "Gordan Kljajic",
     "name": "Version fbe10f36",
     "description": "",
-    "autosaved": false
-  },
-  "tags": []
+    "autosaved": false,
+    "createdAt": "2025-12-25T01:25:50.758Z",
+    "updatedAt": "2025-12-25T01:25:54.000Z"
+  }
 }
